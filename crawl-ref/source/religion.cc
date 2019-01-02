@@ -96,6 +96,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Zin
     { { 1, ABIL_ZIN_RECITE, "recite Zin's Axioms of Law" },
       { 2, ABIL_ZIN_VITALISATION, "call upon Zin for vitalisation" },
+      { 2, "Zin will cleanse your body of mutations.",
+        "Zin will no longer cleanse your body of mutations." },
       { 3, ABIL_ZIN_IMPRISON, "call upon Zin to imprison the lawless" },
       { 5, ABIL_ZIN_SANCTUARY, "call upon Zin to create a sanctuary" },
       { 6, "Zin will now cleanse your potions of mutation.",
@@ -936,7 +938,7 @@ static void _set_wrath_penance(god_type god)
     _set_penance(god, initial_wrath_penance_for(god));
 }
 
-static void _inc_gift_timeout(int val)
+void inc_gift_timeout(int val)
 {
     if (200 - you.gift_timeout < val)
         you.gift_timeout = 200;
@@ -1097,7 +1099,7 @@ static bool _give_nemelex_gift(bool forced = false)
             // included in default force_more_message
             canned_msg(MSG_SOMETHING_APPEARS);
 
-            _inc_gift_timeout(5 + random2avg(9, 2));
+            inc_gift_timeout(5 + random2avg(9, 2));
             you.num_current_gifts[you.religion]++;
             you.num_total_gifts[you.religion]++;
             take_note(Note(NOTE_GOD_GIFT, you.religion));
@@ -1428,9 +1430,9 @@ static bool _give_equipment_gift()
             simple_god_message(" grants you a magical staff!");
         // Okawaru charges extra for armour acquirements.
         if (you_worship(GOD_OKAWARU) && gift_type == OBJ_ARMOURS)
-            _inc_gift_timeout(30 + random2avg(15, 2));
+            inc_gift_timeout(30 + random2avg(15, 2));
 
-        _inc_gift_timeout(30 + random2avg(19, 2));
+        inc_gift_timeout(30 + random2avg(19, 2));
         you.num_current_gifts[you.religion]++;
         you.num_total_gifts[you.religion]++;
         take_note(Note(NOTE_GOD_GIFT, you.religion));
@@ -1447,7 +1449,7 @@ static bool _gift_jiyva_gift(bool forced)
     {
         if (_jiyva_mutate())
         {
-            _inc_gift_timeout(15 + roll_dice(2, 4));
+            inc_gift_timeout(15 + roll_dice(2, 4));
             you.num_current_gifts[you.religion]++;
             you.num_total_gifts[you.religion]++;
             return true;
@@ -1547,7 +1549,7 @@ static bool _gift_sif_kiku_gift(bool forced)
         you.num_total_gifts[you.religion]++;
         // Timeouts are meaningless for Kiku.
         if (!you_worship(GOD_KIKUBAAQUDGHA))
-            _inc_gift_timeout(40 + random2avg(19, 2));
+            inc_gift_timeout(40 + random2avg(19, 2));
         take_note(Note(NOTE_GOD_GIFT, you.religion));
     }
 
@@ -1603,7 +1605,7 @@ static bool _handle_veh_gift(bool forced)
             prompt += " to your library.";
 
             if (gifts >= 5)
-                _inc_gift_timeout(30 + random2avg(30, 2));
+                inc_gift_timeout(30 + random2avg(30, 2));
             you.num_current_gifts[GOD_VEHUMET]++;
             you.num_total_gifts[GOD_VEHUMET]++;
 
@@ -1614,6 +1616,21 @@ static bool _handle_veh_gift(bool forced)
         }
     }
     return success;
+}
+
+static bool _give_zin_gift()
+{
+    if (!you.how_mutated() || you.piety < piety_breakpoint(1)) {
+        return false;
+    }
+    bool success = delete_mutation((you.has_mutation(MUT_EVOLUTION,false)) ?
+                                   MUT_EVOLUTION : RANDOM_MUTATION, 
+                                   "Zin's grace", true, true, true);
+    if (success) {
+        mpr("Zin's grace purifies you.");
+        inc_gift_timeout(16 + random2avg(8, 2));
+    }
+    return true;
 }
 
 void mons_make_god_gift(monster& mon, god_type god)
@@ -2139,6 +2156,10 @@ bool do_god_gift(bool forced)
         case GOD_VEHUMET:
             success = _handle_veh_gift(forced);
             break;
+
+        case GOD_ZIN:
+            success = _give_zin_gift();
+            break;
         }                       // switch (you.religion)
     }                           // End of gift giving.
 
@@ -2462,8 +2483,15 @@ static void _gain_piety_point()
         dec_penance(1);
         return;
     }
-    else if (you.gift_timeout > 0)
+
+    // Don't run down the Zin timeout unless actually mutated, so that when
+    // we get a new mut Zin doesn't always clear it right away.
+    else if (you.gift_timeout > 0 &&
+        (!you_worship(GOD_ZIN) ||
+        (you.how_mutated() && (you.piety >= piety_breakpoint(1))))) 
+    {
         you.gift_timeout--;
+    }
 
     // slow down gain at upper levels of piety
     if (!you_worship(GOD_RU))

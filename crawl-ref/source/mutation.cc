@@ -1809,6 +1809,10 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             && x_chance_in_y(apply_pity(you.piety), piety_breakpoint(5)))
         {
             simple_god_message(" protects your body from mutation!");
+            if ((mutclass == MUTCLASS_NORMAL) &&
+                (!x_chance_in_y(you.gift_timeout,32))) {
+                inc_gift_timeout(1);
+            }
             return false;
         }
     }
