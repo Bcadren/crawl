@@ -1620,9 +1620,9 @@ static bool _handle_veh_gift(bool forced)
 
 static bool _give_zin_gift()
 {
-    if (!you.how_mutated() || you.piety < piety_breakpoint(1)) {
+    if (!you.how_mutated(false,false,false) || you.piety < piety_breakpoint(2)) 
         return false;
-    }
+
     bool success = delete_mutation((you.has_mutation(MUT_EVOLUTION,false)) ?
                                    MUT_EVOLUTION : RANDOM_MUTATION, 
                                    "Zin's grace", true, true, true);
@@ -1630,7 +1630,7 @@ static bool _give_zin_gift()
         mpr("Zin's grace purifies you.");
         inc_gift_timeout(16 + random2avg(8, 2));
     }
-    return true;
+    return success;
 }
 
 void mons_make_god_gift(monster& mon, god_type god)
@@ -2486,10 +2486,15 @@ static void _gain_piety_point()
 
     // Don't run down the Zin timeout unless actually mutated, so that when
     // we get a new mut Zin doesn't always clear it right away.
+<<<<<<< HEAD
     else if (you.gift_timeout > 0 &&
         (!you_worship(GOD_ZIN) ||
         (you.how_mutated() && (you.piety >= piety_breakpoint(1))))) 
     {
+=======
+    else if (you.gift_timeout > 0 && 
+             (!you_worship(GOD_ZIN) || you.how_mutated(false,false,false))) {
+>>>>>>> c0df6bfcf4 (Make this check exclude transient muts.)
         you.gift_timeout--;
     }
 
