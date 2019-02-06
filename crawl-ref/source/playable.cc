@@ -116,7 +116,7 @@ static JsonNode *_species_modifiers(species_type sp)
 static JsonNode *_species_metadata(species_type sp)
 {
     JsonNode *species(json_mkobject());
-    json_append_member(species, "name", json_mkstring(species_name(sp, SPNAME_PLAIN, false).c_str()));
+    json_append_member(species, "name", json_mkstring(species_name(sp, SPNAME_PLAIN, false)));
     json_append_member(species, "abbr", json_mkstring(get_species_abbrev(sp)));
     json_append_member(species, "apts", _species_apts(sp));
     json_append_member(species, "modifiers", _species_modifiers(sp));
@@ -151,7 +151,7 @@ static JsonNode *_combo_array()
 {
     JsonNode *array(json_mkarray());
     for (const string &combo_abbr : playable_combo_names())
-        json_append_element(array, json_mkstring(combo_abbr.c_str()));
+        json_append_element(array, json_mkstring(combo_abbr));
     return array;
 }
 
