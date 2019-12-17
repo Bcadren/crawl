@@ -1456,27 +1456,8 @@ static void _damaging_card(card_type card, int power, deck_rarity_type rarity,
                 return;
             }
 
-            mpr(prompt);
-
-            if (monster *ghost = _friendly(MONS_FLAYED_GHOST, 3))
-            {
-                apply_visible_monsters([&, ghost](monster& mons)
-                {
-                    if (mons.wont_attack()
-                        || !(mons.holiness() & MH_NATURAL))
-                    {
-                        return false;
-                    }
-
-
-                    flay(*ghost, mons, mons.hit_points * 2 / 5);
-                    return true;
-                }, ghost->pos());
-
-                ghost->foe = MHITYOU; // follow you around (XXX: rethink)
-                return;
-            }
-            // else, fallback to level 1
+            mpr("You reveal a symbol of torment!");
+            torment(&you, TORMENT_CARD_PAIN, you.pos());
         }
 
         ztype = painzaps[min(power_level, (int)ARRAYSZ(painzaps)-1)];
