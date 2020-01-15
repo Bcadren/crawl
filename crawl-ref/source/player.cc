@@ -4543,6 +4543,21 @@ int slaying_bonus(bool ranged, bool weapon)
     return ret;
 }
 
+int player::scan_artefact(artefact_prop_type which_property,
+                          bool calc_unid,
+                          item_def item) const
+{
+
+    if (!is_artefact(item))
+        return 0;
+
+    // TODO: id check not needed, probably, due to full wear-id?
+    if (calc_unid || fully_identified(item))
+        return artefact_property(item, which_property);
+    // else
+        return 0;
+}
+
 // Checks each equip slot for a randart, and adds up all of those with
 // a given property. Slow if any randarts are worn, so avoid where
 // possible. If `matches' is non-nullptr, items with nonzero property are
@@ -4563,14 +4578,14 @@ int player::scan_artefacts(artefact_prop_type which_property,
         if (!is_artefact(inv[ eq ]) && !inv[ eq ].cursed())
             continue;
 
-        // TODO: id check not needed, probably, due to full wear-id?
-        if (calc_unid || fully_identified(inv[eq]))
-        {
-            int val = artefact_property(inv[eq], which_property);
-            retval += val;
-            if (matches && val)
-                matches->push_back(inv[eq]);
-        }
+        const item_def item = inv[eq];
+
+        int val = scan_artefact(which_property, calc_unid, item);
+
+        retval += val;
+
+        if (matches && val)
+            matches->push_back(item);
     }
 
     return retval;
@@ -7256,17 +7271,13 @@ int player::ac_changes_from_mutations() const
 }
 
 /**
- * The player's "base" armour class, before transitory buffs are applied.
+ * Get a vector with the items of armour the player is wearing.
  *
- * (This is somewhat arbitrarily defined - forms, for example, are considered
- * to be long-lived for these purposes.)
- *
- * @param   A scale by which the player's base AC is multiplied.
- * @return  The player's AC, multiplied by the given scale.
+ * @return  A vector<item_def> of each armour the player has equipped.
  */
-int player::base_ac(int scale) const
+vector<item_def> player::get_armour_items() const
 {
-    int AC = 0;
+    vector<item_def> armour_items;
 
     const int start = you.get_mutation_level(MUT_AMORPHOUS_BODY) ? EQ_FIRST_MORPH : EQ_MIN_ARMOUR;
     const int finish = you.get_mutation_level(MUT_AMORPHOUS_BODY) ? EQ_LAST_MORPH : EQ_MAX_ARMOUR;
@@ -7277,6 +7288,55 @@ int player::base_ac(int scale) const
             continue;
 
         const item_def& item = inv[equip[eq]];
+
+        armour_items.push_back(item);
+    }
+
+    return armour_items;
+}
+
+/**
+ * Get a vector with the items of armour the player would be wearing
+ * if they put on a specific piece of armour
+ *
+ * @return  A vector<item_def> of each armour the player would have equipped.
+ */
+vector<item_def> player::get_armour_items_one_sub(item_def sub) const
+{
+    vector<item_def> armour_items = get_armour_items_one_removal(sub);
+
+    armour_items.push_back(sub);
+
+    return armour_items;
+}
+
+vector<item_def> player::get_armour_items_one_removal(item_def remove) const
+{
+    vector<item_def> armour_items;
+
+    for (int eq = EQ_MIN_ARMOUR; eq <= EQ_MAX_ARMOUR; ++eq)
+    {
+        if (!slot_item(static_cast<equipment_type>(eq)))
+            continue;
+        if (get_armour_slot(remove) == eq && remove.link != you.equip[EQ_CYTOPLASM])
+            continue;
+
+        const item_def& item = inv[equip[eq]];
+        armour_items.push_back(item);
+    }
+
+    return armour_items;
+}
+
+int player::base_ac_with_specific_items(int scale,
+                            vector<item_def> armour_items) const
+{
+    int AC = 0;
+
+    for (unsigned int i = 0; i < armour_items.size(); i++)
+    {
+        const item_def& item = armour_items[i];
+
         AC += base_ac_from(item, 100);
 
         // Claws give UC slaying from enchant instead of AC.
@@ -7330,11 +7390,43 @@ int player::base_ac(int scale) const
 
     return AC * scale / 100;
 }
+/**
+ * The player's "base" armour class, before transitory buffs are applied.
+ *
+ * (This is somewhat arbitrarily defined - forms, for example, are considered
+ * to be long-lived for these purposes.)
+ *
+ * @param   A scale by which the player's base AC is multiplied.
+ * @return  The player's AC, multiplied by the given scale.
+ */
+int player::base_ac(int scale) const
+{
+    vector<item_def> armour_items = get_armour_items();
+
+    return base_ac_with_specific_items(scale, armour_items);
+}
 
 int player::armour_class(bool /*calc_unid*/) const
 {
+    return armour_class_with_specific_items(get_armour_items());
+}
+
+int player::armour_class_with_one_sub(item_def sub) const
+{
+    return armour_class_with_specific_items(
+                            get_armour_items_one_sub(sub));
+}
+
+int player::armour_class_with_one_removal(item_def removed) const
+{
+    return armour_class_with_specific_items(
+                            get_armour_items_one_removal(removed));
+}
+
+int player::armour_class_with_specific_items(vector<item_def> items) const
+{
     const int scale = 100;
-    int AC = base_ac(scale);
+    int AC = base_ac_with_specific_items(scale, items);
 
     if (attribute[ATTR_ROOTED])
         AC += 800;
@@ -7367,6 +7459,7 @@ int player::armour_class(bool /*calc_unid*/) const
 
     return AC / scale;
 }
+
  /**
   * Guaranteed damage reduction.
   *

@@ -2260,11 +2260,113 @@ static string _describe_ammo(const item_def &item)
     return description;
 }
 
+static string _describe_point_change(int points)
+{
+    if (points == 0)
+        return "remain unchanged";
+
+    string point_diff_description;
+
+    if (points < 0){
+        point_diff_description += "fall ";
+        point_diff_description += to_string(-1 * points);
+    }else{
+        point_diff_description += "rise ";
+        point_diff_description += to_string(points);
+    }
+
+    if (points == 1 || points == -1){
+        point_diff_description += " point";
+    }else{
+        point_diff_description += " points";
+    }
+
+    return point_diff_description;
+}
+
+static string _describe_point_diff(int original,
+                                   int changed)
+{
+    string description;
+
+    int difference = changed - original;
+
+    description += _describe_point_change(difference);
+    description += " (";
+    description += to_string(original);
+    description += " -> ";
+    description += to_string(changed);
+    description += ")";
+
+    return description;
+}
+
+static string _armour_ac_sub_change_description(const item_def &item)
+{
+    string description;
+
+    description.reserve(100);
+
+
+    description += "\n\nIf you switch to wearing this armour,"
+                        " your AC will ";
+
+    int you_ac_with_this_item =
+                 you.armour_class_with_one_sub(item);
+
+    description += _describe_point_diff(you.armour_class(),
+                                        you_ac_with_this_item);
+
+    return description;
+}
+
+static string _armour_ac_remove_change_description(const item_def &item)
+{
+    string description;
+
+    description += "\n\nIf you remove this armour,"
+                        " your AC will ";
+
+    int you_ac_without_item = 0;
+
+    if (you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION) 
+            && item.link == you.equip[EQ_CYTOPLASM])
+    {
+        you_ac_without_item = you.armour_class();
+        if (item.sub_type != ARM_CLAW)
+            you_ac_without_item -= item.plus;
+    }
+    else
+        you_ac_without_item = you.armour_class_with_one_removal(item);
+
+    description += _describe_point_diff(you.armour_class(),
+                                        you_ac_without_item);
+
+    return description;
+}
+
+static bool _you_are_wearing_item(const item_def &item)
+{
+    return get_equip_slot(&item) != EQ_NONE;
+}
+
+static string _armour_ac_change(const item_def &item)
+{
+    string description = "";
+
+    if (_you_are_wearing_item(item))
+        description = _armour_ac_remove_change_description(item);
+    else if (!you.get_mutation_level(MUT_AMORPHOUS_BODY)) // Lack of slots makes this info useless.
+        description = _armour_ac_sub_change_description(item);
+
+    return description;
+}
+
 static string _describe_armour(const item_def &item, bool verbose)
 {
     string description;
 
-    description.reserve(200);
+    description.reserve(300);
 
     if (verbose)
     {
@@ -2323,7 +2425,11 @@ static string _describe_armour(const item_def &item, bool verbose)
         }
         else
             description += "\n\nIt cannot be enchanted further.";
+
     }
+
+    if (item_ident(item, ISFLAG_KNOW_PLUSES))
+        description += _armour_ac_change(item);
 
     return description;
 }

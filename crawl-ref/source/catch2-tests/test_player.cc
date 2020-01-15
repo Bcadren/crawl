@@ -1,10 +1,7 @@
 #include "catch.hpp"
 
 #include "AppHdr.h"
-#include "end.h"
 #include "mutation.h"
-#include "ng-setup.h"
-
 #include "player.h"
 
 // The way this test fixture generates a "mock" player object is a total
@@ -85,11 +82,13 @@ TEST_CASE_METHOD(MockPlayerYouTestsFixture,
 }
 */
 
+#include "test_player_fixture.h"
+
 // Some of these a characterization tests which should be justifiably
 // removed if the behavior ever changes. Left in for now because it
 // should be easy to tell the difference between a intentional change of
 // the behavior being tested and accidentally changing said behavior.
-
+//
 TEST_CASE_METHOD(MockPlayerYouTestsFixture,
           "Test MockPlayerYouTestsFixture", "[single-file]" ) {
 
