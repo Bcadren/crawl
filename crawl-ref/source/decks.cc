@@ -832,13 +832,10 @@ static void _describe_cards(vector<card_type> cards)
 #ifdef USE_TILE_WEB
     tiles.json_close_array();
     tiles.push_ui_layout("describe-cards", 0);
+    popup->on_layout_pop([](){ tiles.pop_ui_layout(); });
 #endif
 
     ui::run_layout(move(popup), done);
-
-#ifdef USE_TILE_WEB
-    tiles.pop_ui_layout();
-#endif
 }
 
 // Stack a deck: look at the next five cards, put them back in any
