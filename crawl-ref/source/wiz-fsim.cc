@@ -615,7 +615,7 @@ static void _fsim_simple_scale(FILE * o, monster* mon, bool defense, int force_d
         fflush(o);
 
         // kill the loop if the user hits escape
-        if (kbhit() && getchk() == 27)
+        if (kbhit() && getch_ck() == 27)
         {
             mpr("Cancelling simulation.\n");
             fprintf(o, "Simulation cancelled!\n\n");
@@ -680,7 +680,7 @@ static void _fsim_double_scale(FILE * o, monster* mon, bool defense, int force_d
             fflush(o);
 
             // kill the loop if the user hits escape
-            if (kbhit() && getchk() == 27)
+            if (kbhit() && getch_ck() == 27)
             {
                 mpr("Cancelling simulation.\n");
                 fprintf(o, "\nSimulation cancelled!\n\n");
@@ -721,7 +721,7 @@ void wizard_fight_sim(bool double_scale)
     {
         mprf(MSGCH_PROMPT, "(A)ttack or (D)efense?");
 
-        switch (toalower(getchk()))
+        switch (toalower(getch_ck()))
         {
         case 'a':
         case 'A':

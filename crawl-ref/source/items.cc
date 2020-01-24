@@ -1462,7 +1462,7 @@ void pickup(bool partial_quantity)
                      menu_colour_item_name(mitm[o], DESC_A).c_str());
 
                 mouse_control mc(MOUSE_MODE_YESNO);
-                keyin = getchk();
+                keyin = getch_ck();
             }
 
             if (keyin == '*' || keyin == '?' || keyin == ',' || keyin == 'g'
