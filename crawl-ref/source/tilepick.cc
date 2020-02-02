@@ -2854,7 +2854,7 @@ tileidx_t tileidx_item(const item_def &item)
     case OBJ_WEAPONS:
         if (is_unrandom_artefact(item, UNRAND_WYRMBANE))
             return _tileidx_wyrmbane(item.plus);
-        else if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        else if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         else
             return _tileidx_weapon(item);
@@ -2863,13 +2863,13 @@ tileidx_t tileidx_item(const item_def &item)
         return _tileidx_missile(item);
 
     case OBJ_ARMOURS:
-        if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         else
             return _tileidx_armour(item);
 
     case OBJ_SHIELDS:
-        if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         else
             return _tileidx_shields(item);
@@ -2892,7 +2892,7 @@ tileidx_t tileidx_item(const item_def &item)
         return _tileidx_gold(item);
 
     case OBJ_JEWELLERY:
-        if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
 
         // rings
@@ -2962,7 +2962,7 @@ tileidx_t tileidx_item(const item_def &item)
                + rnd % tile_main_count(TILE_BOOK_OFFSET);
 
     case OBJ_STAVES:
-        if (is_unrandom_artefact(item) && !is_randapp_artefact(item))
+        if (is_unrandom_artefact(item))
             return _tileidx_unrand_artefact(find_unrandart_index(item));
         return TILE_STAFF_ID_FIRST + type;
 
