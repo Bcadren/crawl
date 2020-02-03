@@ -19,6 +19,7 @@
 #define CHANGED_BRAND_KEY   "changed_brand"
 
 #define DAMNATION_BOLT_KEY "damnation_bolt"
+#define EMBRACE_ARMOUR_KEY "embrace_armour"
 
 struct bolt;
 

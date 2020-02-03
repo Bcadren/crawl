@@ -4213,6 +4213,10 @@ rot_resistance monster::res_rotting(bool /*mount*/) const
     if (get_mons_resist(*this, MR_RES_ROTTING))
         return ROT_RESIST_MUNDANE;
 
+    const item_def *armour = mslot_item(MSLOT_ARMOUR);
+    if (armour && is_unrandom_artefact(*armour, UNRAND_EMBRACE))
+        return ROT_RESIST_MUNDANE;
+
     return ROT_RESIST_NONE;
 }
 

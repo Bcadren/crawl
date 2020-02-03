@@ -1412,6 +1412,16 @@ TILE_EQ:  battle_staff
 BRAND:    SPSTF_SHIELD
 VALUE:    800
 
+ENUM:     EMBRACE
+NAME:     Cigotuvi's embrace
+OBJ:      OBJ_ARMOUR/ARM_LEATHER_ARMOUR
+PLUS:     +4 # varies with corpse count
+COLOUR:   ETC_UNHOLY
+# XXX TODO: tiles
+LIFE:     1
+INSCRIP:  rRot
+BOOL:     evil
+
 # This entry must always be last.
 ENUM:   DUMMY2
 NAME:   DUMMY UNRANDART 2

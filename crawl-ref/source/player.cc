@@ -7995,11 +7995,15 @@ rot_resistance player::res_rotting(bool mt) const
         return ROT_RESIST_FULL;
     }
 
+    const item_def *armour = slot_item(EQ_BODY_ARMOUR);
+    const bool embraced = armour && is_unrandom_artefact(*armour, UNRAND_EMBRACE);
+    const rot_resistance base_res = embraced ? ROT_RESIST_MUNDANE : ROT_RESIST_NONE;
+
     switch (undead_state())
     {
     default:
     case US_ALIVE:
-        return ROT_RESIST_NONE;
+        return base_res;
 
     case US_SEMI_ALIVE:
     case US_SEMI_UNDEAD:
