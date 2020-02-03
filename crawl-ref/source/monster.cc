@@ -4190,32 +4190,30 @@ bool monster::res_sticky_flame(bool /*mount*/) const
     return is_insubstantial() || get_mons_resist(*this, MR_RES_STICKY_FLAME) > 0;
 }
 
-int monster::res_rotting(bool /*mount*/) const
+rot_resistance monster::res_rotting(bool /*mount*/) const
 {
-    int res = 0;
     const mon_holy_type holi = holiness();
 
     // handle undead first so that multi-holiness undead get their due
     if (holi & MH_UNDEAD)
     {
         if (mons_genus(type) == MONS_GHOUL || type == MONS_ZOMBIE)
-            res = 1;
-        else
-            res = 3;
+            return ROT_RESIST_MUNDANE;
+        return ROT_RESIST_FULL;
     }
-    else if (holi & (MH_NATURAL | MH_PLANT))
-        res = 0; // was 1 for plants before. Gardening shows it should be -1
-    else if (holi & (MH_HOLY | MH_DEMONIC))
-        res = 1;
-    else if (is_nonliving())
-        res = 3;
-
-    if (is_insubstantial())
-        res = 3;
+    if (!(bool(holi & (MH_NATURAL | MH_PLANT))))
+    {
+        if (holi & (MH_HOLY | MH_DEMONIC))
+            return ROT_RESIST_MUNDANE;
+        if (is_nonliving())
+            return ROT_RESIST_FULL;
+        if (is_insubstantial())
+            return ROT_RESIST_FULL;
+    }
     if (get_mons_resist(*this, MR_RES_ROTTING))
-        res += 1;
+        return ROT_RESIST_MUNDANE;
 
-    return min(3, res);
+    return ROT_RESIST_NONE;
 }
 
 int monster::res_holy_energy(bool /*mount*/) const

@@ -7983,32 +7983,32 @@ int player::res_poison(bool mt) const
     return player_res_poison(true);
 }
 
-int player::res_rotting(bool mt) const
+rot_resistance player::res_rotting(bool mt) const
 {
     if (mt)
-        return 0; // No mount resists rotting.
+        return ROT_RESIST_NONE; // No mount resists rotting.
 
     if (get_mutation_level(MUT_ROT_IMMUNITY)
         || is_nonliving()
         || get_form()->res_rot())
     {
-        return 3;
+        return ROT_RESIST_FULL;
     }
 
     switch (undead_state())
     {
     default:
     case US_ALIVE:
-        return 0;
+        return ROT_RESIST_NONE;
 
     case US_SEMI_ALIVE:
     case US_SEMI_UNDEAD:
     case US_HUNGRY_DEAD:
-        return 1; // rottable by Zin, not by necromancy
+        return ROT_RESIST_MUNDANE; // rottable by Zin, not by necromancy
 
     case US_UNDEAD:
     case US_GHOST:
-        return 3; // full immunity
+        return ROT_RESIST_FULL;
     }
 }
 

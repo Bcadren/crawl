@@ -26,6 +26,13 @@ enum class ev_ignore
 };
 DEF_BITFIELD(ev_ignore_type, ev_ignore);
 
+enum rot_resistance     // Resistance to HP rot.
+{
+    ROT_RESIST_NONE,    // No resistance to rotting.
+    ROT_RESIST_MUNDANE, // Immune to non-divine rotting. (Zin is special.)
+    ROT_RESIST_FULL,    // Immune to all forms of rot.
+};
+
 struct bolt;
 
 class actor
@@ -307,7 +314,7 @@ public:
     virtual int res_bludgeon(bool mt = false) const = 0;
     virtual int res_physical(bool mt = false) const;
     virtual int res_poison(bool mt = false) const = 0;
-    virtual int res_rotting(bool mt = false) const = 0;
+    virtual rot_resistance res_rotting(bool mt = false) const = 0;
     virtual int res_water_drowning(bool mt = false) const = 0;
     virtual bool res_sticky_flame(bool mt = false) const = 0;
     virtual int res_holy_energy(bool mt = false) const = 0;

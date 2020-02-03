@@ -799,7 +799,7 @@ public:
     int res_pierce(bool mt = false) const override;
     int res_bludgeon(bool mt = false) const override;
     int res_poison(bool mt = false) const override;
-    int res_rotting(bool mt = false) const override;
+    rot_resistance res_rotting(bool mt = false) const override;
     int res_water_drowning(bool mt = false) const override;
     bool res_sticky_flame(bool mt = false) const override;
     int res_holy_energy(bool mt = false) const override;

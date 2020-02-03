@@ -927,7 +927,7 @@ zin_eff effect_for_prayer_type(recite_type prayertype, int check, int degree, mo
         if (check < 5)
         {
             // nastier -- fallthrough if immune
-            if (coinflip() && mon->res_rotting() <= 1)
+            if (coinflip() && mon->res_rotting() < ROT_RESIST_FULL)
                 return zin_eff::rot;
             else
                 return zin_eff::smite;
@@ -956,7 +956,7 @@ zin_eff effect_for_prayer_type(recite_type prayertype, int check, int degree, mo
         // immune, of course.
         if (check < 5)
         {
-            if (coinflip() && mon->res_rotting() <= 1)
+            if (coinflip() && mon->res_rotting() < ROT_RESIST_FULL)
                 return zin_eff::rot;
             else
                 return zin_eff::smite;
@@ -1198,7 +1198,7 @@ bool zin_affect(monster * mon, zin_eff effect, int degree, recite_type prayertyp
     case zin_eff::rot:
         // FIXME: no message (other than "You kill X!") is produced if the
         // rotting kills the monster.
-        if (mon->res_rotting() <= 1
+        if (mon->res_rotting() < ROT_RESIST_FULL
             && mon->rot(&you, 1 + roll_dice(2, degree), true))
         {
             mon->add_ench(mon_enchant(ENCH_SICK, degree, &you,
