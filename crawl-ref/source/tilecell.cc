@@ -6,6 +6,7 @@
 #include "coord.h"
 #include "coordit.h"
 #include "env.h"
+#include "level-state-type.h"
 #include "player.h"
 #include "religion.h"
 #include "terrain.h"
@@ -716,7 +717,8 @@ void pack_cell_overlays(const coord_def &gc, crawl_view_buffer &vbuf)
         _add_directional_overlays(gc, vbuf, TILE_SNOW_OVERLAY,
             _is_snow);
     }
-    if (cell.map_knowledge.feat() != DNGN_SLIMY_WALL)
+    if (env.level_state & LSTATE_SLIMY_WALL
+        && cell.map_knowledge.feat() != DNGN_SLIMY_WALL)
     {
         _add_directional_overlays(gc, vbuf, TILE_SLIME_OVERLAY,
                                   _is_seen_slimy_wall);
