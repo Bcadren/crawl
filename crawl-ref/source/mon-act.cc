@@ -3132,7 +3132,9 @@ static bool _check_slime_walls(const monster *mon,
 {
     if (actor_slime_wall_immune(mon) || mons_intel(*mon) <= I_BRAINLESS)
         return false;
+
     const int target_count = count_adjacent_slime_walls(targ);
+
     // Entirely safe.
     if (!target_count)
         return false;
