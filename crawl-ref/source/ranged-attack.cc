@@ -611,6 +611,9 @@ int ranged_attack::player_apply_misc_modifiers(int damage)
 
 bool ranged_attack::ignores_shield(bool verbose)
 {
+    if (defender->is_player() && player_omnireflects())
+        return false;
+
     if (is_penetrating_attack(*attacker, weapon, *projectile))
     {
         if (verbose)
