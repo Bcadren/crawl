@@ -808,7 +808,7 @@ TILE:    urand_zhor
 TILE_EQ: zhor
 COLD:    3
 BOOL:    seeinv
-INSCRIP: Hibernate
+INSCRIP: Englaciate
 
 # TAG_MAJOR_VERSION == 34
 ENUM:    SALAMANDER
