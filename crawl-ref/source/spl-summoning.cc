@@ -391,13 +391,6 @@ static monster_type _choose_dragon_type(int pow, god_type /*god*/, bool player)
 
 spret cast_dragon_call(int pow, bool fail)
 {
-    if (you.duration[DUR_DRAGON_CALL]
-        || you.duration[DUR_DRAGON_CALL_COOLDOWN])
-    {
-        mpr("You cannot issue another dragon's call so soon.");
-        return spret::abort;
-    }
-
     if (otr_stop_summoning_prompt("call dragons"))
         return spret::abort;
 
@@ -413,7 +406,6 @@ spret cast_dragon_call(int pow, bool fail)
 
 static void _place_dragon()
 {
-
     const int pow = calc_spell_power(SPELL_DRAGON_CALL, true);
     monster_type mon = _choose_dragon_type(pow, you.religion, true);
     const int mp_cost = you.species == SP_FAIRY ? 1 : random_range(2, 3);
