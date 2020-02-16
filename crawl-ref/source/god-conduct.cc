@@ -81,7 +81,7 @@ static const char *conducts[] =
     "Was Hasty", "Corpse Violation", "Carrion Rot", "Souled Friend Died",
     "Attack In Sanctuary", "Kill Elemental", "Exploration",
     "Desecrate Holy Remains", "Seen Monster", "Sacrificed Love", "Channel",
-    "Hurt Foe", "Kill Artificial"
+    "Hurt Foe", "Kill Artificial", "Use Wizardly Item",
 };
 COMPILE_CHECK(ARRAYSZ(conducts) == NUM_CONDUCTS);
 
@@ -382,6 +382,10 @@ static peeve_map divine_peeves[] =
         { DID_SPELL_PRACTISE, {
             "you train magic skills", true,
             1, 0, nullptr, " doesn't appreciate your training magic!"
+        } },
+        { DID_WIZARDLY_ITEM, {
+            "you use magical staves or pain-branded weapons", true,
+            1, 0, nullptr, " doesn't appreciate your use of wizardly items!"
         } },
     },
     // GOD_NEMELEX_XOBEH,

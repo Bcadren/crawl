@@ -346,10 +346,10 @@ bool is_channeling_item(const item_def& item, bool calc_unid)
 
 bool is_wizardly_item(const item_def& item, bool /*calc_unid*/)
 {
-    if (is_unrandom_artefact(item, UNRAND_BATTLE))
+    if (get_weapon_brand(item) == SPWPN_PAIN)
         return true;
 
-    return false;
+    return item.base_type == OBJ_STAVES;
 }
 
 bool is_corpse_violating_spell(spell_type spell)
@@ -427,7 +427,7 @@ vector<conduct_type> item_conducts(const item_def &item)
         && is_magic_skill((skill_type)item.plus))
         || is_wizardly_item(item))
     {
-        conducts.push_back(DID_SPELL_PRACTISE);
+        conducts.push_back(DID_WIZARDLY_ITEM);
     }
 
     if (is_corpse_violating_item(item, false))

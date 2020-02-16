@@ -468,6 +468,7 @@ static bool _WUCAD_MU_evoke(item_def */*item*/, bool* did_work, bool* unevokable
     {
         _wucad_backfire();
         did_god_conduct(DID_CHANNEL, 10, true);
+        did_god_conduct(DID_WIZARDLY_ITEM, 10);
         return false;
     }
 
@@ -480,6 +481,7 @@ static bool _WUCAD_MU_evoke(item_def */*item*/, bool* did_work, bool* unevokable
     *did_work = true;
     practise_evoking(1);
     did_god_conduct(DID_CHANNEL, 10, true);
+    did_god_conduct(DID_WIZARDLY_ITEM, 10);
 
     return false;
 }
@@ -1351,7 +1353,7 @@ static void _BATTLE_world_reacts(item_def */*item*/)
     if (!find_battlesphere(&you) && there_are_monsters_nearby(true, true, false))
     {
         your_spells(SPELL_BATTLESPHERE, 0, false);
-        did_god_conduct(DID_SPELL_CASTING, 1);
+        did_god_conduct(DID_WIZARDLY_ITEM, 10);
     }
 }
 

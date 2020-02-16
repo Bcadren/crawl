@@ -1551,7 +1551,8 @@ bool evoke_item(int slot)
         zap_wand(slot);
         return true;
 
-    // No Evocable Shields exist right now.
+    // No Evocable Shields or Staves exist right now.
+    case OBJ_STAVES:
     case OBJ_SHIELDS:
         return false;
 
@@ -1567,10 +1568,6 @@ bool evoke_item(int slot)
         }
         else
             unevokable = true;
-        break;
-
-    case OBJ_STAVES:
-        unevokable = true;
         break;
 
     case OBJ_MISCELLANY:

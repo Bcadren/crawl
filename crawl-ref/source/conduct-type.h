@@ -47,5 +47,6 @@ enum conduct_type
     DID_CHANNEL,                          // Pakellas
     DID_HURT_FOE,                         // Uskayaw
     DID_KILL_CONSTRUCT,
+    DID_WIZARDLY_ITEM,                    // Trog
     NUM_CONDUCTS
 };
