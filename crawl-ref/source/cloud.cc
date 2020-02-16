@@ -780,13 +780,23 @@ void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
     if (cell_is_solid(ctarget))
         return;
 
+    const monster * const mons = monster_at(ctarget);
+
+    // Fedhas protects plants from damaging clouds placed by the player.
+    if (agent
+        && agent->deity() == GOD_FEDHAS
+        && fedhas_protects(mons)
+        && !actor_cloud_immune(*mons, cl_type))
+    {
+        return;
+    }
+
     god_conduct_trigger conducts[3];
     kill_category whose = KC_OTHER;
     killer_type killer  = KILL_MISC;
     mid_t source        = MID_NOBODY;
     if (agent && agent->is_player())
     {
-        const monster * const mons = monster_at(ctarget);
         if (do_conducts
             && mons && mons->alive()
             && !actor_cloud_immune(*mons, cl_type))
