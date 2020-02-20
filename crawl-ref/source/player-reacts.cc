@@ -898,23 +898,77 @@ static void _rot_ghoul_players()
     }
 }
 
-// BCADDO: Is this suitable for staff attunement? Check after cherry-picking is complete.
 // Some equipment only begins to function when some condition is met, e.g., full
 // health is reached.
-static void _update_equipment_attunement(equipment_type slot, int eq, string msg,
-                                         bool activate_condition, string prop_key,
-                                         bool active_requirement = true)
+static void _update_equipment_attunement_by_health()
 {
-    if (you.wearing(slot, eq) && active_requirement)
+    if (you.hp != you.hp_max)
+        return;
+
+    if (!you.activated[EQ_AMULET] && you.wearing(EQ_AMULET, AMU_ACROBAT))
     {
-        if (activate_condition && !you.props[prop_key].get_int())
+        mprf("Your amulet attunes itself to your body. You feel like doing "
+             "cartwheels.");
+        you.activated.set(EQ_AMULET);
+    }
+
+    if (you.get_mutation_level(MUT_NO_REGENERATION))
+        return;
+
+    vector<string> eq_list;
+    bool plural = false;
+
+    if (!you.activated[EQ_AMULET] && you.wearing(EQ_AMULET, AMU_REGENERATION))
+    {
+        eq_list.push_back("amulet");
+        you.activated.set(EQ_AMULET);
+    }
+
+    for (int slot = EQ_MIN_ARMOUR; slot <= EQ_MAX_ARMOUR; ++slot)
+    {
+        if (you.melded[slot] || you.equip[slot] == -1 || you.activated[slot])
+            continue;
+        const item_def &arm = you.inv[you.equip[slot]];
+        if (armour_type_prop(arm.sub_type, ARMF_REGENERATION)
+            || is_artefact(arm) && artefact_property(arm, ARTP_REGENERATION))
         {
-            you.props[prop_key] = 1;
-            mpr(msg);
+            eq_list.push_back(
+                slot != EQ_BODY_ARMOUR ?
+                    item_slot_name(static_cast<equipment_type>(slot)) :
+                    is_artefact(arm) ? get_artefact_name(arm) : "armour");
+
+            if (slot == EQ_GLOVES || slot == EQ_BOOTS)
+                plural = true;
+            you.activated.set(slot);
+        }
+    }
+
+    if (eq_list.empty())
+        return;
+
+    plural = plural || eq_list.size() > 1;
+    string eq_str = comma_separated_line(eq_list.begin(), eq_list.end());
+    mprf("Your %s attune%s to your body as you begin to regenerate "
+         "more quickly.", eq_str.c_str(), plural ? " themselves" : "s itself");
+}
+
+// Amulet of magic regeneration needs to be worn while at full magic before it
+// begins to function.
+static void _update_mana_regen_amulet_attunement()
+{
+    if (you.wearing(EQ_AMULET, AMU_MANA_REGENERATION)
+        && player_regenerates_mp())
+    {
+        if (you.magic_points == you.max_magic_points
+            && you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 0)
+        {
+            you.props[MANA_REGEN_AMULET_ACTIVE] = 1;
+            mpr("Your amulet attunes itself to your body and you begin to "
+                "regenerate magic more quickly.");
         }
     }
     else
-        you.props[prop_key] = 0;
+        you.props[MANA_REGEN_AMULET_ACTIVE] = 0;
 }
 
 // cjo: Handles player hp and mp regeneration. If the counter
@@ -951,14 +1005,7 @@ static void _regenerate_hp_and_mp(int delay)
 
     ASSERT_RANGE(you.hit_points_regeneration, 0, 100);
 
-    _update_equipment_attunement(EQ_AMULET, AMU_REGENERATION,
-        "Your amulet attunes itself to your body and you begin to regenerate "
-        "more quickly.", you.hp == you.hp_max, REGEN_AMULET_ACTIVE,
-                             !you.get_mutation_level(MUT_NO_REGENERATION));
-
-    _update_equipment_attunement(EQ_AMULET, AMU_ACROBAT,
-        "Your amulet attunes itself to your body. You feel like doing "
-        "cartwheels.", you.hp == you.hp_max, ACROBAT_AMULET_ACTIVE);
+    _update_equipment_attunement_by_health();
 
     // Mount HP Regeneration
     if (you.mounted() && (you.mount_hp < you.mount_hp_max))
@@ -995,10 +1042,7 @@ static void _regenerate_hp_and_mp(int delay)
 
     ASSERT_RANGE(you.magic_points_regeneration, 0, 100);
 
-    _update_equipment_attunement(EQ_AMULET, AMU_MANA_REGENERATION,
-        "Your amulet attunes itself to your body and you begin to regenerate "
-        "magic more quickly.", you.magic_points == you.max_magic_points,
-        MANA_REGEN_AMULET_ACTIVE);
+    _update_mana_regen_amulet_attunement();
 }
 
 void player_reacts()

@@ -1363,13 +1363,30 @@ int player_teleport(bool calc_unid)
     return tp;
 }
 
+// Return: Does this artprop require you.activated to function?
+// Only regen at present, but creating function in case more use later.
+static bool _property_requires_activation(artefact_prop_type prop)
+{
+    switch (prop)
+    {
+    case ARTP_REGENERATION:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static int _jiyva_scan_props(armour_flag prop)
 {
     int retval = 0;
+    const bool need_active = _property_requires_activation(prop);
 
-    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
-    if (inside && inside->base_type == OBJ_ARMOURS)
-        retval += armour_type_prop(inside->sub_type, prop);
+    if (!need_active || you.activated[EQ_CYTOPLASM])
+    {
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+        if (inside && inside->base_type == OBJ_ARMOURS)
+            retval += armour_type_prop(inside->sub_type, prop);
+    }
 
     if (!you.get_mutation_level(MUT_AMORPHOUS_BODY))
         return retval;
@@ -1378,7 +1395,7 @@ static int _jiyva_scan_props(armour_flag prop)
     {
         const item_def * armour = you.slot_item(static_cast<equipment_type>(i));
 
-        if (armour)
+        if (armour && (!need_active || you.activated[i]))
             retval += armour_type_prop(armour->sub_type, prop);
     }
 
@@ -1403,7 +1420,7 @@ static int _player_bonus_regen()
         rr += 100;
 
     // Jewellery.
-    if (you.props[REGEN_AMULET_ACTIVE].get_int() == 1)
+    if (you.activated[EQ_AMULET])
         rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION);
 
     // Artefacts
@@ -1411,7 +1428,7 @@ static int _player_bonus_regen()
 
     // Troll leather
     const item_def *body_armour = you.slot_item(EQ_BODY_ARMOUR);
-    if (body_armour)
+    if (body_armour && you.activated[EQ_BODY_ARMOUR])
         rr += armour_type_prop(body_armour->sub_type, ARMF_REGENERATION) * REGEN_PIP;
 
     // Jiyva troll leather
@@ -2597,7 +2614,7 @@ bool player_is_shapechanged()
 
 void update_acrobat_status()
 {
-    if (you.props[ACROBAT_AMULET_ACTIVE].get_int() != 1)
+    if (!you.wearing(EQ_AMULET, AMU_ACROBAT) || !you.activated[EQ_AMULET])
         return;
 
     // Acrobat duration goes slightly into the next turn, giving the
@@ -4519,6 +4536,9 @@ int player::scan_artefacts(artefact_prop_type which_property,
         if (melded[i] || equip[i] == -1)
             continue;
 
+        if (_property_requires_activation(which_property) && !you.activated[i])
+            continue;
+
         const int eq = equip[i];
 
         if (!is_artefact(inv[ eq ]) && !inv[ eq ].cursed())
@@ -6123,6 +6143,7 @@ player::player()
     equip.init(-1);
     melded.reset();
     unrand_reacts.reset();
+    activated.reset();
     last_unequip = -1;
 
     symbol          = MONS_PLAYER;
