@@ -2757,8 +2757,8 @@ bool melee_attack::apply_staff_damage()
     {
         special_damage =
             resist_adjust_damage(defender,
-                                 BEAM_ELECTRICITY,
-                                 staff_damage(SK_AIR_MAGIC), mount_defend);
+                BEAM_ELECTRICITY,
+                staff_damage(SK_AIR_MAGIC), mount_defend);
 
         const bool absorb = (special_damage < 0);
 
@@ -2794,11 +2794,11 @@ bool melee_attack::apply_staff_damage()
                         defender->name(DESC_ITS).c_str());
                 defender->as_monster()->add_ench(
                     mon_enchant(ENCH_ELEC_VULN, 1, attacker,
-                    (flay_dur) * BASELINE_DELAY));
+                    (flay_dur)* BASELINE_DELAY));
             }
         }
     }
-        break;
+    break;
 
     case STAFF_COLD:
     {
@@ -2846,7 +2846,7 @@ bool melee_attack::apply_staff_damage()
             }
         }
     }
-        break;
+    break;
 
     case STAFF_EARTH:
     {
@@ -2891,7 +2891,7 @@ bool melee_attack::apply_staff_damage()
             }
         }
     }
-        break;
+    break;
 
     case STAFF_FIRE:
     {
@@ -2942,45 +2942,55 @@ bool melee_attack::apply_staff_damage()
             }
         }
     }
-        break;
+    break;
 
     case STAFF_POISON:
     {
-        if (random2(300) >= attacker->skill(SK_EVOCATIONS, 20) + attacker->skill(SK_POISON_MAGIC, 10))
-            return true;
+        special_damage =
+            resist_adjust_damage(defender,
+                BEAM_POISON,
+                staff_damage(SK_POISON_MAGIC), mount_defend);
 
-        // Base chance at 50% -- like mundane weapons.
-        if (x_chance_in_y(80 + attacker->skill(SK_POISON_MAGIC, 10), 160))
+        const bool absorb = (special_damage < 0);
+
+        if (absorb)
+            flay_resist = false; // if immune flay wouldn't do anything anyways.
+
+        if (flay_resist)
         {
-            if (mount_defend)
-                poison_mount(2);
-            else
-                defender->poison(attacker, 2);
-
-            if (flay_resist)
+            if (defender->is_player())
             {
-                if (defender->is_player())
-                {
-                    if (!you.duration[DUR_POISON_VULN])
-                    {
-                        special_damage_message +=
-                            " A hellish bile dissolves your poison resistance.";
-                        you.increase_duration(DUR_POISON_VULN, flay_dur, 50);
-                    }
-                }
-                else if (!defender->as_monster()->has_ench(ENCH_POISON_VULN))
+                if (!you.duration[DUR_POISON_VULN])
                 {
                     special_damage_message +=
-                        make_stringf(" A hellish bile dissolves %s poison resistance.",
-                            defender->name(DESC_ITS).c_str());
-                    defender->as_monster()->add_ench(
-                        mon_enchant(ENCH_POISON_VULN, 1, attacker,
-                        (flay_dur)* BASELINE_DELAY));
+                        " A hellish bile dissolves your poison resistance.";
+                    you.increase_duration(DUR_POISON_VULN, flay_dur, 50);
                 }
             }
+            else if (!defender->as_monster()->has_ench(ENCH_POISON_VULN))
+            {
+                special_damage_message +=
+                    make_stringf(" A hellish bile dissolves %s poison resistance.",
+                        defender->name(DESC_ITS).c_str());
+                defender->as_monster()->add_ench(
+                    mon_enchant(ENCH_POISON_VULN, 1, attacker,
+                    (flay_dur)* BASELINE_DELAY));
+            }
         }
-        break;
+
+        if (special_damage)
+        {
+            special_damage_message =
+                make_stringf("%s%s %s %s%s",
+                    mount_defend ? "Your " : "",
+                    mount_defend ? you.mount_name(true).c_str() : defender->name(DESC_THE).c_str(),
+                    mount_defend ? (absorb ? "absorbs" : "is") : defender->conj_verb(absorb ? "absorb" : "are").c_str(),
+                    absorb ? "the noxious venom" : "envenomated",
+                    attack_strength_punctuation(special_damage).c_str());
+            special_damage_flavour = BEAM_POISON;
+        }
     }
+    break;
 
     case STAFF_DEATH:
         // BCADDO: Case for undead mount at least taking the dispel effect? No undead mounts as of now but...
@@ -3211,8 +3221,19 @@ bool melee_attack::apply_staff_damage()
         else
             inflict_damage(special_damage, special_damage_flavour);
 
-        if (special_damage != 0)
+        if (special_damage > 0)
+        {
             defender->expose_to_element(special_damage_flavour, 2);
+            // XXX: this is messy, but poisoning from the staff of poison
+            // should happen after damage.
+            if (defender->alive() && special_damage_flavour == BEAM_POISON)
+            {
+                if (mount_defend && you.mounted())
+                    poison_mount(2);
+                else
+                    defender->poison(attacker, 2);
+            }
+        }
     }
 
     return true;
