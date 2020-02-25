@@ -10426,8 +10426,8 @@ void player_end_berserk()
 
     if (one_chance_in(10 + you.get_mutation_level(MUT_BERSERK) * 50))
     {
-        // Note the beauty of Trog! They get an extra save that's at
-        // the very least 20% and goes up to 100%.
+        // Note the beauty of Trog! They get an extra save that
+        // goes up to 100% at 6 stars of piety.
         if (have_passive(passive_t::extend_berserk)
             && x_chance_in_y(apply_pity(you.piety), piety_breakpoint(5)))
         {
