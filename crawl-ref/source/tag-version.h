@@ -246,6 +246,7 @@ enum tag_minor_version
     TAG_MINOR_ICICLE_CASCADE,      // Adding this spell also removed Ignition. Tagging adjust spellbook should this affect a player.
     TAG_MINOR_YRED_SPELLS,         // Save spells with enslaved souls. Save monsters spawn items for enslaved soul use.
     TAG_MINOR_MISCAST_MUTATIONS,   // Add unique temporary mutations from miscasts.
+    TAG_MINOR_TRACK_REGEN_ITEMS,   // Regen items take effect only after maxhp is reached
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

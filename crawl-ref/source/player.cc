@@ -1379,7 +1379,7 @@ static bool _property_requires_activation(artefact_prop_type prop)
 static int _jiyva_scan_props(armour_flag prop)
 {
     int retval = 0;
-    const bool need_active = _property_requires_activation(prop);
+    const bool need_active = bool(prop == ARMF_REGENERATION);
 
     if (!need_active || you.activated[EQ_CYTOPLASM])
     {

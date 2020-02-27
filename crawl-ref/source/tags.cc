@@ -1408,6 +1408,8 @@ static void tag_construct_you(writer &th)
         marshallByte(th, you.equip[i]);
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
         marshallBoolean(th, you.melded[i]);
+    for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
+        marshallBoolean(th, you.activated[i]);
 
     ASSERT_RANGE(you.magic_points, 0, you.max_magic_points + 1);
     marshallUByte(th, you.magic_points);
@@ -2525,6 +2527,17 @@ static void tag_read_you(reader &th)
         you.melded.set(i, unmarshallBoolean(th));
     for (int i = count; i < NUM_EQUIP; ++i)
         you.melded.set(i, false);
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_TRACK_REGEN_ITEMS)
+    {
+#endif
+        for (int i = 0; i < count; ++i)
+            you.activated.set(i, unmarshallBoolean(th));
+        for (int i = count; i < NUM_EQUIP; ++i)
+            you.activated.set(i, false);
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
 
 #if TAG_MAJOR_VERSION == 34
     // BCADDO: Minor version this in the future. (Doesn't hurt anything just for efficiency).
