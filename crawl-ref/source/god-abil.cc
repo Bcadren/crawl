@@ -8129,3 +8129,21 @@ spret bahamut_tiamat_transform(bool bahamut)
 
     return spret::success;
 }
+
+void wu_jian_heavenly_storm()
+{
+    int dur = random_range(20, 30);
+    dur = apply_invo_enhancer(dur, true);
+    dur = div_rand_round(dur, 10);
+    mprf(MSGCH_GOD, "The air is filled with shimmering golden clouds!");
+    wu_jian_sifu_message(" says: The storm will not cease as long as you "
+                         "keep fighting, disciple!");
+
+    for (radius_iterator ai(you.pos(), 2, C_SQUARE, LOS_SOLID); ai; ++ai)
+        if (!cell_is_solid(*ai))
+            place_cloud(CLOUD_GOLD_DUST, *ai, 5 + random2(5), &you);
+
+    you.set_duration(DUR_HEAVENLY_STORM, dur);
+    you.props[WU_JIAN_HEAVENLY_STORM_KEY] = WU_JIAN_HEAVENLY_STORM_INITIAL;
+    invalidate_agrid(true);
+}

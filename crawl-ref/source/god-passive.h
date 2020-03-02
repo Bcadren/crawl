@@ -294,12 +294,13 @@ void jiyva_passive_slime();
 void uskayaw_prepares_audience();
 void uskayaw_bonds_audience();
 
+void wu_jian_heaven_tick();
+void wu_jian_decrement_heavenly_storm();
+void wu_jian_end_heavenly_storm();
 void wu_jian_wall_jump_effects();
 bool wu_jian_has_momentum(wu_jian_attack_type);
-void wu_jian_heaven_tick();
 bool wu_jian_post_move_effects(bool did_wall_jump,
                                const coord_def& initial_position);
 void wu_jian_end_of_turn_effects();
-void end_heavenly_storm();
 
 void mount_drake_breath(bolt* orig_beam);

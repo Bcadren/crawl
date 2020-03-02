@@ -719,8 +719,6 @@ static const duration_def duration_data[] =
     { DUR_ANCESTOR_DELAY, 0, "", "", "ancestor delay", "", D_NO_FLAGS, {{""}}},
     { DUR_NO_CAST, 0, "", "", "no cast", "", D_NO_FLAGS,
       {{ "You regain access to your magic." }, {}, true }},
-    { DUR_HEAVENLY_STORM, 0, "", "", "", "", D_NO_FLAGS,
-      {{ "",  wu_jian_heaven_tick }}},
     { DUR_NOXIOUS_BOG,
       MAGENTA, "Bog",
       "noxious spew", "noxious bog",
@@ -735,6 +733,9 @@ static const duration_def duration_data[] =
       BROWN, "", "", "", "You are stilling the winds.", D_DISPELLABLE,
       {{ "You release your hold on the winds." , end_still_winds}}},
     { DUR_MOUNTED, BROWN, "", "", "mount", "", D_NO_FLAGS, {}, 10},
+    { DUR_HEAVENLY_STORM, 0, "", "heavenly storm", "",
+      "Heavenly clouds are increasing your accuracy and damage.", D_NO_FLAGS,
+      {{ "", wu_jian_decrement_heavenly_storm }}},
 
 #if TAG_MAJOR_VERSION == 34
     // And removed ones

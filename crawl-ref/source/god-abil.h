@@ -60,6 +60,10 @@ const char * const GOZAG_SHOP_COST_KEY       = "gozag_shop_cost_%d";
 #define BAHAMUT_TIAMAT_CHOICE2_KEY "third_bahamut_tiamat_ability_choice"
 #define BAHAMUT_TIAMAT_CHOICE3_KEY "fourth_bahamut_tiamat_ability_choice"
 
+#define WU_JIAN_HEAVENLY_STORM_KEY "wu_jian_heavenly_storm_amount"
+#define WU_JIAN_HEAVENLY_STORM_INITIAL 5
+#define WU_JIAN_HEAVENLY_STORM_MAX 15
+
 struct bolt;
 class stack_iterator;
 
@@ -217,3 +221,5 @@ bool bahamut_tiamat_make_choice(ability_type abil);
 spret bahamut_empowered_breath();
 spret tiamat_choice_breath(bool fail);
 spret bahamut_tiamat_transform(bool bahamut);
+
+void wu_jian_heavenly_storm();
