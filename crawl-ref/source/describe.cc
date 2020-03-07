@@ -2280,7 +2280,7 @@ static string _describe_point_diff(int original,
     int difference = changed - original;
 
     if (difference == 0)
-        return "remain unchanged.\n";
+        return "remain unchanged.";
 
     description += _describe_point_change(difference);
     description += " (";
