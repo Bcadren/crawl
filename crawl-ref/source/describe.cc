@@ -2419,7 +2419,8 @@ static string _describe_armour(const item_def &item, bool verbose)
 
     }
 
-    if (can_wear_armour(item, false, true))
+    // Only displayed if the player exists (not for item lookup from the menu).
+    if (crawl_state.need_save && can_wear_armour(item, false, true))
         description += _armour_ac_change(item);
 
     return description;
