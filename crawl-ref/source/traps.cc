@@ -559,7 +559,7 @@ void trap_def::trigger(actor& triggerer)
         case TRAP_ALARM:
             // Alarms always mark the player, but not through glass
             // The trap gets destroyed to prevent the player from abusing an alarm
-            // trap found in favorable terrain.
+            // trap found in favourable terrain.
             if (!you.see_cell_no_trans(pos))
                 break;
 

@@ -854,6 +854,7 @@ bool can_cast_spells(bool quiet)
         return false;
     }
 
+    // Check that we have a spell memorised. 
     if (!you.spell_no)
     {
         if (!quiet)
