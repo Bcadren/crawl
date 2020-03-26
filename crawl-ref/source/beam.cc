@@ -5512,7 +5512,18 @@ void bolt::affect_monster(monster* mon)
 
     if (flavour == BEAM_MISSILE && item)
     {
-        ranged_attack attk(agent(true), mon, item, use_target_as_pos, agent());
+        actor *ag = agent(true);
+        // if the agent is now dead, check to see if we can get a usable agent
+        // by factoring in reflections. This case will cause
+        // "INVALID YOU_FAULTLESS" to show up in dprfs and mess up the to-hit,
+        // but it otherwise works.
+        // TODO Possibly what should happen is that the thrower's death should
+        // be special-cased as a fineff, but this seemed very tricky to
+        // implement...
+        if (!ag)
+            ag = agent(false);
+        ASSERT(ag);
+        ranged_attack attk(ag, mon, item, use_target_as_pos, agent());
         if (source_name == "a ricochet")
             attk.ricochet();
         attk.set_path(*this);
