@@ -2161,6 +2161,8 @@ void handle_monster_move(monster* mons, int tries)
             }
         }
 
+        const bool prefer_ranged = mons_class_flag(mons->type, M_PREFER_RANGED);
+
         if (friendly_or_near)
         {
             if (_handle_potion(*mons))
@@ -2193,7 +2195,9 @@ void handle_monster_move(monster* mons, int tries)
                 return;
             }
 
-            if (_handle_reaching(mons))
+            // we want to let M_PREFER_RANGED monsters try their ranged attack
+            // first, even if within reaching range.
+            if (!prefer_ranged && _handle_reaching(mons))
             {
                 DEBUG_ENERGY_USE("_handle_reaching()");
                 return;
@@ -2204,6 +2208,12 @@ void handle_monster_move(monster* mons, int tries)
         if (handle_throw(mons, beem))
         {
             DEBUG_ENERGY_USE("_handle_throw()");
+            return;
+        }
+
+        if (friendly_or_near && prefer_ranged && _handle_reaching(mons))
+        {
+            DEBUG_ENERGY_USE("_handle_reaching()");
             return;
         }
     }
