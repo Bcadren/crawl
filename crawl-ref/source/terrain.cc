@@ -931,6 +931,9 @@ void slime_wall_damage(actor* act, int delay)
 
 void feat_splash_noise(dungeon_feature_type feat)
 {
+    if (crawl_state.generating_level)
+        return;
+
     switch (feat)
     {
     case DNGN_SHALLOW_WATER:
