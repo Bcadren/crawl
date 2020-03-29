@@ -5900,8 +5900,7 @@ void monster::apply_location_effects(const coord_def &oldpos,
             prop &= ~FPROP_BLOODY;
             if (you.see_cell(pos()) && !visible_to(&you))
             {
-                string desc =
-                    feature_description_at(pos(), false, DESC_THE, false);
+                string desc = feature_description_at(pos(), false, DESC_THE);
                 if (type == MONS_GIANT_BLOWFLY)
                     mprf("The blowfly sucks up the blood from %s!", desc.c_str());
                 else

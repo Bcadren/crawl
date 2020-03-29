@@ -260,7 +260,7 @@ void Stash::update()
     if (feat == DNGN_FLOOR)
         feat_desc = "";
     else
-        feat_desc = feature_description_at(pos, false, DESC_A, false);
+        feat_desc = feature_description_at(pos, false, DESC_A);
 
     // Players can now see every item in stacks in view
     // Zap existing items

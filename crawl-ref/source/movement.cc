@@ -550,14 +550,14 @@ void move_player_action(coord_def move)
             you.turn_is_over = true;
             if (you.digging) // no actual damage
             {
-                mprf("Your mandibles retract as you bump into %s",
+                mprf("Your mandibles retract as you bump into %s.",
                      feature_description_at(new_targ, false,
                                             DESC_THE).c_str());
                 you.digging = false;
             }
             else
             {
-                mprf("You bump into %s",
+                mprf("You bump into %s.",
                      feature_description_at(new_targ, false,
                                             DESC_THE).c_str());
             }
@@ -730,7 +730,7 @@ void move_player_action(coord_def move)
         if (you.confused() && is_feat_dangerous(env.grid(targ)))
         {
             mprf("You nearly stumble into %s!",
-                 feature_description_at(targ, false, DESC_THE, false).c_str());
+                 feature_description_at(targ, false, DESC_THE).c_str());
             you.apply_berserk_penalty = true;
             you.turn_is_over = true;
             return;
@@ -773,13 +773,13 @@ void move_player_action(coord_def move)
             if (you.mount == mount_type::slime)
             {
                 mprf("Your slimy mount dissolves %s.", feature_description_at(targ, false,
-                    DESC_THE, false).c_str());
+                    DESC_THE).c_str());
                 you.digging = false; // Toggled back off to prevent mandibles messages.
             }
             else
             {
                 mprf("You dig through %s.", feature_description_at(targ, false,
-                    DESC_THE, false).c_str());
+                    DESC_THE).c_str());
                 make_hungry(50, true);
             }
             additional_time_taken += BASELINE_DELAY / 5;
