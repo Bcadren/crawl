@@ -44,6 +44,7 @@
 #include "terrain.h"
 #ifdef USE_TILE
 #include "tile-flags.h"
+#include "rltiles/tiledef-main.h"
 #include "tilepick.h"
 #include "tileview.h"
 #endif
