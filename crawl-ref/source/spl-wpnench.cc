@@ -153,12 +153,7 @@ spret cast_excruciating_wounds(int power, bool fail)
     fail_check();
 
     if (dangerous_disto)
-    {
-        // Can't get out of it that easily...
-        MiscastEffect(&you, nullptr, {miscast_source::wield},
-                      spschool::translocation, 9, 90,
-                      "rebranding a weapon of distortion");
-    }
+        unwield_distortion(true);
 
     if (end_old)
         end_weapon_brand();
