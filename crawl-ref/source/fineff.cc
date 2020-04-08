@@ -12,6 +12,7 @@
 #include "bloodspatter.h"
 #include "coordit.h"
 #include "dactions.h"
+#include "death-curse.h"
 #include "directn.h"
 #include "english.h"
 #include "env.h"
@@ -627,7 +628,7 @@ void mummy_death_curse_fineff::fire()
             break;
     }
 
-    actor * victim;
+    actor* victim;
 
     if (YOU_KILL(killer))
         victim = &you;
@@ -654,8 +655,9 @@ void mummy_death_curse_fineff::fire()
     }
     const string cause = make_stringf("%s death curse",
                             apostrophise(name).c_str());
-    MiscastEffect(victim, nullptr, {miscast_source::mummy}, spschool::necromancy,
-                  pow, random2avg(88, 3), cause.c_str());
+    // source is used as a melee source and must be alive
+    // since the mummy is dead now we pass nullptr
+    death_curse(*victim, nullptr, cause, pow);
 }
 
 // Effects that occur after all other effects, even if the monster is dead.
