@@ -1188,6 +1188,7 @@ public:
     string describe() const;
     void init();
     void reinit();
+    void reload_epilogue();
 
     void load();
     void strip();
