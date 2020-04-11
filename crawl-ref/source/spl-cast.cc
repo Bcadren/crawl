@@ -1865,11 +1865,12 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                "death!", GOD_KIKUBAAQUDGHA);
 
             // The spell still goes through, but you get a miscast anyway.
-            MiscastEffect(&you, nullptr,
-                          {miscast_source::god, GOD_KIKUBAAQUDGHA},
-                          spschool::necromancy,
-                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
-                          random2avg(88, 3), "the malice of Kikubaaqudgha");
+            miscast_effect(you, nullptr,
+                           {miscast_source::god, GOD_KIKUBAAQUDGHA},
+                           spschool::necromancy,
+                           spell_difficulty(spell),
+                           you.experience_level,
+                           "the malice of Kikubaaqudgha");
         }
         else if (vehumet_supports_spell(spell)
                  && !you_worship(GOD_VEHUMET)
@@ -1884,10 +1885,11 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                                          spschool::air, spschool::earth);
 
             // The spell still goes through, but you get a miscast anyway.
-            MiscastEffect(&you, nullptr, {miscast_source::god, GOD_VEHUMET},
-                          which_miscast,
-                          (you.experience_level / 2) + (spell_difficulty(spell) * 2),
-                          random2avg(88, 3), "the malice of Vehumet");
+            miscast_effect(you, nullptr, {miscast_source::god, GOD_VEHUMET},
+                           which_miscast,
+                           spell_difficulty(spell),
+                           you.experience_level,
+                           "the malice of Vehumet");
         }
 
         const int spfail_chance = raw_spell_fail(spell);
@@ -1969,23 +1971,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
             simple_god_message(" protects you from the effects of your miscast!");
             return spret::fail;
         }
-
-        // All spell failures give a bit of magical radiation.
-        // Failure is a function of power squared multiplied by how
-        // badly you missed the spell. High power spells can be
-        // quite nasty: 9 * 9 * 90 / 500 = 15 points of
-        // contamination!
-        int nastiness = spell_difficulty(spell) * spell_difficulty(spell)
-                        * fail + 250;
-
-        const int cont_points = 2 * nastiness;
-
-        // miscasts are uncontrolled
-        contaminate_player(cont_points, true);
-
-        MiscastEffect(&you, nullptr, {miscast_source::spell}, spell,
-                      spell_difficulty(spell), fail);
-
+        miscast_effect(spell, fail);
         return spret::fail;
     }
 

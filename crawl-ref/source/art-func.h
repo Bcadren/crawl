@@ -34,6 +34,7 @@
 #include "god-passive.h"   // passive_t::want_curses
 #include "mgen-data.h"     // For Sceptre of Asmodeus evoke
 #include "message.h"       // Simple god message
+#include "monster.h"
 #include "mon-death.h"     // For demon axe's SAME_ATTITUDE
 #include "mon-place.h"     // For Sceptre of Asmodeus evoke
 #include "nearby-danger.h" // For Zhor
@@ -43,7 +44,7 @@
 #include "spl-cast.h"      // For evokes
 #include "spl-damage.h"    // For the Singing Sword.
 #include "spl-goditem.h"   // For Sceptre of Torment tormenting
-#include "spl-miscast.h"   // For Staff of Wucad Mu and Scythe of Curses miscasts
+#include "spl-miscast.h"   // For Spellbinder and plutonium sword miscasts
 #include "spl-monench.h"   // For Zhor's aura
 #include "spl-summoning.h" // For Zonguldrok animating dead
 #include "terrain.h"       // For storm bow
@@ -808,27 +809,27 @@ static void _NIGHT_unequip(item_def */*item*/, bool *show_msgs)
 
 static void _PLUTONIUM_SWORD_melee_effects(item_def* /*weapon*/,
                                            actor* attacker, actor* defender,
-                                           bool mondied, int /*dam*/, bool hits_mount)
+                                           bool mondied, int dam, bool hits_mount)
 {
-    if (!mondied && one_chance_in(5)
-        && (!defender->is_monster()
-             || !mons_immune_magic(*defender->as_monster())))
+    if (!mondied && one_chance_in(5) && defender->can_mutate())
     {
         mpr("Mutagenic energy flows through the plutonium sword!");
-        const int pow = random2(9);
-        if (hits_mount && one_chance_in(3))
+
+        if (hits_mount)
         {
-            if (you.duration[DUR_MOUNT_WRETCHED])
-                mprf("Your %s twists and deforms!", you.mount_name(true).c_str());
-            you.increase_duration(DUR_MOUNT_WRETCHED, pow, 30);
+            if (one_chance_in(3))
+            {
+                if (you.duration[DUR_MOUNT_WRETCHED])
+                    mprf("Your %s twists and deforms!", you.mount_name(true).c_str());
+                you.increase_duration(DUR_MOUNT_WRETCHED, random2(dam), 30);
+            }
         }
         else
         {
-            MiscastEffect(defender, attacker, { miscast_source::melee },
-                spschool::transmutation, pow, random2(70),
-                "the plutonium sword", nothing_happens::NEVER);
+            miscast_effect(*defender, attacker, { miscast_source::melee },
+                spschool::transmutation, 5, random2(dam),
+                "the plutonium sword");
         }
-
         if (attacker->is_player())
             did_god_conduct(DID_CHAOS, 3);
     }
@@ -934,16 +935,16 @@ static void _ARC_BLADE_melee_effects(item_def* /*weapon*/, actor* attacker,
 
 static void _SPELLBINDER_melee_effects(item_def* /*weapon*/, actor* attacker,
                                        actor* defender, bool mondied,
-                                       int /*dam*/, bool hits_mount)
+                                       int dam, bool hits_mount)
 {
+    // BCADDO: Base on spellschools the monster has instead of just random?
     // Only cause miscasts if the target has magic to disrupt.
     if (defender->antimagic_susceptible()
         && !mondied && !hits_mount)
     {
-        const int pow = random2(9);
-        MiscastEffect(defender, attacker, {miscast_source::melee},
-                      spschool::random, pow, random2(70),
-                      "the demon whip \"Spellbinder\"", nothing_happens::NEVER);
+        miscast_effect(*defender, attacker, {miscast_source::melee},
+                       spschool::random, random_range(1, 9), dam,
+                       "the demon whip \"Spellbinder\"");
     }
 }
 

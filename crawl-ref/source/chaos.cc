@@ -7,6 +7,7 @@
 #include "mon-cast.h"
 #include "mon-clone.h"
 #include "mon-ench.h"
+#include "monster.h"
 #include "mpr.h"
 #include "mutation.h"
 #include "random.h"
@@ -62,7 +63,7 @@ enum chaotic_buff_type
 enum chaotic_debuff_type
 {
     CD_PETRIFY = 0x00001,
-    CD_MISCAST = 0x00002,
+    // 0x00002, Unused was CD_MISCAST
     CD_POLY = 0x00004,
     CD_STICKY = 0x00008,
     CD_FROZEN = 0x00010,
@@ -82,6 +83,7 @@ enum chaotic_debuff_type
     CD_INNER = 0x40000,
 };
 
+// BCADDO: Revise for mount effects?
 void chaotic_buff(actor* act, int dur, actor * attacker)
 {
     if (!act->alive())
@@ -109,7 +111,7 @@ void chaotic_buff(actor* act, int dur, actor * attacker)
     case CB_CLONE:
         if (!player)
         {
-            monster * clone = clone_mons(act->as_monster(), true);
+            monster * clone = clone_mons(act, true);
             if (clone)
             {
                 if (attacker->is_player())
@@ -234,9 +236,10 @@ void chaotic_debuff(actor* act, int dur, actor * attacker)
     if (!act->alive())
         return;
 
+    // BCADNOTE: Removing miscast weight skews this to be deadlier. Consider restoring.
     chaotic_debuff_type debuff = random_choose_weighted(
         10, CD_PETRIFY,
-        60, CD_MISCAST,
+        // 40, CD_MISCAST,
         4, CD_POLY,
         16, CD_STICKY,
         8, CD_FROZEN,
@@ -335,13 +338,6 @@ void chaotic_debuff(actor* act, int dur, actor * attacker)
             you.increase_duration(DUR_FROZEN, dur);
         else
             act->as_monster()->add_ench(mon_enchant(ENCH_FROZEN, 0, attacker, dur * BASELINE_DELAY));
-        break;
-    case CD_MISCAST:
-        mprf(player ? MSGCH_WARN : MSGCH_MONSTER_DAMAGE, "Chaotic magic lashes out at %s.",
-            player ? "you" : act->name(DESC_THE).c_str());
-        MiscastEffect(act, attacker, { miscast_source::spell },
-            spschool::random, max(1, min(div_rand_round(dur, 10), 3)), "chaotic magic",
-            nothing_happens::NEVER, 0, "", false);
         break;
     case CD_MUTE:
         if (player)

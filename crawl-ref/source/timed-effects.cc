@@ -81,11 +81,8 @@ static void _random_hell_miscast()
                                  2, spschool::charms,
                                  2, spschool::hexes);
 
-    const int pow = 4 + random2(6);
-    const int fail = random2avg(97, 3);
-    MiscastEffect(&you, nullptr, {miscast_source::hell_effect}, which_miscast,
-                  pow, fail,
-                  "the effects of Hell");
+    miscast_effect(you, nullptr, {miscast_source::hell_effect}, which_miscast,
+                   5, random2avg(97, 3), "the effects of Hell");
 }
 
 /// The thematically appropriate hell effects for a given hell branch.
@@ -149,10 +146,8 @@ static void _themed_hell_summon_or_miscast()
     }
     else
     {
-        const int pow = 4 + random2(6);
-        const int fail = random2avg(97, 3);
-        MiscastEffect(&you, nullptr, {miscast_source::hell_effect},
-                      spec->miscast_type, pow, fail,
+        miscast_effect(you, nullptr, {miscast_source::hell_effect},
+                      spec->miscast_type, 5, random2avg(97, 3),
                       "the effects of Hell");
     }
 }
