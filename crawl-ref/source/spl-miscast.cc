@@ -253,6 +253,7 @@ static const map<spschool, miscast_datum> miscast_effects = {
                         case ATT_HOSTILE:
                             data.behaviour = BEH_FRIENDLY;
                             break;
+                        case ATT_PASSIVE:
                         case ATT_GOOD_NEUTRAL:
                         case ATT_NEUTRAL:
                         case ATT_STRICT_NEUTRAL:
