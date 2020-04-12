@@ -1507,6 +1507,12 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_NAMELESS,
+      {
+       { SPELL_ABJURATION, 60, MON_SPELL_NATURAL },
+      }
+    },
+
     // ('Y') Bovids and elephants.
     {  MST_CATOBLEPAS,
       {

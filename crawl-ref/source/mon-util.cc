@@ -2357,6 +2357,10 @@ mon_attack_def mons_attack_spec(const monster& m, int attk_number,
             attk.damage = max(1, you.skill_rdiv(SK_UNARMED_COMBAT, 10, 20));
     }
 
+    // summoning miscast monster; hd scaled with miscast severity
+    if (mon.type == MONS_NAMELESS && attk_number == 0)
+        attk.damage = mon.get_hit_dice() * 2;
+
     if (!base_flavour)
     {
         if (attk.type == AT_MULTIBITE)
