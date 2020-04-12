@@ -145,6 +145,8 @@ static void _setup_ghostly_sacrifice_beam(bolt& beam, const monster& caster,
 static function<bool(const monster&)> _setup_hex_check(spell_type spell);
 static bool _worth_hexing(const monster &caster, spell_type spell);
 static function<bool(const monster&)> _should_selfench(enchant_type ench);
+static bool _mons_will_abjure(const monster& mons);
+static int _monster_abjuration(const monster& caster, bool actual);
 
 enum spell_logic_flag
 {
@@ -524,6 +526,11 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         [](monster &caster, mon_spell_slot, bolt&) {
             caster.add_ench(ENCH_RING_OF_THUNDER);
     } } },
+    { SPELL_ABJURATION, {
+        _mons_will_abjure,
+        [] (const monster &caster, mon_spell_slot /*slot*/, bolt& /*beem*/) {
+            _monster_abjuration(caster, true);
+        }, nullptr, MSPELL_LOGIC_NONE, 20, } },
 };
 
 /// Is the 'monster' actually a proxy for the player?
@@ -1129,9 +1136,6 @@ static int _mons_power_hd_factor(spell_type spell)
 
         case SPELL_MASS_CONFUSION:
             return 8 * ENCH_POW_FACTOR;
-
-        case SPELL_ABJURATION:
-            return 20;
 
         case SPELL_OLGREBS_TOXIC_RADIANCE:
             return 8;
@@ -4742,34 +4746,27 @@ static int _monster_abjure_target(monster* target, int pow, bool actual)
     return 0;
 }
 
-static int _monster_abjuration(const monster* caster, bool actual)
+static int _monster_abjuration(const monster& caster, bool actual)
 {
     int maffected = 0;
 
     if (actual)
         mpr("Send 'em back where they came from!");
 
-    const int pow = _mons_spellpower(SPELL_ABJURATION, *caster);
+    const int pow = _mons_spellpower(SPELL_ABJURATION, caster);
 
-    for (monster_near_iterator mi(caster->pos(), LOS_NO_TRANS); mi; ++mi)
+    for (monster_near_iterator mi(caster.pos(), LOS_NO_TRANS); mi; ++mi)
     {
-        if (!mons_aligned(caster, *mi))
+        if (!mons_aligned(&caster, *mi))
             maffected += _monster_abjure_target(*mi, pow, actual);
     }
 
     return maffected;
 }
 
-static bool _mons_will_abjure(monster* mons, spell_type spell)
+static bool _mons_will_abjure(const monster& mons)
 {
-    if (get_spell_flags(spell) & spflag::mons_abjure
-        && _monster_abjuration(mons, false) > 0
-        && one_chance_in(3))
-    {
-        return true;
-    }
-
-    return false;
+    return _monster_abjuration(mons, false) > 0;
 }
 
 static void _haunt_fixup(monster* summon, coord_def pos)
@@ -6335,6 +6332,16 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
                   false);
         return;
     }
+
+    // Maybe cast abjuration instead of certain summoning spells.
+    if (mons->can_see(you) &&
+        get_spell_flags(spell_cast) & spflag::mons_abjure && one_chance_in(3)
+        && _mons_will_abjure(*mons))
+    {
+        mons_cast(mons, pbolt, SPELL_ABJURATION, slot_flags, do_noise);
+        return;
+    }
+
     bool evoke {slot_flags & MON_SPELL_EVOKE};
     // Always do setup. It might be done already, but it doesn't hurt
     // to do it again (cheap).
@@ -6355,21 +6362,9 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     ASSERT(!(flags & spflag::testing));
     // Targeted spells need a valid target.
     // Wizard-mode cast monster spells may target the boundary (shift-dir).
+
     if (!map_bounds(pbolt.target) && (flags & spflag::targeting_mask))
         return;
-    
-    // Maybe cast abjuration instead of certain summoning spells.
-    if (mons->can_see(you) && _mons_will_abjure(mons, spell_cast))
-    {
-        if (do_noise)
-        {
-            pbolt.range = 0;
-            pbolt.glyph = 0;
-            mons_cast_noise(mons, pbolt, SPELL_ABJURATION, MON_SPELL_NO_FLAGS);
-        }
-        _monster_abjuration(mons, true);
-        return;
-    }
 
     if (spell_cast == SPELL_PORTAL_PROJECTILE ||
         (spell_cast >= SPELL_THROW_ROCK && spell_cast <= SPELL_THROW_DISPERSAL)
