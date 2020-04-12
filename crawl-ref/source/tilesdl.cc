@@ -869,8 +869,15 @@ void TilesFramework::do_layout()
      * XXX: don't layout unless we're in a game / arena
      * this is to prevent layout code from accessing `you` while it's invalid.
      */
-    if (!species_type_valid(you.species) && !crawl_state.game_is_arena())
+    if (!species_type_valid(you.species))
+    {
+        /* HACK: some code called while loading the game calls mprf(), so even
+         * if we're not ready to do an actual layout, we should still give the
+         * message region a size, to prevent a crash. */
+        m_region_msg->place(0, 0, 0);
+        m_region_msg->resize_to_fit(10000, 10000);
         return;
+    }
 
     // View size in pixels is ((dx, dy) * crawl_view.viewsz)
     const int scale = m_map_mode_enabled ? Options.tile_map_scale
