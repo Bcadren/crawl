@@ -465,6 +465,7 @@ abomination_large1
 abomination_large2
 tentacled_monstrosity MONS_TENTACLED_MONSTROSITY
 gammafunk MONS_GAMMAFUNK
+nameless_horror MONS_NAMELESS_HORROR
 %sdir mon/vault
 cigotuvis_monster MONS_CIGOTUVIS_MONSTER
 
