@@ -484,7 +484,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 {
                      target.as_monster()->add_ench(
                          mon_enchant(ENCH_DIMENSION_ANCHOR,
-                                     0, source, 10 * dam));
+                                     0, source, dam * BASELINE_DELAY));
                 }
             }
 
