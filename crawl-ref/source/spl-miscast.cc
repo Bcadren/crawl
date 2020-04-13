@@ -106,12 +106,15 @@ static void _ouch(actor& target, actor * source, miscast_source_info mc_info, in
             ASSERT(mc_info.source != miscast_source::melee);
             kt = KILL_MISCAST;
         }
-        
-        target.hurt(source, post_res, beem.flavour, KILLED_BY_BEAM,
-                         "", "", false);
 
-        if (!target.alive())
-            monster_die(*target.as_monster(), kt, actor_to_death_source(source));
+        if (target.alive())
+        {
+            target.hurt(source, post_res, beem.flavour, KILLED_BY_BEAM,
+                                "", "", false);
+
+            if (!target.alive())
+                monster_die(*target.as_monster(), kt, actor_to_death_source(source));
+        }
     }
     else
     {
