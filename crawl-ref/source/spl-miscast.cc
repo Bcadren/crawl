@@ -740,7 +740,7 @@ void miscast_effect(spell_type spell, int fail)
     contaminate_player(cont_points, true);
 
     // No evil effects other than contam for minor miscasts
-    if (nastiness <= 350)
+    if (nastiness <= MISCAST_THRESHOLD + 250)
     {
         canned_msg(MSG_NOTHING_HAPPENS);
         return;
