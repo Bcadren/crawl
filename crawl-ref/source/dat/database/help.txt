@@ -251,6 +251,17 @@ If you are playing with Tiles you can butcher (or bottle) a single
 corpse on the ground by clicking the <w>left mouse button</w> while pressing
 <w>Shift</w>.
 %%%%
+annotate.prompt
+
+<h>Annotate (select level):
+ <w>Enter</w> or <w>.</w> : Annotate current level.
+ any <w>letter</w> : Annotate a level in the branch corresponding to the letter.
+ <w><<</w>          : Annotate the level upstairs.
+ <w>></w>          : Annotate the level downstairs.
+ <w>Ctrl-P</w>     : Annotate a level in the branch above this one.
+ <w>!</w>          : Show list of dungeon branches.
+
+%%%%
 skill-menu
 
                         <h>Skill management</h>
