@@ -342,7 +342,7 @@ ANGRY:   5
 BOOL:    berserk
 STEALTH: -1
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:    scimitar of Flaming Death
 OBJ:     OBJ_WEAPONS/WPN_SCIMITAR
 INSCRIP: sticky flame,
@@ -355,8 +355,9 @@ FIRE:    2
 COLD:    -1
 BOOL:    poison, skip_ego, nogen
 MAGIC:   1
+# end TAG_MAJOR_VERSION
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:    eveningstar "Brilliance"
 OBJ:     OBJ_WEAPONS/WPN_EVENINGSTAR
 PLUS:    +1
@@ -368,6 +369,7 @@ AC:      5
 INT:     5
 LIFE:    1
 BOOL:    nogen
+# end TAG_MAJOR_VERSION
 
 NAME:    demon blade "Leech"
 OBJ:     OBJ_WEAPONS/WPN_DEMON_BLADE
@@ -380,7 +382,7 @@ AC:      -3
 EV:      -3
 LIFE:     1
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:    dagger of Chilly Death
 OBJ:     OBJ_WEAPONS/WPN_DAGGER
 INSCRIP: flash freeze,
@@ -393,6 +395,7 @@ FIRE:    -1
 COLD:    2
 MAGIC:   1
 BOOL:    poison, skip_ego, nogen
+# end TAG_MAJOR_VERSION
 
 NAME:     dagger "Morg"
 OBJ:      OBJ_WEAPONS/WPN_DAGGER
@@ -567,7 +570,7 @@ BRAND:    SPWPN_VORPAL
 BOOL:     seeinv
 INSCRIP:  Acc+∞
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:    longbow "Piercer"
 OBJ:     OBJ_WEAPONS/WPN_LONGBOW
 PLUS:    +7
@@ -577,8 +580,9 @@ TILE_EQ: great_bow
 BRAND:   SPWPN_PENETRATION
 EV:      -2
 BOOL:    nogen
+# end TAG_MAJOR_VERSION
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 ENUM:    BLOWGUN_ASSASSIN
 NAME:    blowgun of the Assassin
 INSCRIP: stab,
@@ -590,6 +594,7 @@ TILE:    urand_blowgun
 TILE_EQ: blowgun
 STEALTH: 2
 BOOL:    inv, tilerim, nogen
+# end TAG_MAJOR_VERSION
 
 NAME:    lance "Wyrmbane"
 OBJ:     OBJ_WEAPONS/WPN_SPEAR
@@ -649,7 +654,7 @@ TILE_EQ: snakebite
 BRAND:   SPWPN_VENOM
 BOOL:    poison, skip_ego
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:     knife of Accuracy
 OBJ:      OBJ_WEAPONS/WPN_DAGGER
 TYPE:     knife
@@ -658,8 +663,9 @@ COLOUR:   LIGHTCYAN
 TILE:     urand_knife_of_accuracy
 TILE_EQ:  knife_of_accuracy
 BOOL:     tilerim, nogen
+# end TAG_MAJOR_VERSION
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 # A play on the spell of the same name. Colour taken from crystal walls.
 ENUM:     CRYSTAL_SPEAR
 NAME:     Lehudib's crystal spear
@@ -670,6 +676,7 @@ TILE:     urand_crystal_spear
 TILE_EQ:  crystal_spear
 INT:      3
 BOOL:     nogen
+# end TAG_MAJOR_VERSION
 
 ENUM:     CAPTAIN
 NAME:     captain's cutlass
@@ -722,7 +729,7 @@ SLAY:     -2
 STEALTH:  1
 BOOL:     seeinv, fog
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:    large shield "Bullseye"
 OBJ:     OBJ_SHIELDS/SHD_LARGE_SHIELD
 PLUS:    +15
@@ -731,6 +738,7 @@ TILE:    urand_bullseye
 TILE_EQ: shield_bullseye
 EV:      -5
 BOOL:    nogen
+# end TAG_MAJOR_VERSION
 
 NAME:    crown of Dyrovepreva
 OBJ:     OBJ_ARMOURS/ARM_HAT
@@ -765,7 +773,7 @@ TILE_EQ:  robe_misfortune
 EV:       5
 BOOL:     harm, mutate, drain, slow, corrode
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:     cloak of Flash
 OBJ:      OBJ_ARMOURS/ARM_CLOAK
 PLUS:     +3
@@ -774,6 +782,7 @@ TILE:     urand_flash
 TILE_EQ:  red
 EV:       4
 BOOL:     fly, nogen
+# end TAG_MAJOR_VERSION
 
 ENUM:     BOOTS_ASSASSIN
 NAME:     boots of the Assassin
@@ -975,7 +984,7 @@ TILE:    urand_shadows
 BOOL:    inv
 VALUE:   400
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 NAME:    amulet of Cekugob
 OBJ:     OBJ_JEWELLERY/AMU_ACROBAT
 COLOUR:  ETC_SILVER
@@ -984,6 +993,7 @@ AC:      1
 EV:      1
 LIFE:    2
 BOOL:    elec, poison, notelep, nogen
+# end TAG_MAJOR_VERSION
 
 NAME:    amulet of the Four Winds
 OBJ:     OBJ_JEWELLERY/AMU_NOTHING
@@ -1168,7 +1178,7 @@ COLOUR:   ETC_BONE
 LIFE:     1
 VALUE:    400
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 ENUM:     SPIDER
 NAME:     boots of the spider
 OBJ:      OBJ_ARMOURS/ARM_BOOTS
@@ -1179,6 +1189,7 @@ BRAND:    SPARM_STURDY
 COLOUR:   LIGHTMAGENTA
 STEALTH:  1
 BOOL:     nogen
+# end TAG_MAJOR_VERSION
 
 NAME:     dark maul
 OBJ:      OBJ_WEAPONS/WPN_GREAT_MACE
@@ -1328,7 +1339,7 @@ TILE:    urand_eternal_torment
 TILE_EQ: eternal_torment
 INSCRIP: rTorment HP--
 LIFE:    3
-BOOL:    evil, seeinv, curse
+BOOL:    evil, seeinv, nogen, curse
 
 ENUM:    VINES
 NAME:    robe of Vines
@@ -1364,7 +1375,7 @@ BRAND:   SPWPN_FREEZING
 COLD:    1
 BOOL:    skip_ego, fly, noises
 
-# TAG_MAJOR_VERSION == 34
+# start TAG_MAJOR_VERSION == 34
 ENUM:     TALOS
 NAME:     armour of Talos
 OBJ:      OBJ_ARMOURS/ARM_PLATE_ARMOUR
@@ -1375,6 +1386,7 @@ COLOUR:   ETC_FIRE
 BRAND:    SPARM_PONDEROUSNESS
 FIRE:     1
 BOOL:     nogen
+# end TAG_MAJOR_VERSION
 
 ENUM:     WARLOCK_MIRROR
 NAME:     warlock's mirror

@@ -38,4 +38,7 @@ str: 8
 int: 9
 dex: 8
 levelup_stat_frequency: 4
-create_enum: False
+
+# start TAG_MAJOR_VERSION == 34
+create_enum: false
+# end TAG_MAJOR_VERSION

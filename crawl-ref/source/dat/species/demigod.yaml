@@ -48,4 +48,7 @@ levelup_stat_frequency: 28
 mutations:
   1:
     MUT_HIGH_MAGIC: 1
-create_enum: False
+
+# start TAG_MAJOR_VERSION == 34
+create_enum: false
+# end TAG_MAJOR_VERSION
