@@ -2231,8 +2231,9 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "eat_items",
 #endif
-    "aquatic_land", "spore_production",
+    "aquatic_land",
 #if TAG_MAJOR_VERSION == 34
+    "spore_production",
     "slouch",
 #endif
     "swift", "tide",
@@ -2272,8 +2273,7 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "control_winds", "wind_aided",
 #endif
-    "summon_capped",
-    "toxic_radiance",
+    "summon_capped", "toxic_radiance",
 #if TAG_MAJOR_VERSION == 34
     "grasping_roots_source",
 #endif
@@ -2283,11 +2283,7 @@ static const char *enchant_names[] =
 #if TAG_MAJOR_VERSION == 34
     "building_charge",
 #endif
-    "poison_vuln", "icemail", "agile",
-    "frozen",
-#if TAG_MAJOR_VERSION == 34
-    "ephemeral_infusion",
-#endif
+    "poison_vuln", "icemail", "agile", "frozen", "ephemeral_infusion",
     "black_mark",
 #if TAG_MAJOR_VERSION == 34
     "grand_avatar",

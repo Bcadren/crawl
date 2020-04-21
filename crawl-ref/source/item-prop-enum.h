@@ -554,7 +554,7 @@ enum special_missile_type // to separate from weapons in general {dlb}
     SPMSL_EXPLODING,
     SPMSL_STEEL,
     SPMSL_SILVER,
-    SPMSL_PETRIFICATION,                   // needle only from here on
+    SPMSL_PETRIFICATION,               // needle only from here on
 #if TAG_MAJOR_VERSION == 34
     SPMSL_SLOW,
 #endif
@@ -563,8 +563,8 @@ enum special_missile_type // to separate from weapons in general {dlb}
 #if TAG_MAJOR_VERSION == 34
     SPMSL_SICKNESS,
 #endif
-    SPMSL_FRENZY,
-    SPMSL_BLINDING,
+    SPMSL_FRENZY,                      
+    SPMSL_BLINDING,                    
     NUM_REAL_SPECIAL_MISSILES,
     NUM_SPECIAL_MISSILES,
 };

@@ -212,6 +212,7 @@ public:
     }
 };
 
+#if TAG_MAJOR_VERSION == 34
 /**
  * Return a message for the player drinking blood when a non-vampire.
  */
@@ -266,6 +267,7 @@ public:
         return true;
     }
 };
+#endif
 
 
 class PotionHaste : public PotionEffect
@@ -1301,8 +1303,8 @@ static const PotionEffect* potion_effects[] =
     &PotionCureMutation::instance(),
     &PotionMutation::instance(),
     &PotionResistance::instance(),
-    &PotionBlood::instance(),
 #if TAG_MAJOR_VERSION == 34
+    &PotionBlood::instance(),
     &PotionBloodCoagulated::instance(),
 #endif
     &PotionLignify::instance(),
