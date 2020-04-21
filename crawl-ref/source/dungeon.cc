@@ -6513,12 +6513,6 @@ static void _stock_shop_item(int j, shop_type shop_type_,
     if (shop_type_ == SHOP_BOOK && !is_artefact(item))
         stocked[item.sub_type]++;
 
-    if (spec.gozag && shop_type_ == SHOP_FOOD && you.species == SP_VAMPIRE)
-    {
-        ASSERT(is_blood_potion(item));
-        item.quantity += random2(3); // blood for the vampire friends :)
-    }
-
     // Identify the item, unless we don't do that.
     if (!_shop_sells_antiques(shop_type_))
         set_ident_flags(item, ISFLAG_IDENT_MASK);
