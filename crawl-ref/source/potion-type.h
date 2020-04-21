@@ -41,3 +41,16 @@ enum potion_type
     POT_BENEFICIAL_MUTATION,
     NUM_POTIONS
 };
+
+#if TAG_MAJOR_VERSION == 34
+#define CASE_REMOVED_POTIONS(pot) \
+case POT_PORRIDGE: \
+case POT_RESTORE_ABILITIES: \
+case POT_STRONG_POISON: \
+case POT_BLOOD_COAGULATED: \
+{ \
+    die("Removed potion type %d!", static_cast<int>(pot)); \
+}
+#else
+#define CASE_REMOVED_POTIONS(pot)
+#endif

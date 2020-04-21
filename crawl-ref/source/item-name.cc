@@ -3042,17 +3042,16 @@ bool is_good_item(const item_def &item)
         switch (item.sub_type)
         {
         case POT_CURE_MUTATION:
-#if TAG_MAJOR_VERSION == 34
         case POT_GAIN_STRENGTH:
         case POT_GAIN_INTELLIGENCE:
         case POT_GAIN_DEXTERITY:
-#endif
         case POT_EXPERIENCE:
             return true;
         case POT_BENEFICIAL_MUTATION:
-            return !you.undead_state();
+            return !you.can_safely_mutate();
         default:
             return false;
+        CASE_REMOVED_POTIONS(item.sub_type)
         }
     default:
         return false;
@@ -3348,7 +3347,6 @@ bool is_useless_item(const item_def &item, bool temp)
             return !you.can_go_berserk(true, true, true, nullptr, temp);
         case POT_HASTE:
             return you.stasis();
-
         case POT_LIGNIFY:
             if (you.species == SP_LIGNIFITE)
                 return true;
@@ -3362,28 +3360,19 @@ bool is_useless_item(const item_def &item, bool temp)
             return !you.can_safely_mutate();
         case POT_AMNESIA:
             return you_worship(GOD_TROG);
-
-#if TAG_MAJOR_VERSION == 34
-        case POT_PORRIDGE:
-            return you.get_mutation_level(MUT_CARNIVOROUS) > 0;
-        case POT_BLOOD_COAGULATED:
-#endif
         case POT_BLOOD:
             return you.species != SP_VAMPIRE;
-#if TAG_MAJOR_VERSION == 34
         case POT_DECAY:
             return you.res_rotting() > 0;
-        case POT_STRONG_POISON:
         case POT_POISON:
-            // If you're poison resistant, poison is only useless.
-            return !is_bad_item(item, temp);
+            return true;
         case POT_SLOWING:
             return you.get_mutation_level(MUT_STASIS);
-#endif
         case POT_HEAL_WOUNDS:
             return !you.can_potion_heal();
         case POT_INVISIBILITY:
             return _invisibility_is_useless(temp);
+        CASE_REMOVED_POTIONS(item.sub_type)
         }
 
         return false;

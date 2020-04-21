@@ -4729,11 +4729,32 @@ void unmarshallItem(reader &th, item_def &item)
             item.flags |= ISFLAG_KNOW_TYPE;
     }
 
-    if (item.is_type(OBJ_POTIONS, POT_WATER)
-        || item.is_type(OBJ_POTIONS, POT_POISON))
+    if (item.base_type == OBJ_POTIONS)
     {
-        item.sub_type = POT_DEGENERATION;
+        switch (item.sub_type)
+        {
+            case POT_PORRIDGE:
+            case POT_RESTORE_ABILITIES:
+            case POT_STRONG_POISON:
+                item.sub_type = POT_DEGENERATION;
+                break;
+            case POT_BLOOD_COAGULATED:
+                item.sub_type = POT_BLOOD;
+                break;
+            default:
+                break;
+        }
+
+        // Check on save load that the above switch has
+        // converted all removed potion types.
+        switch (item.sub_type)
+        {
+            default:
+                break;
+            CASE_REMOVED_POTIONS(item.sub_type)
+        }
     }
+
     if (item.is_type(OBJ_STAVES, STAFF_CHANNELING))
         item.sub_type = STAFF_ENERGY;
 

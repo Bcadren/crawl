@@ -9,6 +9,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <unordered_map>
 
 #include "cloud.h"
 #include "food.h"
@@ -1007,52 +1008,6 @@ public:
     }
 };
 
-#if TAG_MAJOR_VERSION == 34
-class PotionBloodCoagulated : public PotionEffect
-{
-private:
-    PotionBloodCoagulated() : PotionEffect(POT_BLOOD_COAGULATED) { }
-    DISALLOW_COPY_AND_ASSIGN(PotionBloodCoagulated);
-public:
-    static const PotionBloodCoagulated &instance()
-    {
-        static PotionBloodCoagulated inst; return inst;
-    }
-
-    bool effect(bool=true, int pow = 40, bool=true) const override
-    {
-        if (you.species == SP_VAMPIRE)
-        {
-            mpr("This tastes delicious.");
-            lessen_hunger(pow, true);
-        }
-        else
-            mpr(_blood_flavour_message());
-            // no actual effect, just 'flavour' ha ha ha
-        return true;
-    }
-
-    bool can_quaff(string *reason = nullptr) const override
-    {
-        if (you.hunger_state == HS_ENGORGED)
-        {
-            *reason = "You are much too full right now.";
-            return false;
-        }
-        return true;
-    }
-
-    bool quaff(bool was_known) const override
-    {
-        if (was_known && !check_known_quaff())
-            return false;
-
-        effect(was_known, 840);
-        return true;
-    }
-};
-#endif
-
 class PotionGainStrength : public PotionEffect
 {
 private:
@@ -1137,46 +1092,6 @@ public:
     }
 };
 
-#if TAG_MAJOR_VERSION == 34
-class PotionPorridge : public PotionEffect
-{
-private:
-    PotionPorridge() : PotionEffect(POT_PORRIDGE) { }
-    DISALLOW_COPY_AND_ASSIGN(PotionPorridge);
-public:
-    static const PotionPorridge &instance()
-    {
-        static PotionPorridge inst; return inst;
-    }
-
-    bool effect(bool=true, int=40, bool=true) const override
-    {
-        if (you.species == SP_VAMPIRE
-            || you.get_mutation_level(MUT_CARNIVOROUS) > 0)
-        {
-            mpr("Blech - that potion was really gluggy!");
-        }
-        else
-        {
-            mpr("That potion was really gluggy!");
-            lessen_hunger(6000, true);
-        }
-        return true;
-    }
-
-    bool can_quaff(string *reason) const override
-    {
-        if (you.hunger_state == HS_ENGORGED)
-        {
-            if (reason)
-                *reason = "You are much too full right now.";
-            return false;
-        }
-        return true;
-    }
-};
-#endif
-
 class PotionWater : public PotionEffect
 {
 private:
@@ -1222,101 +1137,46 @@ public:
     }
 };
 
-#if TAG_MAJOR_VERSION == 34
-class PotionRestoreAbilities : public PotionEffect
+static const unordered_map<potion_type, const PotionEffect*, std::hash<int>> potion_effects = 
 {
-private:
-    PotionRestoreAbilities() : PotionEffect(POT_RESTORE_ABILITIES) { }
-    DISALLOW_COPY_AND_ASSIGN(PotionRestoreAbilities);
-public:
-    static const PotionRestoreAbilities &instance()
-    {
-        static PotionRestoreAbilities inst; return inst;
-    }
-
-    bool effect(bool=true, int=40, bool=true) const override
-    {
-        bool nothing_happens = true;
-        if (you.duration[DUR_BREATH_WEAPON])
-        {
-            mprf(MSGCH_RECOVERY, "You have got your breath back.");
-            you.duration[DUR_BREATH_WEAPON] = 0;
-            nothing_happens = false;
-        }
-
-        // Give a message if no message otherwise.
-        if (!restore_stat(STAT_ALL, 0, false) && nothing_happens)
-            mpr("You feel refreshed.");
-        return nothing_happens;
-    }
-};
-#endif
-
-// placeholder 'buggy' potion
-class PotionStale : public PotionEffect
-{
-private:
-    PotionStale() : PotionEffect(NUM_POTIONS) { }
-    DISALLOW_COPY_AND_ASSIGN(PotionStale);
-public:
-    static const PotionStale &instance()
-    {
-        static PotionStale inst; return inst;
-    }
-    bool effect(bool=true, int=40, bool=true) const override
-    {
-        mpr("That potion was far past its expiry date.");
-        return true;
-    }
-};
-
-static const PotionEffect* potion_effects[] =
-{
-    &PotionCuring::instance(),
-    &PotionHealWounds::instance(),
-    &PotionHaste::instance(),
-    &PotionMight::instance(),
-    &PotionBrilliance::instance(),
-    &PotionAgility::instance(),
-    &PotionGainStrength::instance(),
-    &PotionGainDexterity::instance(),
-    &PotionGainIntelligence::instance(),
-    &PotionAmnesia::instance(),
-    &PotionPoison::instance(),
-    &PotionSlowing::instance(),
-    &PotionCancellation::instance(),
-    &PotionAmbrosia::instance(),
-    &PotionInvisibility::instance(),
-#if TAG_MAJOR_VERSION == 34
-    &PotionPorridge::instance(),
-#endif
-    &PotionDegeneration::instance(),
-    &PotionDecay::instance(),
-    &PotionWater::instance(),
-    &PotionExperience::instance(),
-    &PotionMagic::instance(),
-#if TAG_MAJOR_VERSION == 34
-    &PotionRestoreAbilities::instance(),
-    &PotionPoison::instance(),
-#endif
-    &PotionBerserk::instance(),
-    &PotionCureMutation::instance(),
-    &PotionMutation::instance(),
-    &PotionResistance::instance(),
-#if TAG_MAJOR_VERSION == 34
-    &PotionBlood::instance(),
-    &PotionBloodCoagulated::instance(),
-#endif
-    &PotionLignify::instance(),
-    &PotionBeneficialMutation::instance(),
-    &PotionStale::instance()
+    { POT_CURING, &PotionCuring::instance(), },
+    { POT_HEAL_WOUNDS, &PotionHealWounds::instance(), },
+    { POT_HASTE, &PotionHaste::instance(), },
+    { POT_MIGHT, &PotionMight::instance(), },
+    { POT_BRILLIANCE, &PotionBrilliance::instance(), },
+    { POT_AGILITY, &PotionAgility::instance(), },
+    { POT_GAIN_STRENGTH, &PotionGainStrength::instance(), },
+    { POT_GAIN_DEXTERITY, &PotionGainDexterity::instance(), },
+    { POT_GAIN_INTELLIGENCE, &PotionGainIntelligence::instance(), },
+    { POT_AMNESIA, &PotionAmnesia::instance(), },
+    { POT_CANCELLATION, &PotionCancellation::instance(), },
+    { POT_POISON, &PotionPoison::instance(), },
+    { POT_SLOWING, &PotionSlowing::instance(), },
+    { POT_AMBROSIA, &PotionAmbrosia::instance(), },
+    { POT_INVISIBILITY, &PotionInvisibility::instance(), },
+    { POT_DEGENERATION, &PotionDegeneration::instance(), },
+    { POT_DECAY, &PotionDecay::instance(), },
+    { POT_WATER, &PotionWater::instance(), },
+    { POT_EXPERIENCE, &PotionExperience::instance(), },
+    { POT_MAGIC, &PotionMagic::instance(), },
+    { POT_POISON, &PotionPoison::instance(), },
+    { POT_CURE_MUTATION, &PotionCureMutation::instance(), },
+    { POT_BERSERK_RAGE, &PotionBerserk::instance(), },
+    { POT_MUTATION, &PotionMutation::instance(), },
+    { POT_RESISTANCE, &PotionResistance::instance(), },
+    { POT_LIGNIFY, &PotionLignify::instance(), },
+    { POT_BLOOD, &PotionBlood::instance(), },
+    { POT_BENEFICIAL_MUTATION, &PotionBeneficialMutation::instance(), },
 };
 
 const PotionEffect* get_potion_effect(potion_type pot)
 {
-    COMPILE_CHECK(ARRAYSZ(potion_effects) == NUM_POTIONS+1);
-    ASSERT_RANGE(pot, 0, NUM_POTIONS+1);
-    return potion_effects[pot];
+    switch (pot)
+    {
+    default:
+        return potion_effects.at(pot);
+    CASE_REMOVED_POTIONS(pot);
+    }
 }
 
 /**
