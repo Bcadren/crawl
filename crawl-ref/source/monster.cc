@@ -6630,6 +6630,7 @@ bool monster::can_drink_potion(potion_type ptype) const
             return true;
         default:
             break;
+        CASE_REMOVED_POTIONS(ptype)
     }
 
     return false;
@@ -6645,7 +6646,6 @@ bool monster::should_drink_potion(potion_type ptype) const
                || has_ench(ENCH_SICK)
                || has_ench(ENCH_CONFUSION);
     case POT_HEAL_WOUNDS:
-        return hit_points <= max_hit_points / 2;
     case POT_BLOOD:
         return hit_points <= max_hit_points / 2;
     case POT_BERSERK_RAGE:
@@ -6669,6 +6669,7 @@ bool monster::should_drink_potion(potion_type ptype) const
                && (you.can_see_invisible() || !friendly());
     default:
         break;
+    CASE_REMOVED_POTIONS(ptype)
     }
 
     return false;
@@ -6741,6 +6742,7 @@ bool monster::drink_potion_effect(potion_type pot_eff, bool card)
 
     default:
         return false;
+    CASE_REMOVED_POTIONS(pot_eff)
     }
 
     return !card;

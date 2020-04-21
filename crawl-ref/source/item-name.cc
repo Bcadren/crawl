@@ -732,10 +732,6 @@ const char* potion_type_name(int potiontype)
     case POT_GAIN_STRENGTH:     return "gain strength";
     case POT_GAIN_DEXTERITY:    return "gain dexterity";
     case POT_GAIN_INTELLIGENCE: return "gain intelligence";
-#if TAG_MAJOR_VERSION == 34
-    case POT_STRONG_POISON:     return "strong poison";
-    case POT_PORRIDGE:          return "porridge";
-#endif
     case POT_SLOWING:           return "slowing";
     case POT_AMNESIA:           return "amnesia";
     case POT_POISON:            return "poison";
@@ -746,20 +742,16 @@ const char* potion_type_name(int potiontype)
     case POT_DECAY:             return "decay";
     case POT_EXPERIENCE:        return "experience";
     case POT_MAGIC:             return "magic";
-#if TAG_MAJOR_VERSION == 34
-    case POT_RESTORE_ABILITIES: return "restore abilities";
-#endif
     case POT_BERSERK_RAGE:      return "berserk rage";
     case POT_CURE_MUTATION:     return "cure mutation";
     case POT_MUTATION:          return "mutation";
     case POT_BLOOD:             return "blood";
-#if TAG_MAJOR_VERSION == 34
-    case POT_BLOOD_COAGULATED:  return "coagulated blood";
-#endif
     case POT_RESISTANCE:        return "resistance";
     case POT_LIGNIFY:           return "lignification";
     case POT_BENEFICIAL_MUTATION: return "beneficial mutation";
-    default:                    return "bugginess";
+
+    default:
+    CASE_REMOVED_POTIONS(potiontype);
     }
 }
 
@@ -3095,22 +3087,15 @@ bool is_bad_item(const item_def &item, bool temp)
 
         switch (item.sub_type)
         {
-#if TAG_MAJOR_VERSION == 34
-        case POT_SLOWING:
-            return !you.stasis();
-#endif
         case POT_DEGENERATION:
             return true;
-#if TAG_MAJOR_VERSION == 34
         case POT_DECAY:
             return you.res_rotting() <= 0;
-        case POT_STRONG_POISON:
         case POT_POISON:
-            // Poison is not that bad if you're poison resistant.
             return player_res_poison() <= 0;
-#endif
         default:
             return false;
+        CASE_REMOVED_POTIONS(item.sub_type);
         }
     case OBJ_JEWELLERY:
         // Potentially useful. TODO: check the properties.

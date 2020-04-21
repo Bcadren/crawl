@@ -213,10 +213,9 @@ public:
     }
 };
 
-#if TAG_MAJOR_VERSION == 34
 /**
- * Return a message for the player drinking blood when a non-vampire.
- */
+* Return a message for the player drinking blood when a non-vampire.
+*/
 static string _blood_flavour_message()
 {
     if (you.get_mutation_level(MUT_HERBIVOROUS) == 0 && player_likes_chunks())
@@ -235,7 +234,7 @@ public:
         static PotionBlood inst; return inst;
     }
 
-    bool effect(bool=true, int pow = 40, bool=true) const override
+    bool effect(bool = true, int pow = 40, bool = true) const override
     {
         if (you.species == SP_VAMPIRE)
         {
@@ -244,7 +243,7 @@ public:
         }
         else
             mpr(_blood_flavour_message());
-            // no actual effect, just 'flavour' ha ha ha
+        // no actual effect, just 'flavour' ha ha ha
         return true;
     }
 
@@ -268,8 +267,6 @@ public:
         return true;
     }
 };
-#endif
-
 
 class PotionHaste : public PotionEffect
 {
