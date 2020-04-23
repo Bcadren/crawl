@@ -750,7 +750,9 @@ const char* potion_type_name(int potiontype)
     case POT_LIGNIFY:           return "lignification";
     case POT_BENEFICIAL_MUTATION: return "beneficial mutation";
 
+    // FIXME: Remove this once known-items no longer uses this as a sentinel.
     default:
+                                return "bugginess";
     CASE_REMOVED_POTIONS(potiontype);
     }
 }
