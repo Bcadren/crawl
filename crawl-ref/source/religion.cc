@@ -1401,9 +1401,18 @@ static bool _give_equipment_gift()
             gift_type = OBJ_WEAPONS;
     }
 
+    const bool want_equipment = you_worship(GOD_VEHUMUT) || forced
+                                || (you.piety >= piety_breakpoint(4)
+                                    && random2(you.piety) > 120
+                                    && one_chance_in(4));
+
+    if (!want_equipment)
+        return false;
+
     const bool success =
         acquirement_create_item(gift_type, you.religion,
                 false, you.pos()) != NON_ITEM;
+
     if (success)
     {
         if (gift_type == OBJ_WEAPONS)
@@ -1423,6 +1432,7 @@ static bool _give_equipment_gift()
         you.num_total_gifts[you.religion]++;
         take_note(Note(NOTE_GOD_GIFT, you.religion));
     }
+
     return success;
 }
 
