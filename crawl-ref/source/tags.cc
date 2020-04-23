@@ -2414,6 +2414,44 @@ static void _fixup_library_spells(FixedBitVector<NUM_SPELLS>& lib, int version)
 }
 #endif
 
+FixedVector<spell_type, MAX_KNOWN_SPELLS> unmarshall_player_spells(reader &th)
+{
+    FixedVector<spell_type, MAX_KNOWN_SPELLS> spells(SPELL_NO_SPELL);
+
+    const auto count = unmarshallUByte(th);
+    ASSERT(count >= 0);
+
+    for (int i = 0; i < count && i < MAX_KNOWN_SPELLS; ++i)
+    {
+        spells[i] = unmarshallSpellType(th);
+#if TAG_MAJOR_VERSION == 34
+        spells[i] = _fixup_player_spell(spells[i], th.getMinorVersion());
+#endif
+    }
+
+    for (int i = MAX_KNOWN_SPELLS; i < count; ++i)
+        unmarshallSpellType(th);
+
+    return spells;
+}
+
+FixedVector<int, 52> unmarshall_player_spell_letter_table(reader &th)
+{
+    FixedVector<int, 52> spell_letter_table;
+
+    const auto count = unmarshallByte(th);
+    ASSERT(count == (int)spell_letter_table.size());
+
+    for (int i = 0; i < count; i++)
+    {
+        int s = unmarshallByte(th);
+        ASSERT_RANGE(s, -1, MAX_KNOWN_SPELLS);
+        spell_letter_table[i] = s;
+    }
+
+    return spell_letter_table;
+}
+
 static void tag_read_you(reader &th)
 {
     int count;
@@ -2636,31 +2674,19 @@ static void tag_read_you(reader &th)
 
     unmarshallFixedBitVector<NUM_SPELLS>(th, you.spell_library);
     unmarshallFixedBitVector<NUM_SPELLS>(th, you.hidden_spells);
-
-    _fixup_library_spells(you.spell_library, th.getMinorVersion());
-    _fixup_library_spells(you.hidden_spells, th.getMinorVersion());
-
-    // how many spells?
-    you.spell_no = 0;
-    count = unmarshallUByte(th);
-    ASSERT(count >= 0);
-    for (int i = 0; i < count && i < MAX_KNOWN_SPELLS; ++i)
+    
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() < TAG_MINOR_MISCAST_MUTATIONS)
     {
-        you.spells[i] = _fixup_player_spell(unmarshallSpellType(th), th.getMinorVersion());
-        if (you.spells[i] != SPELL_NO_SPELL)
-            you.spell_no++;
+        _fixup_library_spells(you.spell_library, th.getMinorVersion());
+        _fixup_library_spells(you.hidden_spells, th.getMinorVersion());
     }
-    for (int i = MAX_KNOWN_SPELLS; i < count; ++i)
-        unmarshallShort(th);
+#endif
 
-    count = unmarshallByte(th);
-    ASSERT(count == (int)you.spell_letter_table.size());
-    for (int i = 0; i < count; i++)
-    {
-        int s = unmarshallByte(th);
-        ASSERT_RANGE(s, -1, MAX_KNOWN_SPELLS);
-        you.spell_letter_table[i] = s;
-    }
+    you.spells = unmarshall_player_spells(th);
+    you.spell_letter_table = unmarshall_player_spell_letter_table(th);
+    you.spell_no = count_if(begin(you.spells), end(you.spells),
+            [](const spell_type spell) { return spell != SPELL_NO_SPELL; });
 
     count = unmarshallByte(th);
     ASSERT(count == (int)you.ability_letter_table.size());
