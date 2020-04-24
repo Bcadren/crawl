@@ -1627,11 +1627,7 @@ bool mons_can_shout(monster_type mc)
 
 bool mons_is_ghost_demon(monster_type mc)
 {
-    return mons_class_flag(mc, M_GHOST_DEMON)
-#if TAG_MAJOR_VERSION == 34
-           || mc == MONS_CHIMERA;
-#endif
-           ;
+    return mons_class_flag(mc, M_GHOST_DEMON);
 }
 
 bool mons_is_pghost(monster_type mc)
