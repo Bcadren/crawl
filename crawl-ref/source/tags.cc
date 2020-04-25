@@ -6215,6 +6215,15 @@ void unmarshallMonster(reader &th, monster& m)
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_ZOT_DRACONIAN_COLOURS && m.type > 280 && m.type < NUM_MONSTERS)
         m.type = (monster_type)(m.type + 19);
+
+    // fixup for versions of frenzy that involved a permanent attitude change,
+    // with the original attitude stored in a prop.
+    if (m.props.exists("old_attitude"))
+    {
+        m.attitude = static_cast<mon_attitude_type>(
+                                        m.props["old_attitude"].get_short());
+        m.props.erase("old_attitude");
+    }
 #endif
 
     if (m.type != MONS_PROGRAM_BUG && mons_species(m.type) == MONS_PROGRAM_BUG)
