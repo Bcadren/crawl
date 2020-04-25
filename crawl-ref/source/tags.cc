@@ -329,7 +329,7 @@ static void marshallGhost(writer &th, const ghost_demon &ghost);
 static ghost_demon unmarshallGhost(reader &th);
 
 static void marshallSpells(writer &, const monster_spells &);
-static void unmarshallSpells(reader &, monster_spells &
+void unmarshallSpells(reader &, monster_spells &
 #if TAG_MAJOR_VERSION == 34
                              , unsigned hd
 #endif
@@ -6500,7 +6500,7 @@ static void marshallSpells(writer &th, const monster_spells &spells)
     }
 }
 
-static void unmarshallSpells(reader &th, monster_spells &spells
+void unmarshallSpells(reader &th, monster_spells &spells
 #if TAG_MAJOR_VERSION == 34
                              , unsigned hd
 #endif
