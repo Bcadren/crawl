@@ -820,7 +820,7 @@ void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
     else
         effect = _charms(spell, fail, target.is_player());
 
-    const int dam = div_rand_round(roll_dice(level, level * fail), 10);
+    const int dam = div_rand_round(roll_dice(level, level * fail), MISCAST_DIVISOR);
 
     _do_msg(target, effect, 0);
     effect.effect(target, source, mc_info, dam, spell, cause);

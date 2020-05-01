@@ -1031,10 +1031,8 @@ a while (resulting in a waste of magic and possibly dangerous side-effects).
 Your chance of failing to cast a spell properly depends on your skills, your
 intelligence, the level of the spell and whether you are wearing heavy armour.
 The chance of miscasting a spell is displayed on the spell screen, and coloured
-based on expected severity (yellow for moderate damage, light red for major
-damage, red for extreme damage, and magenta for potentailly lethal damage).
-Wild magic is unpredictable—the consequences of a miscast can potentially be
-worse than expected.
+based on severity (yellow for moderate damage, light red for major
+damage, red for extreme damage, and magenta for potentially lethal damage).
 
 Be careful of magic-using enemies! Some of them can use magic just as well as
 you, if not better, and often use it intelligently.
@@ -1132,19 +1130,11 @@ Mutations from magical contamination are almost always harmful. Mutations can
 also be caused by specific potions or by spells cast by powerful enemies found
 deep in the dungeon.
 
-<<<<<<< HEAD
-It is more difficult to get rid of bad mutations than to get one. Using potions
-of mutations will remove a number of your current mutations, but will give you
-more mutations. These might be better to your taste. However, the only sure-fire
-ways is to join the gods Zin or Jiyva, each of whom provides some remedy against
-mutations.
-=======
 It is much more difficult to get rid of bad mutations than to get one. A lucky
 mutation attempt can actually remove mutations. However, the only sure-fire ways
 are to quaff a potion of cure mutation, which will attempt to remove one or more
 random mutations, or to join the gods Zin or Jivya, each of whom provides some
 remedy against mutations.
->>>>>>> parent of b9e5f3fc1c (Rework the Potion of Mutation)
 
 Demonspawn are a special case. Characters of this species get certain special
 mutations as they gain levels; these are listed in cyan. They are permanent and
