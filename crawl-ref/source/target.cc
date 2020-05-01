@@ -255,14 +255,10 @@ bool targeter_beam::affects_monster(const monster_info& mon)
         return false;
     }
 
-    // Inner flame doesn't affect regular summons
-    if ((beam.flavour == BEAM_INNER_FLAME || beam.flavour == BEAM_ENTROPIC_BURST)
-        && m->is_summoned() && !m->is_illusion())
-    {
-        return false;
-    }
-
-    return !beam.is_harmless(m) || beam.nice_to(mon);
+    return !beam.is_harmless(m) || beam.nice_to(mon)
+    // Inner flame affects allies without harming or helping them.
+           || beam.flavour == BEAM_INNER_FLAME
+           || beam.flavour == BEAM_ENTROPIC_BURST;
 }
 
 targeter_unravelling::targeter_unravelling(const actor *act, int r, int pow)

@@ -5902,7 +5902,7 @@ bool bolt::has_saving_throw() const
 
 bool ench_flavour_affects_monster(beam_type flavour, const monster* mon)
 {
-    bool rc = true;
+    bool rc = false;
     switch (flavour)
     {
     case BEAM_MALMUTATE:
@@ -5910,10 +5910,12 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon)
         rc = mon->can_mutate();
         break;
 
+    case BEAM_PETRIFY:
+        rc = !mon->res_petrify();
+        // fall through
     case BEAM_SLOW:
     case BEAM_HASTE:
-    case BEAM_PETRIFY:
-        rc = !mon->stasis();
+        rc |= !mon->stasis();
         break;
 
     case BEAM_POLYMORPH:
@@ -5960,8 +5962,7 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon)
 
     case BEAM_ENTROPIC_BURST:
     case BEAM_INNER_FLAME:
-        rc = !(mon->is_summoned() && !mon->is_illusion() || mon->has_ench(ENCH_INNER_FLAME) 
-                                  || mon->has_ench(ENCH_ENTROPIC_BURST));
+        rc = !mon->has_ench(ENCH_INNER_FLAME) && !mon->has_ench(ENCH_ENTROPIC_BURST);
         break;
 
     case BEAM_INFESTATION:
@@ -5973,6 +5974,7 @@ bool ench_flavour_affects_monster(beam_type flavour, const monster* mon)
         break;
 
     default:
+        rc = true;
         break;
     }
 
@@ -6399,7 +6401,6 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
 
     case BEAM_INNER_FLAME:
         if (!mon->has_ench(ENCH_INNER_FLAME)
-            && (!mon->is_summoned() || mon->is_illusion())
             && mon->add_ench(mon_enchant(ENCH_INNER_FLAME, 0, agent())))
         {
             if (simple_monster_message(*mon,
