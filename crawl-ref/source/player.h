@@ -960,11 +960,23 @@ public:
     string mount_name(bool terse = false) const;
 
     int ac_change_from_mutation(mutation_type mut) const;
-    int ac_changes_from_mutations() const;
 
     int armour_class_with_one_sub(item_def sub) const;
 
     int armour_class_with_one_removal(item_def sub) const;
+
+    int scan_artefact(artefact_prop_type which_property,
+                      bool calc_unid,
+                      item_def item) const;
+
+    int ac_changes_from_mutations() const;
+    vector<const item_def *> get_armour_items() const;
+    vector<const item_def *> get_armour_items_one_sub(const item_def& sub) const;
+    vector<const item_def *> get_armour_items_one_removal(const item_def& sub) const;
+    int base_ac_with_specific_items(int scale,
+                                    vector<const item_def *> armour_items) const;
+    int armour_class_with_specific_items(
+                                vector<const item_def *> items) const;
 
 protected:
     void _removed_beholder(bool quiet = false);
@@ -972,16 +984,6 @@ protected:
 
     void _removed_fearmonger(bool quiet = false);
     bool _possible_fearmonger(const monster* mon) const;
-
-private:
-    int scan_artefact(artefact_prop_type which_property,
-                      bool calc_unid,
-                      item_def item) const;
-    vector<const item_def *> get_armour_items() const;
-    vector<const item_def *> get_armour_items_one_sub(const item_def& sub) const;
-    vector<const item_def *> get_armour_items_one_removal(const item_def& sub) const;
-    int base_ac_with_specific_items(int scale, vector<const item_def *> armour_items) const;
-    int armour_class_with_specific_items(vector<const item_def *> items) const;
 };
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_weapon[0]));
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_armour[0]));
