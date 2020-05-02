@@ -630,7 +630,7 @@ static void _handle_movement(monster* mons)
     if ((newpos == you.pos()
            || monster_at(newpos) && mons->foe == mgrd(newpos))
         && mons_intel(*mons) > I_BRAINLESS
-        //&& coinflip()
+        && coinflip()
         && !mons_is_confused(*mons) && !mons->caught()
         && !mons->berserk_or_insane())
     {
