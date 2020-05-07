@@ -97,13 +97,6 @@ void finish_butchering(item_def& corpse, bool bottling)
     StashTrack.update_stash(you.pos()); // Stash-track the generated items.
 }
 
-#ifdef TOUCH_UI
-static string _butcher_menu_title(const Menu *menu, const string &oldt)
-{
-    return oldt;
-}
-#endif
-
 static int _corpse_quality(const item_def &item)
 {
     return 3 * item.freshness;
@@ -223,8 +216,8 @@ void butchery(item_def* specific_corpse)
 
     vector<SelItem> selected =
         select_items(meat, bottle_blood ? "Choose a corpse to bottle"
-                                        : "Choose a corpse to butcher",
-                     false, menu_type::any, _butcher_menu_title);
+                                        : "Choose a corpse to butcher", 
+                           false, menu_type::any);
     redraw_screen();
     for (SelItem sel : selected)
         if (_start_butchering(const_cast<item_def &>(*sel.item)))
