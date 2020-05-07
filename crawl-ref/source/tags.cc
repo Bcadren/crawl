@@ -2673,8 +2673,8 @@ static void _tag_read_you(reader &th)
     ASSERT(!x && !y || in_bounds(x, y));
     you.moveto(coord_def(x, y));
 
-    unmarshallFixedBitVector<NUM_SPELLS>(th, you.spell_library);
-    unmarshallFixedBitVector<NUM_SPELLS>(th, you.hidden_spells);
+    _unmarshallFixedBitVector<NUM_SPELLS>(th, you.spell_library);
+    _unmarshallFixedBitVector<NUM_SPELLS>(th, you.hidden_spells);
     
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_MISCAST_MUTATIONS)

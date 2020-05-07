@@ -8,14 +8,6 @@
 #include "random.h"
 #include "tags.h"
 
-FixedVector<spell_type, MAX_KNOWN_SPELLS> unmarshall_player_spells(reader &th);
-void remove_removed_library_spells(FixedBitVector<NUM_SPELLS>& lib);
-void unmarshallSpells(reader &th, monster_spells &spells
-#if TAG_MAJOR_VERSION == 34
-                             , unsigned hd
-#endif
-                            );
-
 TEST_CASE( "Player spells can be decoded", "[single-file]" ) {
 
     SECTION ("spells stored as shorts can be read") {
