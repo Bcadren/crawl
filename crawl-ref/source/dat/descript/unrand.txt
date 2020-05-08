@@ -122,7 +122,7 @@ reveals the machinations of those who would prefer to stay invisible.
 demon blade "Leech"
 
 An unerringly vampiric blade which gorges itself on drained life force every
-time it strikes.
+time it strikes, leaving behind a mess of blood and gore.
 %%%%
 dagger of Chilly Death
 
