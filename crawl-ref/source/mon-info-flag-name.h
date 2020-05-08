@@ -17,6 +17,7 @@ struct monster_info_flag_name
 // - Vulnerabilities
 // - Debuffs
 // - Ally-only buffs
+// - Misc. Low Priority
 static const vector<monster_info_flag_name> monster_info_flag_names = {
     // Attitudes
     { MB_CHARMED, "charmed", "charmed", "charmed"},
@@ -40,7 +41,6 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_PARTIALLY_CHARGED, "charging", "partially charged", "charging"},
     { MB_AGILE, "agile", "unusually agile", "agile"},
     { MB_SWIFT, "swift", "covering ground quickly", "swift"},
-    { MB_CLINGING, "clinging", "wall clinging", "clinging"},
     { MB_STILL_WINDS, "stilling wind", "stilling the winds", "stilling wind"},
     { MB_SILENCING, "silencing", "radiating silence", "silencing"},
     { MB_READY_TO_HOWL, "can howl", "ready to howl", "can howl"},
@@ -120,7 +120,9 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_GLOWING, "lit", "candlelit", "lit"},
     { MB_DIMENSION_ANCHOR, "anchored", "unable to translocate", "anchored"},
     { MB_SLOW_MOVEMENT, "struggling", "covering ground slowly", "struggling"},
+    // Misc/low priority
     { MB_PAIN_BOND, "pain bonded", "sharing @pronoun_posessive@ pain", "pain bonded"},
     { MB_IDEALISED, "idealised", "idealised", "idealised"},
     { MB_ENSLAVED, "", "disembodied soul", "" },
+    { MB_CLINGING, "clinging", "wall clinging", "clinging" },
 };
