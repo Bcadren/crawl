@@ -3118,10 +3118,8 @@ static vector<string> _get_monster_behaviour_vector(const monster_info& mi)
 {
     vector<string> descs;
 
-    if (mi.is(MB_SLEEPING) || mi.is(MB_DORMANT))
-        descs.emplace_back(mi.is(MB_CONFUSED) ? "sleepwalking" : "resting");
-    else if (mi.is(MB_FLEEING))
-        descs.emplace_back("fleeing");
+    if ((mi.is(MB_SLEEPING) || mi.is(MB_DORMANT)) && mi.is(MB_CONFUSED))
+        descs.emplace_back("sleepwalking");
     else if (mi.attitude == ATT_HOSTILE && (mi.is(MB_UNAWARE) || mi.is(MB_WANDERING)))
         descs.emplace_back("hasn't noticed you");
 
@@ -3133,14 +3131,9 @@ static vector<string> _get_monster_desc_vector(const monster_info& mi)
 {
     vector<string> descs;
 
-    if (mi.is(MB_CLINGING))
-        descs.emplace_back("clinging");
-
+    // BCADDO: Should be in mon-info-flag-name.h too?
     if (cell_is_solid(mi.pos) && mi_wall_shielded(mi))
         descs.emplace_back("wall shielded");
-
-    if (mi.is(MB_MESMERIZING))
-        descs.emplace_back("mesmerising");
 
     _append_container(descs, _get_monster_behaviour_vector(mi));
 
@@ -3161,37 +3154,11 @@ static vector<string> _get_monster_desc_vector(const monster_info& mi)
         descs.emplace_back("indifferent");
     }
 
-    if (mi.is(MB_SUMMONED))
-        descs.emplace_back("summoned");
-
-    if (mi.is(MB_PERM_SUMMON))
-        descs.emplace_back("durably summoned");
-
-    if (mi.is(MB_SUMMONED_CAPPED))
-        descs.emplace_back("expiring");
-
     if (mi.is(MB_HALOED))
         descs.emplace_back("haloed");
 
     if (mi.is(MB_UMBRAED))
         descs.emplace_back("umbra");
-
-    if (mi.is(MB_POSSESSABLE))
-        descs.emplace_back("possessable"); // FIXME: better adjective
-    else if (mi.is(MB_ENSLAVED))
-        descs.emplace_back("disembodied soul");
-
-    if (mi.is(MB_MIRROR_DAMAGE))
-        descs.emplace_back("reflecting injuries");
-
-    if (mi.is(MB_INNER_FLAME))
-        descs.emplace_back("inner flame");
-
-    if (mi.is(MB_ENTROPIC_BURST))
-        descs.emplace_back("inner chaos");
-
-    if (mi.is(MB_CHAOTIC_INFUSION))
-        descs.emplace_back("chaos-infused");
 
     if (mi.fire_blocker)
     {
