@@ -244,6 +244,7 @@ stringutil.o \
 syscalls.o \
 tags.o \
 target.o \
+target-compass.o \
 teleport.o \
 terrain.o \
 throw.o \

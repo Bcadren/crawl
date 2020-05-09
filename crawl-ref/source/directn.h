@@ -52,7 +52,6 @@ private:
 
 public:
     bool just_looking;
-    bool compass;
     desc_filter get_desc_func; // Function to add relevant descriptions
 };
 
@@ -124,7 +123,6 @@ public:
 private:
     bool targets_objects() const;
     bool targets_enemies() const;
-    bool choose_compass();      // Used when we only need to choose a direction
 
     bool do_main_loop();
 

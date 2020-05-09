@@ -1680,13 +1680,9 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
                                                    TARG_HOSTILE;
 
         const targeting_type dir =
-             testbits(flags, spflag::target) ? DIR_TARGET :
-             testbits(flags, spflag::dir)    ? DIR_DIR    :
-                                              DIR_NONE;
+             testbits(flags, spflag::target) ? DIR_TARGET : DIR_NONE;
 
         const char *prompt = get_spell_target_prompt(spell);
-        if (dir == DIR_DIR)
-            mprf(MSGCH_PROMPT, "%s", prompt ? prompt : "Which direction?");
 
         bool needs_path;
         if (warped) { needs_path = false; }

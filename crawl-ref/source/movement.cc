@@ -45,6 +45,7 @@
 #include "spl-damage.h"
 #include "spl-selfench.h" // noxious_bog_cell
 #include "spl-summoning.h" // new animate skeleton
+#include "target-compass.h"
 #include "terrain.h"
 #include "traps.h"
 #include "travel.h"
@@ -306,7 +307,7 @@ void open_door_action(coord_def move)
         return;
     }
 
-    dist door_move;
+    coord_def delta;
 
     // The player hasn't picked a direction yet.
     if (move.origin())
@@ -324,23 +325,19 @@ void open_door_action(coord_def move)
 
         // If there's only one door to open, don't ask.
         if (num == 1 && Options.easy_door)
-            door_move.delta = move;
+            delta = move;
         else
         {
-            mprf(MSGCH_PROMPT, "Which direction?");
-            direction_chooser_args args;
-            args.restricts = DIR_DIR;
-            direction(door_move, args);
-
-            if (!door_move.isValid)
+            delta = prompt_compass_direction();
+            if (delta == coord_def(-1, -1))
                 return;
         }
     }
     else
-        door_move.delta = move;
+        delta = move;
 
     // We got a valid direction.
-    const coord_def doorpos = you.pos() + door_move.delta;
+    const coord_def doorpos = you.pos() + delta;
 
     if (door_vetoed(doorpos))
     {
@@ -408,7 +405,7 @@ void close_door_action(coord_def move)
         return;
     }
 
-    dist door_move;
+    coord_def delta;
 
     if (move.origin())
     {
@@ -422,28 +419,24 @@ void close_door_action(coord_def move)
         }
         // move got set in _check_adjacent
         else if (num == 1 && Options.easy_door)
-            door_move.delta = move;
+            delta = move;
         else
         {
-            mprf(MSGCH_PROMPT, "Which direction?");
-            direction_chooser_args args;
-            args.restricts = DIR_DIR;
-            direction(door_move, args);
-
-            if (!door_move.isValid)
+            delta = prompt_compass_direction();
+            if (delta == coord_def(-1, -1))
                 return;
         }
 
-        if (door_move.delta.origin())
+        if (delta.origin())
         {
             mpr("You can't close doors on yourself!");
             return;
         }
     }
     else
-        door_move.delta = move;
+        delta = move;
 
-    const coord_def doorpos = you.pos() + door_move.delta;
+    const coord_def doorpos = you.pos() + delta;
     const dungeon_feature_type feat = (in_bounds(doorpos) ? grd(doorpos)
                                                           : DNGN_UNSEEN);
 
