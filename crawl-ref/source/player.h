@@ -1039,7 +1039,7 @@ int player_spec_translo();
 int player_spec_transmu();
 int player_spec_invo();
 
-int player_adjust_evoc_power(const int power, int enhancers = 0);
+int player_adjust_evoc_power(const int power);
 
 int player_speed();
 

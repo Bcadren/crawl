@@ -397,15 +397,6 @@ NORETURN void end_game(scorefile_entry &se)
             }
             break;
 
-#if TAG_MAJOR_VERSION == 34
-        case GOD_PAKELLAS:
-        {
-            const string result = getSpeakString("Pakellas death");
-            god_speaks(GOD_PAKELLAS, result.c_str());
-            break;
-        }
-#endif
-
         default:
             if (will_have_passive(passive_t::goldify_corpses)
                 && death_type != KILLED_BY_DISINT

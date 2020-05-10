@@ -3851,11 +3851,6 @@ bool is_useless_item(const item_def &item, bool temp)
                    || (temp && you.species == SP_VAMPIRE
                        && you.hunger_state <= HS_STARVING);
 
-#if TAG_MAJOR_VERSION == 34
-        case AMU_MANA_REGENERATION:
-            return you_worship(GOD_PAKELLAS);
-#endif
-
         case RING_POISON_RESISTANCE:
             return player_res_poison(false, temp, false) > 0
                    && (temp || you.species != SP_VAMPIRE);

@@ -2251,13 +2251,11 @@ int player_movement_speed()
  * enhancers.
  *
  * @param power         The base power of the evocation.
- * @param enhancers     Bonus enhancers to evocations (pak device surge).
  * @return              A modified power value.
  */
-int player_adjust_evoc_power(const int power, int enhancers)
+int player_adjust_evoc_power(const int power)
 {
-    const int total_enhancers = you.spec_evoke() + enhancers;
-    return stepdown_spellpower(100 *apply_enhancement(power, total_enhancers));
+    return stepdown_spellpower(100 * apply_enhancement(power, you.spec_evoke()));
 }
 
 // This function differs from the above in that it's used to set the
@@ -4472,17 +4470,9 @@ bool player_regenerates_hp()
     return true;
 }
 
+// BCADNOTE: Always true now; but it's in enough places to keep around in case.
 bool player_regenerates_mp()
 {
-    // Don't let DD use guardian spirit for free HP, since their
-    // damage shaving is enough. (due, dpeg)
-    if (you.spirit_shield() && you.species == SP_DEEP_DWARF)
-        return false;
-#if TAG_MAJOR_VERSION == 34
-    // Pakellas blocks MP regeneration.
-    if (have_passive(passive_t::no_mp_regen) || player_under_penance(GOD_PAKELLAS))
-        return false;
-#endif
     return true;
 }
 

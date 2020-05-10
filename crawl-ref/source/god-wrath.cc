@@ -83,9 +83,7 @@ static const char *_god_wrath_adjectives[] =
     "greed",            // Gozag (unused)
     "adversity",        // Qazlal
     "disappointment",   // Ru
-#if TAG_MAJOR_VERSION == 34
-    "progress",         // Pakellas
-#endif
+  //"progress",         // Pakellas
     "fury",             // Uskayaw
     "memory",           // Hepliaklqana (unused)
     "rancor",           // Wu Jian
@@ -1751,9 +1749,6 @@ bool divine_retribution(god_type god, bool no_bonus, bool force)
     case GOD_GOZAG:
     case GOD_RU:
     case GOD_HEPLIAKLQANA:
-#if TAG_MAJOR_VERSION == 34
-    case GOD_PAKELLAS:
-#endif
         // No reduction with time.
         return false;
 

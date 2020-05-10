@@ -88,10 +88,6 @@ enum attribute_type
     ATTR_LAST_FLIGHT_STATUS,   // Whether SPARM_FLIGHT should be restored after form change
     ATTR_GOZAG_FIRST_POTION,   // Gozag's free first usage of Potion Petition.
     ATTR_STAT_LOSS_XP,         // Unmodified XP needed for stat recovery.
-#if TAG_MAJOR_VERSION == 34
-    ATTR_SURGE_REMOVED,        // Was surge power applied to next evocation.
-    ATTR_PAKELLAS_EXTRA_MP,    // MP to be collected to get a !magic from P
-#endif
     ATTR_DIVINE_ENERGY,        // Divine energy from Sif to cast with no MP.
     ATTR_SERPENTS_LASH,        // Remaining instant movement actions.
     ATTR_HEAVENLY_STORM,       // Strength of Heavenly Storm slaying.

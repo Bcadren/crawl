@@ -1251,19 +1251,6 @@ static string _why_reject(const item_def &item, int agent)
         return "Destroying sif-gifted rarebook!";
     }
 
-#if TAG_MAJOR_VERSION == 34
-    // The crystal ball case should be handled elsewhere, but just in
-    // case, it's also handled here.
-    if (agent == GOD_PAKELLAS)
-    {
-        if (item.base_type == OBJ_MISCELLANY
-            && item.sub_type == MISC_CRYSTAL_BALL_OF_ENERGY)
-        {
-            return "Destroying CBoE that Pakellas hates!";
-        }
-    }
-#endif
-
     return ""; // all OK
 }
 
@@ -1284,11 +1271,7 @@ int acquirement_create_item(object_class_type class_wanted,
     ASSERT(class_wanted != OBJ_RANDOM);
 
     const bool divine = (agent == GOD_OKAWARU || agent == GOD_XOM
-                         || agent == GOD_TROG || agent == GOD_VEHUMET
-#if TAG_MAJOR_VERSION == 34
-                         || agent == GOD_PAKELLAS
-#endif
-                        );
+                         || agent == GOD_TROG || agent == GOD_VEHUMET);
     int thing_created = NON_ITEM;
     int quant = 1;
 #define MAX_ACQ_TRIES 40

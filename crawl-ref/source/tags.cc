@@ -2596,44 +2596,13 @@ static void tag_read_you(reader &th)
                 a = ABIL_FLY;
             found_fly = true;
         }
-        if (a == ABIL_EVOKE_STOP_LEVITATING
-            || a == ABIL_STOP_FLYING)
+        if (a == ABIL_STOP_FLYING)
         {
             if (found_stop_flying)
                 a = ABIL_NON_ABILITY;
             else
                 a = ABIL_STOP_FLYING;
             found_stop_flying = true;
-        }
-
-        if (th.getMinorVersion() < TAG_MINOR_NO_JUMP)
-        {
-            // ABIL_JUMP deleted (ABIL_DIG has its old spot), map it
-            // away and shift following intrinsic abilities down.
-            // ABIL_EVOKE_JUMP was also deleted, but was the last
-            // evocable ability, so just map it away.
-            if (a == ABIL_DIG || a == ABIL_EVOKE_TELEPORT_CONTROL + 1)
-                a = ABIL_NON_ABILITY;
-            else if (a > ABIL_DIG && a < ABIL_MIN_EVOKE)
-                a -= 1;
-        }
-
-        if (th.getMinorVersion() < TAG_MINOR_DRACONIAN_REWORK)
-        {
-            // BCADNOTE: This is all to clean up the enum while not breaking old save compat.
-            if (a > 39 && a < 80)       a += 460;
-            if (a == 28)                a = ABIL_HOP;
-            if (a == 26 || a == 27)     a += 54;
-            if (a == 25)                a = ABIL_HEAL_WOUNDS;
-            if (a == 23)                a = ABIL_TRAN_BAT;
-            if (a == 21)                a = ABIL_STOP_FLYING;
-            if (a == 19)                a = ABIL_FLY;
-            if (a == 17 || a == 18)     a += 33;
-            if (a = 16)                 a = ABIL_DAMNATION;
-            if (a = 15)                 a = ABIL_CANCEL_PPROJ;
-            if (a = 13)                 a = ABIL_END_TRANSFORMATION;
-            if (a = 11)                 a = ABIL_BLINK;
-            if (a = 1)                  a = ABIL_SPIT_POISON;
         }
 
         // Bad offset from games transferred prior to 0.17-a0-2121-g4af814f.
@@ -2771,10 +2740,6 @@ static void tag_read_you(reader &th)
 #endif
         you.attribute[j] = unmarshallInt(th);
     }
-#if TAG_MAJOR_VERSION == 34
-    if (count == ATTR_PAKELLAS_EXTRA_MP && you_worship(GOD_PAKELLAS))
-        you.attribute[ATTR_PAKELLAS_EXTRA_MP] = POT_MAGIC_MP;
-#endif
     for (int j = count; j < NUM_ATTRIBUTES; ++j)
         you.attribute[j] = 0;
     for (int j = NUM_ATTRIBUTES; j < count; ++j)
@@ -3464,15 +3429,8 @@ static void tag_read_you(reader &th)
         you.exp_docked[i] = unmarshallInt(th);
     for (int i = 0; i < count; i++)
         you.exp_docked_total[i] = unmarshallInt(th);
+    }
 #if TAG_MAJOR_VERSION == 34
-    }
-    if (th.getMinorVersion() < TAG_MINOR_PAKELLAS_WRATH
-        && player_under_penance(GOD_PAKELLAS))
-    {
-        you.exp_docked[GOD_PAKELLAS] = exp_needed(min<int>(you.max_level, 27) + 1)
-                                  - exp_needed(min<int>(you.max_level, 27));
-        you.exp_docked_total[GOD_PAKELLAS] = you.exp_docked[GOD_PAKELLAS];
-    }
     if (th.getMinorVersion() < TAG_MINOR_ELYVILON_WRATH
         && player_under_penance(GOD_ELYVILON))
     {
@@ -3480,7 +3438,6 @@ static void tag_read_you(reader &th)
                                   - exp_needed(min<int>(you.max_level, 27));
         you.exp_docked_total[GOD_ELYVILON] = you.exp_docked[GOD_ELYVILON];
     }
-
 #endif
 
     // elapsed time

@@ -158,10 +158,6 @@ skill_type invo_skill(god_type god)
         case GOD_KIKUBAAQUDGHA:
             return SK_NECROMANCY;
 
-#if TAG_MAJOR_VERSION == 34
-        case GOD_PAKELLAS:
-            return SK_EVOCATIONS;
-#endif
         case GOD_ASHENZARI:
         case GOD_JIYVA:
         case GOD_GOZAG:
@@ -340,17 +336,10 @@ static const ability_def Ability_List[] =
     // use or train Evocations (the others do).  -- bwr
     { ABIL_EVOKE_BLINK, "Evoke Blink",
       1, 0, 50, 0, {fail_basis::evo, 40, 2}, abflag::none },
-    { ABIL_HEAL_WOUNDS, "Heal Wounds",
-      0, 0, 0, 0, {fail_basis::xl, 45, 2}, abflag::none },
     { ABIL_EVOKE_BERSERK, "Evoke Berserk Rage",
       0, 0, 600, 0, {fail_basis::evo, 50, 2}, abflag::none },
-
     { ABIL_EVOKE_TURN_INVISIBLE, "Evoke Invisibility",
       2, 0, 250, 0, {fail_basis::evo, 60, 2}, abflag::none },
-#if TAG_MAJOR_VERSION == 34
-    { ABIL_EVOKE_TURN_VISIBLE, "Turn Visible",
-      0, 0, 0, 0, {}, abflag::starve_ok },
-#endif
     { ABIL_EVOKE_FLIGHT, "Evoke Flight",
       1, 0, 100, 0, {fail_basis::evo, 40, 2}, abflag::none },
     { ABIL_EVOKE_FOG, "Evoke Fog",
@@ -359,7 +348,6 @@ static const ability_def Ability_List[] =
       3, 0, 200, 0, {fail_basis::evo, 50, 2}, abflag::none },
     { ABIL_EVOKE_THUNDER, "Evoke Thunderclouds",
       5, 0, 200, 0, {fail_basis::evo, 60, 2}, abflag::none },
-
 
     { ABIL_END_TRANSFORMATION, "End Transformation",
       0, 0, 0, 0, {}, abflag::starve_ok },
@@ -603,13 +591,6 @@ static const ability_def Ability_List[] =
     { ABIL_QAZLAL_DISASTER_AREA, "Disaster Area",
       7, 0, 0, 15, {fail_basis::invo, 70, 4, 25}, abflag::none },
 
-#if TAG_MAJOR_VERSION == 34
-    // Pakellas
-    { ABIL_PAKELLAS_DEVICE_SURGE, "Device Surge",
-      0, 0, 0, 1,
-      {fail_basis::invo, 40, 5, 20}, abflag::instant },
-#endif
-
     // Uskayaw
     { ABIL_USKAYAW_STOMP, "Stomp",
         3, 0, 100, 20, {fail_basis::invo}, abflag::none },
@@ -749,9 +730,6 @@ const string make_cost_description(ability_type ability)
     string ret;
     if (ability_mp_cost(abil.ability))
         ret += make_stringf(", %d MP", ability_mp_cost(abil.ability));
-
-    if (ability == ABIL_HEAL_WOUNDS)
-        ret += make_stringf(", Permanent MP (%d left)", get_real_mp(false));
 
     if (abil.hp_cost)
         ret += make_stringf(", %d HP", abil.hp_cost.cost(you.hp_max));
@@ -900,12 +878,6 @@ static const string _detailed_cost_description(ability_type ability)
 
     if (abil.flags & abflag::skill_drain)
         ret << "\nIt will temporarily drain your skills when used.";
-
-    if (abil.ability == ABIL_HEAL_WOUNDS)
-    {
-        ret << "\nIt has a chance of reducing your maximum magic capacity "
-               "when used.";
-    }
 
     return ret.str();
 }
@@ -1565,21 +1537,6 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         }
         return true;
 
-    case ABIL_HEAL_WOUNDS:
-        if (you.hp == you.hp_max)
-        {
-            if (!quiet)
-                canned_msg(MSG_FULL_HEALTH);
-            return false;
-        }
-        if (get_real_mp(false) < 1)
-        {
-            if (!quiet)
-                mpr("You don't have enough innate magic capacity.");
-            return false;
-        }
-        return true;
-
     case ABIL_SHAFT_SELF:
         return you.can_do_shaft_ability(quiet);
 
@@ -1635,17 +1592,6 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
             return false;
         }
         return true;
-
-#if TAG_MAJOR_VERSION == 34
-    case ABIL_PAKELLAS_DEVICE_SURGE:
-        if (you.magic_points == 0)
-        {
-            if (!quiet)
-                mpr("You have no magic power.");
-            return false;
-        }
-        return true;
-#endif
 
         // only available while your ancestor is alive.
     case ABIL_HEPLIAKLQANA_IDEALISE:
@@ -1853,16 +1799,6 @@ static spret _do_ability(const ability_def& abil, bool fail)
     // statement... it's assumed that only failures have returned! - bwr
     switch (abil.ability)
     {
-    case ABIL_HEAL_WOUNDS:
-        fail_check();
-        if (one_chance_in(4))
-        {
-            mpr("Your magical essence is drained by the effort!");
-            rot_mp(1);
-        }
-        potionlike_effect(POT_HEAL_WOUNDS, 40);
-        break;
-
     case ABIL_DIG:
         fail_check();
         if (!you.digging)
@@ -2149,12 +2085,10 @@ static spret _do_ability(const ability_def& abil, bool fail)
         case ABIL_BREATHE_CHAOS:
             zap = ZAP_BREATHE_CHAOS;
             m   = "You breathe a bolt of seething chaos.";
-            beam.origin_spell = SPELL_BREATHE_CHAOTIC;
             break;
 
         case ABIL_BREATHE_FROST:
             zap = ZAP_BREATHE_FROST;
-            beam.origin_spell = SPELL_CHILLING_BREATH;
             m   = "You exhale a wave of freezing cold.";
             break;
 
@@ -2178,11 +2112,6 @@ static spret _do_ability(const ability_def& abil, bool fail)
             zap = ZAP_BREATHE_HOLY_FLAMES;
             beam.origin_spell = SPELL_HOLY_BREATH;
             m   = "You exhale a cleansing burst of sacred fire.";
-            break;
-
-        case ABIL_BREATHE_MIASMA:
-            zap = ZAP_BREATHE_MIASMA;
-            m   = "You exhale a noxious wave of foul miasma.";
             break;
 
         case ABIL_BREATHE_DRAIN:
@@ -2264,30 +2193,17 @@ static spret _do_ability(const ability_def& abil, bool fail)
         if (!invis_allowed())
             return spret::abort;
         fail_check();
-#if TAG_MAJOR_VERSION == 34
         surge_power(you.spec_evoke());
-#endif
         potionlike_effect(POT_INVISIBILITY,
                           player_adjust_evoc_power(
                               you.skill(SK_EVOCATIONS, 2) + 5));
         contaminate_player(1000 + random2(2000), true);
         break;
 
-#if TAG_MAJOR_VERSION == 34
-    case ABIL_EVOKE_TURN_VISIBLE:
-        fail_check();
-        ASSERT(!you.attribute[ATTR_INVIS_UNCANCELLABLE]);
-        mpr("You feel less transparent.");
-        you.duration[DUR_INVIS] = 1;
-        break;
-#endif
-
     case ABIL_EVOKE_FLIGHT:             // randarts
         fail_check();
         ASSERT(!get_form()->forbids_flight());
-#if TAG_MAJOR_VERSION == 34
         surge_power(you.spec_evoke());
-#endif
         fly_player(player_adjust_evoc_power(you.skill(SK_EVOCATIONS, 2) + 30));
         break;
 
@@ -3196,18 +3112,6 @@ static spret _do_ability(const ability_def& abil, bool fail)
         you.increase_duration(DUR_EXHAUSTED, 30 + random2(20));
         break;
 
-#if TAG_MAJOR_VERSION == 34
-    case ABIL_PAKELLAS_DEVICE_SURGE:
-    {
-        fail_check();
-
-        mprf(MSGCH_DURATION, "You feel a buildup of energy.");
-        you.increase_duration(DUR_DEVICE_SURGE,
-                              random2avg(you.piety / 4, 2) + 3, 100);
-        break;
-    }
-#endif
-
     case ABIL_USKAYAW_STOMP:
         fail_check();
         if (!uskayaw_stomp())
@@ -3533,9 +3437,6 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     vector<talent> talents;
 
     // Species-based abilities.
-    if (you.species == SP_DEEP_DWARF)
-        _add_talent(talents, ABIL_HEAL_WOUNDS, check_confused);
-
     if (you.species == SP_FORMICID
         && (form_keeps_mutations() || include_unusable))
     {
@@ -3559,7 +3460,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, draconian_breath(), check_confused);
 
         if (you.drac_colour == DR_GOLDEN)
-        { 
+        {
             _add_talent(talents, ABIL_BREATHE_FROST, check_confused);
             if (you.form == transformation::dragon)
                 _add_talent(talents, ABIL_BREATHE_POISON, check_confused);
@@ -3568,19 +3469,12 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         }
     }
 
-    if (you.species == SP_VAMPIRE && you.experience_level >= 3
-        && you.hunger_state <= HS_SATIATED
-        && you.form != transformation::bat)
-    {
-        _add_talent(talents, ABIL_TRAN_BAT, check_confused);
-    }
-
     if (you.racial_permanent_flight() && !you.attribute[ATTR_PERM_FLIGHT])
     {
         // Tengu can fly starting at XL 5
-        // Black draconians and gargoyles get permaflight at XL 14, but they
+        // Gargoyles get permaflight at XL 14, but they
         // don't get the tengu movement/evasion bonuses
-        // Other dracs can mutate big wings whenever as well.
+        // Draconians can mutate big wings early or get them at XL 18.
         _add_talent(talents, ABIL_FLY, check_confused);
     }
 

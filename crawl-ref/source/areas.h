@@ -48,8 +48,3 @@ bool disjunction_haloed(const coord_def& p);
 
 // ...or endarkened by an umbra?
 bool umbraed(const coord_def& p);
-
-#if TAG_MAJOR_VERSION == 34
-// ...or is the area hot?
-bool heated(const coord_def& p);
-#endif

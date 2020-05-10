@@ -222,11 +222,9 @@ static const char *divine_title[][8] =
     {"Sleeper",           "Questioner",             "Initiate",                 "Seeker of Truth",
         "@Walker@ of the Path","Lifter of the Veil",     "Transcendent",     "Drop of Water"},
 
-#if TAG_MAJOR_VERSION == 34
     // Pakellas -- inventor theme
-    {"Reactionary",       "Apprentice",             "Inquisitive",              "Experimenter",
-        "Inventor",           "Pioneer",               "Brilliant",                "Grand Gadgeteer"},
-#endif
+    //{"Reactionary",       "Apprentice",             "Inquisitive",              "Experimenter",
+    //  "Inventor",           "Pioneer",               "Brilliant",                "Grand Gadgeteer"},
 
     // Uskayaw -- reveler theme
     {"Prude",             "Wallflower",             "Party-goer",              "Dancer",
@@ -922,29 +920,6 @@ static formatted_string _describe_god_powers(god_type which_god)
         have_any = true;
         desc.cprintf("Your life essence is reduced. (-10%% HP)\n");
         break;
-
-#if TAG_MAJOR_VERSION == 34
-    case GOD_PAKELLAS:
-    {
-        have_any = true;
-        desc.cprintf("%s prevents your magic from regenerating.\n",
-                uppercase_first(god_name(which_god)).c_str());
-        desc.cprintf("%s identifies device charges for you.\n",
-                uppercase_first(god_name(which_god)).c_str());
-        if (!you_foodless(false))
-        {
-            if (have_passive(passive_t::bottle_mp))
-                desc.textcolour(god_colour(which_god));
-            else
-                desc.textcolour(DARKGREY);
-
-            desc.cprintf("%s will collect and distill excess magic from your "
-                    "kills.\n",
-                    uppercase_first(god_name(which_god)).c_str());
-        }
-        break;
-    }
-#endif
 
     case GOD_LUGONU:
         have_any = true;

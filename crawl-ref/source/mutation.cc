@@ -374,13 +374,6 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
     {
         return mutation_activity_type::INACTIVE;
     }
-#if TAG_MAJOR_VERSION == 34
-    if ((you_worship(GOD_PAKELLAS) || player_under_penance(GOD_PAKELLAS))
-         && (mut == MUT_MANA_LINK || mut == MUT_MANA_REGENERATION))
-    {
-        return mutation_activity_type::INACTIVE;
-    }
-#endif
 
     if (!form_can_bleed(you.form) && mut == MUT_SANGUINE_ARMOUR)
         return mutation_activity_type::INACTIVE;
@@ -2548,8 +2541,6 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     }
     else if (!ignore_player && you.species == SP_FELID && mut == MUT_CLAWS)
         result = "You have sharp claws.";
-    else if (have_passive(passive_t::no_mp_regen) && mut == MUT_ANTIMAGIC_BITE)
-        result = "Your bite disrupts the magic of your enemies.";
     else if (result.empty() && level > 0)
     {
         if (msg.mutation == MUT_NON_MUTATION)

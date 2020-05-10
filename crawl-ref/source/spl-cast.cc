@@ -102,12 +102,6 @@ void surge_power(const int enhanced)
     }
 }
 
-void surge_power_wand(const int mp_cost)
-{
-    if (mp_cost)
-        mpr("You feel a surge of power.");
-}
-
 static string _spell_base_description(spell_type spell, bool viewing)
 {
     ostringstream desc;
@@ -1513,13 +1507,7 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
     }
     else
     {
-#if TAG_MAJOR_VERSION == 34
-        const int adj_pow = evoked ? pakellas_effective_hex_power(pow)
-                                   : pow;
-#else
-        const int adj_pow = pow;
-#endif
-        const int success = hex_success_chance(mr, adj_pow, 100);
+        const int success = hex_success_chance(mr, pow, 100);
         descs.push_back(make_stringf("chance to defeat MR: %d%%", success));
     }
     return descs;
@@ -1681,17 +1669,9 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 
     if (evoked_item)
     {
-#if TAG_MAJOR_VERSION == 34
-        const int surge = pakellas_surge_devices();
-#else
-        const int surge = 0;
-#endif
-        powc = player_adjust_evoc_power(powc, surge);
-#if TAG_MAJOR_VERSION == 34
-        int mp_cost_of_wand = evoked_item->base_type == OBJ_WANDS
-                              ? wand_mp_cost() : 0;
-        surge_power_wand(mp_cost_of_wand + surge * 3);
-#endif
+        powc = player_adjust_evoc_power(powc);
+        if (wand_mp_cost())
+            mpr("You feel a surge of power.");
     }
 #if TAG_MAJOR_VERSION == 34
     else if (allow_fail)
