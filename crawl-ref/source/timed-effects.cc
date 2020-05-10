@@ -1121,6 +1121,8 @@ void timeout_terrain_changes(int duration, bool force)
     string warning;
     string statement;
     int num_seen[NUM_TERRAIN_CHANGE_TYPES] = {0};
+    // n.b. unordered_set doesn't work here because pair isn't hashable
+    set<pair<coord_def, terrain_change_type>> revert;
 
     for (map_marker *mark : env.markers.get_all(MAT_TERRAIN_CHANGE))
     {
@@ -1182,10 +1184,12 @@ void timeout_terrain_changes(int duration, bool force)
         {
             if (you.see_cell(marker->pos))
                 num_seen[marker->change_type]++;
-            // will delete `marker`.
-            revert_terrain_change(marker->pos, marker->change_type);
+            revert.emplace(marker->pos, marker->change_type);
         }
     }
+    // finally, revert the changes and delete the markers
+    for (const auto &m_pos : revert)
+        revert_terrain_change(m_pos.first, m_pos.second);
 
     if (!warning.empty())
         mprf(MSGCH_DANGER, "%s", warning.c_str());
