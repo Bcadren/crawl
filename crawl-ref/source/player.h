@@ -179,9 +179,6 @@ public:
     FixedBitVector<NUM_SPELLS> hidden_spells;
     FixedVector<spell_type, MAX_KNOWN_SPELLS> spells;
 
-    // BCADNOTE: These are no longer used; but still noted here because of old save files needing these bytes unmarshalled into the spell library.
-    set<spell_type> old_vehumet_gifts, vehumet_gifts;
-
     uint8_t spell_no;
     game_chapter chapter;
     bool royal_jelly_dead;

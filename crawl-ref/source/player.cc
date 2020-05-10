@@ -5549,9 +5549,7 @@ player::player()
 
     spell_library.reset();
     spells.init(SPELL_NO_SPELL);
-    old_vehumet_gifts.clear();
     spell_no        = 0;
-    vehumet_gifts.clear();
     chapter  = CHAPTER_ORB_HUNTING;
     royal_jelly_dead = false;
     transform_uncancellable = false;
