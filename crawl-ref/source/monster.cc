@@ -4347,6 +4347,7 @@ int monster::res_acid(bool /*mount*/) const
 
     u += wearing(EQ_RINGS, RING_RESIST_CORROSION);
     u += wearing(EQ_BODY_ARMOUR, ARM_ACID_DRAGON_ARMOUR);
+    u += wearing_ego(EQ_CLOAK, SPARM_PRESERVATION);
     u += scan_artefacts(ARTP_RCORR);
 
     return max(min(u, 3), -3);

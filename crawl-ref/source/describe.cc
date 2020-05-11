@@ -1567,6 +1567,11 @@ static string _armour_brand_desc(const item_def item)
             "when invoked by the wearer.";
         break;
 
+    case SPARM_PRESERVATION:
+        description += "It provides partial protection from all sources of "
+            "acid and corrosion.";
+        break;
+
     case SPARM_REFLECTION:
         description += "It reflects blocked things back in the "
             "direction they came from.";
@@ -2390,9 +2395,7 @@ static string _describe_armour(const item_def &item, bool verbose)
                            && !item_ident(item, ISFLAG_KNOW_PLUSES);
 
     if ((ego != SPARM_NORMAL || enchanted) && item_type_known(item) && verbose)
-    {
         description += _armour_brand_desc(item);
-    }
 
     if (is_artefact(item))
     {

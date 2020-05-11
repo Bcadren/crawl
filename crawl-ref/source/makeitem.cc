@@ -1056,6 +1056,8 @@ special_armour_type generate_armour_type_ego(armour_type type)
 
     case ARM_CLOAK:
         return random_choose(SPARM_POISON_RESISTANCE,
+                             SPARM_STEALTH,
+                             SPARM_PRESERVATION,
                              SPARM_INVISIBILITY,
                              SPARM_MAGIC_RESISTANCE,
                              SPARM_SOFT);
@@ -1221,8 +1223,11 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
 
     case SPARM_PONDEROUSNESS:
         return true;
-#if TAG_MAJOR_VERSION == 34
     case SPARM_PRESERVATION:
+#if TAG_MAJOR_VERSION > 34
+        return slot == EQ_CLOAK;
+#endif
+#if TAG_MAJOR_VERSION == 34
         if (type == ARM_PLATE_ARMOUR && !strict)
             return true;
         // deliberate fall-through

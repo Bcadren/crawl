@@ -7700,6 +7700,7 @@ int player_res_acid()
 
     ra += you.wearing(EQ_RINGS, RING_RESIST_CORROSION);
     ra += you.wearing(EQ_BODY_ARMOUR, ARM_ACID_DRAGON_ARMOUR);
+    ra += you.wearing_ego(EQ_CLOAK, SPARM_PRESERVATION);
     ra += you.scan_artefacts(ARTP_RCORR);
     ra += you.get_mutation_level(MUT_SLIME) * 2;
 

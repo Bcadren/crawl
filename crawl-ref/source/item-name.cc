@@ -623,9 +623,8 @@ const char* armour_ego_name(const item_def& item, bool terse)
                                       else return "the Paladin";
         case SPARM_INSULATION:        return "insulation";
         case SPARM_SOFT:              return "softness";
-#if TAG_MAJOR_VERSION == 34
         case SPARM_PRESERVATION:      return "preservation";
-#endif
+        case SPARM_PRESERVATION:      return "preservation";
         case SPARM_REFLECTION:        return "reflection";
         case SPARM_SPIRIT_SHIELD:     return "spirit shield";
         case SPARM_ARCHERY:           return "archery";
