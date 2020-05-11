@@ -549,6 +549,8 @@ static level_id _travel_destination(const dungeon_feature_type how,
              shaft_depth,
              shaft_depth > 1 ? "s" : "");
 
+        handle_items_on_shaft(you.pos(), false);
+
         // Shafts are one-time-use.
         mpr("The shaft crumbles and collapses.");
         _maybe_destroy_shaft(you.pos());

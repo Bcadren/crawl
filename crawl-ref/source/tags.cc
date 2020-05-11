@@ -2774,10 +2774,6 @@ static void tag_read_lost_monsters(reader &th)
                   unmarshall_level_id, unmarshall_follower_list);
 }
 
-<<<<<<< HEAD
-// BCADNOTE: Currently unused preserved because I intend to restore.
-=======
->>>>>>> parent of d863c46bfc... Remove item level transit code
 static void tag_read_lost_items(reader &th)
 {
     transiting_items.clear();
