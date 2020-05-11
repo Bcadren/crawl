@@ -679,8 +679,8 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
         case ARTP_INACCURACY:
             return !extant_props[ARTP_IMPROVED_VISION]; //contradictory properties.
         case ARTP_HARM:
-            return item_class != OBJ_JEWELLERY && extant_props[ARTP_DRAIN];
-            // only get harm with *Drain
+            return item_class == OBJ_ARMOURS;
+            // only get harm on delay equipment
         default:
             return true;
     }
@@ -821,8 +821,8 @@ static const artefact_prop_data artp_data[] =
         nullptr, []() { return 1; }, 0, 0 },
     { "SH", ARTP_VAL_ANY, 0, 0, nullptr, nullptr, 0, 0 }, // ARTP_SHIELDING,
     { "-Vis", ARTP_VAL_BOOL, 25, 25, nullptr, []() { return 1; }, 0, 0 }, // ARTP_INACCURACY,
-    { "Harm", ARTP_VAL_BOOL, 0, 25, // ARTP_HARM,
-        []() {return 1;}, []() {return 1; }, 0, 0},
+    { "Harm", ARTP_VAL_BOOL, 25, 40, // ARTP_HARM,
+        []() {return 1;}, nullptr, 0, 0},
 };
 COMPILE_CHECK(ARRAYSZ(artp_data) == ARTP_NUM_PROPERTIES);
 // weights sum to 1000

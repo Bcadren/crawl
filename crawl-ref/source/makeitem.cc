@@ -1282,14 +1282,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return type == ARM_SCARF || !strict;
 
     case SPARM_REPULSION:
-<<<<<<< HEAD
-=======
     case SPARM_HARM:
-#if TAG_MAJOR_VERSION > 34
-    case SPARM_INVISIBILITY:
-#endif
-#if TAG_MAJOR_VERSION == 34
->>>>>>> 19c8d5534f (Add Harm to scarves)
     case SPARM_CLOUD_IMMUNE:
         return type == ARM_SCARF;
 
