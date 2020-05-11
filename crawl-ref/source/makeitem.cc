@@ -1052,7 +1052,9 @@ special_armour_type generate_armour_type_ego(armour_type type)
         return random_choose_weighted(1, SPARM_SPIRIT_SHIELD,
                                       1, SPARM_RESISTANCE,
                                       1, SPARM_REPULSION,
-                                      1, SPARM_CLOUD_IMMUNE);
+                                      1, SPARM_CLOUD_IMMUNE,
+                                      1, SPARM_INVISIBILITY,
+                                      1, SPARM_HARM);
 
     case ARM_CLOAK:
         return random_choose(SPARM_POISON_RESISTANCE,
@@ -1280,6 +1282,14 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         return type == ARM_SCARF || !strict;
 
     case SPARM_REPULSION:
+<<<<<<< HEAD
+=======
+    case SPARM_HARM:
+#if TAG_MAJOR_VERSION > 34
+    case SPARM_INVISIBILITY:
+#endif
+#if TAG_MAJOR_VERSION == 34
+>>>>>>> 19c8d5534f (Add Harm to scarves)
     case SPARM_CLOUD_IMMUNE:
         return type == ARM_SCARF;
 

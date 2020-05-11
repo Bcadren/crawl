@@ -582,7 +582,9 @@ i-cloud-immune BRAND_ARM_CLOUD_IMMUNE
 i-high-priest BRAND_ARM_HIGH_PRIEST 
 i-wielding BRAND_ARM_WIELDING 
 %rim 0
-i-sturdy BRAND_ARM_STURDY BRAND_ARM_LAST
+i-sturdy BRAND_ARM_STURDY
+%rim 1
+i-harm BRAND_ARM_HARM BRAND_ARM_LAST
 
 ###########OBJ_SHIELDS
 %sdir item/shields

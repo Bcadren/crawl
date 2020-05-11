@@ -624,7 +624,6 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_INSULATION:        return "insulation";
         case SPARM_SOFT:              return "softness";
         case SPARM_PRESERVATION:      return "preservation";
-        case SPARM_PRESERVATION:      return "preservation";
         case SPARM_REFLECTION:        return "reflection";
         case SPARM_SPIRIT_SHIELD:     return "spirit shield";
         case SPARM_ARCHERY:           return "archery";
@@ -632,6 +631,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_CLOUD_IMMUNE:      return "cloud immunity";
         case SPARM_WIELDING:          return "wielding";
         case SPARM_STURDY:            return "sturdiness";
+        case SPARM_HARM:              return "harm";
         default:                      return "bugginess";
         }
     }
@@ -659,9 +659,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_HIGH_PRIEST:       return "High Priest";
         case SPARM_INSULATION:        return "rElec+";
         case SPARM_SOFT:              return "soft";
-#if TAG_MAJOR_VERSION == 34
-        case SPARM_PRESERVATION:      return "obsolete";
-#endif
+        case SPARM_PRESERVATION:      return "rCorr";
         case SPARM_REFLECTION:        return "reflect";
         case SPARM_SPIRIT_SHIELD:     return "Spirit";
         case SPARM_ARCHERY:           return "archery";
@@ -669,6 +667,7 @@ const char* armour_ego_name(const item_def& item, bool terse)
         case SPARM_CLOUD_IMMUNE:      return "cloud immunity";
         case SPARM_WIELDING:          return "wield";
         case SPARM_STURDY:            return "sturdy";
+        case SPARM_HARM:              return "harm";
         default:                      return "buggy";
         }
     }

@@ -1497,6 +1497,9 @@ static string _armour_brand_desc(const item_def item)
     default:
         description += "Buggy ego type.";
         break;
+    case SPARM_HARM:
+        description += "It increases damage dealt and taken.";
+        break;
     case SPARM_RUNNING:
         if (item.sub_type == ARM_NAGA_BARDING)
             description += "It allows its wearer to slither at a great speed.";
