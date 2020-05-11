@@ -30,6 +30,7 @@
 #include "mon-util.h"
 #include "message.h"
 #include "mon-place.h"
+#include "mon-transit.h"
 #include "nearby-danger.h"
 #include "random.h"
 #include "religion.h"
@@ -1360,8 +1361,10 @@ bool is_valid_shaft_level()
     return (brdepth[place.branch] - place.depth) >= 1;
 }
 
-level_id generic_shaft_dest(level_id place)
+level_id generic_shaft_dest()
 {
+    level_id place = level_id::current();
+
     if (!is_connected_branch(place))
         return place;
 
@@ -1391,19 +1394,16 @@ level_id generic_shaft_dest(level_id place)
 }
 
 /**
- * When a player falls through a shaft at a location, disperse items on the
- * target level.
+ * When an items are dropped on a shaft, disperse those items on the target level.
  *
  * @param pos The location.
- * @param open_shaft If True and the location was seen, print a shaft opening
- *                   message, otherwise don't.
 */
-void handle_items_on_shaft(const coord_def& pos, bool open_shaft)
+void handle_items_on_shaft(const coord_def& pos)
 {
     if (!is_valid_shaft_level())
         return;
 
-    level_id dest = generic_shaft_dest(pos);
+    level_id dest = generic_shaft_dest();
 
     if (dest == level_id::current())
         return;
@@ -1413,21 +1413,12 @@ void handle_items_on_shaft(const coord_def& pos, bool open_shaft)
     if (o == NON_ITEM)
         return;
 
-    bool need_open_message = env.map_knowledge(pos).seen() && open_shaft;
-
     while (o != NON_ITEM)
     {
         int next = mitm[o].link;
 
         if (mitm[o].defined() && !item_is_stationary_net(mitm[o]))
         {
-            if (need_open_message)
-            {
-                mpr("A shaft opens up in the floor!");
-                grd(pos) = DNGN_TRAP_SHAFT;
-                need_open_message = false;
-            }
-
             if (env.map_knowledge(pos).visible())
             {
                 mprf("%s fall%s through the shaft.",

@@ -35,8 +35,8 @@ trap_def* trap_at(const coord_def& where);
 trap_type get_trap_type(const coord_def& where);
 
 bool is_valid_shaft_level();
-level_id generic_shaft_dest(level_id place);
-void     handle_items_on_shaft(const coord_def& where, bool open_shaft);
+level_id generic_shaft_dest();
+void     handle_items_on_shaft(const coord_def& where);
 
 int       trap_rate_for_place();
 trap_type random_trap_for_place();

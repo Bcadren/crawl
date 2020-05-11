@@ -42,7 +42,7 @@ bool actor::will_trigger_shaft() const
 
 level_id actor::shaft_dest() const
 {
-    return generic_shaft_dest(level_id::current());
+    return generic_shaft_dest();
 }
 
 /**

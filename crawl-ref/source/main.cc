@@ -2068,7 +2068,7 @@ static void _check_shafts()
 
         ASSERT_IN_BOUNDS(entry.first);
 
-        handle_items_on_shaft(entry.first, true);
+        handle_items_on_shaft(entry.first);
     }
 }
 
