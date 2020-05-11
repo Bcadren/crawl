@@ -419,9 +419,6 @@ public:
 
     /// @throws bad_level_id if s could not be parsed.
     static level_id parse_level_id(const string &s);
-#if TAG_MAJOR_VERSION == 34
-    static level_id from_packed_place(const unsigned short place);
-#endif
 
     string describe(bool long_name = false, bool with_number = true) const;
 
@@ -746,9 +743,7 @@ enum mon_spell_slot_flag
     MON_SPELL_EMERGENCY   = 1 <<  0, // only use this spell slot in emergencies
     MON_SPELL_NATURAL     = 1 <<  1, // physiological, not really a spell
     MON_SPELL_MAGICAL     = 1 <<  2, // a generic magical ability
-#if TAG_MAJOR_VERSION == 34
-    MON_SPELL_DEMONIC     = 1 <<  3, // merged with magical abilities
-#endif
+    //unused              = 1 <<  3, // was mon_spell_demonic
     MON_SPELL_WIZARD      = 1 <<  4, // a real spell, affected by AM and silence
     MON_SPELL_PRIEST      = 1 <<  5,
 
