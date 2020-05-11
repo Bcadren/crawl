@@ -832,6 +832,7 @@ spret cast_portal_projectile(int pow, bool fail)
 spret cast_apportation(int pow, bool fail)
 {
     vector<int> items_to_apport;
+    bool want_destroy = false;
 
     for (rectangle_iterator ri(you.pos(), LOS_RADIUS); ri; ++ri)
     {
@@ -864,6 +865,21 @@ spret cast_apportation(int pow, bool fail)
         mpr("There is nothing you can see to apport.");
         return spret::abort;
     }
+
+    if (grd(you.pos()) == DNGN_TRAP_SHAFT)
+    {
+        if (!yesno("Apporting items while standing on a shaft will cause them to fall to a lower floor. Continue anyways?", true, 0))
+            return spret::abort;
+    }
+    else if (feat_eliminates_items(grd(you.pos())))
+    {
+        string msg = make_stringf("Items apported to you now will be %s. Continue anyways?", feat_destroys_items(grd(you.pos())) ? "destroyed" : "lost to you");
+        if (!yesno(msg.c_str(), true, 0))
+            return spret::abort;
+        want_destroy = true;
+    }
+
+    // BCADDO: Perhaps intentionally allow items to fall into lava when NOT standing over it?
 
     fail_check();
     int items_prevented = 0;
@@ -940,7 +956,7 @@ spret cast_apportation(int pow, bool fail)
         // Try to find safe terrain for the item.
         while (location_on_path < dist)
         {
-            if (!feat_eliminates_items(grd(new_spot)))
+            if (!feat_eliminates_items(grd(new_spot)) || want_destroy)
                 break;
             location_on_path++;
             new_spot = beam.path_taken[location_on_path];

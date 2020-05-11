@@ -3817,15 +3817,11 @@ void read_scroll(item_def& scroll)
         // Identify it early in case the player checks the '\' screen.
         set_ident_type(scroll, true);
 
-        if (feat_eliminates_items(grd(you.pos())))
+        if (feat_eliminates_items(grd(you.pos())) || grd(you.pos()) == DNGN_TRAP_SHAFT)
         {
             mpr("Anything you acquired here would fall and be lost!");
             cancel_scroll = true;
             break;
-            // yes, we cancel out even if the scroll wasn't known beforehand.
-            // there's no plausible abuse of this, and it's much better to
-            // never have to worry about "am i over dangerous terrain?" while
-            // IDing scrolls. (Not an interesting ID game mechanic!)
         }
 
         run_uncancel(UNC_ACQUIREMENT, AQ_SCROLL);

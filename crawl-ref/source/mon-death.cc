@@ -551,7 +551,7 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     {
         _gold_pile(corpse, mons_species(mons.type));
         // If gold would be destroyed, give it directly to the player instead.
-        if (feat_eliminates_items(grd(mons.pos()))|| feat_is_solid(grd(mons.pos())) || mons.type == MONS_LAVA_GLOB)
+        if (feat_eliminates_items(grd(mons.pos())) || feat_is_solid(grd(mons.pos())) || mons.type == MONS_LAVA_GLOB)
         {
             get_gold(corpse, corpse.quantity, false);
             destroy_item(corpse, true);
@@ -2892,7 +2892,7 @@ item_def* monster_die(monster& mons, killer_type killer,
             {
                 move_item_to_grid(&o, pos);
 
-                // Don't display this message if the scales were dropped over
+                // Don't display this message if the skull was dropped over
                 // lava/deep water, because then they are hardly intact.
                 if (you.see_cell(pos) && !silent && !feat_eliminates_items(grd(pos)))
                     mpr("The bone dragon skull is intact enough to wear.");
