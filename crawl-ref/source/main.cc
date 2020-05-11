@@ -333,6 +333,7 @@ static void _reset_game()
     macro_clear_buffers();
     the_lost_ones.clear();
     shopping_list = ShoppingList();
+    transit_lists_clear();
     you = player();
     reset_hud();
     StashTrack = StashTracker();

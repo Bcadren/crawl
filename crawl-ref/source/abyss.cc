@@ -1507,6 +1507,7 @@ static void abyss_area_shift()
 
     // And allow monsters in transit another chance to return.
     place_transiting_monsters();
+    place_transiting_items();
 
     auto &vault_list =  you.vault_list[level_id::current()];
 #ifdef DEBUG
@@ -1602,6 +1603,7 @@ static void _abyss_generate_new_area()
 
     los_changed();
     place_transiting_monsters();
+    place_transiting_items();
 }
 
 // Check if there is a path between the abyss centre and an exit location.

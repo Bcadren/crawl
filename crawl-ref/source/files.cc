@@ -1853,7 +1853,10 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
 
     // Load monsters in transit.
     if (load_mode == LOAD_ENTER_LEVEL)
+    {
         place_transiting_monsters();
+        place_transiting_items();
+    }
 
     if (just_created_level && make_changes)
         replace_boris();
