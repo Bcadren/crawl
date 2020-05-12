@@ -1822,6 +1822,8 @@ bool is_removed_skill(skill_type skill)
 #if TAG_MAJOR_VERSION == 34
     if (skill == SK_STABBING || skill == SK_TRAPS || skill == SK_CONJURATIONS)
         return true;
+#else
+    UNUSED(skill);
 #endif
     return false;
 }
