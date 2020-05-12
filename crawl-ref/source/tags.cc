@@ -900,7 +900,6 @@ static monster_type unmarshallMonType(reader &th)
     return x;
 }
 
-#if TAG_MAJOR_VERSION == 34
 // yay marshalling inconsistencies
 static monster_type unmarshallMonType_Info(reader &th)
 {
@@ -909,16 +908,17 @@ static monster_type unmarshallMonType_Info(reader &th)
     if (x >= MONS_NO_MONSTER)
         return x;
 
+#if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() == TAG_MINOR_0_11)
     {
         AXED(MONS_KILLER_BEE); // killer bee larva
         AXED(MONS_CYSGOBWCA); // midge
         AXED(MONS_AGNES);      // Jozef
     }
+#endif
 
     return x;
 }
-#endif
 
 static spell_type unmarshallSpellType(reader &th
 #if TAG_MAJOR_VERSION == 34
@@ -5502,13 +5502,8 @@ void _marshallMonsterInfo(writer &th, const monster_info& mi)
 {
     _marshallFixedBitVector<NUM_MB_FLAGS>(th, mi.mb);
     marshallString(th, mi.mname);
-#if TAG_MAJOR_VERSION == 34
     marshallUnsigned(th, mi.type);
     marshallUnsigned(th, mi.base_type);
-#else
-    marshallShort(th, mi.type);
-    marshallShort(th, mi.base_type);
-#endif
     marshallUnsigned(th, mi.number);
     marshallInt(th, mi._colour);
     marshallUnsigned(th, mi.attitude);
@@ -5566,15 +5561,9 @@ void _unmarshallMonsterInfo(reader &th, monster_info& mi)
     _unmarshallFixedBitVector<NUM_MB_FLAGS>(th, mi.mb);
     mi.mname = unmarshallString(th);
 
-#if TAG_MAJOR_VERSION == 34
     mi.type = unmarshallMonType_Info(th);
     ASSERT(!invalid_monster_type(mi.type));
     mi.base_type = unmarshallMonType_Info(th);
-#else
-    mi.type = unmarshallMonType(th);
-    ASSERT(!invalid_monster_type(mi.type));
-    mi.base_type = unmarshallMonType(th);
-#endif
 
 #if TAG_MAJOR_VERSION == 34
     if ((mons_genus(mi.type) == MONS_DRACONIAN
