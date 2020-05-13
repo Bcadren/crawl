@@ -1469,6 +1469,21 @@ static void _equip_amulet_of_mana_regeneration()
     }
 }
 
+static void _equip_amulet_of_reflection()
+{
+    if (you.hp == you.hp_max)
+    {
+        you.activated.set(EQ_AMULET);
+        you.redraw_armour_class = true;
+        mpr("You feel a shielding aura gather around you.");
+    }
+    else
+    {
+        you.activated.set(EQ_AMULET, false);
+        mpr("Your injuries prevent the amulet from attuning itself.");
+    }
+}
+
 static void _equip_jewellery_effect(item_def &item, bool unmeld,
                                     equipment_type slot)
 {
@@ -1492,7 +1507,6 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         break;
 
     case RING_PROTECTION:
-    case AMU_REFLECTION:
         you.redraw_armour_class = true;
         break;
 
@@ -1579,6 +1593,11 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
             _equip_amulet_of_mana_regeneration();
         break;
 
+    case AMU_REFLECTION:
+        if (!unmeld)
+            _equip_amulet_of_reflection();
+        break;
+
     case AMU_GUARDIAN_SPIRIT:
         _spirit_shield_message(unmeld);
         break;
@@ -1643,7 +1662,12 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
         break;
 
     case RING_PROTECTION:
+        you.redraw_armour_class = true;
+        break;
+
     case AMU_REFLECTION:
+        if (!meld)
+            you.activated.set(EQ_AMULET, false);
         you.redraw_armour_class = true;
         break;
 

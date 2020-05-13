@@ -47,7 +47,8 @@ An amulet that enables its wearer to attempt to enter a state of berserk rage.
 amulet of reflection
 
 An amulet which exerts a force that blocks some incoming attacks, and can even
-reflect any blocked ranged attacks back towards the attacker.
+reflect any blocked ranged attacks back towards the attacker. In order to
+function, it must first attune itself to the wearer's body at full health.
 %%%%
 amulet of regeneration
 

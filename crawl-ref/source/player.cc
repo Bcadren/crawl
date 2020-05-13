@@ -2929,8 +2929,8 @@ int player_shield_class(bool temp)
     }
 
     shield += you.branch_SH(true) * 200;
-    shield += you.wearing(EQ_AMULET, AMU_REFLECTION) * 1000;
     shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
+    shield += you.activated[EQ_AMULET] * you.wearing(EQ_AMULET, AMU_REFLECTION) * 1000;
 
     const item_def * inside = you.slot_item(EQ_CYTOPLASM);
 
