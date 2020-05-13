@@ -2929,7 +2929,7 @@ void monster::banish(const actor *agent, const string &, const int, bool force)
         // Note: we do not set MF_PACIFIED, the monster is usually not
         // distinguishable from others of the same kind in the Abyss.
 
-        if (agent->is_player())
+        if (agent->is_player() || agent->mid == MID_YOU_FAULTLESS)
         {
             did_god_conduct(DID_BANISH, get_experience_level(),
                             true /*possibly wrong*/, this);
