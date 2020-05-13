@@ -88,12 +88,8 @@ static unsigned short _cell_feat_show_colour(const map_cell& cell,
     }
     else if (cell.flags & MAP_MOLDY && !norecolour)
         colour = (cell.flags & MAP_GLOWING_MOLDY) ? LIGHTRED : LIGHTGREEN;
-    else if (cell.flags & MAP_CORRODING && !norecolour
-             && !feat_is_wall(feat) && !feat_is_lava(feat)
-             && !feat_is_water(feat))
-    {
+    else if (cell.flags & MAP_CORRODING && feat == DNGN_FLOOR)
         colour = LIGHTGREEN;
-    }
     else if (cell.feat_colour() && !no_vault_recolour)
         colour = cell.feat_colour();
     else
