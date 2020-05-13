@@ -1217,6 +1217,8 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
     case SPARM_STEALTH:
     case SPARM_STURDY:
         return slot == EQ_BOOTS || slot == EQ_BARDING;
+    case SPARM_STEALTH:
+        return slot == EQ_BOOTS || slot == EQ_BARDING || slot == EQ_CLOAK;
 
     case SPARM_ARCHMAGI:
     case SPARM_HIGH_PRIEST:
