@@ -252,12 +252,14 @@ static int _armour_brand_value(special_armour_type sparm)
     case SPARM_PROTECTION:
     case SPARM_ARCHERY:
     case SPARM_REPULSION:
+    case SPARM_PRESERVATION:
         return 50;
 
     case SPARM_POSITIVE_ENERGY:
     case SPARM_POISON_RESISTANCE:
     case SPARM_REFLECTION:
     case SPARM_SPIRIT_SHIELD:
+    case SPARM_HARM:
         return 20;
 
     case SPARM_PONDEROUSNESS:
