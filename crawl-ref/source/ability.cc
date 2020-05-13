@@ -58,6 +58,7 @@
 #include "potion.h"
 #include "prompt.h"
 #include "religion.h"
+#include "rltiles/tiledef-icons.h"
 #include "skills.h"
 #include "spl-cast.h"
 #include "spl-clouds.h"
@@ -81,10 +82,6 @@
 #include "unicode.h"
 #include "view.h"
 #include "viewchar.h"
-
-#ifdef USE_TILE
-# include "rltiles/tiledef-icons.h"
-#endif
 
 enum class abflag
 {
@@ -3939,15 +3936,11 @@ int choose_ability_menu(const vector<talent>& talents)
                                         describe_talent(talents[i]),
                                         MEL_ITEM, 1, talents[i].hotkey);
             me->data = &numbers[i];
-#ifdef USE_TILE
             me->add_tile(tile_def(tileidx_ability(talents[i].which), TEX_GUI));
-#endif
             if (!check_ability_possible(talents[i].which, true))
             {
                 me->colour = COL_INAPPLICABLE;
-#ifdef USE_TILE
                 me->add_tile(tile_def(TILEI_MESH, TEX_ICONS));
-#endif
             }
             else if (_check_ability_dangerous(talents[i].which, true))
                 me->colour = COL_DANGEROUS;
@@ -3976,16 +3969,12 @@ int choose_ability_menu(const vector<talent>& talents)
                                             describe_talent(talents[i]),
                                             MEL_ITEM, 1, talents[i].hotkey);
                 me->data = &numbers[i];
-#ifdef USE_TILE
                 me->add_tile(tile_def(tileidx_ability(talents[i].which),
                                       TEX_GUI));
-#endif
                 if (!check_ability_possible(talents[i].which, true))
                 {
                     me->colour = COL_INAPPLICABLE;
-#ifdef USE_TILE
                     me->add_tile(tile_def(TILEI_MESH, TEX_ICONS));
-#endif
                 }
                 else if (_check_ability_dangerous(talents[i].which, true))
                     me->colour = COL_DANGEROUS;

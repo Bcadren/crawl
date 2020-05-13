@@ -956,9 +956,7 @@ bool stack_five(int slot)
     for (unsigned int i = 0; i < draws.size(); i++)
     {
         MenuEntry * const entry = new MenuEntry(card_name(draws[i]), MEL_ITEM, 1, '1'+i);
-#ifdef USE_TILE
-        entry->add_tile(tile_def(TILE_MISC_CARD, TEX_DEFAULT));
-#endif
+        entry->add_tile(tile_def(TILE_MISC_CARD, TEX_GUI));
         menu.add_entry(entry);
     }
     menu.set_more(formatted_string::parse_string(

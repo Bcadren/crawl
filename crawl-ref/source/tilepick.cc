@@ -1031,7 +1031,6 @@ tileidx_t tileidx_tentacle(const monster_info& mon)
     return TILEP_MONS_PROGRAM_BUG;
 }
 
-#ifdef USE_TILE
 tileidx_t tileidx_out_of_bounds(int branch)
 {
     if (branch == BRANCH_SHOALS)
@@ -1040,6 +1039,7 @@ tileidx_t tileidx_out_of_bounds(int branch)
         return TILE_DNGN_UNSEEN | TILE_FLAG_UNSEEN;
 }
 
+#ifdef USE_TILE
 void tileidx_out_of_los(tileidx_t *fg, tileidx_t *bg, tileidx_t *cloud, const coord_def& gc)
 {
     // Player memory.
@@ -1080,6 +1080,7 @@ void tileidx_out_of_los(tileidx_t *fg, tileidx_t *bg, tileidx_t *cloud, const co
 
     *cloud = mem_cloud;
 }
+#endif
 
 static tileidx_t _zombie_tile_to_spectral(const tileidx_t z_tile)
 {
@@ -1678,6 +1679,7 @@ enum class tentacle_type
     spectral_kraken = 6,
 };
 
+#ifdef USE_TILE
 static void _add_tentacle_overlay(const coord_def pos,
                                   const main_dir dir,
                                   tentacle_type type)
@@ -2196,6 +2198,7 @@ tileidx_t tileidx_monster(const monster_info& mons)
 
     return ch;
 }
+#endif
 
 static tileidx_t tileidx_draco_base(monster_type draco)
 {
@@ -2226,6 +2229,7 @@ tileidx_t tileidx_demonspawn_job(const monster_info& mon)
     return 0;
 }
 
+#ifdef USE_TILE
 /**
  * Return the monster tile used for the player based on a monster type.
  *
@@ -2260,6 +2264,7 @@ tileidx_t tileidx_player_mons()
     default:                   return tileidx_monster_base(mons, 0);
     }
 }
+#endif
 
 static tileidx_t _tileidx_unrand_artefact(int idx)
 {
@@ -3593,8 +3598,10 @@ tileidx_t tileidx_command(const command_type cmd)
         return TILEG_CMD_KNOWN_ITEMS;
     case CMD_SAVE_GAME_NOW:
         return TILEG_CMD_SAVE_GAME_NOW;
+#ifdef USE_TILE
     case CMD_EDIT_PLAYER_TILE:
         return TILEG_CMD_EDIT_PLAYER_TILE;
+#endif
     case CMD_DISPLAY_COMMANDS:
         return TILEG_CMD_DISPLAY_COMMANDS;
     case CMD_LOOKUP_HELP:
@@ -4522,6 +4529,7 @@ tileidx_t tileidx_enchant_equ(const item_def &item, tileidx_t tile, bool player)
     return tile;
 }
 
+#ifdef USE_TILE
 string tile_debug_string(tileidx_t fg, tileidx_t bg, char prefix)
 {
     tileidx_t fg_idx = fg & TILE_FLAG_MASK;
@@ -4572,6 +4580,7 @@ string tile_debug_string(tileidx_t fg, tileidx_t bg, char prefix)
 
     return tile_string;
 }
+#endif
 
 void bind_item_tile(item_def &item)
 {
@@ -4607,7 +4616,6 @@ void bind_item_tile(item_def &item)
             item.props["worn_tile"] = short(index);
     }
 }
-#endif
 
 void tile_init_props(monster* mon)
 {
