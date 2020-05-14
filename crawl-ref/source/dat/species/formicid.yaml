@@ -38,6 +38,10 @@ mutations:
     MUT_STASIS: 1
     MUT_BURROWING: 1
     MUT_MULTIARM: 1
+fake_mutations:
+# BCADDO: Make a real mutation (or piggyback on burrowing)
+  - long: Shaft traps can't make you fall very far.
+    short: reduced fall distance
 recommended_jobs:
   - JOB_FIGHTER
   - JOB_HUNTER
