@@ -1608,6 +1608,10 @@ static void _create_acquirement_item(item_def &item)
         }
     }
 
+    // We're now safe to make any notes about finding the item.
+    unset_ident_flags(item, ISFLAG_NOTED_ID | ISFLAG_NOTED_GET);
+    set_ident_type(item, true);
+
     if (copy_item_to_grid(item, you.pos()))
         canned_msg(MSG_SOMETHING_APPEARS);
     else
@@ -1708,7 +1712,9 @@ static item_def _acquirement_item_def(object_class_type item_type)
 
         // We make a copy of the item def, but we don't keep the real item.
         item = mitm[item_index];
-        set_ident_flags(item, ISFLAG_IDENT_MASK);
+        set_ident_flags(item,
+                // Act as if we've recieved this item already to prevent notes.
+                ISFLAG_IDENT_MASK | ISFLAG_NOTED_ID | ISFLAG_NOTED_GET);
         destroy_item(item_index);
     }
 
