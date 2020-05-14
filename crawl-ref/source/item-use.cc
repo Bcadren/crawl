@@ -4357,7 +4357,7 @@ void read_scroll(item_def& scroll)
             break;
         }
 
-        run_uncancel(UNC_ACQUIREMENT, AQ_SCROLL);
+        cancel_scroll = !acquirement_menu();
         break;
 
     case SCR_FEAR:
@@ -4532,7 +4532,6 @@ void read_scroll(item_def& scroll)
     }
 
     if (!alreadyknown
-        && which_scroll != SCR_ACQUIREMENT
         && which_scroll != SCR_BLESS_ITEM
         && which_scroll != SCR_ENCHANT
 #if TAG_MAJOR_VERSION == 34

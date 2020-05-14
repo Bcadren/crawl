@@ -43,11 +43,6 @@ void run_uncancels()
 
         switch (you.uncancel[act].first)
         {
-        case UNC_ACQUIREMENT:
-            if (!acquirement_menu() && crawl_state.seen_hups)
-                return;
-            break;
-
         case UNC_DRAW_THREE:
             if (!draw_three(arg) && crawl_state.seen_hups)
                 return;
@@ -62,6 +57,8 @@ void run_uncancels()
         case UNC_MERCENARY:
             if (!recruit_mercenary(arg) && crawl_state.seen_hups)
                 return;
+
+        case UNC_ACQUIREMENT:
             break;
 #endif
 
