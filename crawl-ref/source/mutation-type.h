@@ -102,7 +102,9 @@ enum mutation_type
     MUT_STRONG, // Not a true mutation, used by a potion.
     MUT_STATS,
     MUT_TELEPORT,
+#if TAG_MAJOR_VERSION == 34
     MUT_TELEPORT_CONTROL,
+#endif
     MUT_TORMENT_RESISTANCE,
     MUT_MULTIARM,
     MUT_ROTTING_BODY,
@@ -124,8 +126,8 @@ enum mutation_type
     MUT_MANA_REGENERATION,
     MUT_MANA_LINK,
     MUT_PETRIFICATION_RESISTANCE,
-    MUT_TRAMPLE_RESISTANCE,
 #if TAG_MAJOR_VERSION == 34
+    MUT_TRAMPLE_RESISTANCE,
     MUT_CLING,
     MUT_FUMES,
     MUT_JUMP,
