@@ -1539,7 +1539,9 @@ msg_condense_short = true
 
 show_travel_trail = false (defaults to true for online servers)
         When set to true, the path taken during autoexplore or travel
-        will be highlighted. If a travel trail is currently being displayed,
+        will be highlighted. The console colour and glyph of the travel trail
+        can be further configured using the feature option to override the
+        "travel trail" feature. If a travel trail is currently being displayed,
         the Clear Map command (Ctrl-C) clears the trail instead of the map
         (pressing it a second time then clears the map as usual).
 
@@ -2880,3 +2882,41 @@ The above caveat applies to the "wiz_mode" option as well. Instead of
 conditionalized wiz_mode, you can add to the command line
 "-extra-opt-last wiz_mode=yes" to make any new game start in wizard
 mode.
+
+7-  Recommended Options for Blind Players.
+==========================================
+
+The following settings are recommended to facilitate using crawl in console
+with a screenreader.
+
+Disable animations and view delays so the screen updates immediately after each
+command:
+    view_delay = 0
+    travel_delay = -1
+    rest_delay = -1
+    use_animations = 0
+
+Place messages at the top of the screen and remove message condensing for
+easier screen reading:
+    messages_at_top = true
+    clear_messages = true
+    msg_condense_short = false
+
+Make the player cursor easier to track with screen reading, by setting a custom
+symbol for the player:
+    use_fake_player_curosr = false
+    show_player_species = false
+    mon_glyph += player:x263A
+
+Use mouse input clicks for automove (see the discussion of the mouse_input
+option for terminal configuration specifics):
+    mouse_input = true
+
+List playe-relative coordinates in the ^x display:
+    monster_item_view_coordinates = true
+
+Mark the path taken by auto-travel and the exploration horizon with special
+characters:
+    show_travel_trail = true
+    feature += travel trail {x25AA}
+    feature += explore horizon {x25AB}
