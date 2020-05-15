@@ -1319,6 +1319,15 @@ void dungeon_terrain_changed(const coord_def &pos,
         mpr("A porticulus slams shut!");
     }
 
+    if (feat_is_trap(nfeat) && env.trap.find(pos) == env.trap.end())
+    {
+        // TODO: create a trap_def in env for this case?
+        mprf(MSGCH_ERROR,
+            "Attempting to change terrain to a trap without a corresponding"
+            " trap_def!");
+        nfeat = DNGN_FLOOR;
+    }
+
     _dgn_check_terrain_covering(pos, grd(pos), nfeat);
 
     if (nfeat != DNGN_UNSEEN)
