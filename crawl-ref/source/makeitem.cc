@@ -1125,12 +1125,16 @@ special_armour_type generate_armour_type_ego(armour_type type)
     case ARM_BOOTS:
         return random_choose_weighted(1, SPARM_RUNNING, 
                                       2, SPARM_STURDY,
+                                      3, SPARM_LUNGING
                                       3, SPARM_INSULATION,
                                       4, SPARM_STEALTH);
 
     // Total Weight: 15.
-    case ARM_NAGA_BARDING:
     case ARM_CENTAUR_BARDING:
+        if (one_chance_in(7))
+            return SPARM_LUNGING;
+        // else fallthrough.
+    case ARM_NAGA_BARDING:
         return random_choose_weighted(5, SPARM_STEALTH,
                                       3, SPARM_COLD_RESISTANCE, 
                                       3, SPARM_FIRE_RESISTANCE,
@@ -1256,6 +1260,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         // deliberate fall-through
     case SPARM_RUNNING:
     case SPARM_STURDY:
+    case SPARM_LUNGING:
         return slot == EQ_BOOTS || slot == EQ_BARDING;
     case SPARM_STEALTH:
         return slot == EQ_BOOTS || slot == EQ_BARDING || slot == EQ_CLOAK;

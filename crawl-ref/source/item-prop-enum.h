@@ -533,6 +533,7 @@ enum special_armour_type
     SPARM_STURDY,
     SPARM_HARM,
     SPARM_SHADOWS,
+    SPARM_LUNGING,
     NUM_REAL_SPECIAL_ARMOURS,
     NUM_SPECIAL_ARMOURS,
 };
