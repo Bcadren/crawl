@@ -1080,7 +1080,6 @@ void tileidx_out_of_los(tileidx_t *fg, tileidx_t *bg, tileidx_t *cloud, const co
 
     *cloud = mem_cloud;
 }
-#endif
 
 static tileidx_t _zombie_tile_to_spectral(const tileidx_t z_tile)
 {
@@ -1532,6 +1531,7 @@ static bool _bow_offset(const monster_info& mon)
         return true;
     }
 }
+#endif
 
 static tileidx_t _mon_mod(tileidx_t tile, int offset)
 {
@@ -1545,6 +1545,7 @@ tileidx_t tileidx_mon_clamp(tileidx_t tile, int offset)
     return tile + min(max(offset, 0), count - 1);
 }
 
+#ifdef USE_TILE
 // actually, a triangle wave, but it's up to the actual tiles
 static tileidx_t _mon_sinus(tileidx_t tile)
 {
@@ -1554,6 +1555,7 @@ static tileidx_t _mon_sinus(tileidx_t tile)
     int n = you.frame_no % (2 * count - 2);
     return (n < count) ? (tile + n) : (tile + 2 * count - 2 - n);
 }
+#endif
 
 static tileidx_t _mon_cycle(tileidx_t tile, int offset)
 {
