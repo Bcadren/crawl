@@ -329,7 +329,7 @@ void open_door_action(coord_def move)
         else
         {
             delta = prompt_compass_direction();
-            if (delta == coord_def(-1, -1))
+            if (delta.origin())
                 return;
         }
     }
@@ -423,14 +423,8 @@ void close_door_action(coord_def move)
         else
         {
             delta = prompt_compass_direction();
-            if (delta == coord_def(-1, -1))
+            if (delta.origin())
                 return;
-        }
-
-        if (delta.origin())
-        {
-            mpr("You can't close doors on yourself!");
-            return;
         }
     }
     else
