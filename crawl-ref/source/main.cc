@@ -2325,9 +2325,12 @@ static command_type _get_next_cmd()
 // real ones.
 static command_type _keycode_to_command(keycode_type key)
 {
+#ifndef USE_TILE_LOCAL
     // ignore all input if the terminal is too small
     if (crawl_state.smallterm)
         return CMD_NEXT_CMD;
+#endif
+
     switch (key)
     {
 #ifdef USE_TILE
