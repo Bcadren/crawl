@@ -68,13 +68,13 @@
 #include "state.h"
 #include "stringutil.h" // to_string on Cygwin
 #include "terrain.h"
+#include "tilepick.h"
 #ifdef USE_TILE_LOCAL
  #include "tilereg-crt.h"
  #include "rltiles/tiledef-dngn.h"
 #endif
 #ifdef USE_TILE
  #include "rltiles/tiledef-feat.h"
- #include "tilepick.h"
  #include "tileview.h"
  #include "tile-flags.h"
 #endif
@@ -4103,12 +4103,8 @@ void describe_ability(ability_type ability)
     describe_info inf;
     inf.title = ability_name(ability);
     inf.body << get_ability_desc(ability, false);
-#ifdef USE_TILE
     tile_def tile = tile_def(tileidx_ability(ability), TEX_GUI);
     show_description(inf, &tile);
-#else
-    show_description(inf);
-#endif
 }
 
 
@@ -5787,12 +5783,8 @@ void describe_skill(skill_type skill)
     describe_info inf;
     inf.title = skill_name(skill);
     inf.body << get_skill_description(skill, false);
-#ifdef USE_TILE
     tile_def tile = tile_def(tileidx_skill(skill, TRAINING_ENABLED), TEX_GUI);
     show_description(inf, &tile);
-#else
-    show_description(inf);
-#endif
 }
 
 // only used in tiles
