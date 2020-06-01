@@ -4186,10 +4186,6 @@ void melee_attack::do_passive_freeze()
                                 absorb ? "the freezing" : "very",
                                 attack_strength_punctuation(hurted).c_str());
 
-#ifndef USE_TILE_LOCAL
-        flash_monster_colour(attacker->as_monster(), LIGHTBLUE, 200);
-#endif
-
         if (absorb)
             attacker->heal(hurted, true);
         else
