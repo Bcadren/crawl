@@ -29,6 +29,7 @@
 #include "fprop.h"
 #include "god-abil.h"      // Silver Draconian EMPOWERED breath.
 #include "god-conduct.h"
+#include "god-passive.h"
 #include "invent.h"
 #include "item-prop.h"
 #include "items.h"
@@ -1329,8 +1330,13 @@ spret cast_airstrike(int pow, const dist &beam, bool fail)
         return spret::abort;
     }
 
-    if (stop_attack_prompt(mons, false, you.pos()))
+    if (!(have_passive(passive_t::shoot_through_plants)
+          && fedhas_protects(mons))
+        && stop_attack_prompt(mons, false, you.pos()))
+    {
         return spret::abort;
+    }
+
     fail_check();
 
     noisy(spell_effect_noise(SPELL_AIRSTRIKE), beam.target);
@@ -1772,7 +1778,14 @@ static void _shatter_chaos(actor * agent, int pow)
 spret cast_shatter(int pow, bool fail)
 {
     targeter_radius hitfunc(&you, LOS_ARENA);
-    if (stop_attack_prompt(hitfunc, "attack", _shatterable))
+    auto vulnerable = [](const actor *act) -> bool
+    {
+        return !act->is_player()
+               && !(have_passive(passive_t::shoot_through_plants)
+                    && fedhas_protects(act->as_monster()))
+               && _shatterable(act);
+    };
+    if (stop_attack_prompt(hitfunc, "attack", vulnerable))
         return spret::abort;
 
     fail_check();

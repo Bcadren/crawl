@@ -30,6 +30,7 @@
 #include "food.h"
 #include "god-abil.h"
 #include "god-conduct.h"
+#include "god-passive.h"
 #include "invent.h"
 #include "item-prop.h"
 #include "items.h"

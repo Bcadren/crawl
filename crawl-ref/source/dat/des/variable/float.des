@@ -9113,8 +9113,6 @@ MAP
   ccccccc.E....cccccccccc
   ccccccccEcc^ccccccccccc
      ccccccccccccccc
-      cccccccccccc
-       cccccccccc
 ENDMAP
 
 NAME: gammafunk_dig_for_victory
@@ -9122,7 +9120,7 @@ TAGS: no_monster_gen no_item_gen no_trap_gen
 # Must not place on a branch end so it can place downhatch
 DEPTH: Crypt, D:7-, Depths, Pan, Zot
 ORIENT: float
-KPROP:  1DEFHJKR|*$efm = no_tele_into
+KPROP: 1DEFHJKR|*$efm = no_tele_into
 {{
 -- Guarantee at least 5 charges, and on-average give 50% more than usual.
 item("wand of enslavement charges:" .. tostring(5 + crawl.random2(6)) ..
