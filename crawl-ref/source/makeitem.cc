@@ -282,6 +282,15 @@ static bool _try_make_weapon_artefact(item_def& item, int force_type,
         {
             if (_try_make_item_unrand(item, force_type, agent))
                 return true;
+            if (item.base_type == OBJ_STAVES)
+            {
+                // TODO: this is a bit messy: a fallback randart for an unrand
+                // enhancer stave can be generated this way, and this code won't
+                // currently respect an explicit request for an enhancer stave
+                // as a fallback.
+                item.base_type = OBJ_WEAPONS;
+                force_type = WPN_QUARTERSTAFF;
+            }
             // update sub type for fallback randarts (otherwise, the call will
             // not have changed this value)
             if (force_type != OBJ_RANDOM)
@@ -1920,6 +1929,22 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
         int spl_level  = random_range(1, max_level);
         make_book_level_randart(item, spl_level);
     }
+}
+
+static stave_type _get_random_stave_type()
+{
+    stave_type r;
+    do
+    {
+        r = static_cast<stave_type>(random2(NUM_STAVES));
+    }
+    while (item_type_removed(OBJ_STAVES, r));
+
+    // staves of energy are 25% less common, wizardry is more common
+    if (r == STAFF_ENERGY && one_chance_in(4))
+        r = STAFF_WIZARDRY;
+
+    return r;
 }
 
 static void _generate_staff_item(item_def& item, bool allow_uniques,
