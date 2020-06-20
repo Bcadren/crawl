@@ -213,17 +213,16 @@ the bolt's destination.
 %%%%
 Bolt of Cold spell
 
-Fires a penetrating bolt of frost. The range of the bolt is decreased by one for
-every creature it strikes.
+Fires a penetrating bolt of frost.
 %%%%
 Bolt of Draining spell
 
-Fires a penetrating bolt of negative energy, which drains any living creature
-it strikes. The range of the bolt is decreased by one for every creature it
-hits.
+Fires a penetrating bolt of negative energy which drains any living creature
+it strikes.
 %%%%
 Bolt of Fire spell
 
+<<<<<<< HEAD
 Fires a penetrating bolt of flames. The range of the bolt is decreased by one
 for every creature it strikes. Shares spellslots with the related spell 
 'Starburst'.
@@ -237,12 +236,14 @@ Lesser Chaos Bolt spell
 
 Fires a penetrating bolt of seething chaos; dealing damage of a random type and 
 buffing or debuffing each creature it strikes.
+=======
+Fires a penetrating bolt of flames.
+>>>>>>> a5a6b74a87 (Don't reduce beam range on hit)
 %%%%
 Bolt of Magma spell
 
 Fires a penetrating bolt of molten rock. A portion of its damage bypasses
-fire resistance. The range of the bolt is decreased by one for every creature
-it strikes.
+fire resistance.
 %%%%
 Borgnjor's Revivification spell
 
@@ -324,6 +325,7 @@ Exhales a large cloud of fumes filled with the very essence of chaos.
 %%%%
 Chilling Breath spell
 
+<<<<<<< HEAD
 Exhales a blast of frost that slows more than the average cold attack. The range 
 of the blast is decreased by one for every creature it strikes.
 %%%%
@@ -332,6 +334,9 @@ Cigotuvi's Degeneration Spell
 Infects a living or corporeal undead target with a malignant cancerous growth. 
 After a relatively short duration, the target will succumb to this cancer and 
 the growth will become a slime-like ally for the player until it loses cohesion.
+=======
+Exhales a blast of frost that may knock back airborne targets.
+>>>>>>> a5a6b74a87 (Don't reduce beam range on hit)
 %%%%
 Cleansing Flame spell
 
@@ -348,7 +353,6 @@ become available.
 Cold Breath spell
 
 Exhales a focused blast of icy-cold air. It may knock back airborne targets.
-The range of the blast is decreased by one for every creature it strikes.
 %%%%
 Confuse spell
 
@@ -408,8 +412,7 @@ a high chance of spawning giant blowflies which feed on rot and decay.
 %%%%
 Corrosive Bolt spell
 
-Fires a penetrating bolt of acid. The range of the bolt is decreased by one for
-every creature it strikes.
+Fires a penetrating bolt of acid.
 %%%%
 Corrupting Pulse spell
 
@@ -421,8 +424,7 @@ Crystal Bolt spell
 
 Projects a penetrating projectile with peculiar magical properties. It is
 randomly imbued with either fire or ice, and additionally will reflect from
-walls of any material due to the crystal embedded in the shot. The range of the
-bolt is decreased by one for every creature it strikes.
+walls of any material due to the crystal embedded in the shot.
 %%%%
 Darkness spell
 
@@ -591,8 +593,7 @@ Throws a bolt of electricity at the target, with high accuracy.
 %%%%
 Energy Bolt spell
 
-Fires a bolt of highly destructive energy. The range of the bolt is decreased
-by one for every creature it strikes.
+Fires a bolt of highly destructive energy.
 %%%%
 Enslavement spell
 
@@ -639,8 +640,7 @@ ineffective against unnatural targets.
 %%%%
 Fire Breath spell
 
-Breathes a blast of fire at a targeted creature. The range of the blast is
-decreased by one for every creature it strikes.
+Breathes a blast of fire at a targeted creature.
 %%%%
 Fire Storm spell
 
@@ -1109,8 +1109,7 @@ shorter time.
 Metal Splinters spell
 
 Fires a directed stream of sharp metal splinters. Its damage is strongly
-reduced by armour. The range of the stream is decreased by one for every
-creature it strikes.
+reduced by armour.
 %%%%
 Methodical Deconstruction spell
 
@@ -1598,6 +1597,7 @@ Causes the caster to move across terrain more rapidly for a short duration.
 Starburst spell
 
 Releases penetrating bolts of fire from the caster in every direction.
+<<<<<<< HEAD
 The range of each bolt is decreased by one for every creature
 it strikes. Shares spellslots with the related spell 'Bolt of Fire'.
 %%%%
@@ -1605,6 +1605,8 @@ Bolt Burst spell
 
 Releasing penetrating bolts of random elements from the caster in every direction.
 The range of each bolt is decreased by one for every creature it strikes.
+=======
+>>>>>>> a5a6b74a87 (Don't reduce beam range on hit)
 %%%%
 Static Discharge spell
 
@@ -1631,8 +1633,7 @@ While transformed, any equipped body armour, gloves and boots are melded.
 %%%%
 Steam Ball spell
 
-Throws a ball of hot steam towards a targeted creature. The range of the ball
-is decreased by one for every creature it strikes.
+Throws a ball of hot steam towards a targeted creature.
 %%%%
 Sticks to Snakes spell
 
@@ -2004,8 +2005,7 @@ Life will not be drained in excess of what the caster can capably absorb.
 %%%%
 Venom Bolt spell
 
-Fires a penetrating bolt of poison. The range of the bolt is decreased by one
-for every creature it strikes.
+Fires a penetrating bolt of poison.
 %%%%
 Virulence spell
 

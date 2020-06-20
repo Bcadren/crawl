@@ -6632,36 +6632,31 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
 // Extra range used on hit.
 int bolt::range_used_on_hit() const
 {
-    int used = 0;
+    if (is_tracer && source_id == MID_PLAYER && hit < AUTOMATIC_HIT)
+        return 0;
 
     // Non-beams can only affect one thing (player/monster).
     if (!pierce)
-        used = BEAM_STOP;
-    else if (is_enchantment() && name != "line pass")
-        used = (flavour == BEAM_DIGGING ? 0 : BEAM_STOP);
-    // Hellfire stops for nobody!
-    else if (flavour == BEAM_DAMNATION)
-        used = 0;
-    // Generic explosion.
-    else if (is_explosion || is_big_cloud())
-        used = BEAM_STOP;
-    // Lightning goes through things.
-    else if (flavour == BEAM_ELECTRICITY)
-        used = 0;
-    else
-        used = 1;
+        return BEAM_STOP;
 
-    // Assume we didn't hit, after all.
-    if (is_tracer && source_id == MID_PLAYER && used > 0
-        && hit < AUTOMATIC_HIT)
+    // These beams fully penetrate regardless of anything else.
+    if (flavour == BEAM_DAMNATION
+        || flavour == BEAM_DIGGING
+        || flavour == BEAM_VILE_CLUTCH)
     {
         return 0;
     }
 
-    if (in_explosion_phase)
-        return used;
+    // explosions/clouds and enchants that aren't Line Pass stop.
+    if (is_enchantment() && name != "line pass"
+        || is_explosion
+        || is_big_cloud())
+    {
+        return BEAM_STOP;
+    }
 
-    return used;
+    // Lightning that isn't an explosion goes through things.
+    return 0;
 }
 
 // Information for how various explosions look & sound.
