@@ -38,6 +38,11 @@ Conjurer
 
 Conjurers confront problems with damaging spells.
 %%%%
+Delver
+
+Delvers start their quest five levels below the surface. A set of powerful magic
+items helps them survive the dangerous journey upward.
+%%%%
 Earth Elementalist
 
 Earth Elementalists know the Sandblast spell. More earthen spells are in their 

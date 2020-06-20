@@ -206,11 +206,10 @@ static void _initialize()
 *
 *  Doesn't affect monsters behind glass, only those that would
 *  immediately have line-of-fire.
-*
-*  @param items_also whether to zap items as well as monsters.
 */
-static void _zap_los_monsters(bool items_also)
+static void _zap_los_monsters()
 {
+    const bool items_also = Hints.hints_events[HINT_SEEN_FIRST_OBJECT];
     for (radius_iterator ri(you.pos(), LOS_SOLID); ri; ++ri)
     {
         if (items_also)
@@ -221,10 +220,8 @@ static void _zap_los_monsters(bool items_also)
                 destroy_item(item);
         }
 
-        // If we ever allow starting with a friendly monster,
-        // we'll have to check here.
         monster* mon = monster_at(*ri);
-        if (mon == nullptr || !mons_is_threatening(*mon))
+        if (mon == nullptr || !mons_is_threatening(*mon) || mon->friendly())
             continue;
 
         dprf("Dismissing %s",
@@ -275,7 +272,7 @@ static void _post_init(bool newc)
 
         you.entering_level = false;
         you.transit_stair = DNGN_UNSEEN;
-        you.depth = 1;
+        you.depth = starting_absdepth();
         you.where_are_you = root_branch;
 
         if (!crawl_state.game_is_sprint())
@@ -294,7 +291,8 @@ static void _post_init(bool newc)
     level_id old_level;
     old_level.branch = NUM_BRANCHES;
 
-    load_level(you.entering_level ? you.transit_stair : DNGN_STONE_STAIRS_DOWN_I,
+    load_level(you.entering_level ? you.transit_stair :
+               you.char_class == JOB_DELVER ? DNGN_STONE_STAIRS_UP_I : DNGN_STONE_STAIRS_DOWN_I,
                you.entering_level ? LOAD_ENTER_LEVEL :
                newc               ? LOAD_START_GAME : LOAD_RESTART_GAME,
                old_level);
@@ -360,7 +358,7 @@ static void _post_init(bool newc)
     {
         // For a new game, wipe out monsters in LOS, and
         // for new hints mode games also the items.
-        _zap_los_monsters(Hints.hints_events[HINT_SEEN_FIRST_OBJECT]);
+        _zap_los_monsters();
     }
 
     // This just puts the view up for the first turn.
