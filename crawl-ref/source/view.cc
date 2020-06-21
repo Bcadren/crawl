@@ -1503,15 +1503,16 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
     cell->flash_colour = BLACK;
 #endif
 
+#ifndef USE_TILE_LOCAL
     // Don't hide important information by recolouring monsters.
     bool allow_mon_recolour = query_map_knowledge(true, gc, [](const map_cell& m) {
         return m.monster() == MONS_NO_MONSTER || mons_class_is_firewood(m.monster());
     });
+#endif
 
     // Is this cell excluded from movement by mesmerise-related statuses?
     // MAP_WITHHELD is set in `show.cc:_update_feat_at`.
     bool mesmerise_excluded = (gc != you.pos() // for fungus form
-                               && allow_mon_recolour
                                && map_bounds(gc)
                                && you.on_current_level
                                && (env.map_knowledge(gc).flags & MAP_WITHHELD)
@@ -1537,7 +1538,10 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
         if ((crawl_state.darken_range->obeys_mesmerise && mesmerise_excluded)
             || (!crawl_state.darken_range->valid_aim(gc)))
         {
-            cell->colour = DARKGREY;
+#ifndef USE_TILE_LOCAL
+            if (allow_mon_recolour)
+                cell->colour = DARKGREY;
+#endif
 #ifdef USE_TILE
             if (you.see_cell(gc))
                 cell->tile.bg |= TILE_FLAG_OOR;
@@ -1563,7 +1567,10 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
     }
     else if (mesmerise_excluded) // but no range limits in place
     {
-        cell->colour = DARKGREY;
+#ifndef USE_TILE_LOCAL
+        if (allow_mon_recolour)
+            cell->colour = DARKGREY;
+#endif
 
 #ifdef USE_TILE
         // Only grey out tiles within LOS; out-of-LOS tiles are already
