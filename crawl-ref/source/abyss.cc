@@ -677,7 +677,6 @@ static void _push_items()
             if (!_pushy_feature(grd(*di)))
             {
                 int j = i;
-                ASSERT(!testbits(item.flags, ISFLAG_SUMMONED));
                 move_item_to_grid(&j, *di, true);
                 break;
             }
