@@ -1471,8 +1471,7 @@ static void _equip_amulet_of_mana_regeneration()
     }
     else
     {
-        mpr("You sense that the amulet cannot attune itself to your exhausted"
-            " body.");
+        mpr("The amulet cannot attune itself to your exhausted body.");
         you.props[MANA_REGEN_AMULET_ACTIVE] = 0;
     }
 }
@@ -1486,7 +1485,7 @@ static void _equip_amulet_of_reflection()
         mpr("You feel a shielding aura gather around you.");
     }
     else
-        mpr("Your injuries prevent the amulet from attuning itself.");
+        mpr("The amulet cannot attune itself to your injured body.");
 }
 
 static void _equip_jewellery_effect(item_def &item, bool unmeld,
