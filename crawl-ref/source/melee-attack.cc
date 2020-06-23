@@ -75,9 +75,8 @@ melee_attack::melee_attack(actor *attk, actor *defn,
                            bool is_cleaving)
     :  // Call attack's constructor
     ::attack(attk, defn),
-    
     effective_attack_number(effective_attack_num),
-    cleaving(is_cleaving), is_riposte(false),
+    cleaving(is_cleaving), is_riposte(false), roll_dist(0),
     wu_jian_attack(WU_JIAN_ATTACK_NONE),
     wu_jian_number_of_targets(1)
 {
@@ -1981,6 +1980,12 @@ int melee_attack::player_apply_final_multipliers(int damage)
 
     // martial damage modifier (wu jian)
     damage = martial_damage_mod(damage);
+
+    // Rock Troll rolling charge bonus
+    if (roll_dist > 0) {
+        // + 1/3rd base per distance rolled, up to double at dist 3.
+        damage += damage * roll_dist / 3;
+    }
 
     // not additive, statues are supposed to be bad with tiny toothpicks but
     // deal crushing blows with big weapons

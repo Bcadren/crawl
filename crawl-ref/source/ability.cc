@@ -342,6 +342,8 @@ static const ability_def Ability_List[] =
     { ABIL_SPIDER_JUMP, "Spider Jump", 0, 0, 0, 0, {fail_basis::spider, 60, 8}, abflag::none },
     { ABIL_SPIDER_WEB, "Web Snare", 0, 0, 0, 0, {fail_basis::spider, 80, 6}, abflag::none },
 
+    { ABIL_ROLLING_CHARGE, "Rolling Charge", 0, 0, 500, 0, {}, abflag::none },
+
     // EVOKE abilities use Evocations and come from items.
     // Teleportation and Blink can also come from mutations
     // so we have to distinguish them (see above). The off items
@@ -2185,6 +2187,9 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         }
         else
             return spret::abort;
+
+    case ABIL_ROLLING_CHARGE:
+        return rolling_charge(fail);
 
     case ABIL_SPIT_POISON:      // Naga poison spit
     {
@@ -4073,6 +4078,9 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_FROG_LEGS, false) && (form_keeps_mutations() && !you.mounted() || include_unusable))
         _add_talent(talents, ABIL_HOP, check_confused);
+
+    if (you.get_mutation_level(MUT_ROLL))
+        _add_talent(talents, ABIL_ROLLING_CHARGE, check_confused);
 
     // Spit Poison, possibly upgraded to Breathe Poison.
     if (you.get_mutation_level(MUT_SPIT_POISON) == 2)

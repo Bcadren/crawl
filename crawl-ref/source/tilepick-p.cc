@@ -1319,6 +1319,7 @@ tileidx_t tilep_species_to_base_tile(int sp, int drac_colour)
         return TILEP_BASE_HUMAN;
     case SP_OGRE:
         return TILEP_BASE_OGRE;
+    case SP_ROCK_TROLL: // placeholder
     case SP_TROLL:
         return TILEP_BASE_TROLL;
     case SP_DRACONIAN:

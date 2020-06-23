@@ -729,6 +729,14 @@ static const mutation_def mut_data[] =
   {"The webbing on your feet shrivels and dries.", "Your legs feel weaker.", ""},
 },
 
+{ MUT_ROLL, 0, 1, mutflag::good, true,
+  "roll",
+
+  {"You can roll at foes to attack.", "", ""},
+  {"", "", ""},
+  {"", "", ""},
+},
+
 { MUT_HIGH_MAGIC, 15, 2, mutflag::good, false,
   "high mp",
 

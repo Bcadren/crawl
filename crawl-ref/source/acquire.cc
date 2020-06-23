@@ -120,8 +120,8 @@ M filtered_vector_select(vector<pair<M, int>> weights, function<bool(M)> filter)
  * For most races, even odds for all armour slots when acquiring, or 50-50
  * split between body armour/aux armour when getting god gifts.
  *
- * Centaurs & nagas get a high extra chance for bardings, especially if they
- * haven't seen any yet.
+ * Nagas and centaurs get a high extra chance for bardings, especially if they haven't
+ * seen any yet.
  *
  * Guaranteed to be wearable, in principle.
  *

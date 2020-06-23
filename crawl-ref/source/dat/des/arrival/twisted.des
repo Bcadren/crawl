@@ -806,6 +806,7 @@ XXxxxxxxx'xxxxx'x'JxxXX   XXxxGHIx@
       XXXXXX XXXXXXXXX     XXxxxxx
 ENDMAP
 
+# BCADDO: Update this 'corpseless' function too.
 NAME: nicolae_arrival_memento_mori
 TAGS: arrival no_monster_gen no_trap_gen
 ORIENT: float
@@ -819,7 +820,7 @@ KMASK: uU = no_item_gen
 : local skeltype = "skeleton"
 : local yourname = string.gsub(you.name(), " ", "_")
 : -- The corpseless. Before the game starts, you.monster() is "program bug".
-: if (not crawl.game_started()) or race == "Vampire"
+: if (not crawl.game_started())
 :     or race == "Gargoyle" or race == "Vine Stalker"
 :     or race == "Fairy" or race == "Lignifite"
 :     or race == "Ghoul" or race == "Yak" then

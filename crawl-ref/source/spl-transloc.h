@@ -11,6 +11,7 @@ spret blink_bolt(bool fail = false, int power = 200);
 void uncontrolled_blink(bool override_stasis = false, coord_def disp_center = coord_def (0,0));
 spret controlled_blink(bool fail, bool safe_cancel = true, int power = 200);
 spret frog_hop(bool fail, bool spider = false);
+spret rolling_charge(bool fail);
 void wizard_blink();
 
 bool dangerous_terrain_seen();

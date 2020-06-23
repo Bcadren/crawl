@@ -142,6 +142,11 @@ Semi-humanoid intelligent masses of slime, Oozomorphs can reshape their bodies t
 use any combination of equipment. Extremely adaptable, they are equally capable in 
 melee combat and magic.
 %%%%
+Rock Troll
+
+A smaller relative of trolls, capable of using human-sized armours and known for 
+their rough craggy hide and ability to curl into a ball and roll.
+%%%%
 Spriggan
 
 Very small, very frail and very fast, Spriggans make highly competent stabbers

@@ -58,6 +58,9 @@ enum ability_type
     // Molten Gargoyle
     ABIL_BREATHE_MAGMA = 120,
 
+    // Rock Troll
+    ABIL_ROLLING_CHARGE = 130,
+
     // Mount actives
     ABIL_SPIDER_JUMP = 150,
     ABIL_SPIDER_WEB,

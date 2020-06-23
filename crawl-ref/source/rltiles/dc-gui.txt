@@ -251,6 +251,12 @@ base/fairy SP_RECOMMENDED_FAIRY
 %compose hair/short_black
 %finish SP_RECOMMENDED_CENTAUR
 %start
+%compose bottom/centaur_brown
+%compose base/human_f
+%compose body/animal_skin
+%compose hair/short_black
+%finish SP_RECOMMENDED_ROCK_TROLL
+%start
 %compose bottom/deep_elf_f
 %compose base/deep_elf_f
 %compose body/animal_skin
@@ -384,6 +390,7 @@ base/octopode1 SP_RECOMMENDED_OCTOPODE
 enum:SP_RECOMMENDED_FELID SP_FELID
 enum:SP_RECOMMENDED_FAIRY SP_FAIRY
 enum:SP_RECOMMENDED_CENTAUR SP_CENTAUR
+enum:SP_RECOMMENDED_ROCK_TROLL SP_ROCK_TROLL
 enum:SP_RECOMMENDED_DEEP_ELF SP_DEEP_ELF
 enum:SP_RECOMMENDED_BASE_DRACONIAN SP_DRACONIAN
 enum:SP_RECOMMENDED_FORMICID SP_FORMICID
