@@ -1025,9 +1025,9 @@ spret cast_conjure_ball_lightning(int pow, god_type god, bool fail)
 
     mgen_data cbl(chaos ? MONS_ENTROPIC_SPHERE : MONS_BALL_LIGHTNING, BEH_FRIENDLY, you.pos());
     cbl.set_summoned(&you, 0, SPELL_CONJURE_BALL_LIGHTNING, god);
-    cbl.hd = 5 + div_rand_round(pow, 20);
+    cbl.hd = max(1, div_rand_round(pow, 6) - 6);
 
-    for (int i = 0; i < how_many; ++i)
+    for (int i = 0; i < 3; ++i)
     {
         if (monster *ball = create_monster(cbl))
         {
