@@ -1286,6 +1286,8 @@ static bool _viewwindow_should_render()
     return !run_dont_draw;
 }
 
+void _view_clear_overlays();
+
 /**
  * Draws the main window using the character set returned
  * by get_show_glyph().
@@ -1356,9 +1358,9 @@ void viewwindow(bool show_updates, bool tiles_only, animation *a)
 #ifdef USE_TILE
             tile_draw_floor();
             tile_draw_rays(true);
-            tiles.clear_overlays();
             tile_draw_map_cells();
 #endif
+            _view_clear_overlays();
         }
 
         if (show_updates)
@@ -1394,6 +1396,44 @@ void viewwindow(bool show_updates, bool tiles_only, animation *a)
         if (_layers != LAYERS_ALL)
             show_init();
     }
+}
+
+#ifdef USE_TILE
+struct tile_overlay
+{
+    coord_def gc;
+    tileidx_t tile;
+};
+static vector<tile_overlay> tile_overlays;
+
+void view_add_tile_overlay(const coord_def &gc, tileidx_t tile)
+{
+    tile_overlays.push_back({gc, tile});
+}
+#endif
+
+#ifndef USE_TILE_LOCAL
+struct glyph_overlay
+{
+    coord_def gc;
+    cglyph_t glyph;
+};
+static vector<glyph_overlay> glyph_overlays;
+
+void view_add_glyph_overlay(const coord_def &gc, cglyph_t glyph)
+{
+    glyph_overlays.push_back({gc, glyph});
+}
+#endif
+
+void _view_clear_overlays()
+{
+#ifdef USE_TILE
+    tile_overlays.clear();
+#endif
+#ifndef USE_TILE_LOCAL
+    glyph_overlays.clear();
+#endif
 }
 
 /**
@@ -1552,6 +1592,21 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
         else if (is_excluded(gc))
             cell->colour = Options.tc_exclude_circle;
     }
+#endif
+
+#ifdef USE_TILE
+    for (const auto &overlay : tile_overlays)
+        if (overlay.gc == gc)
+            cell->tile.dngn_overlay[cell->tile.num_dngn_overlay++] = overlay.tile;
+#endif
+
+#ifndef USE_TILE_LOCAL
+    for (const auto &overlay : glyph_overlays)
+        if (overlay.gc == gc)
+        {
+            cell->glyph = overlay.glyph.ch;
+            cell->colour = overlay.glyph.col;
+        }
 #endif
 }
 
