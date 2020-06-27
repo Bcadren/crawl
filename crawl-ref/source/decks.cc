@@ -792,7 +792,7 @@ static void _describe_cards(vector<card_type> cards)
     auto title_hbox = make_shared<Box>(Widget::HORZ);
 #ifdef USE_TILE
         auto icon = make_shared<Image>();
-        icon->set_tile(tile_def(TILE_MISC_CARD, TEX_DEFAULT));
+        icon->set_tile(tile_def(TILE_MISC_CARD));
         title_hbox->add_child(move(icon));
 #endif
         auto title = make_shared<Text>(formatted_string(name, WHITE));
@@ -956,7 +956,7 @@ bool stack_five(int slot)
     for (unsigned int i = 0; i < draws.size(); i++)
     {
         MenuEntry * const entry = new MenuEntry(card_name(draws[i]), MEL_ITEM, 1, '1'+i);
-        entry->add_tile(tile_def(TILE_MISC_CARD, TEX_GUI));
+        entry->add_tile(tile_def(TILE_MISC_CARD));
         menu.add_entry(entry);
     }
     menu.set_more(formatted_string::parse_string(
