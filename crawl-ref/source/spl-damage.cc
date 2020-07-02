@@ -2916,7 +2916,7 @@ spret cast_cascade(const actor *agent, int pow, bool fail)
         // Icicle smites on each individual square.
         for (coord_def pos : blast_sources)
             beam_primary.explosion_draw_cell(pos);
-        update_screen();
+        viewwindow(false);
         scaled_delay(50);
 
         for (coord_def pos : blast_sources)
