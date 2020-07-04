@@ -322,8 +322,11 @@ void monster::add_enchantment_effect(const mon_enchant &ench, bool quiet)
 
     case ENCH_RING_OF_THUNDER:
         _place_thunder_ring(*this);
-        mprf(MSGCH_WARN, "A violent storm begins to rage around %s.",
-             name(DESC_THE).c_str());
+        if (you.see_cell(pos()))
+        {
+            mprf(MSGCH_WARN, "A violent storm begins to rage around %s.",
+                name(DESC_THE).c_str());
+        }
         break;
 
     case ENCH_VILE_CLUTCH:
