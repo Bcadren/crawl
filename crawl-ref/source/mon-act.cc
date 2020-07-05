@@ -985,7 +985,7 @@ static bool _handle_reaching(monster* mons)
     return ret;
 }
 
-static bool _holy_word_vulnerable(actor* victim)
+static bool _holy_word_vulnerable(const actor* victim)
 {
     return victim->undead_or_demonic();
 }
