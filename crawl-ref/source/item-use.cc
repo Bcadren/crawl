@@ -3060,7 +3060,9 @@ bool remove_ring(int slot, bool announce)
         return false;
     }
 
-    if (you.inv[you.equip[hand_used]].soul_bound())
+    const int removed_ring_slot = you.equip[hand_used];
+
+    if (you.inv[removed_ring_slot].soul_bound())
     {
         if (announce)
         {
@@ -3073,9 +3075,7 @@ bool remove_ring(int slot, bool announce)
         set_ident_flags(you.inv[you.equip[hand_used]], ISFLAG_KNOW_CURSE);
         return false;
     }
-
-    const int removed_ring_slot = you.equip[hand_used];
-
+    
     if (!_safe_to_remove_or_wear(you.inv[removed_ring_slot], true))
         return false;
 
