@@ -165,10 +165,6 @@ static void _wizard_make_friendly(monster* m)
         break;
     }
     mons_att_changed(m);
-
-    // To update visual branding of friendlies. Only seems capabable
-    // of adding bolding, not removing it, though.
-    viewwindow();
 }
 #endif
 
