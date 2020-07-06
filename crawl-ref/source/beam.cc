@@ -2083,47 +2083,31 @@ void fire_tracer(const actor* act, bolt &pbolt, bool explode_only,
     pbolt.is_tracer = false;
 }
 
-static coord_def _random_point_hittable_from(const coord_def &c,
-                                            int base_radius,
-                                            int margin = 1,
-                                            int tries = 5)
+vector<coord_def> create_feat_splash(coord_def center, int radius, int number, int duration,
+                                          bool acid)
 {
-    while (tries-- > 0)
-    {
-        const int radius = random_range(1, base_radius);
-        const coord_def point = dgn_random_point_from(c, radius, margin);
-        if (point.origin())
-            continue;
-        if (!cell_see_cell(c, point, LOS_SOLID))
-            continue;
-        return point;
-    }
-    return coord_def();
-}
+    vector<coord_def> splash_coords;
 
-void create_feat_splash(coord_def center, int radius, int nattempts, bool acid)
-{
     const dungeon_feature_type feat = acid ? DNGN_SLIMY_WATER : DNGN_SHALLOW_WATER;
     const terrain_change_type type = acid ? TERRAIN_CHANGE_SLIME : TERRAIN_CHANGE_FLOOD;
 
-    // Always affect center, if compatible
-    if ((grd(center) == DNGN_FLOOR || grd(center) == feat))
-        temp_change_terrain(center, feat, 100 + random2(100), type);
-
-    if (grd(center) == DNGN_LAVA)
-        temp_change_terrain(center, DNGN_OBSIDIAN, 100 + random2(100), TERRAIN_CHANGE_FROZEN);
-
-    for (int i = 0; i < nattempts; ++i)
+    for (distance_iterator di(center, true, false, radius); di && number > 0; ++di)
     {
-        const coord_def newp(_random_point_hittable_from(center, radius));
-        if (newp.origin() || (grd(newp) != DNGN_FLOOR && grd(newp) != feat && grd(newp) != DNGN_LAVA))
-            continue;
-        
-        if (grd(newp) == DNGN_LAVA)
-            temp_change_terrain(newp, DNGN_OBSIDIAN, 100 + random2(100), TERRAIN_CHANGE_FROZEN);
-        else
-            temp_change_terrain(newp, feat, 100 + random2(100), type);
+        const dungeon_feature_type feature = grd(*di);
+        if ((feature == DNGN_FLOOR || feature == feat || feature == DNGN_LAVA)
+            && cell_see_cell(center, *di, LOS_NO_TRANS))
+        {
+            number--;
+            int time = random_range(duration, duration * 3 / 2) - (di.radius() * 20);
+            if (feature == DNGN_LAVA)
+                temp_change_terrain(*di, DNGN_OBSIDIAN, time, TERRAIN_CHANGE_FROZEN);
+            else
+                temp_change_terrain(*di, feat, time, type);
+            splash_coords.push_back(*di);
+        }
     }
+
+    return splash_coords;
 }
 
 bool imb_can_splash(coord_def origin, coord_def center,
@@ -2526,6 +2510,7 @@ void bolt::affect_endpoint()
     switch (origin_spell)
     {
     case SPELL_PRIMAL_WAVE:
+    {
         if (you.see_cell(pos()))
         {
             mpr("The wave splashes down.");
@@ -2538,11 +2523,23 @@ void bolt::affect_endpoint()
         }
 
         if (flavour == BEAM_ACID_WAVE)
-            create_feat_splash(pos(), 3, random_range(8, 20, 2), true);
-        else
-            create_feat_splash(pos(), 2, random_range(3, 12, 2));
-        break;
+        {
+            ench_power *= 3;
+            ench_power /= 2;
+        }
 
+        const int num = agent() && agent()->is_player() ? div_rand_round(ench_power * 3, 20) + 3 + random2(7)
+                                                        : random_range(3, 12, 2);
+        const int dur = div_rand_round(ench_power * 4, 3) + 66;
+
+        if (flavour == BEAM_ACID_WAVE)
+            create_feat_splash(pos(), 3, num, dur, true);
+        else
+            create_feat_splash(pos(), 2, num, dur);
+
+        dprf(DIAG_BEAM, "Creating pool at %d,%d with %d tiles of water for %d auts.", pos().x, pos().y, num, dur);
+        break;
+    }
     case SPELL_BLINKBOLT:
     {
         actor *act = agent(true); // use orig actor even when reflected

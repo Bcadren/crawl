@@ -1343,7 +1343,6 @@ static bool _phial_of_floods()
         const int power = player_adjust_evoc_power(base_pow, surge);
         // use real power to recalc hit/dam
         zappy(ZAP_PRIMAL_WAVE, power, false, beam);
-
         beam.fire();
 
         vector<coord_def> elementals;
