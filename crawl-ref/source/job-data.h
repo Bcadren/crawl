@@ -279,7 +279,7 @@ static const map<job_type, job_def> job_data =
     "Wz", "Wizard",
     -1, 10, 3,
     { SP_DEEP_ELF, SP_DRACONIAN, SP_OCTOPODE, SP_HUMAN, SP_SPRIGGAN, },
-    { "robe", "hat", "book of Minor Magic" },
+    { "dagger", "robe", "hat", "book of Minor Magic" },
     WCHOICE_NONE,
     { { SK_DODGING, 2 }, { SK_STEALTH, 2 }, { SK_SPELLCASTING, 3 },
       { SK_TRANSLOCATIONS, 1 }, { SK_SUMMONINGS, 2 }, },
