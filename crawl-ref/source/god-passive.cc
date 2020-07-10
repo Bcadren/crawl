@@ -1074,6 +1074,7 @@ int gozag_gold_in_los(actor *whom)
 // Detects gold for Gozag and Runes for Ashenzari.
 void ash_gozag_level_scan(bool count)
 {
+    ASSERT(you.on_current_level);
     vector<item_def *> gold_piles;
     vector<coord_def> gold_places;
     int gold = 0;
