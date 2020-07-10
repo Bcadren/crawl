@@ -2045,6 +2045,7 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
 
     // Apply all delayed actions, if any. TODO: logic for marshalling this is
     // kind of odd.
+    // TODO: does this need make_changes?
     if (just_created_level)
         env.dactions_done = 0;
 
@@ -2182,7 +2183,7 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
         curr_PlaceInfo.assert_validity();
     }
 
-    if (just_created_level)
+    if (just_created_level && make_changes)
     {
         you.attribute[ATTR_ABYSS_ENTOURAGE] = 0;
         ash_gozag_level_scan(true);
@@ -2246,7 +2247,7 @@ bool load_level(dungeon_feature_type stair_taken, load_mode_type load_mode,
 
     // If the player entered the level from a different location than they last
     // exited it, have monsters lose track of where they are
-    if (you.position != env.old_player_pos)
+    if (make_changes && you.position != env.old_player_pos)
        shake_off_monsters(you.as_player());
 
 #if TAG_MAJOR_VERSION == 34
