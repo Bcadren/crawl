@@ -1088,6 +1088,9 @@ static bool _accept_mutation(mutation_type mutat, bool ignore_weight, bool temp)
     if (ignore_weight)
         return true;
 
+    if (mdef.weight == 0)
+        return false;
+
     // bias towards adding (non-innate) levels to existing innate mutations.
     const int weight = mdef.weight + you.get_innate_mutation_level(mutat);
 
