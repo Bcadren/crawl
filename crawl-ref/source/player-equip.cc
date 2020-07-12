@@ -14,6 +14,7 @@
 #include "evoke.h"
 #include "food.h"
 #include "god-abil.h"
+#include "god-conduct.h"
 #include "god-item.h"
 #include "god-passive.h"
 #include "hints.h"
@@ -1165,8 +1166,14 @@ static void _equip_armour_effect(item_def& arm, bool unmeld,
                 mpr("You feel immune to the effects of clouds.");
             break;
 
+        case SPARM_SHADOWS:
+            mpr("It gets dark.");
+            update_vision_range();
+            break;
+
         default:
             mpr("You don't feel anything in particular.");
+            break;
         }
     }
 
@@ -1336,6 +1343,11 @@ static void _unequip_armour_effect(item_def& item, bool meld,
     case SPARM_CLOUD_IMMUNE:
         if (!you.cloud_immune())
             mpr("You feel vulnerable to the effects of clouds.");
+        break;
+
+    case SPARM_SHADOWS:
+        mpr("The dungeon's light returns to normal.");
+        update_vision_range();
         break;
 
     default:

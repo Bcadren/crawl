@@ -1075,14 +1075,15 @@ special_armour_type generate_armour_type_ego(armour_type type)
     // TODO: move this into data
     switch (type)
     {
-    // Total weight: 14.
+    // Total weight: 15.
     case ARM_SCARF:
         return random_choose_weighted(2, SPARM_SPIRIT_SHIELD,
                                       1, SPARM_RESISTANCE,
                                       3, SPARM_REPULSION,
                                       2, SPARM_CLOUD_IMMUNE,
                                       1, SPARM_INVISIBILITY,
-                                      5, SPARM_HARM);
+                                      5, SPARM_HARM,
+                                      1, SPARM_SHADOWS);
 
     // Total weight: 33.
     case ARM_CLOAK:
@@ -1324,6 +1325,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
     case SPARM_REPULSION:
     case SPARM_HARM:
     case SPARM_CLOUD_IMMUNE:
+    case SPARM_SHADOWS:
         return type == ARM_SCARF;
 
     default:

@@ -584,7 +584,8 @@ i-wielding BRAND_ARM_WIELDING
 %rim 0
 i-sturdy BRAND_ARM_STURDY
 %rim 1
-i-harm BRAND_ARM_HARM BRAND_ARM_LAST
+i-harm BRAND_ARM_HARM
+i-shadows BRAND_ARM_SHADOWS BRAND_ARM_LAST
 
 ###########OBJ_SHIELDS
 %sdir item/shields

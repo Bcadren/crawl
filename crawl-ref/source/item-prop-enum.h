@@ -531,6 +531,7 @@ enum special_armour_type
     SPARM_WIELDING,
     SPARM_STURDY,
     SPARM_HARM,
+    SPARM_SHADOWS,
     NUM_REAL_SPECIAL_ARMOURS,
     NUM_SPECIAL_ARMOURS,
 };

@@ -1500,6 +1500,9 @@ static string _armour_brand_desc(const item_def item)
     case SPARM_HARM:
         description += "It increases damage dealt and taken.";
         break;
+    case SPARM_SHADOWS:
+        description += "It reduces the wearer's line of sight "
+            "and accuracy.";
     case SPARM_RUNNING:
         if (item.sub_type == ARM_NAGA_BARDING)
             description += "It allows its wearer to slither at a great speed.";

@@ -758,11 +758,16 @@ void update_vision_range()
     if (you.duration[DUR_DARKNESS])
         nom *= 3, denom *= 4;
 
+    if (you.wearing_ego(EQ_CLOAK, SPARM_SHADOWS))
+        nom *= 3, denom *= 4;
+
     // robe of Night.
     if (player_equip_unrand(UNRAND_NIGHT))
         nom *= 3, denom *= 4;
 
-    you.current_vision = (you.normal_vision * nom + denom / 2) / denom;
+    // Minimum at 2 to not be ridiculous if you somehow stacked all these.
+    you.current_vision = max((you.normal_vision * nom + denom / 2) / denom, 2);
+
     ASSERT(you.current_vision > 0);
     set_los_radius(you.current_vision);
 }
