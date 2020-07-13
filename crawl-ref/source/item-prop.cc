@@ -382,6 +382,13 @@ static const vector<brand_weight_tuple> M_AND_F_BRANDS = {
     { SPWPN_CHAOS,           1 },
 };
 
+/// brand weights for club-type weapons
+static const vector<brand_weight_tuple> CLUB_BRANDS = {
+    { SPWPN_NORMAL,          9 },
+    { SPWPN_SPECTRAL,        2 },
+    { SPWPN_CHAOS,           1 },
+};
+
 /// brand weights for demon weapons (whip, blade, trident)
 static const vector<brand_weight_tuple> DEMON_BRANDS = {
     { SPWPN_NORMAL,         27 },
@@ -470,7 +477,7 @@ static const weapon_def Weapon_prop[] =
     // Maces & Flails
     { WPN_CLUB,              "club",                5,  3, 10,
         SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, SIZE_BIG, MI_NONE,
-        WPNF_WOODEN | WPNF_HEAVYWEIGHT, DAMV_CRUSHING, 10, 0, 10, {} },
+        WPNF_WOODEN | WPNF_HEAVYWEIGHT, DAMV_CRUSHING, 10, 0, 10, CLUB_BRANDS },
 #if TAG_MAJOR_VERSION == 34
     { WPN_SPIKED_FLAIL,      "spiked flail",        5,  3, 13,
         SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, SIZE_BIG, MI_NONE,
@@ -536,10 +543,10 @@ static const weapon_def Weapon_prop[] =
         WPNF_NO_FLAGS, DAMV_CRUSHING, 3, 10, 65, M_AND_F_BRANDS },
     { WPN_GIANT_CLUB,        "giant club",         20, -6, 18,
         SK_MACES_STAVES, SIZE_LARGE, SIZE_GIANT, SIZE_GIANT, MI_NONE,
-        WPNF_WOODEN | WPNF_HEAVYWEIGHT, DAMV_CRUSHING, 1, 10, 17, {} },
+        WPNF_WOODEN | WPNF_HEAVYWEIGHT, DAMV_CRUSHING, 1, 10, 17, CLUB_BRANDS },
     { WPN_GIANT_SPIKED_CLUB, "giant spiked club",  16, -7, 18,
         SK_MACES_STAVES, SIZE_LARGE, SIZE_GIANT, SIZE_GIANT, MI_NONE,
-        WPNF_WOODEN | WPNF_HEAVYWEIGHT | WPNF_SPIKY, DAMV_CRUSHING, 1, 10, 19, {} },
+        WPNF_WOODEN | WPNF_HEAVYWEIGHT | WPNF_SPIKY, DAMV_CRUSHING, 1, 10, 19, CLUB_BRANDS },
 
     // Short Blades
     { WPN_DAGGER,            "dagger",              4,  6, 10,
@@ -707,7 +714,7 @@ static const weapon_def Weapon_prop[] =
         SK_MACES_STAVES,       SIZE_LITTLE, SIZE_BIG, SIZE_GIANT, MI_NONE,
         WPNF_WOODEN, DAMV_CRUSHING, 8, 10, 40, {
             { SPWPN_NORMAL,     48 },
-            { SPWPN_PROTECTION, 18 },
+            { SPWPN_SPECTRAL,   18 },
             { SPWPN_ACID,        8 },
             { SPWPN_VORPAL,      8 },
             { SPWPN_SPEED,       8 },
@@ -724,7 +731,7 @@ static const weapon_def Weapon_prop[] =
             { SPWPN_SPEED,          12 },
             { SPWPN_ELECTROCUTION,  12 },
             { SPWPN_VAMPIRISM,      12 },
-            { SPWPN_PROTECTION,      9 },
+            { SPWPN_SPECTRAL,        9 },
             { SPWPN_VENOM,           7 },
             { SPWPN_PAIN,            7 },
             { SPWPN_ANTIMAGIC,       4 },

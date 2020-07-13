@@ -3338,6 +3338,9 @@ static void _rebrand_weapon(item_def& wpn)
         end_weapon_brand();
     }
     const brand_type old_brand = get_weapon_brand(wpn);
+    monster * spect = find_spectral_weapon(&you);
+    if (&wpn == you.weapon() && old_brand == SPWPN_SPECTRAL && spect)
+        end_spectral_weapon(spect, false);
     brand_type new_brand = old_brand;
 
     // now try and find an appropriate brand

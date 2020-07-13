@@ -1151,6 +1151,7 @@ static void _debug_acquirement_stats(FILE *ostat)
             "reaping",
             "silver",
             "acid",
+            "spectral",
             "INVALID",
 #if TAG_MAJOR_VERSION > 34
             "confuse",

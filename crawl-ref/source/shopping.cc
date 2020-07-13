@@ -204,6 +204,7 @@ static int _weapon_brand_value(item_def item)
         case SPWPN_PAIN:
         case SPWPN_ACID:
         case SPWPN_PENETRATION: // Unrand-only.
+        case SPWPN_SPECTRAL:
             return 25;
 
         case SPWPN_CHAOS:

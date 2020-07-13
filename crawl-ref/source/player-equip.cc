@@ -720,6 +720,17 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld, equ
                 case SPWPN_ACID:
                     mprf("%s begins to ooze corrosive slime!", item_name.c_str());
                     break;
+                case SPWPN_SPECTRAL:
+                    if (you.skill(SK_EVOCATIONS) == 0)
+                        mpr("You have a feeling of ineptitude.");
+                    else if (you.skill(SK_EVOCATIONS) <= 6)
+                        mprf("You feel a bond with your %s.", item_name.c_str());
+                    else
+                    {
+                        mprf("You feel a deep bond with your %s!",
+                             item_name.c_str());
+                    }
+                    break;
 
                 default:
                     break;
@@ -779,7 +790,8 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
     {
         const int brand = get_weapon_brand(item);
 
-        if (brand != SPWPN_NORMAL)
+        // Spectral's effect is handled on all unwield in case of spell version.
+        if (brand != SPWPN_NORMAL && brand != SPWPN_SPECTRAL)
         {
             const string msg = item.name(DESC_YOUR);
 

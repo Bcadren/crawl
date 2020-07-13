@@ -2657,13 +2657,21 @@ static void _post_monster_move(monster* mons)
     }
 
     // Clear push/pull data if the monster is in a safe spot.
-    if ((mons->submerged() || !mons_avoids_cloud(mons, mons->pos())) 
+    if ((mons->submerged() || !mons_avoids_cloud(mons, mons->pos()))
         && (!mons->airborne() || monster_habitable_grid(mons, grd(mons->pos()))))
     {
         if (mons->props.exists(KNOCKBACK_KEY))
             mons->props.erase(KNOCKBACK_KEY);
         if (mons->props.exists(PULLED_KEY))
             mons->props.erase(PULLED_KEY);
+    }
+
+    const item_def * weapon = mons->mslot_item(MSLOT_WEAPON);
+    if (weapon && get_weapon_brand(*weapon) == SPWPN_SPECTRAL
+        && !mons_is_avatar(mons->type)
+        && !find_spectral_weapon(mons))
+    {
+        cast_spectral_weapon(mons, mons->get_experience_level() * 4, mons->god, false);
     }
 
     if (mons->type != MONS_NO_MONSTER && mons->hit_points < 1)

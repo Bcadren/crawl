@@ -198,7 +198,8 @@ enum brand_type // item_def.special
     SPWPN_REAPING,
     SPWPN_SILVER,
     SPWPN_ACID,
-    MAX_GHOST_BRAND = SPWPN_ACID,
+    SPWPN_SPECTRAL,
+    MAX_GHOST_BRAND = SPWPN_SPECTRAL,
 
 // From this point on save compat is irrelevant.
     NUM_REAL_SPECIAL_WEAPONS,

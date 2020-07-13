@@ -1637,7 +1637,13 @@ static string _weapon_brand_desc(const item_def &item)
     string description = "\n\n";
 
     switch (get_weapon_brand(item))
-    {
+    {        
+    case SPWPN_SPECTRAL:
+        description += "It retains the spirit of the tree from which "
+                        "it was made. In the hands of one skilled in "
+                        "evocations this spirit is drawn out to fight "
+                        "along side the wielder.";
+        break;
     case SPWPN_ACID:
         description += "It is coated in a slimy acidic goo that may deal extra damage to those"
             " that don't resist corrosion. Additionally may debuff the target's defensive"
