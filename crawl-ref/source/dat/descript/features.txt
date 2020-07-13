@@ -290,8 +290,7 @@ A tree
 
 A large tree. While in most places the dim light of the dungeon is not bright
 enough to sustain large plants, there are spots where, with the grace of
-Fedhas, trees as big as those on the surface can grow underground. It is
-susceptible to bolts of lightning and to sufficiently intense sources of fire.
+Fedhas, trees as big as those on the surface can grow underground.
 %%%%
 A dead mushroom stump
 
@@ -301,29 +300,25 @@ An awoken dead mushroom stump
 
 A stump of a dead mushroom revived and awoken by magic. It seems angry and full 
 of loss. It lashes out out at any adjacent enemies of the creature who awoke
-it. It is susceptible to bolts of lightning and to sufficiently intense sources
-of fire.
+it.
 %%%%
 A giant mushroom
 
 A fruiting body sprouted from a pool of slime mould. Seems to grow on the fertile
 earth of the pits of slime quite well; though what died here to make the ground
-fertile enough to support such growth is a mystery. It is susceptible to bolts 
-of lightning and to sufficiently intense sources of fire.
+fertile enough to support such growth is a mystery.
 %%%%
 An awoken giant mushroom
 
 A giant mushroom that has been enchanted to grant it some limited motility,
 allowing it to lash out out at any adjacent enemies of the creature who awoke
-it. It is susceptible to bolts of lightning and to sufficiently intense sources
-of fire.
+it.
 %%%%
 An awoken tree
 
 A large tree that has been enchanted to grant it some limited motility,
 allowing it to lash out out at any adjacent enemies of the creature who awoke
-it. It is susceptible to bolts of lightning and to sufficiently intense sources
-of fire.
+it.
 %%%%
 A mangrove
 
@@ -331,9 +326,6 @@ This tree is specially adapted for growing in swampy conditions.
 While in most places the dim light of the dungeon is not bright
 enough to sustain large plants, there are spots where, with the grace of
 Fedhas, trees as big as those on the surface can grow underground.
-
-While too large to be felled with an axe, it is susceptible to bolts of
-lightning and to sufficiently intense sources of fire. 
 %%%%
 An awoken mangrove
 

@@ -5939,6 +5939,23 @@ static void _tag_read_level(reader &th)
 
     env.markers.read(th);
 
+    if (th.getMinorVersion() < TAG_MINOR_MERGE_VETOES)
+    {
+        for (map_marker *mark : env.markers.get_all(MAT_ANY))
+        {
+            if (mark->property("veto_dig") == "veto"
+                || mark->property("veto_fire") == "veto"
+                || mark->property("veto_shatter") == "veto"
+                || mark->property("veto_tornado") == "veto")
+            {
+                map_wiz_props_marker *marker =
+                    new map_wiz_props_marker(mark->pos);
+                marker->set_property("veto_destroy", "veto");
+                env.markers.add(marker);
+            }
+        }
+    }
+
     env.properties.clear();
     env.properties.read(th);
 
