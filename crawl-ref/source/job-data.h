@@ -59,7 +59,7 @@ static const map<job_type, job_def> job_data =
     "Ar", "Artificer",
     4, 3, 5,
     { SP_KOBOLD, SP_SPRIGGAN, SP_DRACONIAN, },
-    { "club", "leather armour", "wand of flame charges:15",
+    { "club ego:spectral", "leather armour", "wand of flame charges:15",
       "wand of enslavement charges:15", "wand of random effects charges:15" },
     WCHOICE_NONE,
     { { SK_EVOCATIONS, 3 }, { SK_DODGING, 1 }, { SK_FIGHTING, 1 },
