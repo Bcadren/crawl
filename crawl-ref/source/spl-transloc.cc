@@ -1239,7 +1239,7 @@ spret cast_apportation(int pow, bool fail)
         beam.affects_nothing = true;
         beam.fire();
 
-        // Pop the item's location off the end
+        // The item's current location is not part of the apportion path
         beam.path_taken.pop_back();
 
         // The actual number of squares it needs to traverse to get to you.
@@ -1252,22 +1252,26 @@ spret cast_apportation(int pow, bool fail)
 
         dprf("Apport dist=%d, max_dist=%d", dist, max_dist);
 
+        // path_taken does not include the player's position either, but we do want
+        // to check that. Treat -1 as the player's pos; 0 is 1 away from player.
         int location_on_path = max(-1, dist - max_dist);
-        coord_def new_spot;
-        if (location_on_path == -1)
-            new_spot = you.pos();
-        else
-            new_spot = beam.path_taken[location_on_path];
-        // Try to find safe terrain for the item.
+        coord_def new_spot = (location_on_path < 0)
+                           ? you.pos()
+                           : beam.path_taken[location_on_path];
+
+        // Try to find safe terrain for the item, including the player's position
+        // if max_dist < 0. At this point, location_on_path is guaranteed to be
+        // less than dist.
         while (location_on_path < dist)
         {
             if (!feat_eliminates_items(grd(new_spot)) || want_destroy)
                 break;
             location_on_path++;
-            new_spot = beam.path_taken[location_on_path];
+            if (location_on_path == dist)
+                items_prevented++;
+            else
+                new_spot = beam.path_taken[location_on_path];
         }
-        if (location_on_path == dist)
-            items_prevented++;
         dprf("Apport: new spot is %d/%d", new_spot.x, new_spot.y);
 
         // Actually move the item.
