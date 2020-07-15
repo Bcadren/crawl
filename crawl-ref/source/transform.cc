@@ -46,6 +46,8 @@ static const int EQF_NONE = 0;
 // "hand" slots (not rings)
 static const int EQF_HANDS = SLOTF(EQ_WEAPON0) | SLOTF(EQ_WEAPON1)
                              | SLOTF(EQ_GLOVES);
+// "aux" body slots (beastly appendage);
+static const int EQF_AUXES = SLOTF(EQ_BOOTS) | SLOTF(EQ_HELMET);
 // core body slots (statue form)
 static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS) | SLOTF(EQ_BARDING)
                               | SLOTF(EQ_BODY_ARMOUR);
@@ -818,16 +820,26 @@ public:
 
     string get_description(bool past_tense) const override
     {
-        if (you.attribute[ATTR_APPENDAGE] == MUT_TENTACLE_SPIKE)
+        ostringstream desc;
+        for (auto app : you.props[APPENDAGE_KEY].get_vector())
         {
-            return make_stringf("One of your tentacles %s a temporary spike.",
-                                 past_tense ? "had" : "has");
+            mutation_type mut = static_cast<mutation_type>(app.get_int());
+            if (mut == MUT_TENTACLE_SPIKE)
+            {
+                string tense =  past_tense ? "were" : "are";
+                desc << "Your tentacles " << tense;
+                desc << " covered in temporary spikes. ";
+
+            }
+            else
+            {
+                string tense =  past_tense ? "had" : "have";
+                desc << "You " << tense << " grown temporary ";
+                desc << mutation_name(mut) << ". ";
+            }
         }
 
-        return make_stringf("You %s grown temporary %s.",
-                            past_tense ? "had" : "have",
-                            mutation_name((mutation_type)
-                                          you.attribute[ATTR_APPENDAGE]));
+        return trimmed_string(desc.str());
     }
 
     /**
@@ -835,18 +847,28 @@ public:
      */
     string transform_message(transformation /*previous_trans*/) const override
     {
-        // ATTR_APPENDAGE must be set earlier!
-        switch (you.attribute[ATTR_APPENDAGE])
+        ostringstream msg;
+        for (auto app : you.props[APPENDAGE_KEY].get_vector())
         {
-            case MUT_HORNS:
-                return "You grow a pair of large bovine horns.";
-            case MUT_TENTACLE_SPIKE:
-                return "One of your tentacles grows a vicious spike.";
-            case MUT_TALONS:
-                return "Your feet morph into talons.";
-            default:
-                 die("Unknown beastly appendage.");
+            mutation_type mut = static_cast<mutation_type>(app.get_int());
+            switch (mut)
+            {
+                case MUT_HORNS:
+                    msg << "You grow a pair of large bovine horns. ";
+                    break;
+                case MUT_TENTACLE_SPIKE:
+                    msg << "Your tentacles become covered in vicious spike. ";
+                    break;
+                case MUT_TALONS:
+                    msg << "Your feet morph into talons. ";
+                    break;
+                default:
+                    die("Unknown appendage type");
+                    break;
+            }
         }
+
+        return trimmed_string(msg.str());
     }
 
     /**
@@ -1417,47 +1439,6 @@ static mutation_type appendages[] =
     MUT_TALONS,
 };
 
-static bool _slot_conflict(equipment_type eq)
-{
-    // Choose uncovered slots only. Melding could make people re-cast
-    // until they get something that doesn't conflict with their randart
-    // of überness.
-    if (you.equip[eq] != -1)
-    {
-        // Horns + hat is fine.
-        if (eq != EQ_HELMET
-            || you.melded[eq]
-            || is_hard_helmet(*(you.slot_item(eq))))
-        {
-            return true;
-        }
-    }
-
-    for (int mut = 0; mut < NUM_MUTATIONS; mut++)
-        if (you.has_mutation(static_cast<mutation_type>(mut)) && eq == beastly_slot(mut))
-            return true;
-
-    return false;
-}
-
-static mutation_type _beastly_appendage()
-{
-    mutation_type chosen = NUM_MUTATIONS;
-    int count = 0;
-
-    for (mutation_type app : appendages)
-    {
-        if (_slot_conflict(beastly_slot(app)))
-            continue;
-        if (physiology_mutation_conflict(app))
-            continue;
-
-        if (one_chance_in(++count))
-            chosen = app;
-    }
-    return chosen;
-}
-
 static bool _transformation_is_safe(transformation which_trans,
                                     dungeon_feature_type feat,
                                     string *fail_reason)
@@ -1761,18 +1742,27 @@ bool transform(int pow, transformation which_trans, bool involuntary,
 
     if (which_trans == transformation::appendage)
     {
-        const mutation_type app = _beastly_appendage();
-        if (app == NUM_MUTATIONS)
+        // Need to set the appendages here for messaging
+        for (mutation_type app : appendages)
+        {
+            if (physiology_mutation_conflict(app) || you.has_mutation(app))
+                continue;
+            you.props[APPENDAGE_KEY].get_vector().push_back(app);
+            dprf("Setting appendage mutation %s.", mutation_name(app));
+        }
+
+        if (you.props[APPENDAGE_KEY].get_vector().empty())
         {
             msg = "You have no appropriate body parts free.";
             success = false; // XXX: VERY dubious, since an untransform occurred
         }
 
-        if (!just_check)
+        if (just_check || !success)
         {
-            you.attribute[ATTR_APPENDAGE] = app; // need to set it here so
-                                                 // the message correlates
+            you.props.erase(APPENDAGE_KEY);
+            dprf("Erasing, just check");
         }
+        dprf("Set appendages");
     }
 
     if (!success)
@@ -1894,9 +1884,12 @@ bool transform(int pow, transformation which_trans, bool involuntary,
 
     case transformation::appendage:
         {
-            int app = you.attribute[ATTR_APPENDAGE];
-            ASSERT(app != NUM_MUTATIONS);
-            you.mutation[app] = 1;
+            auto& apps = you.props[APPENDAGE_KEY].get_vector();
+            for (auto app : apps)
+            {
+                const mutation_type mut = static_cast<mutation_type>(app.get_int());
+                you.mutation[mut] = 1;
+            }
         }
         break;
 
@@ -2002,26 +1995,23 @@ void untransform(bool skip_move)
 
     if (old_form == transformation::appendage)
     {
-        mutation_type app = static_cast<mutation_type>(you.attribute[ATTR_APPENDAGE]);
-        ASSERT(beastly_slot(app) != EQ_NONE);
-        const int levels = you.get_base_mutation_level(app);
-        // Preserve extra mutation levels acquired after transforming.
-        const int beast_levels = 1;
-        const int extra = max(0, levels - you.get_innate_mutation_level(app)
-                                        - beast_levels);
-        you.mutation[app] = you.get_innate_mutation_level(app) + extra;
-        you.attribute[ATTR_APPENDAGE] = 0;
-
-        // The mutation might have been removed already by a conflicting
-        // demonspawn innate mutation; no message then.
-        if (levels)
+        const auto& apps = you.props[APPENDAGE_KEY].get_vector();
+        for (auto mut : apps)
         {
-            const char * const verb = you.has_mutation(app) ? "shrink"
-                                                            : "disappear";
-            mprf(MSGCH_DURATION, "Your %s %s%s.",
-                 mutation_name(app), verb,
-                 app == MUT_TENTACLE_SPIKE ? "s" : "");
+            const mutation_type app = static_cast<mutation_type>(mut.get_int());
+            const int levels = you.get_base_mutation_level(app);
+            // Preserve extra mutation levels acquired after transforming.
+            const int extra = max(0, levels - you.get_innate_mutation_level(app) - 1);
+            you.mutation[app] = you.get_innate_mutation_level(app) + extra;
+
+            // The mutation might have been removed already by a conflicting
+            // demonspawn innate mutation; no message then.
+            if (levels > you.mutation[app])
+            {
+                mprf(MSGCH_DURATION, "Your %s disappear.", mutation_name(app));
+            }
         }
+        you.props.erase(APPENDAGE_KEY);
     }
 
     if (you.species == SP_DRACONIAN)

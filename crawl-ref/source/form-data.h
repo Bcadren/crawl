@@ -151,9 +151,9 @@ static const form_entry formdata[] =
 },
 
 {
-    transformation::appendage, MONS_PLAYER, "App", "appendage", "appendage",
+    transformation::appendage, MONS_PLAYER, "App", "appendages", "appendages",
     "",
-    EQF_NONE, MR_NO_FLAGS,
+    EQF_AUXES, MR_NO_FLAGS,
     FormDuration(10, PS_DOUBLE, 60), 0, 0, SIZE_CHARACTER, 10,
     0, 0, 0, true, 0, 2,
     SPWPN_NORMAL, LIGHTGREY, "", DEFAULT_VERBS,
