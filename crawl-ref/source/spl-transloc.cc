@@ -426,12 +426,6 @@ spret frog_hop(bool fail, bool spider)
 }
 
 static bool _check_charge_through(coord_def pos) {
-/*    if (is_feat_dangerous(grd(pos)))
-    {
-        canned_msg(MSG_UNTHINKING_ACT);
-        return false;
-    }*/
-
     if (!you.can_pass_through_feat(grd(pos)))
     {
         clear_messages();
