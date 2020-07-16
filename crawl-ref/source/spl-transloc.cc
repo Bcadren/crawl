@@ -426,7 +426,8 @@ spret frog_hop(bool fail, bool spider)
     return spret::success; // TODO
 }
 
-static bool _check_charge_through(coord_def pos) {
+static bool _check_charge_through(coord_def pos)
+{
     if (!you.can_pass_through_feat(grd(pos)))
     {
         clear_messages();
@@ -434,15 +435,14 @@ static bool _check_charge_through(coord_def pos) {
         return false;
     }
 
-    if (!check_moveto_terrain(pos, "roll") || !check_moveto_trap(pos, "roll"))
-        return false;
-
     return true;
 }
 
 static bool _find_charge_target(vector<coord_def> &target_path, int max_range,
-                                targeter *hitfunc) {
-    while (true) {
+                                targeter *hitfunc)
+{
+    while (true)
+    {
         // query for location {dlb}:
         direction_chooser_args args;
         args.restricts = DIR_TARGET;
@@ -611,15 +611,6 @@ spret rolling_charge(bool fail)
             target_mons = sneaky_mons;
             break;
         }
-
-        you.set_position(pos);
-        trap_def* ptrap = trap_at(pos);
-        if (ptrap)
-            ptrap->trigger(you);
-        if (you.pos() != pos) // trap really went off!
-            return spret::success; // let's just stop this here.
-
-        you.set_position(orig_pos);
     }
     const coord_def dest_pos = target_path.at(target_path.size() - 2);
 
@@ -636,7 +627,7 @@ spret rolling_charge(bool fail)
         _charge_cloud_trail(target_path[i]);
     }
 
-    if (you.pos() != dest_pos) // tornado nonsense
+    if (you.pos() != dest_pos) // tornado and trap nonsense
         return spret::success; // of a sort
 
     // Maybe we hit a trap and something weird happened.
@@ -647,9 +638,13 @@ spret rolling_charge(bool fail)
     behaviour_event(target_mons, ME_ALERT, &you, you.pos()); // shout + set you as foe
 
     const int dist = grid_distance(initial_pos, you.pos());
+    // We got webbed/netted at the destination, bail on the attack.
+    if (you.attribute[ATTR_HELD])
+        return spret::success;
+
     const int base_delay = you.time_taken;
 
-    fight_melee(&you, target_mons, nullptr, false, WU_JIAN_ATTACK_NONE, 1, grid_distance(initial_pos, you.pos()));
+    fight_melee(&you, target_mons, nullptr, false, WU_JIAN_ATTACK_NONE, 1, dist);
 
     you.time_taken += dist * 2;
 

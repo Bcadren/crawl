@@ -200,7 +200,8 @@ collapse completely nulling the progress you made to uproot yourself.
 Rolling Charge ability
 
 Roll at a foe uncurl, and strike! The further you go, the more momentum 
-will be added to the force of your strike.
+will be added to the force of your strike. You roll with sufficient speed 
+to dodge traps and harmful terrain along the way
 %%%%
 Evoke Blink ability
 
