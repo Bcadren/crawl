@@ -1071,7 +1071,7 @@ static void _regenerate_hp_and_mp(int delay)
     _update_mana_regen_amulet_attunement();
 }
 
-void _handle_spectral_brand()
+static void _handle_spectral_brand()
 {
     const int pow = you.skill(SK_EVOCATIONS, 4);
     if ((you.damage_brand(0) == SPWPN_SPECTRAL || you.damage_brand(1) == SPWPN_SPECTRAL)
