@@ -3180,6 +3180,9 @@ bool is_dangerous_item(const item_def &item, bool temp)
             return false;
         }
 
+    case OBJ_ARMOURS:
+        // Tilting at windmills can be dangerous.
+        return get_armour_ego_type(item) == SPARM_LUNGING;
     default:
         return false;
     }
