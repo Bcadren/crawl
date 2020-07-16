@@ -34,6 +34,7 @@
 #include "mon-behv.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
+#include "movement.h" // Barbs
 #include "nearby-danger.h"
 #include "orb.h"
 #include "output.h"
@@ -568,6 +569,9 @@ spret rolling_charge(bool fail)
     const int charge_range = 4;
     const coord_def initial_pos = you.pos();
 
+    if (cancel_barbed_move())
+        return spret::abort;
+
     vector<coord_def> target_path;
     targeter_charge tgt(&you, charge_range);
     tgt.obeys_mesmerise = true;
@@ -614,6 +618,8 @@ spret rolling_charge(bool fail)
 
     move_player_to_grid(dest_pos, true);
     noisy(12, you.pos());
+    apply_barbs_damage();
+
     if (you.pos() != dest_pos) // tornado nonsense
         return spret::success; // of a sort
 
