@@ -195,14 +195,80 @@ void apply_barbs_damage()
     }
 }
 
-void remove_ice_armour_movement()
+void remove_water_hold()
 {
-    if (you.duration[DUR_ICY_ARMOUR])
+    if (you.duration[DUR_WATER_HOLD])
     {
-        mprf(MSGCH_DURATION, "Your icy armour cracks and falls away as "
-                             "you move.");
-        you.duration[DUR_ICY_ARMOUR] = 0;
-        you.redraw_armour_class = true;
+        mpr("You slip free of the water engulfing you.");
+        you.props.erase("water_holder");
+        you.clear_far_engulf();
+    }
+
+    if (you.duration[DUR_AIR_HOLD])
+    {
+        mpr("You slip free of the deadly gas.");
+        you.props.erase("air_holder");
+        you.clear_far_engulf();
+    }
+}
+
+void apply_noxious_bog(const coord_def old_pos, const coord_def targ)
+{
+    if (you.duration[DUR_NOXIOUS_BOG])
+    {
+        if (!cell_is_solid(old_pos))
+        {
+            int x = targ.x - old_pos.x;
+            int y = targ.y - old_pos.y;
+            coord_def p0 = coord_def(old_pos.x - y, old_pos.y + x);
+            coord_def p1 = coord_def(old_pos.x + y, old_pos.y - x);
+            coord_def p2 = coord_def(old_pos.x - y, old_pos.y);
+            coord_def p3 = coord_def(old_pos.x, old_pos.y - x);
+            noxious_bog_cell(old_pos);
+            if (x && y)
+            {
+                if (!cell_is_solid(p2) && !actor_at(p2))
+                    noxious_bog_cell(p2);
+                if (!cell_is_solid(p3) && !actor_at(p2))
+                    noxious_bog_cell(p3);
+            }
+            else
+            {
+                if (!cell_is_solid(p0) && !actor_at(p2))
+                    noxious_bog_cell(p0);
+                if (!cell_is_solid(p1) && !actor_at(p2))
+                    noxious_bog_cell(p1);
+            }
+        }
+    }
+}
+
+void apply_cloud_trail(const coord_def old_pos)
+{
+    if (you.duration[DUR_CLOUD_TRAIL])
+    {
+        if (!cell_is_solid(old_pos))
+        {
+            auto cloud = static_cast<cloud_type>(
+                you.props[XOM_CLOUD_TRAIL_TYPE_KEY].get_int());
+            ASSERT(cloud != CLOUD_NONE);
+            check_place_cloud(cloud, old_pos, random_range(3, 10), &you,
+                0, -1);
+        }
+    }
+}
+
+void apply_slime_trail(const coord_def old_pos)
+{
+    if (you.get_mutation_level(MUT_MELT) >= 2)
+    {
+        const dungeon_feature_type feat = grd(old_pos);
+        if (!feat_is_critical(feat) && !cell_is_solid(old_pos) && !feat_is_watery(feat) && one_chance_in(5))
+        {
+            const int dur = random_range(5, 12);
+            temp_change_terrain(old_pos, DNGN_SLIMY_WATER, dur * BASELINE_DELAY, TERRAIN_CHANGE_SLIME);
+            check_place_cloud(CLOUD_FIRE, old_pos, dur - 1, &you);
+        }
     }
 }
 
@@ -741,20 +807,6 @@ void move_player_action(coord_def move)
         if (!you.attempt_escape()) // false means constricted and did not escape
             return;
 
-        if (you.duration[DUR_WATER_HOLD])
-        {
-            mpr("You slip free of the water engulfing you.");
-            you.props.erase("water_holder");
-            you.clear_far_engulf();
-        }
-
-        if (you.duration[DUR_AIR_HOLD])
-        {
-            mpr("You slip free of the deadly gas.");
-            you.props.erase("air_holder");
-            you.clear_far_engulf();
-        }
-
         if (you.digging)
         {
             if (you.mount == mount_type::slime)
@@ -788,9 +840,17 @@ void move_player_action(coord_def move)
             you.stop_being_constricted();
 
         coord_def old_pos = you.pos();
-        // Don't trigger traps when confusion causes no move.
+        // Don't trigger things that require movement
+        // when confusion causes no move.
         if (you.pos() != targ && targ_pass)
+        {
+            remove_water_hold();
             move_player_to_grid(targ, true);
+            apply_barbs_damage();
+            apply_noxious_bog(old_pos, targ);
+            apply_cloud_trail(old_pos);
+            apply_slime_trail(old_pos);
+        }
         else if (can_wall_jump && !running)
         {
             if (!wu_jian_do_wall_jump(targ, false))
@@ -804,61 +864,6 @@ void move_player_action(coord_def move)
         // put a monster at the player's location.
         if (swap)
             targ_monst->apply_location_effects(targ);
-        else
-        {
-            if (you.duration[DUR_NOXIOUS_BOG])
-            {
-                if (!cell_is_solid(old_pos))
-                {
-                    int x = targ.x - old_pos.x;
-                    int y = targ.y - old_pos.y;
-                    coord_def p0 = coord_def(old_pos.x - y, old_pos.y + x);
-                    coord_def p1 = coord_def(old_pos.x + y, old_pos.y - x);
-                    coord_def p2 = coord_def(old_pos.x - y, old_pos.y);
-                    coord_def p3 = coord_def(old_pos.x, old_pos.y - x);
-                    noxious_bog_cell(old_pos);
-                    if (x && y)
-                    {
-                        if (!cell_is_solid(p2) && !actor_at(p2))
-                            noxious_bog_cell(p2);
-                        if (!cell_is_solid(p3) && !actor_at(p2))
-                            noxious_bog_cell(p3);
-                    }
-                    else
-                    {
-                        if (!cell_is_solid(p0) && !actor_at(p2))
-                            noxious_bog_cell(p0);
-                        if (!cell_is_solid(p1) && !actor_at(p2))
-                            noxious_bog_cell(p1);
-                    }
-                }
-            }
-
-            if (you.duration[DUR_CLOUD_TRAIL])
-            {
-                if (!cell_is_solid(old_pos))
-                {
-                    auto cloud = static_cast<cloud_type>(
-                        you.props[XOM_CLOUD_TRAIL_TYPE_KEY].get_int());
-                    ASSERT(cloud != CLOUD_NONE);
-                    check_place_cloud(cloud, old_pos, random_range(3, 10), &you,
-                                      0, -1);
-                }
-            }
-
-            if (you.get_mutation_level(MUT_MELT) >= 2)
-            {
-                const dungeon_feature_type feat = grd(old_pos);
-                if (!feat_is_critical(feat)  && !cell_is_solid(old_pos) && !feat_is_watery(feat) && one_chance_in(5))
-                {
-                    const int dur = random_range(5, 12);
-                    temp_change_terrain(old_pos, DNGN_SLIMY_WATER, dur * BASELINE_DELAY, TERRAIN_CHANGE_SLIME);
-                    check_place_cloud(CLOUD_FIRE, old_pos, dur - 1, &you);
-                }
-            }
-        }
-        apply_barbs_damage();
-        remove_ice_armour_movement();
 
         if (you_are_delayed() && current_delay()->is_run())
             env.travel_trail.push_back(you.pos());
