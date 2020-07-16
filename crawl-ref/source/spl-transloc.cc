@@ -557,6 +557,12 @@ static bool _find_charge_target(vector<coord_def> &target_path, int max_range,
     }
 }
 
+static void _charge_cloud_trail(const coord_def pos)
+{
+    if (!cell_is_solid(pos) && !apply_cloud_trail(pos) && !apply_slime_trail(pos))
+        place_cloud(CLOUD_DUST, pos, 2 + random2(3), &you);
+}
+
 /**
 * Attempt to charge the player to a target of their choosing.
 *
@@ -597,9 +603,11 @@ spret rolling_charge(bool fail)
 
     const coord_def orig_pos = you.pos();
 
-    for (coord_def pos : target_path) {
+    for (coord_def pos : target_path)
+    {
         monster* sneaky_mons = monster_at(pos);
-        if (sneaky_mons && !fedhas_passthrough(sneaky_mons)) {
+        if (sneaky_mons && !fedhas_passthrough(sneaky_mons))
+        {
             target_mons = sneaky_mons;
             break;
         }
@@ -612,13 +620,21 @@ spret rolling_charge(bool fail)
             return spret::success; // let's just stop this here.
 
         you.set_position(orig_pos);
-        place_cloud(CLOUD_DUST, pos, 2 + random2(3), &you);
     }
     const coord_def dest_pos = target_path.at(target_path.size() - 2);
 
+    remove_water_hold();
     move_player_to_grid(dest_pos, true);
     noisy(12, you.pos());
     apply_barbs_damage();
+
+    apply_noxious_bog(orig_pos, target_path[0]);
+    _charge_cloud_trail(orig_pos);
+    for (int i = 0; i < (int)(target_path.size() - 2); ++i)
+    {
+        apply_noxious_bog(target_path[i], target_path[i+1]);
+        _charge_cloud_trail(target_path[i]);
+    }
 
     if (you.pos() != dest_pos) // tornado nonsense
         return spret::success; // of a sort

@@ -243,7 +243,7 @@ void apply_noxious_bog(const coord_def old_pos, const coord_def targ)
     }
 }
 
-void apply_cloud_trail(const coord_def old_pos)
+bool apply_cloud_trail(const coord_def old_pos)
 {
     if (you.duration[DUR_CLOUD_TRAIL])
     {
@@ -254,11 +254,15 @@ void apply_cloud_trail(const coord_def old_pos)
             ASSERT(cloud != CLOUD_NONE);
             check_place_cloud(cloud, old_pos, random_range(3, 10), &you,
                 0, -1);
+
+            return true;
         }
     }
+
+    return false;
 }
 
-void apply_slime_trail(const coord_def old_pos)
+bool apply_slime_trail(const coord_def old_pos)
 {
     if (you.get_mutation_level(MUT_MELT) >= 2)
     {
@@ -268,8 +272,10 @@ void apply_slime_trail(const coord_def old_pos)
             const int dur = random_range(5, 12);
             temp_change_terrain(old_pos, DNGN_SLIMY_WATER, dur * BASELINE_DELAY, TERRAIN_CHANGE_SLIME);
             check_place_cloud(CLOUD_FIRE, old_pos, dur - 1, &you);
+            return true;
         }
     }
+    return false;
 }
 
 bool cancel_confused_move(bool stationary)
