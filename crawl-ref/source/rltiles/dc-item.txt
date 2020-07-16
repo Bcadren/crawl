@@ -587,7 +587,9 @@ i-sturdy BRAND_ARM_STURDY
 %rim 1
 i-harm BRAND_ARM_HARM
 i-shadows BRAND_ARM_SHADOWS
+%rim 0
 i-lunging BRAND_ARM_LUNGING BRAND_ARM_LAST
+%rim 1
 
 ###########OBJ_SHIELDS
 %sdir item/shields
