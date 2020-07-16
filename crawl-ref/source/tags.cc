@@ -2380,7 +2380,10 @@ static void _fixup_library_spells(FixedBitVector<NUM_SPELLS>& lib, int version)
             lib.set(i, false);
         else if (newspell != (spell_type)i)
         {
-            lib.set(newspell, lib[i]);
+            // Only give the fixup if they had the spell, don't remove
+            // replacements
+            if (lib[i])
+                lib.set(newspell, lib[i]);
             lib.set(i, false);
         }
 
