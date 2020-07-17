@@ -6617,6 +6617,16 @@ static ghost_demon _unmarshallGhost(reader &th)
 #endif
                     );
 
+#if TAG_MAJOR_VERSION == 34
+    monster_spells oldspells = ghost.spells;
+    ghost.spells.clear();
+    for (mon_spell_slot &slot : oldspells)
+    {
+        if (!spell_removed(slot.spell))
+            ghost.spells.push_back(slot);
+    }
+#endif
+
     return ghost;
 }
 
