@@ -69,6 +69,7 @@
 #include "species.h" // random_starting_species
 #include "spl-damage.h"
 #include "spl-selfench.h"
+#include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
 #include "sprint.h"
@@ -10548,6 +10549,16 @@ void activate_sanguine_armour()
         mpr("Your blood congeals into armour.");
         you.redraw_armour_class = true;
     }
+}
+
+/**
+ * Refreshes a player's spectral weapon on hit.
+ */
+void handle_spectral_brand()
+{
+    const int pow = you.skill(SK_EVOCATIONS, 4);
+    if (you.skill(SK_EVOCATIONS) > 0 && !find_spectral_weapon(&you))
+        cast_spectral_weapon(&you, pow, you.religion);
 }
 
 // Is the player immune to a particular hex because of their
