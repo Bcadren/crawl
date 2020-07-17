@@ -21,7 +21,11 @@
 #include "items.h"
 #include "libutil.h" // map_find
 #include "randbook.h"
+<<<<<<< HEAD
 #include "season.h"
+=======
+#include "skills.h" // is_removed_skill
+>>>>>>> d2331e51f2 (Don't generate manuals of removed skills)
 #include "spl-book.h"
 #include "state.h"
 #include "stepdown.h"
@@ -1856,22 +1860,23 @@ static skill_type _choose_manual_skill(bool force_magic)
     // spell skill (or invo/evo)
     if (one_chance_in(3) || force_magic)
     {
-        skill_type skill = SK_CONJURATIONS;
-        while (skill == SK_CONJURATIONS)
+        skill_type skill = SK_NONE;
+        do
+        {
             skill = static_cast<skill_type>(
                 SK_SPELLCASTING + random2(NUM_SKILLS - SK_SPELLCASTING));
+        } while (is_removed_skill(skill));
+
         return skill;
     }
 
     // mundane skill
-#if TAG_MAJOR_VERSION == 34
-    skill_type skill = SK_TRAPS;
-    while (skill == SK_TRAPS || skill == SK_STABBING || skill == SK_THROWING)
+    skill_type skill = SK_NONE;
+    do
+    {
         skill = static_cast<skill_type>(random2(SK_LAST_MUNDANE+1));
+    } while (is_removed_skill(skill));
     return skill;
-#else
-    return static_cast<skill_type>(random2(SK_LAST_MUNDANE + 1));
-#endif
 }
 
 static void _generate_manual_item(item_def& item, bool allow_uniques,
