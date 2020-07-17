@@ -3205,9 +3205,11 @@ static bool _invisibility_is_useless(const bool temp)
  * @param temp Should temporary conditions such as transformations and
  *             vampire hunger levels be taken into account? Religion (but
  *             not its absence) is considered to be permanent here.
+ * @param ident Should uselessness be checked as if the item were already
+ *              identified?
  * @return True if the item is known to be useless.
  */
-bool is_useless_item(const item_def &item, bool temp)
+bool is_useless_item(const item_def &item, bool temp, bool ident)
 {
     // During game startup, no item is useless. If someone re-glyphs an item
     // based on its uselessness, the glyph-to-item cache will use the useless
@@ -3241,7 +3243,7 @@ bool is_useless_item(const item_def &item, bool temp)
         if (is_artefact(item))
             return false;
 
-        if (item.sub_type == ARM_SCARF && item_type_known(item))
+        if (item.sub_type == ARM_SCARF && (ident || item_type_known(item)))
         {
             special_armour_type ego = get_armour_ego_type(item);
             switch (ego)
@@ -3265,7 +3267,7 @@ bool is_useless_item(const item_def &item, bool temp)
         if (temp && silenced(you.pos()))
             return true; // can't use scrolls while silenced
 
-        if (!item_type_known(item))
+        if (!ident && !item_type_known(item))
             return false;
 
         // A bad item is always useless.
@@ -3297,7 +3299,7 @@ bool is_useless_item(const item_def &item, bool temp)
             return true;
         if (is_known_empty_wand(item))
             return true;
-        if (!item_type_known(item))
+        if (!ident && !item_type_known(item))
             return false;
 
         if (item.sub_type == WAND_ENSLAVEMENT)
@@ -3314,7 +3316,7 @@ bool is_useless_item(const item_def &item, bool temp)
         if (you.undead_state(temp) == US_UNDEAD)
             return true;
 
-        if (!item_type_known(item))
+        if (!ident && !item_type_known(item))
             return false;
 
         // A bad item is always useless.
@@ -3358,7 +3360,7 @@ bool is_useless_item(const item_def &item, bool temp)
         return false;
     }
     case OBJ_JEWELLERY:
-        if (!item_type_known(item))
+        if (!ident && !item_type_known(item))
             return false;
 
         // Potentially useful. TODO: check the properties.
@@ -3434,7 +3436,12 @@ bool is_useless_item(const item_def &item, bool temp)
             return true;
         if (!you.could_wield(item, !fully_identified(item), !temp))
             return true;
+<<<<<<< HEAD
         if (!item_type_known(item))
+=======
+        }
+        if (!ident && !item_type_known(item))
+>>>>>>> 12be3fcb38 (Don't give Formicids useless starting items)
             return false;
 
         if (you_worship(GOD_TROG))
@@ -3501,7 +3508,24 @@ bool is_useless_item(const item_def &item, bool temp)
             return you.get_mutation_level(MUT_NO_ARTIFICE) && !is_deck(item);
         }
 
+<<<<<<< HEAD
     case OBJ_MANUALS:
+=======
+    case OBJ_BOOKS:
+        if (!ident && !item_type_known(item))
+            return false;
+        if (item_type_known(item) && item.sub_type != BOOK_MANUAL)
+        {
+            // Spellbooks are useless if all spells are either in the library
+            // already or are uncastable.
+            bool useless = true;
+            for (spell_type st : spells_in_book(item))
+                if (!you.spell_library[st] && you_can_memorise(st))
+                    useless = false;
+            return useless;
+        }
+        // If we're here, it's a manual.
+>>>>>>> 12be3fcb38 (Don't give Formicids useless starting items)
         if (you.skills[item.plus] >= 27)
             return true;
         if (is_useless_skill((skill_type)item.plus))
