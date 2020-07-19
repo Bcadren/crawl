@@ -698,6 +698,7 @@ bool deck_deal()
 
         evoke_deck(deck);
         redraw_screen();
+        update_screen();
     }
 
     // Nemelex doesn't like dealers with inadequate decks.
@@ -1059,6 +1060,7 @@ bool draw_three(int slot)
         {
             _describe_cards(draws);
             redraw_screen();
+            update_screen();
             need_prompt_redraw = true;
         }
         else if (keyin >= 'a' && keyin < 'a' + num_to_draw)
@@ -1860,6 +1862,8 @@ static void _storm_card(int power, deck_rarity_type rarity)
     _friendly(MONS_AIR_ELEMENTAL, 3);
 
     wind_blast(&you, (power_level == 0) ? 100 : 200, coord_def(), 1);
+    redraw_screen(); // Update monster positions
+    update_screen();
 
     for (radius_iterator ri(you.pos(), 4, C_SQUARE, LOS_SOLID); ri; ++ri)
     {

@@ -161,7 +161,10 @@ bool attribute_increase()
             keyin = pop.getkey();
 #else
             while ((keyin = getchm()) == CK_REDRAW)
+            {
                 redraw_screen();
+                update_screen();
+            }
 #endif
         }
         tried_lua = true;

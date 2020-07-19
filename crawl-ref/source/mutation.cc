@@ -2626,6 +2626,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     {
         tiles.layout_statcol();
         redraw_screen();
+        update_screen();
     }
 #endif
     if (crawl_state.game_is_hints()

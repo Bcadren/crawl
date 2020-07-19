@@ -4049,6 +4049,7 @@ bool ashenzari_transfer_knowledge()
         if (is_invalid_skill(you.transfer_from_skill))
         {
             redraw_screen();
+            update_screen();
             return false;
         }
 
@@ -4076,6 +4077,7 @@ bool ashenzari_transfer_knowledge()
     you.transfer_total_skill_points = you.transfer_skill_points;
 
     redraw_screen();
+    update_screen();
     return true;
 }
 
@@ -6367,6 +6369,7 @@ bool ru_do_sacrifice(ability_type sac)
     _ru_expire_sacrifices();
     ru_reset_sacrifice_timer(true);
     redraw_screen(); // pretty much everything could have changed
+    update_screen();
     return true;
 }
 

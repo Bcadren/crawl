@@ -1015,6 +1015,7 @@ void pickup_menu(int item_link)
     if (selected.empty())
         canned_msg(MSG_OK);
     redraw_screen();
+    update_screen();
 
     string pickup_warning;
     for (const SelItem &sel : selected)

@@ -681,6 +681,7 @@ public:
         {
             mouse_control mc(MOUSE_MODE_MORE);
             redraw_screen();
+            update_screen();
         }
         else
         {
@@ -1846,6 +1847,7 @@ static void readkey_more(bool user_forced)
         if (keypress == CK_REDRAW)
         {
             redraw_screen();
+            update_screen();
             continue;
         }
     }

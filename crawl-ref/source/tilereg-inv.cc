@@ -194,12 +194,14 @@ int InventoryRegion::handle_mouse(wm_mouse_event &event)
             {
                 describe_item(mitm[idx]);
                 redraw_screen();
+                update_screen();
             }
         }
         else // in inventory
         {
             describe_item(you.inv[idx]);
             redraw_screen();
+            update_screen();
         }
         return CK_MOUSE_CMD;
     }

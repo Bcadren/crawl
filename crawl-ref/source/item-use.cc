@@ -287,10 +287,13 @@ item_def* use_an_item(int item_type, operation_types oper, const char* prompt,
         }
 
         redraw_screen();
+        update_screen();
+
         if (target && !check_warning_inscriptions(*target, oper))
             target = nullptr;
         if (target)
             return target;
+
         else if (allowcancel())
         {
             prompt_failed(PROMPT_ABORT);
@@ -2723,6 +2726,7 @@ static bool _puton_item(int item_slot, bool prompt_slot,
     {
         tiles.layout_statcol();
         redraw_screen();
+        update_screen();
     }
 #endif
 
@@ -3083,6 +3087,7 @@ bool remove_ring(int slot, bool announce)
     {
         tiles.layout_statcol();
         redraw_screen();
+        update_screen();
     }
 #endif
 

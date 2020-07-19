@@ -1650,7 +1650,6 @@ void redraw_screen(bool show_updates)
     you.redraw_resists       = true;
 
     print_stats();
-    update_screen();
 
     {
         no_notes nx;
@@ -1672,7 +1671,6 @@ void redraw_screen(bool show_updates)
         display_message_window();
     }
 
-    update_screen();
 #ifndef USE_TILE_LOCAL
     assert_valid_cursor_pos();
 #endif

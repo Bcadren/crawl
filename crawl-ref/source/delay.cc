@@ -941,6 +941,7 @@ void PasswallDelay::finish()
             mpr("...yet there is something new on the other side. "
                 "You quickly turn back.");
             redraw_screen();
+            update_screen();
             return;
         }
         break;
@@ -965,6 +966,7 @@ void PasswallDelay::finish()
         {
             mpr("...and sense your way blocked. You quickly turn back.");
             redraw_screen();
+            update_screen();
             return;
         }
 
