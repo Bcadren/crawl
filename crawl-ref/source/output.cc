@@ -1284,7 +1284,6 @@ static void _print_status_lights(int y)
 #endif
 }
 
-#ifdef USE_TILE_LOCAL
 static bool _need_stats_printed()
 {
     return you.redraw_title
@@ -1300,7 +1299,6 @@ static bool _need_stats_printed()
            || you.redraw_quiver
            || you.redraw_resists;
 }
-#endif
 
 static void _draw_wizmode_flag(const char *word)
 {
@@ -1408,7 +1406,7 @@ static void _redraw_title()
     textcolour(LIGHTGREY);
 }
 
-void print_stats()
+bool print_stats()
 {
     cursor_control coff(false);
     textcolour(LIGHTGREY);
@@ -1432,9 +1430,7 @@ void print_stats()
         you.redraw_status_lights = true;
     }
 
-#ifdef USE_TILE_LOCAL
     bool has_changed = _need_stats_printed();
-#endif
 
     if (you.redraw_title)
     {
@@ -1535,13 +1531,10 @@ void print_stats()
         _print_status_lights(10 + yhack);
     }
 
-#ifdef USE_TILE_LOCAL
-    if (has_changed)
-        update_screen();
-#else
-    update_screen();
+#ifndef USE_TILE_LOCAL
     assert_valid_cursor_pos();
 #endif
+    return has_changed;
 }
 
 static string _level_description_string_hud()
@@ -1648,6 +1641,7 @@ void redraw_console_sidebar()
     you.redraw_resists       = true;
 
     print_stats();
+    update_screen();
 
     {
         no_notes nx;
@@ -1701,6 +1695,7 @@ void redraw_screen(bool show_updates)
     you.redraw_resists       = true;
 
     print_stats();
+    update_screen();
 
     {
         no_notes nx;

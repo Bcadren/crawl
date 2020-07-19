@@ -1545,6 +1545,7 @@ LUAFN(_crawl_redraw_stats)
     you.redraw_resists       = true;
 
     print_stats();
+    update_screen();
     return 0;
 }
 
