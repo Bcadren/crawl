@@ -2656,7 +2656,7 @@ void game_options::read_option_line(const string &str, bool runscript)
         else if (field == "default")
             char_set = CSET_DEFAULT;
         else
-            fprintf(stderr, "Bad character set: %s\n", field.c_str());
+            report_error("Bad character set, using default: %s\n", field.c_str());
     }
     else if (key == "language")
     {
@@ -2759,7 +2759,7 @@ void game_options::read_option_line(const string &str, bool runscript)
             colour[orig_col] = result_col;
         else
         {
-            fprintf(stderr, "Bad colour -- %s=%d or %s=%d\n",
+            report_error("Bad colour -- %s=%d or %s=%d\n",
                      subkey.c_str(), orig_col, field.c_str(), result_col);
         }
     }
@@ -2771,9 +2771,9 @@ void game_options::read_option_line(const string &str, bool runscript)
         if (chnl != -1 && col != MSGCOL_NONE)
             channels[chnl] = col;
         else if (chnl == -1)
-            fprintf(stderr, "Bad channel -- %s\n", subkey.c_str());
+            report_error("Bad channel -- %s", subkey.c_str());
         else if (col == MSGCOL_NONE)
-            fprintf(stderr, "Bad colour -- %s\n", field.c_str());
+            report_error("Bad colour -- %s", field.c_str());
     }
     else if (key == "use_animations")
     {
@@ -2890,10 +2890,7 @@ void game_options::read_option_line(const string &str, bool runscript)
         if (isaalpha(field[0]))
             fire_items_start = letter_to_index(field[0]);
         else
-        {
-            fprintf(stderr, "Bad fire item start index: %s\n",
-                     field.c_str());
-        }
+            report_error("Bad fire item start index: %s\n", field.c_str());
     }
     else if (key == "assign_item_slot")
     {
@@ -3850,7 +3847,7 @@ void game_options::report_error(const char* format, ...)
     string error = vmake_stringf(format, args);
     va_end(args);
 
-    mprf(MSGCH_ERROR, "Warning: %s (%s:%d)", error.c_str(),
+    mprf(MSGCH_ERROR, "Options error: %s (%s:%d)", error.c_str(),
          basefilename.c_str(), line_num);
 }
 
