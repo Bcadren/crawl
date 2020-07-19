@@ -439,6 +439,7 @@ NORETURN static void _launch_game()
 
 #ifdef USE_TILE
     viewwindow();
+    update_screen();
 #endif
 
     if (game_start)
@@ -1169,6 +1170,7 @@ static void _input()
         // This else will be triggered by instantaneous actions, such as
         // Chei's temporal distortion.
         viewwindow();
+        update_screen();
     }
 
     update_can_currently_train();
@@ -2065,6 +2067,7 @@ static void _prep_input()
     update_screen();
 
     viewwindow();
+    update_screen();
     maybe_update_stashes();
     if (check_for_interesting_features() && you.running.is_explore())
         stop_running();
@@ -2201,6 +2204,7 @@ void world_reacts()
         crawl_state.viewport_monster_hp = false;
         crawl_state.viewport_weapons = false;
         viewwindow();
+        update_screen();
     }
 
     update_monsters_in_view();
@@ -2274,6 +2278,7 @@ void world_reacts()
     add_auto_excludes();
 
     viewwindow();
+    update_screen();
 
     if (you.cannot_act() && any_messages()
         && crawl_state.repeat_cmd != CMD_WIZARD)

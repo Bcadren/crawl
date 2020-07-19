@@ -367,6 +367,7 @@ static void _post_init(bool newc)
     print_stats();
     update_screen();
     viewwindow();
+    update_screen();
 
     activate_notes(true);
 

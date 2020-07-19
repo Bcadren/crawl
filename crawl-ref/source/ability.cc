@@ -3565,6 +3565,7 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
             you.xray_vision = false;
         }
         viewwindow(true);
+        update_screen();
         break;
 
     case ABIL_ASHENZARI_TRANSFER_KNOWLEDGE:

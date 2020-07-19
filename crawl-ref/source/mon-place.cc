@@ -309,6 +309,7 @@ void spawn_random_monsters()
         mg.xp_tracking = XP_UNTRACKED;
         mons_place(mg);
         viewwindow();
+        update_screen();
         return;
     }
 
@@ -323,6 +324,7 @@ void spawn_random_monsters()
 
     mons_place(mg);
     viewwindow();
+    update_screen();
 }
 
 static bool _is_random_monster(monster_type mt)

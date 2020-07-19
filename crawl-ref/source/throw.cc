@@ -1025,6 +1025,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     // Redraw the screen before firing, in case the monster just
     // came into view and the screen hasn't been updated yet.
     viewwindow();
+    update_screen();
     if (teleport)
     {
         beam.use_target_as_pos = true;
