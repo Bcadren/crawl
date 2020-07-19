@@ -2555,12 +2555,9 @@ void bolt::affect_endpoint()
             bool created = false;
             num_elementals = min(num_elementals,
                 min((int)locations.size(), (int)locations.size() / 5 + 1));
-            beh_type att = BEH_FRIENDLY;
-            if (player_will_anger_monster(MONS_WATER_ELEMENTAL))
-                att = BEH_HOSTILE;
             for (int n = 0; n < num_elementals; ++n)
             {
-                mgen_data mg(MONS_WATER_ELEMENTAL, att, locations[n], 0,
+                mgen_data mg(MONS_WATER_ELEMENTAL, BEH_FRIENDLY, locations[n], 0,
                     MG_FORCE_BEH | MG_FORCE_PLACE);
                 mg.set_summoned(&you, 3, SPELL_NO_SPELL);
                 mg.hd = player_adjust_evoc_power(

@@ -934,7 +934,7 @@ void wizard_polymorph_monster(monster* mon)
         return;
     }
 
-    monster_polymorph(mon, type, PPT_SAME, true);
+    monster_polymorph(mon, type, PPT_SAME);
 
     if (!mon->alive())
     {

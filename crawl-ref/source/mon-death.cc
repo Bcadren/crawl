@@ -1820,8 +1820,9 @@ static bool _mons_reaped(actor &killer, monster& victim)
     }
 
     monster *zombie = 0;
+
     if (animate_remains(victim.pos(), CORPSE_BODY, beh, hitting, &killer, "",
-                        GOD_NO_GOD, true, true, true, &zombie) <= 0)
+                        GOD_NO_GOD, true, true, false, &zombie) <= 0)
     {
         return false;
     }
@@ -1831,7 +1832,7 @@ static bool _mons_reaped(actor &killer, monster& victim)
     else if (you.can_see(*zombie))
         mprf("%s appears out of thin air!", zombie->name(DESC_THE).c_str());
 
-    player_angers_monster(zombie);
+    check_lovelessness(*zombie);
 
     return true;
 }
