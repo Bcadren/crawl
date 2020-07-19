@@ -21,11 +21,8 @@
 #include "items.h"
 #include "libutil.h" // map_find
 #include "randbook.h"
-<<<<<<< HEAD
 #include "season.h"
-=======
 #include "skills.h" // is_removed_skill
->>>>>>> d2331e51f2 (Don't generate manuals of removed skills)
 #include "spl-book.h"
 #include "state.h"
 #include "stepdown.h"

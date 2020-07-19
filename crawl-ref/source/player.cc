@@ -10560,7 +10560,7 @@ void handle_spectral_brand()
 {
     const int pow = you.skill(SK_EVOCATIONS, 4);
     if (you.skill(SK_EVOCATIONS) > 0 && !find_spectral_weapon(&you))
-        cast_spectral_weapon(&you, pow, you.religion);
+        cast_spectral_weapon(&you, pow, you.religion, false);
 }
 
 // Is the player immune to a particular hex because of their

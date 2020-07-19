@@ -1107,7 +1107,7 @@ void player_reacts()
     if (you.duration[DUR_SONG_OF_SLAYING])
         noisy(spell_effect_noise(SPELL_SONG_OF_SLAYING), you.pos());
 
-    _handle_spectral_brand();
+    handle_spectral_brand();
 
     if (x_chance_in_y(you.time_taken, 10 * BASELINE_DELAY))
     {
