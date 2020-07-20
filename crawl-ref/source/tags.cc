@@ -33,6 +33,9 @@
 #include "artefact.h"
 #include "art-enum.h"
 #include "branch.h"
+#include "chardump.h"
+#include "colour.h"
+#include "coordit.h"
 #if TAG_MAJOR_VERSION == 34
  #include "decks.h"
 #endif
@@ -3739,6 +3742,12 @@ static void _tag_read_you(reader &th)
     you.props.clear();
     you.props.read(th);
 #if TAG_MAJOR_VERSION == 34
+    if (!you.props.exists(TIME_PER_LEVEL_KEY) && you.elapsed_time > 0)
+    {
+        CrawlHashTable &time_tracking = you.props[TIME_PER_LEVEL_KEY].get_table();
+        time_tracking["upgrade"] = -1;
+    }
+
     if (th.getMinorVersion() < TAG_MINOR_STICKY_FLAME)
     {
         if (you.props.exists("napalmer"))
