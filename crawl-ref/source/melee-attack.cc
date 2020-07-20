@@ -3275,6 +3275,13 @@ int melee_attack::calc_to_hit(bool random, bool player_aux)
         mhit /= 10;
     }
 
+    // Rolling charges feel bad when they miss, so make them miss less often.
+    if (roll_dist > 0)
+    {
+        mhit *= 15;
+        mhit /= 10;
+    }
+
     return mhit;
 }
 
