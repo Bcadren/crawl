@@ -39,7 +39,7 @@ level_id generic_shaft_dest();
 void     handle_items_on_shaft(const coord_def& where);
 
 int       trap_rate_for_place();
-trap_type random_trap_for_place();
+trap_type random_trap_for_place(bool dispersal_ok = true);
 trap_type random_vault_trap();
 
 int count_traps(trap_type ttyp);
