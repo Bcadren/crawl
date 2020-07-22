@@ -499,7 +499,7 @@ public:
 
 // Lists monsters, items, and some interesting features in the player's view.
 // TODO: Allow sorting of items lists.
-void full_describe_view()
+coord_def full_describe_view(bool targeting)
 {
     vector<monster_info> list_mons;
     vector<item_def> list_items;
@@ -538,7 +538,7 @@ void full_describe_view()
     if (list_mons.empty() && list_items.empty() && list_features.empty())
     {
         mpr("No monsters, items or features are visible.");
-        return;
+        return coord_def(-1, -1);
     }
 
     InvMenu desc_menu(MF_SINGLESELECT | MF_ANYPRINTABLE
@@ -759,7 +759,9 @@ void full_describe_view()
 
     // need to do this after the menu has been closed on console,
     // since do_look_around() runs its own loop
-    if (target != coord_def(-1, -1))
+    // Don't call this when targeting, since we instead return our
+    // selection (if any) to the targeter
+    if (target != coord_def(-1, -1) && !targeting)
         do_look_around(target);
 
 #ifndef USE_TILE_LOCAL
@@ -775,6 +777,8 @@ void full_describe_view()
     tiles.place_cursor(CURSOR_TUTORIAL, NO_CURSOR);
     tiles.clear_text_tags(TAG_TUTORIAL);
 #endif
+
+    return target;
 }
 
 void do_look_around(const coord_def &whence)
@@ -1830,6 +1834,14 @@ void direction_chooser::move_to_you()
     moves.delta.reset();
 }
 
+void direction_chooser::full_describe()
+{
+    const coord_def choice = full_describe_view(true);
+    if (choice != coord_def(-1, -1))
+        set_target(choice);
+    need_all_redraw = true;
+}
+
 void direction_chooser::describe_target()
 {
     if (!map_bounds(target()) || !env.map_knowledge(target()).known())
@@ -1944,6 +1956,7 @@ bool direction_chooser::process_command(command_type command)
         moves.isCancel = true;
         break;
 
+    case CMD_TARGET_FULL_DESCRIBE: full_describe(); break;
     case CMD_TARGET_DESCRIBE: describe_target(); break;
     case CMD_TARGET_HELP:     show_help();       break;
 
