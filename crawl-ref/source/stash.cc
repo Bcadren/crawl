@@ -264,20 +264,32 @@ void Stash::update()
     else
         feat_desc = feature_description_at(pos, false, DESC_A);
 
-    // Players can now see every item in stacks in view
     // Zap existing items
     items.clear();
+
+    if (!_grid_has_perceived_item(pos))
+    {
+        verified = true;
+        return;
+    }
+
+    // Squares are big, whole piles of loot can be seen on each so
+    // let's update them
+
+    // There's something on this square. Take a squint at it.
+    item_def *pitem = &mitm[you.visible_igrd(pos)];
+    hints_first_item(*pitem);
 
     // Now, grab all items on that square and fill our vector
     for (stack_iterator si(pos, true); si; ++si)
     {
-        passive_id_item(*si);
-        add_item(*si);
+        god_id_item(*si);
+        maybe_identify_base_type(*si);
+        if (!(si->flags & ISFLAG_UNOBTAINABLE))
+            add_item(*si);
     }
-    
-    // make players still visit stacks; they might want to stop travel
-    if (pos == you.pos())
-        verified = true;
+
+    verified = true;
 }
 
 static bool _is_rottable(const item_def &item)

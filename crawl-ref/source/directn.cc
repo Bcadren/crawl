@@ -379,6 +379,7 @@ void direction_chooser::describe_cell() const
         {
             if (!did_cloud)
                 _print_cloud_desc(target());
+            print_floor_description();
         }
     }
 
@@ -751,17 +752,11 @@ void _get_nearby_items(vector<item_def> &list_items,
         if (oid == NON_ITEM)
             continue;
 
-        const vector<item_def> items = item_list_in_stash(*ri);
+        const vector<const item_def *> items = item_list_on_square(
+                                                   you.visible_igrd(*ri));
 
-#ifdef DEBUG_DIAGNOSTICS
-        if (items.empty())
-        {
-            mprf(MSGCH_ERROR, "No items found in stash, but top item is %s",
-                 mitm[oid].name(DESC_PLAIN).c_str());
-            more();
-        }
-#endif
-        list_items.insert(list_items.end(), items.begin(), items.end());
+        for (const item_def * item : items)
+            list_items.push_back(*item);
     }
 }
 
@@ -1562,7 +1557,34 @@ void direction_chooser::print_items_description() const
     if (!in_bounds(target()))
         return;
 
-    item_check(&target());
+    auto items = item_list_on_square(you.visible_igrd(target()));
+
+    if (items.empty())
+        return;
+
+    if (items.size() == 1)
+    {
+        mprf(MSGCH_FLOOR_ITEMS, "<cyan>Item here:</cyan> %s.",
+             menu_colour_item_name(*items[0], DESC_A).c_str());
+    }
+    else
+        mprf(MSGCH_FLOOR_ITEMS, "<cyan>Items here: </cyan> %s.", item_message(items).c_str());
+}
+
+void direction_chooser::print_floor_description(bool boring_too) const
+{
+    const dungeon_feature_type feat = grd(target());
+    if (!boring_too && feat == DNGN_FLOOR)
+        return;
+
+#ifdef DEBUG_DIAGNOSTICS
+    // [ds] Be more verbose in debug mode.
+    if (you.wizard)
+        _debug_describe_feature_at(target());
+    else
+#endif
+    mprf(MSGCH_EXAMINE_FILTER, "%s.",
+         feature_description_at(target(), true).c_str());
 }
 
 void direction_chooser::reinitialize_move_flags()

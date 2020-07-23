@@ -85,7 +85,8 @@ void destroy_item(item_def &item, bool never_created = false);
 void destroy_item(int dest, bool never_created = false);
 void lose_item_stack(const coord_def& where);
 
-void item_check(const coord_def* pos_ptr = nullptr);
+string item_message(vector<const item_def *> const &items);
+void item_check();
 void request_autopickup(bool do_pickup = true);
 void id_floor_items();
 

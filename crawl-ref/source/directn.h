@@ -216,6 +216,7 @@ private:
     // You see 2 +3 dwarven bolts here.
     // There is something else lying underneath.
     void print_items_description() const;
+    void print_floor_description(bool boring_too = false) const;
 
     string target_interesting_terrain_description() const;
     string target_cloud_description() const;
