@@ -19,3 +19,5 @@ note_monsters += orb of fire, ancient lich, Sigmund
 : if you.race() == "Ghoul" or you.race() == "Troll" or you.race() == "Kobold" then
 auto_butcher_max_chunks = 0
 : end
+
+monster_item_view_features += stair, trap
