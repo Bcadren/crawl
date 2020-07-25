@@ -780,7 +780,7 @@ static void _apply_move_time_taken(int additional_time_taken)
 // player begins a rampage, and then cancels the second move, as through a
 // prompt, we have to ensure they don't get zero-cost movement out of it. Here
 // we apply movedelay, end the turn, and call relevant post-move effects.
-static void _finalize_cancelled_rampage_move(coord_def initial_position)
+static void _finalize_cancelled_rampage_move()
 {
     _apply_move_time_taken();
     you.turn_is_over = true;
@@ -794,13 +794,9 @@ static void _finalize_cancelled_rampage_move(coord_def initial_position)
     if (you_worship(GOD_CHEIBRIADOS) && one_chance_in(2))
         did_god_conduct(DID_HASTY, 1, true);
 
-    bool did_wu_jian_attack = false;
-    if (you_worship(GOD_WU_JIAN))
-        did_wu_jian_attack = wu_jian_post_move_effects(false, initial_position);
-
-    // We're eligible for acrobat if we don't trigger WJC attacks.
-    if (!did_wu_jian_attack)
-        update_acrobat_status();
+    // Rampaging prevents Wu Jian attacks, so we do not process them
+    // here
+    update_acrobat_status();
 }
 
 // Called when the player moves by walking/running. Also calls attack
@@ -1051,7 +1047,7 @@ void move_player_action(coord_def move)
                 if (rampaged)
                 {
                     move.reset();
-                    _finalize_cancelled_rampage_move(initial_position);
+                    _finalize_cancelled_rampage_move();
                     return;
                 }
                 you.turn_is_over = false;
@@ -1075,6 +1071,7 @@ void move_player_action(coord_def move)
     }
 
     const bool running = you_are_delayed() && current_delay()->is_run();
+    bool dug = false;
 
     if (!attacking && (targ_pass || can_wall_jump)
         && moving && !beholder && !fmonger)
@@ -1125,6 +1122,7 @@ void move_player_action(coord_def move)
                 make_hungry(50, true);
             }
             additional_time_taken += BASELINE_DELAY / 5;
+            dug = true;
             destroy_wall(targ);
             noisy(6, you.pos());
         }
@@ -1243,7 +1241,7 @@ void move_player_action(coord_def move)
         if (rampaged)
         {
             move.reset();
-            _finalize_cancelled_rampage_move(initial_position);
+            _finalize_cancelled_rampage_move();
             return;
         }
         you.turn_is_over = false;
@@ -1258,7 +1256,7 @@ void move_player_action(coord_def move)
         if (rampaged)
         {
             move.reset();
-            _finalize_cancelled_rampage_move(initial_position);
+            _finalize_cancelled_rampage_move();
             return;
         }
         you.turn_is_over = false;
@@ -1282,11 +1280,9 @@ void move_player_action(coord_def move)
     }
 
     bool did_wu_jian_attack = false;
-    if (you_worship(GOD_WU_JIAN) && !attacking)
-    {
-        did_wu_jian_attack = wu_jian_post_move_effects(did_wall_jump,
-                                                       initial_position);
-    }
+
+    if (you_worship(GOD_WU_JIAN) && !attacking && !dug && !rampaged)
+        did_wu_jian_attack = wu_jian_post_move_effects(did_wall_jump, initial_position);
 
     if (you.attribute[ATTR_SKELETON])
     {
