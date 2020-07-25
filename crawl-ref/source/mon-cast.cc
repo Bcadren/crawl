@@ -1106,10 +1106,9 @@ static bool _set_hex_target(monster* caster, bolt& pbolt)
     monster* selected_target = nullptr;
     int min_distance = INT_MAX;
 
-    if (!caster->get_foe())
-        return false;
-
     const actor *foe = caster->get_foe();
+    if (!foe)
+        return false;
 
     for (monster_near_iterator targ(caster, LOS_NO_TRANS); targ; ++targ)
     {
@@ -2201,6 +2200,7 @@ static bool _ms_direct_nasty(spell_type monspell)
 // XX why use this logic for rN, but not rTorment, rElec, etc
 static ai_action::goodness _foe_should_res_negative_energy(const actor* foe)
 {
+    ASSERT(foe);
     if (foe->is_player())
     {
         switch (you.undead_state())
@@ -6433,7 +6433,9 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     case SPELL_WATERSTRIKE:
     {
         pbolt.flavour    = BEAM_WATER;
-        mount_defend = you.mounted(); // Waterstrike always hits mount (it's from below).
+        mount_defend = you.mounted() && foe->is_player(); // Waterstrike always hits mount (it's from below).
+
+        ASSERT(foe);
 
         dice_def calc = waterstrike_damage(*mons);
         int damage_taken = calc.roll();
@@ -6478,6 +6480,8 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     {
         pbolt.flavour = BEAM_AIR;
         // Airstrike never hits mount (it's from above).
+
+        ASSERT(foe);
 
         if (chaos)
             pbolt.flavour = chaos_damage_type();
@@ -6569,6 +6573,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 
     case SPELL_CONFUSION_GAZE:
     {
+        ASSERT(foe);
         const int res_margin = foe->check_res_magic(splpow / ENCH_POW_FACTOR);
         if (res_margin > 0)
         {
@@ -7642,10 +7647,12 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
     case SPELL_GRAVITAS:
+        ASSERT(foe);
         fatal_attraction(foe->pos(), mons, splpow);
         return;
 
     case SPELL_ENTROPIC_WEAVE:
+        ASSERT(foe);
         if (chaos && one_chance_in(3))
         {
             if (one_chance_in(4))
@@ -8699,6 +8706,7 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     // Mara shouldn't cast player ghost if he can't see the player
     case SPELL_SUMMON_ILLUSION:
+        ASSERT(foe);
         return ai_action::good_or_impossible(mon->see_cell_no_trans(foe->pos())
                && mon->can_see(*foe)
                && actor_is_illusion_cloneable(foe));
@@ -8747,6 +8755,7 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::bad();
 
     case SPELL_BLINK_ALLIES_ENCIRCLE:
+        ASSERT(foe);
         if (!mon->see_cell_no_trans(foe->pos()) || !mon->can_see(*foe))
             return ai_action::impossible();
 
@@ -8762,11 +8771,13 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
                     || !_awaken_vines(mon, true));
 
     case SPELL_WATERSTRIKE:
+        ASSERT(foe);
         return ai_action::good_or_impossible(feat_is_watery(grd(foe->pos())));
 
     // Don't use unless our foe is close to us and there are no allies already
     // between the two of us
     case SPELL_WIND_BLAST:
+        ASSERT(foe);
         if (foe->pos().distance_from(mon->pos()) < 4)
         {
             if (foe->res_wind())
@@ -8803,10 +8814,12 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::good_or_impossible(!no_clouds);
 
     case SPELL_TONGUE_LASH:
-        return ai_action::good_or_bad(foe && !adjacent(mon->pos(), foe->pos()));
+        ASSERT(foe);
+        return ai_action::good_or_bad(!adjacent(mon->pos(), foe->pos()));
 
     case SPELL_FREEZE:
-        return ai_action::good_or_impossible(foe && adjacent(mon->pos(), foe->pos()));
+        ASSERT(foe);
+        return ai_action::good_or_impossible(adjacent(mon->pos(), foe->pos()));
 
     case SPELL_DRUIDS_CALL:
         // Don't cast unless there's at least one valid target
@@ -8846,6 +8859,7 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::good_or_impossible(!mon->has_ench(ENCH_BLACK_MARK));
 
     case SPELL_BLINK_ALLIES_AWAY:
+        ASSERT(foe);
         if (!mon->see_cell_no_trans(foe->pos()) && !mon->can_see(*foe))
             return ai_action::impossible();
 
