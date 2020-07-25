@@ -105,6 +105,7 @@ namespace ai_action
     goodness good_or_bad(bool b) { return b ? good() : bad(); }
     goodness good_or_impossible(bool b) { return b ? good() : impossible(); }
     goodness neutral() { return possible(0); }
+    // TODO: allow adjusting this threshold? Would be useful at least for tests.
     bool is_viable(goodness g) { return g >= neutral(); }
 }
 
@@ -6555,6 +6556,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
     case SPELL_HAUNT:
+        ASSERT(foe);
         if (foe->is_player())
             mpr("You feel haunted.");
         else
@@ -8546,12 +8548,13 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     actor *foe = mon->get_foe();
     const bool friendly = mon->friendly();
 
+    if (!foe && (get_spell_flags(monspell) & spflag::targeting_mask))
+        return ai_action::impossible();
+
     // Keep friendly summoners from spamming summons constantly.
     if (friendly && !foe && spell_typematch(monspell, spschool::summoning))
         return ai_action::bad();
 
-    if (!foe && get_spell_flags(monspell) & spflag::targeting_mask)
-        return ai_action::impossible();
 
     // Don't try to cast spells at players who are stepped from time.
     if (foe && foe->is_player() && you.duration[DUR_TIME_STEP])
@@ -8708,7 +8711,6 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     // Mara shouldn't cast player ghost if he can't see the player
     case SPELL_SUMMON_ILLUSION:
-        ASSERT(foe);
         return ai_action::good_or_impossible(mon->see_cell_no_trans(foe->pos())
                && mon->can_see(*foe)
                && actor_is_illusion_cloneable(foe));
@@ -8757,7 +8759,6 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::bad();
 
     case SPELL_BLINK_ALLIES_ENCIRCLE:
-        ASSERT(foe);
         if (!mon->see_cell_no_trans(foe->pos()) || !mon->can_see(*foe))
             return ai_action::impossible();
 
@@ -8767,20 +8768,17 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::bad();
 
     case SPELL_AWAKEN_VINES:
-        ASSERT(foe);
         return ai_action::good_or_impossible(
                     mon->has_ench(ENCH_AWAKEN_VINES)
                         && mon->props["vines_awakened"].get_int() >= 3
                     || !_awaken_vines(mon, true));
 
     case SPELL_WATERSTRIKE:
-        ASSERT(foe);
         return ai_action::good_or_impossible(feat_is_watery(grd(foe->pos())));
 
     // Don't use unless our foe is close to us and there are no allies already
     // between the two of us
     case SPELL_WIND_BLAST:
-        ASSERT(foe);
         if (foe->pos().distance_from(mon->pos()) < 4)
         {
             if (foe->res_wind())
@@ -8834,10 +8832,9 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::good_or_bad(!you.beheld_by(*mon) || coinflip());
 
     case SPELL_DISCHARGE:
-        ASSERT(foe);
         // TODO: possibly check for friendlies nearby?
         // Perhaps it will be used recklessly like chain lightning...
-        return ai_action::good_or_bad(adjacent(foe->pos(), mon->pos()));
+        return ai_action::good_or_bad(foe && adjacent(foe->pos(), mon->pos()));
 
     case SPELL_THROW_ROCK:
     case SPELL_THROW_TOMAHAWK:
@@ -8861,7 +8858,6 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return ai_action::good_or_impossible(!mon->has_ench(ENCH_BLACK_MARK));
 
     case SPELL_BLINK_ALLIES_AWAY:
-        ASSERT(foe);
         if (!mon->see_cell_no_trans(foe->pos()) && !mon->can_see(*foe))
             return ai_action::impossible();
 
@@ -9010,8 +9006,7 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
             return ai_action::good_or_bad(trace_los(mon, _tornado_vulnerable));
 
     case SPELL_ENGLACIATION:
-        ASSERT(foe);
-        return ai_action::good_or_bad(mon->see_cell_no_trans(foe->pos())
+        return ai_action::good_or_bad(foe && mon->see_cell_no_trans(foe->pos())
                                         && foe->res_cold() <= 0);
 
     case SPELL_OLGREBS_TOXIC_RADIANCE:

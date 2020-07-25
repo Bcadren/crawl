@@ -581,7 +581,7 @@ static const struct spell_desc spelldata[] =
     spflag::monster | spflag::target,
     2,
     0,
-    0, 5,
+    LOS_RADIUS, LOS_RADIUS,
     2, 0,
     TILEG_BLINK,
 },
@@ -2147,10 +2147,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SUMMON_ILLUSION, "Summon Illusion", "",
     spschool::summoning,
-    spflag::monster,
+    spflag::monster | spflag::target,
     5,
     0,
-    -1, -1,
+    LOS_RADIUS, LOS_RADIUS,
     4, 0,
     TILEG_GENERIC_MONSTER_SPELL,
 },
@@ -2707,7 +2707,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BLINK_ALLIES_ENCIRCLE, "Blink Allies Encircling", "",
     spschool::translocation,
-    spflag::area,
+    spflag::area | spflag::target,
     6,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -2718,7 +2718,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_AWAKEN_VINES, "Awaken Vines", "",
     spschool::hexes | spschool::summoning,
-    spflag::area | spflag::monster,
+    spflag::area | spflag::monster | spflag::target,
     6,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -2762,7 +2762,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_WIND_BLAST, "Wind Blast", "",
     spschool::air | spschool::translocation | spschool::evocation,
-    spflag::area,
+    spflag::area | spflag::target, // wind blast is targeted when used as a monster spell, but not from the storm card
     3,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -3003,7 +3003,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BLINK_ALLIES_AWAY, "Blink Allies Away", "",
     spschool::translocation,
-    spflag::area,
+    spflag::area | spflag::target | spflag::monster,
     6,
     200,
     LOS_RADIUS, LOS_RADIUS,
@@ -3519,10 +3519,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_ENTROPIC_WEAVE, "Entropic Weave", "",
     spschool::hexes,
-    spflag::utility,
+    spflag::utility | spflag::target,
     5,
     200,
-    -1, -1,
+    LOS_RADIUS, LOS_RADIUS,
     3, 0,
     TILEG_GENERIC_MONSTER_SPELL,
 },
