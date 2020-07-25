@@ -1208,7 +1208,7 @@ static void _debug_acquirement_stats(FILE *ostat)
             "cloud immunity",
             "high priest",
             "harm",
-            "lunging",
+            "rampaging",
         };
 
         const int non_art = acq_calls - num_arts;

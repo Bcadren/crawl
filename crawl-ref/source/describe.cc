@@ -1625,8 +1625,8 @@ static string _armour_brand_desc(const item_def item)
         description += "It completely protects its wearer from the effects of clouds.";
         break;
 
-    case SPARM_LUNGING:
-        description += "It allows its wearer to lunge towards enemies.";
+    case SPARM_RAMPAGING:
+        description += "It allows its wearer to rampage towards enemies.";
         break;
     }
 
