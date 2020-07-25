@@ -116,8 +116,16 @@ void init_spell_descs()
                 || (data.min_range >= 0 && data.max_range > 0),
                 "targeted/directed spell '%s' has invalid range", data.title);
 
-        ASSERTM(!(data.flags & spflag::monster && is_player_spell(data.id)),
+        if (!spell_removed(data.id)
+            && data.id != SPELL_NO_SPELL
+            && data.id != SPELL_DEBUGGING_RAY)
+        {
+            ASSERTM(!(data.flags & spflag::monster && is_player_spell(data.id)),
                 "spell '%s' is declared as a monster spell but is a player spell", data.title);
+
+            ASSERTM(!(!(data.flags & spflag::monster) && !is_player_spell(data.id)),
+                "spell '%s' is not declared as a monster spell but is not a player spell", data.title);
+        }
 
         spell_list[data.id] = i;
     }
@@ -1554,7 +1562,6 @@ bool spell_no_hostile_in_range(spell_type spell)
     case SPELL_CHAIN_LIGHTNING:
     case SPELL_OZOCUBUS_REFRIGERATION:
     case SPELL_OLGREBS_TOXIC_RADIANCE:
-    case SPELL_INTOXICATE:
     case SPELL_ICICLE_CASCADE:
         return minRange > you.current_vision;
 

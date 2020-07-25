@@ -535,7 +535,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             // why does this check rTorment, not rN?
             return ai_action::good_or_impossible(torment_vulnerable(foe));
     }) },
-    { SPELL_DISINTEGRATE, _hex_logic(SPELL_DISINTEGRATE) },
+    { SPELL_WAND_DISINTEGRATE, _hex_logic(SPELL_WAND_DISINTEGRATE) },
     { SPELL_MAGIC_CANDLE, _hex_logic(SPELL_MAGIC_CANDLE, [](const monster& caster) {
             const actor* foe = caster.get_foe();
             ASSERT(foe);
@@ -2065,7 +2065,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_CALL_LOST_SOULS:
     case SPELL_BLINK_ALLIES_ENCIRCLE:
     case SPELL_MASS_CONFUSION:
-    case SPELL_ENGLACIATION:
     case SPELL_AWAKEN_VINES:
     case SPELL_WALL_OF_BRAMBLES:
     case SPELL_WIND_BLAST:
@@ -7362,16 +7361,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         _mons_mass_confuse(mons);
         return;
 
-    case SPELL_ENGLACIATION:
-        if (you.can_see(*mons))
-            simple_monster_message(*mons, " radiates an aura of cold.");
-        else if (mons->see_cell_no_trans(you.pos()))
-            mpr("A wave of cold passes over you.");
-        apply_area_visible([splpow, mons] (coord_def where) {
-            return englaciate(where, min(splpow, 200), mons);
-        }, mons->pos());
-        return;
-
     case SPELL_AWAKEN_VINES:
         _awaken_vines(mons);
         return;
@@ -9004,10 +8993,6 @@ static ai_action::goodness _ms_waste_of_time(monster* mon, mon_spell_slot slot)
             return ai_action::bad(); // don't zap player (but demons are rude)
         else
             return ai_action::good_or_bad(trace_los(mon, _tornado_vulnerable));
-
-    case SPELL_ENGLACIATION:
-        return ai_action::good_or_bad(foe && mon->see_cell_no_trans(foe->pos())
-                                        && foe->res_cold() <= 0);
 
     case SPELL_OLGREBS_TOXIC_RADIANCE:
         if (mon->has_ench(ENCH_TOXIC_RADIANCE))
