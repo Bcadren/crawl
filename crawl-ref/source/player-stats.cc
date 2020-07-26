@@ -452,7 +452,9 @@ static int _int_modifier(bool innate_only)
         result += you.scan_artefacts(ARTP_INTELLIGENCE);
     }
 
+    // mutations
     result += you.mutated_stats[STAT_INT];
+    result += 2 * _mut_level(MUT_BIG_BRAIN, innate_only);
 
     return result;
 }

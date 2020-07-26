@@ -2899,6 +2899,9 @@ int player_wizardry(spell_type spell)
     if ((get_staff_facet(*staff) == SPSTF_WIZARD) && staff_enhances_spell(staff, spell))
         wiz++;
 
+    if (you.get_mutation_level(MUT_BIG_BRAIN) == 3)
+        wiz++;
+
     return wiz;
 }
 
