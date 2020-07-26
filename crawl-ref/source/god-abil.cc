@@ -5202,7 +5202,8 @@ spret qazlal_upheaval(coord_def target, bool quiet, bool fail)
     for (coord_def pos : affected)
     {
         beam.draw(pos);
-        scaled_delay(25);
+        if (!quiet)
+            scaled_delay(25);
     }
     if (!quiet)
     {
@@ -5218,6 +5219,7 @@ spret qazlal_upheaval(coord_def target, bool quiet, bool fail)
     {
         beam.source = pos;
         beam.target = pos;
+        beam.fire();
 
         switch (beam.flavour)
         {
