@@ -4535,6 +4535,7 @@ int slaying_bonus(bool ranged, bool weapon)
     }
 
     ret += 3 * augmentation_amount();
+    ret += you.get_mutation_level(MUT_SHARP_SCALES);
 
     if (you.duration[DUR_SONG_OF_SLAYING])
         ret += you.props[SONG_OF_SLAYING_KEY].get_int();
@@ -7248,6 +7249,7 @@ vector<mutation_ac_changes> all_mutation_ac_changes = {
     ,mutation_ac_changes(MUT_THIN_METALLIC_SCALES,   mutation_activity_type::FULL,    3)
     ,mutation_ac_changes(MUT_YELLOW_SCALES,          mutation_activity_type::FULL,    3)
     ,mutation_ac_changes(MUT_ROUGH_BLACK_SCALES,     mutation_activity_type::FULL,    3)
+    ,mutation_ac_changes(MUT_SHARP_SCALES,           mutation_activity_type::FULL,    2)
 };
 
 int player::ac_change_from_mutation(mutation_type mut) const

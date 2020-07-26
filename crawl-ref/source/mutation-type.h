@@ -30,6 +30,7 @@ enum mutation_type
     MUT_STURDY_FRAME,
     MUT_SANGUINE_ARMOUR,
     MUT_BIG_BRAIN,
+    MUT_SHARP_SCALES,
 #endif
     MUT_CAMOUFLAGE,
 
@@ -238,6 +239,7 @@ enum mutation_type
     MUT_CRAGGY_SKIN,
 #if TAG_MAJOR_VERSION == 34
     MUT_BIG_BRAIN,
+    MUT_SHARP_SCALES,
 #endif
     NUM_MUTATIONS,
     CATEGORY_MUTATIONS,
