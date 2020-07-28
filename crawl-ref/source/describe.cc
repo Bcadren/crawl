@@ -1626,7 +1626,7 @@ static string _armour_brand_desc(const item_def item)
         break;
 
     case SPARM_RAMPAGING:
-        description += "It allows its wearer to rampage towards enemies.";
+        description += "Its wearer goes twice as far when moving towards enemies.";
         break;
     }
 
