@@ -1679,6 +1679,7 @@ void wu_jian_decrement_heavenly_storm()
         wu_jian_end_heavenly_storm();
 }
 
+// TODO: why isn't this implemented as a duration end effect?
 void wu_jian_end_heavenly_storm()
 {
     you.props.erase(WU_JIAN_HEAVENLY_STORM_KEY);
