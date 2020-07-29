@@ -594,6 +594,7 @@ static void _print_stats_equip(int x, int y)
                 cprintf(".");
         }
     }
+    you.gear_change = false;
 }
 
 /*
@@ -683,6 +684,13 @@ static void _print_stats_noise(int x, int y)
                        div_round_up((level * Noise_Bar.horiz_bar_width), 1000),
                        Noise_Bar.horiz_bar_width);
     }
+    // intentional non-reset: after it has started drawing, we always redraw
+    // noise. There's not a lot of cost to this, and the logic for detecting
+    // if/when silenced status has changed is extremely annoying. So
+    // you.redraw_noise is esentially only used to keep the noise bar from
+    // drawing while the game is starting up. (If someone can figure out how
+    // to correctly detect all the silence special cases, feel free to add that
+    // in and I will see if you succeeded -advil.)
 }
 
 static void _print_stats_gold(int x, int y)
@@ -1286,22 +1294,6 @@ static void _print_status_lights(int y)
 #endif
 }
 
-static bool _need_stats_printed()
-{
-    return you.redraw_title
-           || you.redraw_hit_points
-           || you.redraw_magic_points
-           || you.redraw_armour_class
-           || you.redraw_evasion
-           || you.redraw_stats[STAT_STR]
-           || you.redraw_stats[STAT_INT]
-           || you.redraw_stats[STAT_DEX]
-           || you.redraw_experience
-           || you.wield_change
-           || you.redraw_quiver
-           || you.redraw_resists;
-}
-
 static void _draw_wizmode_flag(const char *word)
 {
     textcolour(LIGHTMAGENTA);
@@ -1408,7 +1400,7 @@ static void _redraw_title()
     textcolour(LIGHTGREY);
 }
 
-bool print_stats()
+void print_stats()
 {
     cursor_control coff(false);
     textcolour(LIGHTGREY);
@@ -1431,8 +1423,6 @@ bool print_stats()
         you.redraw_hit_points = true;
         you.redraw_status_lights = true;
     }
-
-    bool has_changed = _need_stats_printed();
 
     if (you.redraw_title)
     {
@@ -1498,8 +1488,11 @@ bool print_stats()
     {
         yhack++;
         if (Options.equip_bar)
-            _print_stats_equip(1, 7+yhack);
-        else
+        {
+             if (you.gear_change || you.wield_change)
+                _print_stats_equip(1, 7+yhack);
+        }
+        else if (you.redraw_noise)
             _print_stats_noise(1, 7+yhack);
     }
 
@@ -1536,7 +1529,6 @@ bool print_stats()
 #ifndef USE_TILE_LOCAL
     assert_valid_cursor_pos();
 #endif
-    return has_changed;
 }
 
 static string _level_description_string_hud()
@@ -1639,10 +1631,10 @@ void redraw_screen(bool show_updates)
 
     draw_border();
 
-    you.redraw_title        = true;
-    you.redraw_hit_points   = true;
-    you.redraw_magic_points = true;
     you.redraw_stats.init(true);
+    you.redraw_title         = true;
+    you.redraw_hit_points    = true;
+    you.redraw_magic_points  = true;
     you.redraw_armour_class  = true;
     you.redraw_evasion       = true;
     you.redraw_experience    = true;
@@ -1650,6 +1642,8 @@ void redraw_screen(bool show_updates)
     you.redraw_quiver        = true;
     you.redraw_status_lights = true;
     you.redraw_resists       = true;
+    you.redraw_noise         = true;
+    you.gear_change          = true;
 
     print_stats();
 

@@ -453,8 +453,11 @@ public:
     string banished_by;
     int banished_power;
 
+    // TODO burn this API with fire
     bool wield_change;          // redraw weapon
+    bool gear_change;           // redraw equip bar
     bool redraw_quiver;         // redraw quiver
+    bool redraw_noise;
 
     bool redraw_title;
     bool redraw_hit_points;

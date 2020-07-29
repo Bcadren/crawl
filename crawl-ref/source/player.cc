@@ -6341,6 +6341,8 @@ player::player()
     banished         = false;
 
     wield_change         = false;
+    gear_change          = false;
+    redraw_noise         = false;
     redraw_quiver        = false;
     redraw_status_lights = false;
     redraw_hit_points    = false;
