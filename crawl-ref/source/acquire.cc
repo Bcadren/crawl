@@ -612,32 +612,44 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/,
 
     const vector<pair<int, int> > choices =
     {
-        // These have charges, so give them a constant weight.
+        // The player never needs more than one of these.
         {MISC_BOX_OF_BEASTS,
-                                       (NO_LOVE ?     0 :  7)},
-        {MISC_SACK_OF_SPIDERS,
-                                       (NO_LOVE ?     0 :  7)},
+            (NO_LOVE || you.seen_misc[MISC_BOX_OF_BEASTS]   ? 0 : 10)},
         {MISC_PHANTOM_MIRROR,
-                                       (NO_LOVE ?     0 :  7)},
-        // The player never needs more than one.
+            (NO_LOVE || you.seen_misc[MISC_PHANTOM_MIRROR]  ? 0 : 10)},
+        {MISC_SACK_OF_SPIDERS,
+            (NO_LOVE || you.seen_misc[MISC_SACK_OF_SPIDERS] ? 0 : 10)},
         {MISC_LIGHTNING_ROD,
-            (you.seen_misc[MISC_LIGHTNING_ROD] ?      0 : 17)},
+            (you.seen_misc[MISC_LIGHTNING_ROD]              ? 0 : 17)},
         {MISC_LAMP_OF_FIRE,
-            (you.seen_misc[MISC_LAMP_OF_FIRE] ?       0 : 17)},
+            (you.seen_misc[MISC_LAMP_OF_FIRE]               ? 0 : 17)},
         {MISC_PHIAL_OF_FLOODS,
-            (you.seen_misc[MISC_PHIAL_OF_FLOODS] ?    0 : 17)},
+            (you.seen_misc[MISC_PHIAL_OF_FLOODS]            ? 0 : 17)},
         {MISC_FAN_OF_GALES,
-            (you.seen_misc[MISC_FAN_OF_GALES] ?       0 : 17)},
+            (you.seen_misc[MISC_FAN_OF_GALES]               ? 0 : 17)},
         {MISC_LANTERN_OF_SHADOWS,
             (you.seen_misc[MISC_LANTERN_OF_SHADOWS]
             || you.species == SP_FELID
-            || you.species == SP_FAIRY        ?       0 :  7)}
+            || you.species == SP_FAIRY                      ? 0 :  7)},
     };
 
     const int * const choice = random_choose_weighted(choices);
 
-    // Could be nullptr if all the weights were 0.
-    return choice ? *choice : MISC_CRYSTAL_BALL_OF_ENERGY;
+    // Possible for everything to be 0 weight - if so just give a random spare.
+    if (choice == nullptr)
+    {
+        return random_choose(MISC_BOX_OF_BEASTS,
+                             MISC_PHANTOM_MIRROR,
+                             MISC_SACK_OF_SPIDERS,
+                             MISC_CRYSTAL_BALL_OF_ENERGY,
+                             MISC_LIGHTNING_ROD,
+                             MISC_LAMP_OF_FIRE,
+                             MISC_FAN_OF_GALES,
+                             MISC_PHIAL_OF_FLOODS,
+                             MISC_LANTERN_OF_SHADOWS);
+    }
+
+    return *choice;
 }
 
 /**
