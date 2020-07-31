@@ -379,7 +379,6 @@ int attack::calc_to_hit(bool random, bool player_aux)
         return AUTOMATIC_HIT;
     }
 
-
     float mhit = attacker->is_player() ?
                 calc_player_to_hit(using_weapon() ? weapon : nullptr, 
                     player_aux, attacker_armour_tohit_penalty + attacker_shield_tohit_penalty, true)

@@ -1049,7 +1049,8 @@ void display_mutations()
             tiles.ui_state_change("mutations", 0);
 #endif
             bottom->set_text(_vampire_Ascreen_footer(c));
-        } else
+        }
+        else
             done = !switcher->current_widget()->on_event(ev);
         return true;
     });

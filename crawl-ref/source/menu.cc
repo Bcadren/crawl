@@ -1921,7 +1921,8 @@ void Menu::update_title()
     {
         fs.textcolour(WHITE);
         fs.cprintf("Select what? (regex) %s", m_filter->get_text().c_str());
-    } else
+    }
+    else
         fs = calc_title();
 
     if (fs.empty())
