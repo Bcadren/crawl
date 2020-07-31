@@ -815,11 +815,18 @@ void game_options::new_dump_fields(const string &text, bool add, bool prepend)
     // Easy; chardump.cc has most of the intelligence.
     vector<string> fields = split_string(",", text, true, true);
     if (add)
+    {
+        erase_if(fields, [this](const string &x) { return dump_fields.count(x) > 0; });
+        dump_fields.insert(fields.begin(), fields.end());
         merge_lists(dump_order, fields, prepend);
+    }
     else
     {
         for (const string &field : fields)
+        {
+            dump_fields.erase(field);
             erase_val(dump_order, field);
+        }
     }
 }
 
@@ -1167,6 +1174,7 @@ void game_options::reset_options()
 
     // Clear vector options.
     dump_order.clear();
+    dump_fields.clear();
     new_dump_fields("header,hiscore,stats,misc,inventory,"
                     "skills,spells,overview,mutations,messages,"
                     "screenshot,monlist,kills,notes,screenshots,vaults,"
@@ -3333,7 +3341,10 @@ void game_options::read_option_line(const string &str, bool runscript)
     else if (key == "dump_order")
     {
         if (plain)
+        {
+            dump_fields.clear();
             dump_order.clear();
+        }
 
         new_dump_fields(field, !minus_equal, caret_equal);
     }
