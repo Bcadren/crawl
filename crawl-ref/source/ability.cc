@@ -369,8 +369,6 @@ static const ability_def Ability_List[] =
       1, 0, 150, 0, {fail_basis::evo, 40, 2}, abflag::none },
     { ABIL_EVOKE_FOG, "Evoke Fog",
       2, 0, 500, 0, {fail_basis::evo, 50, 2}, abflag::none },
-    { ABIL_EVOKE_RATSKIN, "Evoke Ratskin",
-      3, 0, 300, 0, {fail_basis::evo, 50, 2}, abflag::none },
     { ABIL_EVOKE_THUNDER, "Evoke Thunderclouds",
       5, 0, 300, 0, {fail_basis::evo, 60, 2}, abflag::none },
 
@@ -2824,21 +2822,6 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         big_cloud(random_smoke_type(), &you, you.pos(), 50, 8 + random2(8));
         break;
 
-    case ABIL_EVOKE_RATSKIN: // ratskin cloak
-        fail_check();
-        mpr("The rats of the Dungeon answer your call.");
-
-        for (int i = 0; i < (coinflip() + 1); ++i)
-        {
-            monster_type mon = coinflip() ? MONS_HELL_RAT : MONS_SEWER_RAT;
-
-            mgen_data mg(mon, BEH_FRIENDLY, you.pos(), MHITYOU);
-            if (monster *m = create_monster(mg))
-                m->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 3));
-        }
-
-        break;
-
     case ABIL_EVOKE_THUNDER: // robe of Clouds
         fail_check();
         mpr("The folds of your robe billow into a mighty storm.");
@@ -4218,13 +4201,6 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         && !you.get_mutation_level(MUT_NO_ARTIFICE))
     {
         _add_talent(talents, ABIL_EVOKE_FOG, check_confused);
-    }
-
-    if (player_equip_unrand(UNRAND_RATSKIN_CLOAK)
-        && !you.get_mutation_level(MUT_NO_ARTIFICE)
-        && !you.get_mutation_level(MUT_NO_LOVE))
-    {
-        _add_talent(talents, ABIL_EVOKE_RATSKIN, check_confused);
     }
 
     if (player_equip_unrand(UNRAND_RCLOUDS)
