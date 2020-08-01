@@ -212,26 +212,26 @@ static void _hell_effects(int /*time_delta*/)
         _minor_hell_summons();
 }
 
-static void _handle_magic_contamination()
+static void _apply_contam_over_time()
 {
     int added_contamination = 0;
     int dissipation = 25;
     bool no_contam = you.props.exists(INVIS_CONTAMLESS_KEY) && you.props[INVIS_CONTAMLESS_KEY].get_bool();
 
-    // Scale has been increased by a factor of 1000, but the effect now happens
-    // every turn instead of every 20 turns, so everything has been multiplied
-    // by 50 and scaled to you.time_taken.
-
     //Increase contamination each turn while invisible
-    //And cancel out dissipation
     if (you.duration[DUR_INVIS] && !no_contam)
-        added_contamination += INVIS_CONTAM_PER_TURN + dissipation;
+        added_contamination += INVIS_CONTAM_PER_TURN;
+    //If not invisible, normal dissipation
+    else
+        added_contamination -= 75;
+
+    // BCADDO: Revise?
 
     // The Orb halves dissipation (well a bit more, I had to round it),
     // but won't cause glow on its own -- otherwise it'd spam the player
     // with messages about contamination oscillating near zero.
-    if (player_has_orb())
-        dissipation = div_rand_round(dissipation, 2);
+    if (you.magic_contamination && player_has_orb())
+        added_contamination += 38;
 
     // Scaling to turn length
     added_contamination = div_rand_round((added_contamination - dissipation) * you.time_taken,
@@ -296,9 +296,8 @@ static void _magic_contamination_effects()
 }
 // Checks if the player should be hit with magic contaimination effects,
 // then actually does it if they should be.
-static void _handle_magic_contamination(int /*time_delta*/)
+static void _check_contamination_effects(int /*time_delta*/)
 {
-    // [ds] Move magic contamination effects closer to b26 again.
     const bool glow_effect = player_severe_contamination()
                              && x_chance_in_y(you.magic_contamination, 12000);
 
@@ -388,7 +387,7 @@ static struct timed_effect timed_effects[] =
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                         0,     0, false },
 #endif
-    { _handle_magic_contamination,   200,   600, false },
+    { _check_contamination_effects,   70,   200, false },
 #if TAG_MAJOR_VERSION == 34
     { nullptr,                         0,     0, false },
 #endif
@@ -436,7 +435,7 @@ void handle_time()
 
     // Magic contamination from spells and Orb.
     if (!crawl_state.game_is_arena())
-        _handle_magic_contamination();
+        _apply_contam_over_time();
 
     for (unsigned int i = 0; i < ARRAYSZ(timed_effects); i++)
     {
