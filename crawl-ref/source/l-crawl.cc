@@ -15,6 +15,7 @@
 #include "dlua.h"
 #include "end.h"
 #include "english.h"
+#include "evoke.h"
 #include "fight.h"
 #include "hints.h"
 #include "initfile.h"
@@ -32,6 +33,7 @@
 #include "state.h"
 #include "state.h"
 #include "stringutil.h"
+#include "throw.h"
 #include "tutorial.h"
 #include "unwind.h"
 #include "version.h"
@@ -409,6 +411,43 @@ static bool _check_can_do_command(lua_State *ls)
     }
 
     return true;
+}
+
+static int crawl_do_targeted_command(lua_State *ls)
+{
+    if (!_check_can_do_command(ls))
+        return 0;
+
+    const string command = luaL_checkstring(ls, 1);
+
+    command_type cmd = name_to_command(command);
+    if (cmd == CMD_NO_CMD)
+    {
+        luaL_argerror(ls, 1, ("Invalid command: " + command).c_str());
+        return 0;
+    }
+
+    PLAYERCOORDS(c, 2, 3);
+    const bool endpoint = lua_toboolean(ls, 4);
+
+    // TODO: automagic, other things that can be targeted
+    // TODO: could this be unified with main.cc command handling code somehow?
+    switch (cmd)
+    {
+    case CMD_EVOKE_WIELDED:
+        // BCADNOTE: Not sure this is Bcadren relevant. 
+                  // Will need rework to also evoke WEAPON1 if it is.
+        evoke_item(you.equip[EQ_WEAPON0], c);
+        break;
+    case CMD_FIRE:
+        fire_thing(c, endpoint);
+        break;
+    default:
+        luaL_argerror(ls, 1, ("Not a (supported) targeted command: " + command).c_str());
+        return 0;
+    }
+
+    return 0;
 }
 
 /*** Process a string of input keys
@@ -1445,6 +1484,7 @@ static const struct luaL_reg crawl_clib[] =
     { "process_keys",       crawl_process_keys },
     { "set_sendkeys_errors", crawl_set_sendkeys_errors },
     { "do_commands",        crawl_do_commands },
+    { "do_targeted_command", crawl_do_targeted_command },
 #ifdef USE_SOUND
     { "playsound",          crawl_playsound },
 #endif
