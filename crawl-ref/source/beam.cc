@@ -5129,7 +5129,7 @@ void bolt::monster_post_hit(monster* mon, int dmg)
     {
         mon->splash_with_acid(agent(), 3);
 
-        for (adjacent_iterator ai(target); ai; ++ai)
+        for (adjacent_iterator ai(mon->pos()); ai; ++ai)
         {
             if (*ai == source)
                 continue;
@@ -5139,14 +5139,12 @@ void bolt::monster_post_hit(monster* mon, int dmg)
                 place_cloud(CLOUD_ACID, *ai, 5 + random2(5), &you, 1);
             }
             // the acid can splash onto adjacent targets
-            if (grid_distance(*ai, target) != 1)
-                continue;
             if (actor *victim = actor_at(*ai))
             {
                 if (you.see_cell(*ai))
                 {
                     mprf("The acid splashes onto %s!",
-                         victim->name(DESC_THE).c_str());
+                        victim->name(DESC_THE).c_str());
                 }
 
                 victim->splash_with_acid(agent(), 3);
