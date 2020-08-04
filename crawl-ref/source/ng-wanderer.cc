@@ -427,7 +427,9 @@ static void _wanderer_random_evokable()
     {
         int selected_evoker =
               random_choose(MISC_BOX_OF_BEASTS, MISC_LAMP_OF_FIRE,
-                            MISC_FAN_OF_GALES, MISC_PHIAL_OF_FLOODS);
+                            MISC_FAN_OF_GALES, MISC_PHIAL_OF_FLOODS,
+                            MISC_PHANTOM_MIRROR, MISC_CONDENSER_VANE,
+                            MISC_LIGHTNING_ROD);
 
         newgame_make_item(OBJ_MISCELLANY, selected_evoker, 1);
     }
