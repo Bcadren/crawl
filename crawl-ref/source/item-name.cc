@@ -1071,6 +1071,7 @@ static string misc_type_name(int type)
 #if TAG_MAJOR_VERSION == 34
     case MISC_XOMS_CHESSBOARD:           return "removed chess piece";
 #endif
+    case MISC_CONDENSER_VANE:            return "condenser vane";
 
     default:
         return "buggy miscellaneous item";
@@ -3512,6 +3513,11 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
         case MISC_PHANTOM_MIRROR:
             return you.get_mutation_level(MUT_NO_LOVE)
                    || you.get_mutation_level(MUT_NO_ARTIFICE);
+
+        case MISC_CONDENSER_VANE:
+            if (temp && (env.level_state & LSTATE_STILL_WINDS))
+                return true;
+            // Intentional fallthrough to check artifice
 
         default:
             return you.get_mutation_level(MUT_NO_ARTIFICE) && !is_deck(item);

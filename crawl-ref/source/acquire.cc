@@ -631,6 +631,8 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/,
             (you.seen_misc[MISC_LANTERN_OF_SHADOWS]
             || you.species == SP_FELID
             || you.species == SP_FAIRY                      ? 0 :  7)},
+        {MISC_CONDENSER_VANE,
+            (you.seen_misc[MISC_CONDENSER_VANE]             ? 0 : 10)},
     };
 
     const int * const choice = random_choose_weighted(choices);
@@ -646,7 +648,8 @@ static int _acquirement_misc_subtype(bool /*divine*/, int & /*quantity*/,
                              MISC_LAMP_OF_FIRE,
                              MISC_FAN_OF_GALES,
                              MISC_PHIAL_OF_FLOODS,
-                             MISC_LANTERN_OF_SHADOWS);
+                             MISC_LANTERN_OF_SHADOWS,
+                             MISC_CONDENSER_VANE);
     }
 
     return *choice;

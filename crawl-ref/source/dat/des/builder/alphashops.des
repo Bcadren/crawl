@@ -76,7 +76,7 @@
        "club", "book of changes", "centaur barding", "potion of cure mutation",
        "chain mail", "crystal ball of energy", "cloak", "crystal plate",
        "potion of cancellation", "book of clouds", "staff of cold",
-	   "manual of crossbows",
+	   "manual of crossbows", "condenser vane",
        "manual of charms", "potion of curing", "wand of clouds" }
 
       elseif s == "D" then i = { "book of death", "book of debilitation",

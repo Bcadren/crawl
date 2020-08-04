@@ -4018,14 +4018,9 @@ colour_t item_def::miscellany_colour() const
             return CYAN;
 #if TAG_MAJOR_VERSION == 34
         case MISC_BOTTLED_EFREET:
-            return RED;
 #endif
         case MISC_PHANTOM_MIRROR:
             return RED;
-#if TAG_MAJOR_VERSION == 34
-        case MISC_STONE_OF_TREMORS:
-            return BROWN;
-#endif
         case MISC_LIGHTNING_ROD:
             return LIGHTGREY;
         case MISC_PHIAL_OF_FLOODS:
@@ -4038,13 +4033,18 @@ colour_t item_def::miscellany_colour() const
             return LIGHTRED;
         case MISC_LAMP_OF_FIRE:
             return YELLOW;
+#if TAG_MAJOR_VERSION == 34
+        case MISC_STONE_OF_TREMORS:
+#endif
         case MISC_SACK_OF_SPIDERS:
-            return WHITE;
+            return BROWN;
         case MISC_EMPTY_BOTTLE:
 #if TAG_MAJOR_VERSION == 34
         case MISC_XOMS_CHESSBOARD:
 #endif
             return DARKGREY;
+        case MISC_CONDENSER_VANE:
+            return WHITE;
         case MISC_QUAD_DAMAGE:
             return ETC_DARK;
         case MISC_ZIGGURAT:

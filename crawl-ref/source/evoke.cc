@@ -34,6 +34,7 @@
 #include "invent.h"
 #include "item-prop.h"
 #include "items.h"
+#include "level-state-type.h"
 #include "libutil.h"
 #include "losglobal.h"
 #include "message.h"
@@ -1403,6 +1404,226 @@ static spret _phantom_mirror()
     return spret::success;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Find the cell at range 3 closest to the center of mass of monsters in range,
+ * or a random range 3 cell if there are none.
+ *
+ * @param see_targets a boolean parameter indicating if the user can see any of
+ * the targets
+ * @return The cell in question.
+ */
+static coord_def _find_tremorstone_target(bool& see_targets)
+{
+    coord_def com = {0, 0};
+    see_targets = false;
+    int num = 0;
+
+    for (radius_iterator ri(you.pos(), LOS_NO_TRANS); ri; ++ri)
+    {
+        if (monster_at(*ri) && !mons_is_firewood(*monster_at(*ri)))
+        {
+            com += *ri;
+            see_targets = see_targets || you.can_see(*monster_at(*ri));
+            ++num;
+        }
+    }
+
+    coord_def target = {0, 0};
+    int distance = LOS_RADIUS * num;
+    int ties = 0;
+
+    for (radius_iterator ri(you.pos(), 3, C_SQUARE, LOS_NO_TRANS, true); ri; ++ri)
+    {
+        if (ri->distance_from(you.pos()) != 3 || cell_is_solid(*ri))
+            continue;
+
+        if (num > 0)
+        {
+            if (com.distance_from((*ri) * num) < distance)
+            {
+                ties = 1;
+                target = *ri;
+                distance = com.distance_from((*ri) * num);
+            }
+            else if (com.distance_from((*ri) * num) == distance
+                     && one_chance_in(++ties))
+            {
+                target = *ri;
+            }
+        }
+        else if (one_chance_in(++ties))
+            target = *ri;
+    }
+
+    return target;
+}
+
+/**
+ * Find an adjacent tile for a tremorstone explosion to go off in.
+ *
+ * @param center    The original target of the stone.
+ * @return          The new, final origin of the stone's explosion.
+ */
+static coord_def _fuzz_tremorstone_target(coord_def center)
+{
+    coord_def chosen = center;
+    int seen = 1;
+    for (adjacent_iterator ai(center); ai; ++ai)
+        if (!cell_is_solid(*ai) && one_chance_in(++seen))
+            chosen = *ai;
+    return chosen;
+}
+
+/**
+ * Number of explosions, scales up from 1 at 0 evo to 6 at 27 evo,
+ * via a stepdown.
+ *
+ * Currently pow is just evo + 15, but the abstraction is kept around in
+ * case an evocable enhancer returns to the game so that 0 evo with enhancer
+ * gets some amount of enhancement.
+ */
+static int _tremorstone_count(int pow)
+{
+    return 1 + stepdown((pow - 15) / 3, 2, ROUND_CLOSE);
+}
+
+/**
+ * Evokes a tremorstone, blasting something in the general area of a
+ * chosen target.
+ *
+ * @return          spret::abort if the player cancels, spret::fail if they
+ *                  try to evoke but fail, and spret::success otherwise.
+ */
+static spret _tremorstone()
+{
+    if (you.confused())
+    {
+        canned_msg(MSG_TOO_CONFUSED);
+        return spret::abort;
+    }
+
+    bool see_target;
+    bolt beam;
+
+    static const int RADIUS = 2;
+    static const int SPREAD = 1;
+    static const int RANGE = RADIUS + SPREAD;
+    const int pow = 15 + you.skill(SK_EVOCATIONS);
+    const int adjust_pow = player_adjust_evoc_power(pow);
+    const int num_explosions = _tremorstone_count(adjust_pow);
+
+    beam.source_id  = MID_PLAYER;
+    beam.thrower    = KILL_YOU;
+    zappy(ZAP_TREMORSTONE, pow, false, beam);
+    beam.range = RANGE;
+    beam.ex_size = RADIUS;
+    beam.target = _find_tremorstone_target(see_target);
+
+    targeter_radius hitfunc(&you, LOS_NO_TRANS);
+    auto vulnerable = [](const actor *act) -> bool
+    {
+        return !(have_passive(passive_t::shoot_through_plants)
+                 && fedhas_protects(act->as_monster()));
+    };
+    if ((!see_target
+        && !yesno("You can't see anything, throw a tremorstone anyway?",
+                 true, 'n'))
+        || stop_attack_prompt(hitfunc, "throw a tremorstone", vulnerable))
+    {
+        return spret::abort;
+    }
+
+    mpr("The tremorstone explodes into fragments!");
+    const coord_def center = beam.target;
+
+    for (int i = 0; i < num_explosions; i++)
+    {
+        bolt explosion = beam;
+        explosion.target = _fuzz_tremorstone_target(center);
+        explosion.explode(i == num_explosions - 1);
+    }
+
+    return spret::success;
+}
+
+random_pick_entry<cloud_type> condenser_clouds[] =
+{
+  { 0,   50, 200, FALL, CLOUD_MEPHITIC },
+  { 0,  100, 125, PEAK, CLOUD_FIRE },
+  { 0,  100, 125, PEAK, CLOUD_COLD },
+  { 0,  100, 125, PEAK, CLOUD_POISON },
+  { 0,  110, 50, RISE, CLOUD_NEGATIVE_ENERGY },
+  { 0,  110, 50, RISE, CLOUD_STORM },
+  { 0,  110, 50, RISE, CLOUD_ACID },
+  { 0,0,0,FLAT,CLOUD_NONE }
+};
+
+static spret _condenser()
+{
+    if (env.level_state & LSTATE_STILL_WINDS)
+    {
+        mpr("The air is too still to form clouds.");
+        return spret::abort;
+    }
+
+    const int pow = 15 + you.skill(SK_EVOCATIONS, 7) / 2;
+    const int adjust_pow = min(110,player_adjust_evoc_power(pow));
+
+    random_picker<cloud_type, NUM_CLOUD_TYPES> cloud_picker;
+    cloud_type cloud = cloud_picker.pick(condenser_clouds, adjust_pow, CLOUD_NONE);
+
+    vector<coord_def> target_cells;
+    bool see_targets = false;
+
+    for (radius_iterator di(you.pos(), LOS_NO_TRANS); di; ++di)
+    {
+        monster *mons = monster_at(*di);
+
+        if (!mons || mons->wont_attack() || !mons_is_threatening(*mons))
+            continue;
+
+        if (you.can_see(*mons))
+            see_targets = true;
+
+        for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
+        {
+            actor * act = actor_at(*ai);
+            if (!cell_is_solid(*ai) && you.see_cell(*ai) && !cloud_at(*ai)
+                && !(act && act->wont_attack()))
+            {
+                target_cells.push_back(*ai);
+            }
+        }
+    }
+
+    if (!see_targets
+        && !yesno("You can't see anything. Try to condense clouds anyway?",
+                  true, 'n'))
+    {
+        return spret::abort;
+    }
+
+    if (target_cells.empty())
+    {
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return spret::fail;
+    }
+
+    for (auto p : target_cells)
+    {
+        const int cloud_power = 5
+            + random2avg(12 + div_rand_round(adjust_pow * 3, 4), 3);
+        place_cloud(cloud, p, cloud_power, &you);
+    }
+
+    mprf("Clouds of %s condense around you!", cloud_type_name(cloud).c_str());
+
+    return spret::success;
+}
+
+>>>>>>> a1987e683f (New Misc Item: Condenser Vane)
 bool evoke_check(int slot, bool quiet)
 {
     if (slot == -1)
@@ -1708,6 +1929,28 @@ bool evoke_item(int slot)
         case MISC_ZIGGURAT:
             // Don't set did_work to false, _make_zig handles the message.
             unevokable = !_make_zig(item);
+            break;
+
+        case MISC_CONDENSER_VANE:
+            if (!evoker_charges(item.sub_type))
+            {
+                mpr("That is presently inert.");
+                return false;
+            }
+            switch (_condenser())
+            {
+                default:
+                case spret::abort:
+                    return false;
+
+                case spret::success:
+                    expend_xp_evoker(item.sub_type);
+                    if (!evoker_charges(item.sub_type))
+                        mpr("The condenser dries out!");
+                case spret::fail:
+                    practise_evoking(1);
+                    break;
+            }
             break;
 
         default:
