@@ -359,14 +359,7 @@ void manage_fire_shield()
 
     bool chaos = determine_chaos(&you, SPELL_RING_OF_FLAMES);
 
-    // Remove fire clouds on top of you
-    if (cloud_at(you.pos()) && (cloud_at(you.pos())->type == CLOUD_FIRE || chaos))
-        delete_cloud(you.pos());
-
-    // Place fire clouds all around you
-    for (adjacent_iterator ai(you.pos()); ai; ++ai)
-        if (!cell_is_solid(*ai) && !cloud_at(*ai))
-            place_cloud((chaos && coinflip()) ? chaos_cloud() : CLOUD_FIRE, *ai, 1 + random2(6), &you);
+    surround_actor_with_cloud(&you, CLOUD_FIRE);
 }
 
 spret cast_corpse_rot(bool fail)
