@@ -1859,6 +1859,7 @@ const set<spell_type> removed_spells =
     SPELL_INTOXICATE,
     SPELL_PARALYSE,
     SPELL_SUMMON_GUARDIAN_GOLEM,
+    SPELL_RING_OF_THUNDER,
 #endif
 };
 

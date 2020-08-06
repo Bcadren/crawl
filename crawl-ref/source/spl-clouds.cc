@@ -357,9 +357,9 @@ void manage_fire_shield()
     // Melt ice armour entirely.
     maybe_melt_player_enchantments(BEAM_FIRE, 100);
 
-    bool chaos = determine_chaos(&you, SPELL_RING_OF_FLAMES);
+    const bool chaos = determine_chaos(&you, SPELL_RING_OF_FLAMES);
 
-    surround_actor_with_cloud(&you, CLOUD_FIRE);
+    surround_actor_with_cloud(&you, chaos ? CLOUD_RANDOM : CLOUD_FIRE);
 }
 
 spret cast_corpse_rot(bool fail)

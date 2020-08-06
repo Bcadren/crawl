@@ -33,6 +33,7 @@
 #include "nearby-danger.h" // Compass (for random_walk, CloudGenerator)
 #include "religion.h"
 #include "shout.h"
+#include "spl-clouds.h"
 #include "spl-util.h"
 #include "state.h"
 #include "stringutil.h"
@@ -2172,10 +2173,16 @@ void end_still_winds()
  */
 void surround_actor_with_cloud(const actor* a, cloud_type cloud)
 {
+    const bool chaos = (cloud == CLOUD_RANDOM);
     const coord_def pos = a->pos();
     const cloud_struct* overhead = cloud_at(pos);
-    if (overhead && overhead->type == cloud)
-        delete_cloud(pos);
+    if (overhead)
+    {
+        if (overhead->type == cloud)
+            delete_cloud(pos);
+        if (chaos && overhead->agent() == a || overhead->type == CLOUD_CHAOS)
+            delete_cloud(pos);
+    }
     for (adjacent_iterator ai(pos); ai; ++ai)
     {
         const cloud_struct* existing = cloud_at(*ai);
@@ -2183,11 +2190,11 @@ void surround_actor_with_cloud(const actor* a, cloud_type cloud)
         //      ai->x, ai->y, cell_is_solid(*ai), existing ? "y" : "n");
         if (cell_is_solid(*ai))
             continue;
-        if (existing && existing->type != cloud)
+        if (existing && existing->type != cloud && !chaos)
             continue;
         const monster* mons = monster_at(*ai);
         if (mons && mons->alive() && mons_aligned(a, mons))
             continue;
-        place_cloud(cloud, *ai, 2 + random2(6), a);
+        place_cloud(chaos ? chaos_cloud() : cloud, *ai, 2 + random2(6), a);
     }
 }

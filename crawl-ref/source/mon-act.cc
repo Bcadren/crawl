@@ -2642,20 +2642,6 @@ static void _post_monster_move(monster* mons)
         }
     }
 
-    if (mons->has_ench(ENCH_RING_OF_THUNDER))
-    {
-        // TODO: deduplicate with mon-ench.cc
-        cloud_type ctype = CLOUD_STORM;
-
-        for (adjacent_iterator ai(mons->pos()); ai; ++ai)
-            if (!cell_is_solid(*ai)
-                && (!cloud_at(*ai)
-                    || cloud_at(*ai)->type == ctype))
-            {
-                place_cloud(ctype, *ai, 2 + random2(3), mons);
-            }
-    }
-
     // Clear push/pull data if the monster is in a safe spot.
     if ((mons->submerged() || !mons_avoids_cloud(mons, mons->pos()))
         && (!mons->airborne() || monster_habitable_grid(mons, grd(mons->pos()))))

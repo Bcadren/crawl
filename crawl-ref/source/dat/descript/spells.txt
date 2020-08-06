@@ -1365,10 +1365,6 @@ occasional random clouds interspersed within. This spell attunes the caster to
 the forces of fire, increasing the power of their fire magic and giving protection 
 from fire. However, it also makes them much more susceptible to cold.
 %%%%
-Ring of Thunder spell
-
-Surrounds the caster with a mobile ring of highly-damaging thunderclouds.
-%%%%
 Rollout spell
 
 Natural ability of boulder beetles. Curls into a ball and propels itself forward, 

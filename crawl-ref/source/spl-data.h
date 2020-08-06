@@ -330,6 +330,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+<<<<<<< HEAD
     SPELL_SONIC_WAVE, "Sonic Wave", "",
     spschool::evocation | spschool::air,
     spflag::dir_or_target | spflag::area
@@ -366,6 +367,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_VENOM_BOLT, "Venom Bolt", "Chaos Bolt",
     spschool::poison,
+=======
+    SPELL_VENOM_BOLT, "Venom Bolt",
+    spschool::conjuration | spschool::poison,
+>>>>>>> 836a950c60 (Remove Ring of Thunder/Flames spells)
     spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     5,
     200,
@@ -3992,6 +3997,7 @@ AXED_SPELL(SPELL_SERPENT_OF_HELL_BREATH_REMOVED, "Old serpent of hell breath")
 AXED_SPELL(SPELL_INTOXICATE, "Alistair's Intoxication")
 AXED_SPELL(SPELL_PARALYSE, "Paralyse")
 AXED_SPELL(SPELL_SUMMON_GUARDIAN_GOLEM, "Summon Guardian Golem")
+AXED_SPELL(SPELL_RING_OF_THUNDER, "Ring of Thunder")
 #endif
 
 };
