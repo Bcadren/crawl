@@ -1391,6 +1391,12 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     if (mon->has_spell(SPELL_DEFLECT_MISSILES))
         mon->add_ench(ENCH_DEFLECT_MISSILES);
 
+    if (mons_class_flag(mon->type, M_FIRE_RING))
+        mon->add_ench(ENCH_RING_OF_FLAMES);
+
+    if (mons_class_flag(mon->type, M_THUNDER_RING))
+        mon->add_ench(ENCH_RING_OF_THUNDER);
+
     mon->flags |= MF_JUST_SUMMONED;
 
     // Don't leave shifters in their starting shape.
