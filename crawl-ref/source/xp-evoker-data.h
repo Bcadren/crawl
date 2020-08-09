@@ -24,5 +24,5 @@ static const unordered_map<misc_item_type, evoker_data, std::hash<int>> xp_evoke
     { MISC_PHANTOM_MIRROR, { "mirror_debt", 12, 1 } },
     { MISC_BOX_OF_BEASTS, { "box_debt", 6, 3 } },
     { MISC_SACK_OF_SPIDERS, { "sack_debt", 10, 2 } },
-    { MISC_CONDENSER_VANE, { "condenser_debt", 3, 4 } },
+    { MISC_CONDENSER_VANE, { "condenser_debt", 7, 3 } },
 };
