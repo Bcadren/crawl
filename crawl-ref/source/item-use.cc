@@ -4498,8 +4498,9 @@ void read_scroll(item_def& scroll)
         && which_scroll != SCR_ENCHANT_WEAPON
         && which_scroll != SCR_RECHARGING
         && which_scroll != SCR_IDENTIFY
-        && which_scroll != SCR_AMNESIA)
+        && which_scroll != SCR_AMNESIA
 #endif
+        && which_scroll != SCR_ACQUIREMENT)
     {
         mprf("It %s a %s.",
              scroll.quantity < prev_quantity ? "was" : "is",
