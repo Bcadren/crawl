@@ -26,20 +26,48 @@
 #include "throw.h"
 
 static int _get_pack_slot(const item_def&);
-static ammo_t _get_weapon_ammo_type(const item_def*);
 static bool _item_matches(const item_def &item, fire_type types,
                           const item_def* launcher, bool manual);
 static bool _items_similar(const item_def& a, const item_def& b,
                            bool force = true);
+
+namespace quiver
+{
+    // Returns the type of ammo used by the player's equipped weapon,
+    // or AMMO_THROW if it's not a launcher.
+    static launcher _get_weapon_ammo_type(const item_def* weapon)
+    {
+        if (weapon == nullptr)
+            return AMMO_THROW;
+        if (weapon->base_type != OBJ_WEAPONS)
+            return AMMO_THROW;
+
+        switch (weapon->sub_type)
+        {
+            case WPN_HUNTING_SLING:
+            case WPN_FUSTIBALUS:
+                return AMMO_SLING;
+            case WPN_SHORTBOW:
+            case WPN_LONGBOW:
+                return AMMO_BOW;
+            case WPN_HAND_CROSSBOW:
+            case WPN_ARBALEST:
+            case WPN_TRIPLE_CROSSBOW:
+                return AMMO_CROSSBOW;
+            default:
+                return AMMO_THROW;
+        }
+    }
+}
 
 // ----------------------------------------------------------------------
 // player_quiver
 // ----------------------------------------------------------------------
 
 player_quiver::player_quiver()
-    : m_last_used_type(AMMO_THROW)
+    : m_last_used_type(quiver::AMMO_THROW)
 {
-    COMPILE_CHECK(ARRAYSZ(m_last_used_of_type) == NUM_AMMO);
+    COMPILE_CHECK(ARRAYSZ(m_last_used_of_type) == quiver::NUM_LAUNCHERS);
 }
 
 // Return:
@@ -133,7 +161,7 @@ int player_quiver::get_fire_item(string* no_item_reason) const
     return slot;
 }
 
-void player_quiver::set_quiver(const item_def &item, ammo_t ammo_type)
+void player_quiver::set_quiver(const item_def &item, quiver::launcher ammo_type)
 {
     m_last_used_of_type[ammo_type] = item;
     m_last_used_of_type[ammo_type].quantity = 1;
@@ -141,7 +169,7 @@ void player_quiver::set_quiver(const item_def &item, ammo_t ammo_type)
     you.redraw_quiver = true;
 }
 
-void player_quiver::empty_quiver(ammo_t ammo_type)
+void player_quiver::empty_quiver(quiver::launcher ammo_type)
 {
     m_last_used_of_type[ammo_type] = item_def();
     m_last_used_of_type[ammo_type].quantity = 0;
@@ -154,10 +182,10 @@ void quiver_item(int slot)
     const item_def item = you.inv[slot];
     ASSERT(item.defined());
 
-    ammo_t t = AMMO_THROW;
+    quiver::launcher t = quiver::AMMO_THROW;
     const item_def *weapon = you.weapon();
     if (weapon && item.launched_by(*weapon))
-        t = _get_weapon_ammo_type(weapon);
+        t = quiver::_get_weapon_ammo_type(weapon);
 
     you.m_quiver.set_quiver(you.inv[slot], t);
 
@@ -165,11 +193,11 @@ void quiver_item(int slot)
     parse_sound(CHANGE_QUIVER_SOUND);
 #endif
     mprf("Quivering %s for %s.", you.inv[slot].name(DESC_INVENTORY).c_str(),
-         t == AMMO_THROW    ? "throwing" :
-         t == AMMO_BLOWGUN  ? "blowguns" :
-         t == AMMO_SLING    ? "slings" :
-         t == AMMO_BOW      ? "bows" :
-                              "crossbows");
+         t == quiver::AMMO_THROW    ? "throwing" :
+         t == quiver::AMMO_BLOWGUN  ? "blowguns" :
+         t == quiver::AMMO_SLING    ? "slings" :
+         t == quiver::AMMO_BOW      ? "bows" 
+                                    : "crossbows");
 }
 
 void choose_item_for_quiver()
@@ -189,15 +217,15 @@ void choose_item_for_quiver()
 
     if (slot == PROMPT_GOT_SPECIAL)  // '-' or empty quiver
     {
-        ammo_t t = _get_weapon_ammo_type(you.weapon());
+        quiver::launcher t = quiver::_get_weapon_ammo_type(you.weapon());
         you.m_quiver.empty_quiver(t);
 
         mprf("Reset %s quiver to default.",
-             t == AMMO_THROW    ? "throwing" :
-             t == AMMO_BLOWGUN  ? "blowgun" :
-             t == AMMO_SLING    ? "sling" :
-             t == AMMO_BOW      ? "bow" :
-                                  "crossbow");
+             t == quiver::AMMO_THROW    ? "throwing" :
+             t == quiver::AMMO_BLOWGUN  ? "blowgun" :
+             t == quiver::AMMO_SLING    ? "sling" :
+             t == quiver::AMMO_BOW      ? "bow" 
+                                        : "crossbow");
         return;
     }
     else
@@ -229,14 +257,14 @@ void player_quiver::on_item_fired(const item_def& item, bool explicitly_chosen)
 
     if (you.weapon(0) && item.launched_by(*you.weapon(0)))
     {
-        const ammo_t t = _get_weapon_ammo_type(you.weapon(0));
+        const quiver::launcher t = quiver::_get_weapon_ammo_type(you.weapon(0));
         m_last_used_of_type[t] = item;
         m_last_used_of_type[t].quantity = 1;    // 0 makes it invalid :(
         m_last_used_type = t;
     }
     else if (you.weapon(1) && item.launched_by(*you.weapon(1)))
     {
-        const ammo_t t = _get_weapon_ammo_type(you.weapon(1));
+        const quiver::launcher t = quiver::_get_weapon_ammo_type(you.weapon(1));
         m_last_used_of_type[t] = item;
         m_last_used_of_type[t].quantity = 1;    // 0 makes it invalid :(
         m_last_used_type = t;
@@ -254,9 +282,9 @@ void player_quiver::on_item_fired(const item_def& item, bool explicitly_chosen)
         mprf(MSGCH_DIAGNOSTICS, "item %s is for throwing",
              item.name(DESC_PLAIN).c_str());
 #endif
-        m_last_used_of_type[AMMO_THROW] = item;
-        m_last_used_of_type[AMMO_THROW].quantity = 1;
-        m_last_used_type = AMMO_THROW;
+        m_last_used_of_type[quiver::AMMO_THROW] = item;
+        m_last_used_of_type[quiver::AMMO_THROW].quantity = 1;
+        m_last_used_type = quiver::AMMO_THROW;
     }
 
     you.redraw_quiver = true;
@@ -280,7 +308,7 @@ void player_quiver::on_weapon_changed()
         if (m_last_weapon.base_type != OBJ_UNASSIGNED)
         {
             m_last_weapon.base_type = OBJ_UNASSIGNED;
-            m_last_used_type = AMMO_THROW;
+            m_last_used_type = quiver::AMMO_THROW;
         }
     }
     else
@@ -289,7 +317,7 @@ void player_quiver::on_weapon_changed()
         {
             // Weapon type changed.
             m_last_weapon = *weapon;
-            m_last_used_type = _get_weapon_ammo_type(weapon);
+            m_last_used_type = quiver::_get_weapon_ammo_type(weapon);
         }
     }
 
@@ -319,6 +347,8 @@ void player_quiver::_maybe_fill_empty_slot()
     // Felids have no use for the quiver.
     if (you.species == SP_FELID)
         return;
+    
+    // BCADDO: Actor->Laucher maybe?
 
     item_def* weapon;
     
@@ -327,7 +357,7 @@ void player_quiver::_maybe_fill_empty_slot()
     else
         weapon = you.weapon(1);
 
-    const ammo_t slot = _get_weapon_ammo_type(weapon);
+    const quiver::launcher slot = quiver::_get_weapon_ammo_type(weapon);
 
 #ifdef DEBUG_QUIVER
     mprf(MSGCH_DIAGNOSTICS, "last quiver item: %s; link %d, wpn: %d",
@@ -465,8 +495,8 @@ void player_quiver::load(reader& inf)
     ASSERT(cooky == QUIVER_COOKIE); (void)cooky;
 
     unmarshallItem(inf, m_last_weapon);
-    m_last_used_type = (ammo_t)unmarshallInt(inf);
-    ASSERT_RANGE(m_last_used_type, AMMO_THROW, NUM_AMMO);
+    m_last_used_type = (quiver::launcher)unmarshallInt(inf);
+    ASSERT_RANGE(m_last_used_type, quiver::AMMO_THROW, quiver::NUM_LAUNCHERS);
 
     const unsigned int count = unmarshallInt(inf);
     ASSERT(count <= ARRAYSZ(m_last_used_of_type));
@@ -574,32 +604,6 @@ static int _get_pack_slot(const item_def& item)
     }
 
     return -1;
-}
-
-// Returns the type of ammo used by the player's equipped weapon,
-// or AMMO_THROW if it's not a launcher.
-static ammo_t _get_weapon_ammo_type(const item_def* weapon)
-{
-    if (weapon == nullptr)
-        return AMMO_THROW;
-    if (weapon->base_type != OBJ_WEAPONS)
-        return AMMO_THROW;
-
-    switch (weapon->sub_type)
-    {
-        case WPN_HUNTING_SLING:
-        case WPN_FUSTIBALUS:
-            return AMMO_SLING;
-        case WPN_SHORTBOW:
-        case WPN_LONGBOW:
-            return AMMO_BOW;
-        case WPN_HAND_CROSSBOW:
-        case WPN_ARBALEST:
-        case WPN_TRIPLE_CROSSBOW:
-            return AMMO_CROSSBOW;
-        default:
-            return AMMO_THROW;
-    }
 }
 
 static bool _items_similar(const item_def& a, const item_def& b, bool force)
