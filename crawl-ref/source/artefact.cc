@@ -694,6 +694,9 @@ static bool _artp_can_go_on_item(artefact_prop_type prop, const item_def &item,
         case ARTP_HARM:
             return item_class == OBJ_ARMOURS;
             // only get harm on delay equipment
+        case ARTP_RAMPAGING:
+            return item_class == OBJ_ARMOURS;
+            // only on delay equipment to prevent "toggle" swap behaviour
         default:
             return true;
     }
@@ -835,6 +838,8 @@ static const artefact_prop_data artp_data[] =
     { "SH", ARTP_VAL_ANY, 0, 0, nullptr, nullptr, 0, 0 }, // ARTP_SHIELDING,
     { "-Vis", ARTP_VAL_BOOL, 25, 25, nullptr, []() { return 1; }, 0, 0 }, // ARTP_INACCURACY,
     { "Harm", ARTP_VAL_BOOL, 25, 40, // ARTP_HARM,
+        []() {return 1;}, nullptr, 0, 0},
+    { "Rampage", ARTP_VAL_BOOL, 25, 0, // ARTP_RAMPAGING,
         []() {return 1;}, nullptr, 0, 0},
 };
 COMPILE_CHECK(ARRAYSZ(artp_data) == ARTP_NUM_PROPERTIES);

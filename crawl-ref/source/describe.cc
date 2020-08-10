@@ -299,6 +299,7 @@ static vector<string> _randart_propnames(const item_def& item,
         { ARTP_CAUSE_TELEPORTATION,   prop_note::plain },
         { ARTP_NOISE,                 prop_note::plain },
         { ARTP_HARM,                  prop_note::plain },
+        { ARTP_RAMPAGING,             prop_note::plain },
         { ARTP_CORRODE,               prop_note::plain },
         { ARTP_DRAIN,                 prop_note::plain },
         { ARTP_SLOW,                  prop_note::plain },
@@ -591,6 +592,8 @@ static string _randart_descrip(const item_def &item, bool curse = false)
         { ARTP_FRAGILE, "It will be destroyed if unequipped or dropped on death.", false },
         { ARTP_SHIELDING, "It affects your SH (%d).", false},
         { ARTP_HARM, "It increases damage dealt and taken.", false},
+        { ARTP_RAMPAGING, "It bestows one free step when moving towards enemies.",
+          false},
     };
 
     // Give a short description of the base type, for base types with no
@@ -1626,7 +1629,7 @@ static string _armour_brand_desc(const item_def item)
         break;
 
     case SPARM_RAMPAGING:
-        description += "Its wearer goes twice as far when moving towards enemies.";
+        description += "Its wearer takes one free step when moving towards enemies.";
         break;
     }
 

@@ -339,6 +339,9 @@ static void _equip_artefact_effect(item_def &item, bool *show_msgs, bool unmeld,
         }
     }
 
+    if (proprt[ARTP_RAMPAGING] && msg && !unmeld)
+        mpr("You feel ready to rampage towards enemies.");
+
     if (!alreadyknown && dangerous)
     {
         // Xom loves it when you use an unknown random artefact and
@@ -471,6 +474,9 @@ static void _unequip_artefact_effect(item_def &item,
         mpr("Mutagenic energies flood into your body!");
         contaminate_player(7000, true);
     }
+
+    if (proprt[ARTP_RAMPAGING] && !you.rampaging() && msg && !meld)
+        mpr("You no longer feel able to rampage towards enemies.");
 
     if (proprt[ARTP_DRAIN] && !meld && !(weapon && you.wearing_ego(EQ_GLOVES, SPARM_WIELDING)))
         drain_player(150, true, true);
