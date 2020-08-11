@@ -48,10 +48,8 @@ mana to transmute the poison in the environment.
 %%%%
 staff of Wucad Mu
 
-A crystal staff overflowing with magical energies. It can be evoked to restore
-large amounts of magical energy, but with the risk of damaging the user's mind.
-Its power depends on the wielder's Evocations skill. Enhances the wielders charms
-and hex spells.
+A crystal staff overflowing with magical energies. Enhances the wielder's Charms
+and Hex spells.
 
 On melee, it deals much weaker damage than other enhancer staves; but drains
 the magical energy of the target making it less able to cast and restoring some 
