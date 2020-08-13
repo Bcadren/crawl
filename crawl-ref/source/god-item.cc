@@ -336,18 +336,6 @@ bool is_hasty_item(const item_def& item, bool calc_unid)
     return retval;
 }
 
-bool is_channeling_item(const item_def& item, bool calc_unid)
-{
-    if (is_unrandom_artefact(item, UNRAND_WUCAD_MU))
-        return true;
-
-    if (!calc_unid && !item_type_known(item))
-        return false;
-
-    return item.base_type == OBJ_MISCELLANY
-              && item.sub_type == MISC_CRYSTAL_BALL_OF_ENERGY;
-}
-
 bool is_wizardly_item(const item_def& item, bool /*calc_unid*/)
 {
     if (get_weapon_brand(item) == SPWPN_PAIN)
@@ -439,9 +427,6 @@ vector<conduct_type> item_conducts(const item_def &item)
 
     if (_is_potentially_hasty_item(item) || is_hasty_item(item, false))
         conducts.push_back(DID_HASTY);
-
-    if (is_channeling_item(item, false))
-        conducts.push_back(DID_CHANNEL);
 
     if (is_potentially_evil_item(item, false))
         conducts.push_back(DID_EVIL);
