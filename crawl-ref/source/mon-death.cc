@@ -1266,6 +1266,8 @@ static void _setup_lightning_explosion(bolt & beam, const monster& origin, bool 
     beam.damage       = dice_def(3, 5 + origin.get_hit_dice() * 5 / 4);
     beam.origin_spell = SPELL_CONJURE_BALL_LIGHTNING;
     beam.ex_size      = x_chance_in_y(origin.get_hit_dice(), 24) ? 3 : 2;
+    if (origin.summoner)
+        beam.origin_spell = SPELL_CONJURE_BALL_LIGHTNING;
     // Don't credit the player for ally-summoned ball lightning explosions.
     if (origin.summoner && origin.summoner != MID_PLAYER)
         beam.thrower = KILL_MON;
@@ -1290,6 +1292,8 @@ static void _setup_prism_explosion(bolt& beam, const monster& origin)
         beam.colour = MAGENTA;
     }
     beam.ex_size = origin.prism_charge;
+    if (origin.summoner)
+        beam.origin_spell = SPELL_FULMINANT_PRISM;
 }
 
 static void _setup_bennu_explosion(bolt& beam, const monster& origin)

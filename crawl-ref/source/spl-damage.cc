@@ -3651,6 +3651,7 @@ spret cast_thunderbolt(actor *caster, int pow, coord_def aim, bool fail)
     bolt beam;
     beam.name              = "thunderbolt";
     beam.aux_source        = "lightning rod";
+    beam.origin_spell      = SPELL_THUNDERBOLT;
     beam.flavour           = BEAM_ELECTRICITY;
     beam.glyph             = dchar_glyph(DCHAR_FIRED_BURST);
     beam.colour            = LIGHTCYAN;
@@ -4708,6 +4709,7 @@ static void _hailstorm_cell(coord_def where, int pow, actor *agent, bool chaos)
     beam.source     = where;
     beam.target     = where;
     beam.hit        = 18 + pow / 6;
+    beam.origin_spell = SPELL_HAILSTORM;
     if (chaos)
     {
         beam.real_flavour = beam.flavour = BEAM_CHAOTIC;

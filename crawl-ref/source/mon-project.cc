@@ -387,6 +387,7 @@ static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
     beam.target = pos;
     beam.hit = AUTOMATIC_HIT;
     beam.source_name = mon.props[IOOD_CASTER].get_string();
+    beam.origin_spell = SPELL_IOOD;
 
     int pow = mon.props[IOOD_POW].get_short();
     const int dist = mon.props[IOOD_DIST].get_int();
