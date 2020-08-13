@@ -1941,22 +1941,6 @@ static void _generate_book_item(item_def& item, bool allow_uniques,
     }
 }
 
-static stave_type _get_random_stave_type()
-{
-    stave_type r;
-    do
-    {
-        r = static_cast<stave_type>(random2(NUM_STAVES));
-    }
-    while (item_type_removed(OBJ_STAVES, r));
-
-    // staves of energy are 25% less common, wizardry is more common
-    if (r == STAFF_ENERGY && one_chance_in(4))
-        r = STAFF_WIZARDRY;
-
-    return r;
-}
-
 static void _generate_staff_item(item_def& item, bool allow_uniques,
                                  int force_type, int item_level, int agent, int force_ego)
 {

@@ -2267,11 +2267,6 @@ int player_spec_invo()
     return si;
 }
 
-int player_energy()
-{
-    return 0;
-}
-
 static int _rn_globals()
 {
     int pl = 0;
