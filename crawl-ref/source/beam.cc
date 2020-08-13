@@ -65,6 +65,7 @@
 #include "ranged-attack.h"
 #include "religion.h"
 #include "shout.h"
+#include "spl-book.h"
 #include "spl-clouds.h"
 #include "spl-damage.h"
 #include "spl-goditem.h"
@@ -5808,11 +5809,19 @@ void bolt::affect_monster(monster* mon)
             const int blood = min(postac/2, mon->hit_points);
             bleed_onto_floor(mon->pos(), mon->type, blood, true);
         }
+        int damage_done = 0;
         // Now hurt monster.
         if (real_flavour == BEAM_CHAOTIC_DEVASTATION)
-            mon->hurt(agent(), final, real_flavour, KILLED_BY_BEAM, "", "", false);
+            damage_done = mon->hurt(agent(), final, real_flavour, KILLED_BY_BEAM, "", "", false);
         else
-            mon->hurt(agent(), final, flavour, KILLED_BY_BEAM, "", "", false);
+            damage_done = mon->hurt(agent(), final, flavour, KILLED_BY_BEAM, "", "", false);
+
+        // Spell vampirism
+        if (agent() && agent()->is_player()
+            && is_player_book_spell(origin_spell))
+        {
+            majin_bo_vampirism(*mon, damage_done);
+        }
     }
 
     if (mon->alive())

@@ -8,6 +8,7 @@
 #include "spl-goditem.h"
 
 #include "attack.h"  // Attack Strength Punctuation
+#include "art-enum.h"
 #include "cleansing-flame-source-type.h"
 #include "coordit.h"
 #include "database.h"
@@ -1347,4 +1348,32 @@ spret cast_random_effects(int pow, bolt& beam, bool fail)
     zapping(zap, pow, beam, false);
 
     return spret::success;
+}
+
+void majin_bo_vampirism(monster &mon, int damage)
+{
+    return;
+    // BCADDO: I like this concept, but I've already reworked the Majin-Bo in
+    // a different direction, make a new artefact for this purpose.
+
+    if (!player_equip_unrand(UNRAND_MAJIN) || crawl_state.is_god_acting())
+        return;
+
+    dprf("Majin bo might trigger, dam: %d.", damage);
+
+    if (damage < 1 || !actor_is_susceptible_to_vampirism(mon)
+        || you.hp == you.hp_max || you.duration[DUR_DEATHS_DOOR]
+        || x_chance_in_y(2, 5))
+    {
+        return;
+    }
+
+    int hp_boost = 1 + random2(damage);
+    hp_boost = resist_adjust_damage(&mon, BEAM_NEG, hp_boost);
+
+    if (hp_boost)
+    {
+        canned_msg(MSG_GAIN_HEALTH);
+        inc_hp(hp_boost);
+    }
 }
