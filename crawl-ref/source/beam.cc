@@ -5792,6 +5792,10 @@ void bolt::affect_monster(monster* mon)
         mprf(MSGCH_SOUND, "The %s hits something.", name.c_str());
     }
 
+    // Spell vampirism
+    if (agent() && agent()->is_player() && is_player_book_spell(origin_spell))
+        majin_bo_vampirism(*mon, min(final, mon->stat_hp()));
+
     // Apply flavoured specials.
     mon->beam_effects(this->flavour, postac, final, this);
 
@@ -5809,19 +5813,11 @@ void bolt::affect_monster(monster* mon)
             const int blood = min(postac/2, mon->hit_points);
             bleed_onto_floor(mon->pos(), mon->type, blood, true);
         }
-        int damage_done = 0;
         // Now hurt monster.
         if (real_flavour == BEAM_CHAOTIC_DEVASTATION)
-            damage_done = mon->hurt(agent(), final, real_flavour, KILLED_BY_BEAM, "", "", false);
+            mon->hurt(agent(), final, real_flavour, KILLED_BY_BEAM, "", "", false);
         else
-            damage_done = mon->hurt(agent(), final, flavour, KILLED_BY_BEAM, "", "", false);
-
-        // Spell vampirism
-        if (agent() && agent()->is_player()
-            && is_player_book_spell(origin_spell))
-        {
-            majin_bo_vampirism(*mon, damage_done);
-        }
+            mon->hurt(agent(), final, flavour, KILLED_BY_BEAM, "", "", false);
     }
 
     if (mon->alive())
