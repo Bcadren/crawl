@@ -138,7 +138,6 @@ hands_reqd_type hands_reqd(const actor* ac, object_class_type base_type, int sub
 bool is_ranged_weapon_type(int wpn_type) IMMUTABLE;
 bool is_blessed_weapon_type(int wpn_type) IMMUTABLE;
 bool is_demonic_weapon_type(int wpn_type) IMMUTABLE;
-bool is_magic_weapon_type(int wpn_type) IMMUTABLE;
 
 bool is_melee_weapon(const item_def &weapon) PURE;
 bool is_demonic(const item_def &item) PURE;
