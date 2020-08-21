@@ -754,7 +754,7 @@ const char* potion_type_name(int potiontype)
     // FIXME: Remove this once known-items no longer uses this as a sentinel.
     default:
                                 return "bugginess";
-    CASE_REMOVED_POTIONS(potiontype);
+    CASE_REMOVED_POTIONS(potiontype); // TODO: this will crash, is that correct??
     }
 }
 
@@ -1191,12 +1191,9 @@ static const char* staff_type_name(int stafftype, bool terse = false)
     case STAFF_LIFE:           return "life";
     case STAFF_TRANSMUTATION:  return terse ? "tMut" : "transmutation";
     case STAFF_NOTHING:        return ""; // Used by fixedArts with unique types.
-#if TAG_MAJOR_VERSION == 34
-    case STAFF_ENERGY:         return "removedness";
-    case STAFF_WIZARDRY:       return "removedness";
-    case STAFF_CONJURATION:    return "removedness";
-#endif
-    default:                   return "bugginess";
+    default:                return item_type_removed(OBJ_STAVES, stafftype)
+                                ? "removedness"
+                                : "bugginess";
     }
 }
 
