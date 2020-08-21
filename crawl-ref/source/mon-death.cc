@@ -1417,87 +1417,85 @@ static bool _explode_monster(monster* mons, killer_type killer,
     const char* sanct_msg = nullptr;
     actor* agent = mons;
 
-    if (type == MONS_BALLISTOMYCETE_SPORE)
+    switch (type)
     {
+    case MONS_BALLISTOMYCETE_SPORE:
         setup_spore_explosion(beam, *mons);
         sanct_msg    = "By Zin's power, the ballistomycete spore's "
                        "explosion is contained.";
-    }
-    else if (type == MONS_BALL_LIGHTNING)
-    {
-        _setup_lightning_explosion(beam, *mons, false);
-        sanct_msg    = "By Zin's power, the ball lightning's explosion "
-                       "is contained.";
-    }
-    else if (type == MONS_ENTROPIC_SPHERE)
-    {
+        break;
+    case MONS_BALL_LIGHTNING:
+        _setup_lightning_explosion(beam, *mons);
+        sanct_msg = "By Zin's power, the ball lightning's explosion is "
+            "contained.";
+        break;
+    case MONS_ENTROPIC_SPHERE:
         _setup_lightning_explosion(beam, *mons, true);
         sanct_msg = "By Zin's power, the entropic burst "
                     "is contained.";
-    }
-    else if (type == MONS_BALLOON_DOG)
-    {
+        break;
+    case MONS_BALLOON_DOG:
         _setup_balloon_pop(beam, *mons);
         sanct_msg = "By Zin's power, the force of the balloon bursting "
                     "is contained.";
-    }
-    else if (type == MONS_LURKING_HORROR)
+        break;
+    case MONS_LURKING_HORROR:
         sanct_msg = "The lurking horror fades away harmlessly.";
-    else if (type == MONS_FULMINANT_PRISM)
-    {
+        break;
+    case MONS_FULMINANT_PRISM:
         _setup_prism_explosion(beam, *mons);
         sanct_msg = "By Zin's power, the prism's explosion is contained.";
-    }
-    else if (type == MONS_BENNU)
-    {
+        break;
+    case MONS_BENNU:
         _setup_bennu_explosion(beam, *mons);
         sanct_msg = "By Zin's power, the bennu's fires are quelled.";
-    }
-    else if (type == MONS_LAVA_GLOB)
-    {
+        break;
+    case MONS_LAVA_GLOB:
         _setup_lava_burst(beam, *mons);
         sanct_msg = "By Zin's power, the glob's inner magma is contained.";
-    }
-    else if (mons->has_ench(ENCH_ENTROPIC_BURST))
-    {
-        mon_enchant i_f = mons->get_ench(ENCH_ENTROPIC_BURST);
-        ASSERT(i_f.ench == ENCH_ENTROPIC_BURST);
-        agent = actor_by_mid(i_f.source);
-        _setup_inner_flame_explosion(beam, *mons, agent, true);
-        // This might need to change if monsters ever get the ability to cast
-        // Inner Flame...
-        if (agent && agent->is_player())
-            mons_add_blame(mons, "hexed by the player character");
-        else if (agent)
-            mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
-        mons->flags |= MF_EXPLODE_KILL;
-        sanct_msg = "By Zin's power, the chaotic explosion "
-            "is contained.";
-        beam.aux_source = "entropic burst";
-    }
-    else if (mons->has_ench(ENCH_INNER_FLAME))
-    {
-        mon_enchant i_f = mons->get_ench(ENCH_INNER_FLAME);
-        ASSERT(i_f.ench == ENCH_INNER_FLAME);
-        agent = actor_by_mid(i_f.source);
-        _setup_inner_flame_explosion(beam, *mons, agent);
-        // This might need to change if monsters ever get the ability to cast
-        // Inner Flame...
-        if (agent && agent->is_player())
-            mons_add_blame(mons, "hexed by the player character");
-        else if (agent)
-            mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
-        mons->flags    |= MF_EXPLODE_KILL;
-        sanct_msg       = "By Zin's power, the fiery explosion "
-                          "is contained.";
-        beam.aux_source = "exploding inner flame";
-    }
-    else
-    {
-        msg::streams(MSGCH_DIAGNOSTICS) << "Unknown spore type: "
-                                        << static_cast<int>(type)
-                                        << endl;
-        return false;
+        break;
+    default:
+        if (mons->has_ench(ENCH_INNER_FLAME))
+        {
+            mon_enchant i_f = mons->get_ench(ENCH_INNER_FLAME);
+            ASSERT(i_f.ench == ENCH_INNER_FLAME);
+            agent = actor_by_mid(i_f.source);
+            _setup_inner_flame_explosion(beam, *mons, agent);
+            // This might need to change if monsters ever get the ability to cast
+            // Inner Flame...
+            if (agent && agent->is_player())
+                mons_add_blame(mons, "hexed by the player character");
+            else if (agent)
+                mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
+            mons->flags |= MF_EXPLODE_KILL;
+            sanct_msg = "By Zin's power, the fiery explosion is contained.";
+            beam.aux_source = "exploding inner flame";
+        }
+        else if (mons->has_ench(ENCH_ENTROPIC_BURST))
+        {
+            mon_enchant i_f = mons->get_ench(ENCH_ENTROPIC_BURST);
+            ASSERT(i_f.ench == ENCH_ENTROPIC_BURST);
+            agent = actor_by_mid(i_f.source);
+            _setup_inner_flame_explosion(beam, *mons, agent, true);
+            // This might need to change if monsters ever get the ability to cast
+            // Inner Flame...
+            if (agent && agent->is_player())
+                mons_add_blame(mons, "hexed by the player character");
+            else if (agent)
+                mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
+            mons->flags |= MF_EXPLODE_KILL;
+            sanct_msg = "By Zin's power, the chaotic explosion "
+                "is contained.";
+            beam.aux_source = "entropic burst";
+        }
+        else
+        {
+            msg::streams(MSGCH_DIAGNOSTICS) << "Unknown spore type: "
+                << static_cast<int>(type)
+                << endl;
+            return false;
+        }
+        break;
     }
 
     if (beam.aux_source.empty())
@@ -2016,6 +2014,28 @@ static void _special_corpse_messaging(monster &mons)
     simple_monster_message(mons, message.c_str());
 }
 
+static bool _monster_explodes(const monster &mons) {
+    // TODO: add a data structure or flag and unify with sanctuary contain
+    // messages, etc
+    if (mons.has_ench(ENCH_INNER_FLAME) || mons.has_ench(ENCH_ENTROPIC_BURST))
+        return true;
+    switch (mons.type)
+    {
+        case MONS_BALLISTOMYCETE_SPORE:
+        case MONS_BALL_LIGHTNING:
+        case MONS_ENTROPIC_SPHERE:
+        case MONS_LURKING_HORROR:
+        case MONS_BENNU:
+        case MONS_LAVA_GLOB:
+        case MONS_BALLOON_DOG:
+            return true;
+        case MONS_FULMINANT_PRISM:
+            return mons.prism_charge > 0;
+        default:
+            return false;
+    }
+}
+
 /**
  * Kill off a monster.
  *
@@ -2198,16 +2218,7 @@ item_def* monster_die(monster& mons, killer_type killer,
 
     bool did_death_message = false;
 
-    if (mons.type == MONS_BALLISTOMYCETE_SPORE
-        || mons.type == MONS_BALL_LIGHTNING
-        || mons.type == MONS_ENTROPIC_SPHERE
-        || mons.type == MONS_LURKING_HORROR
-        || (mons.type == MONS_FULMINANT_PRISM && mons.prism_charge > 0)
-        || mons.type == MONS_BENNU
-        || mons.type == MONS_LAVA_GLOB
-        || mons.type == MONS_BALLOON_DOG
-        || mons.has_ench(ENCH_INNER_FLAME)
-        || mons.has_ench(ENCH_ENTROPIC_BURST))
+    if (_monster_explodes(mons))
     {
         did_death_message =
             _explode_monster(&mons, killer, pet_kill, wizard);
