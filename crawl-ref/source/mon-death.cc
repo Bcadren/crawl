@@ -1425,7 +1425,7 @@ static bool _explode_monster(monster* mons, killer_type killer,
                        "explosion is contained.";
         break;
     case MONS_BALL_LIGHTNING:
-        _setup_lightning_explosion(beam, *mons);
+        _setup_lightning_explosion(beam, *mons, false);
         sanct_msg = "By Zin's power, the ball lightning's explosion is "
             "contained.";
         break;
