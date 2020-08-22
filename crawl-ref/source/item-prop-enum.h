@@ -389,7 +389,8 @@ const vector<misc_item_type> misc_types =
 #if TAG_MAJOR_VERSION == 34
     MISC_BOTTLED_EFREET, 
 #endif
-    MISC_EMPTY_BOTTLE
+    MISC_EMPTY_BOTTLE,
+    MISC_CONDENSER_VANE,
 };
 
 enum missile_type
