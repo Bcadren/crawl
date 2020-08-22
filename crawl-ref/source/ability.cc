@@ -3062,6 +3062,13 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         }
 
         monster* mons = monster_at(beam.target);
+
+        if (mons->is_illusion())
+        {
+            simple_monster_message(*mons, "'s clone doesn't have a soul to enslave!");
+            return spret::success;
+        }
+
         if (mons == nullptr || !you.can_see(*mons)
             || !yred_can_enslave_soul(mons))
         {
