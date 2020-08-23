@@ -925,7 +925,8 @@ bool direction_chooser::move_is_ok() const
                          && Options.allow_self_target
                                 != confirm_prompt_type::none)
                 {
-                    return yesno("Really target yourself?", false, 'n');
+                    return yesno("Really target yourself?", false, 'n',
+                                 true, true, false, nullptr, false);
                 }
             }
 
