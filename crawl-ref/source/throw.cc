@@ -74,29 +74,203 @@ bool is_penetrating_attack(const actor& attacker, const item_def* weapon,
 
 bool item_is_quivered(const item_def &item)
 {
-    return in_inventory(item) && item.link == you.m_quiver.get_fire_item();
+    return in_inventory(item) && item.link == you.quiver_action.get().get_item();
 }
 
-int get_next_fire_item(int current, int direction)
+class fire_target_behaviour : public targeting_behaviour
 {
-    vector<int> fire_order;
-    you.m_quiver.get_fire_order(fire_order, true);
-
-    if (fire_order.empty())
-        return -1;
-
-    int next = direction > 0 ? 0 : -1;
-    for (unsigned i = 0; i < fire_order.size(); i++)
+public:
+    fire_target_behaviour()
+        : chosen_ammo(false),
+          action(you.quiver_action),
+          selected_from_inventory(false),
+          need_redraw(false)
     {
-        if (fire_order[i] == current)
+        set_prompt();
+    }
+
+    // targeting_behaviour API
+    virtual command_type get_command(int key) override;
+    virtual bool should_redraw() const override { return need_redraw; }
+    virtual void clear_redraw()        override { need_redraw = false; }
+    virtual void update_top_prompt(string* p_top_prompt) override;
+    virtual vector<string> get_monster_desc(const monster_info& mi) override;
+
+public:
+    const item_def* active_item();
+    // FIXME: these should be privatized and given accessors.
+    bool chosen_ammo;
+    quiver::action_cycler action;
+
+private:
+    void set_prompt();
+    void cycle_fire_item(bool forward);
+    void pick_fire_item_from_inventory();
+    void display_help();
+
+    string prompt;
+    string internal_prompt;
+    bool selected_from_inventory;
+    bool need_redraw;
+};
+
+void fire_target_behaviour::update_top_prompt(string* p_top_prompt)
+{
+    *p_top_prompt = internal_prompt;
+}
+
+
+const item_def* fire_target_behaviour::active_item()
+{
+    const int slot = action.get().get_item();
+    if (slot == -1)
+        return nullptr;
+    else
+        return &you.inv[slot];
+}
+
+void fire_target_behaviour::set_prompt()
+{
+    string old_prompt = internal_prompt; // Keep for comparison at the end.
+    internal_prompt.clear();
+
+    // Figure out if we have anything else to cycle to.
+    const int next_item = action.next()->get_item();
+    const bool no_other_items = (next_item == -1 || next_item == action.get().get_item());
+
+    ostringstream msg;
+
+    // Build the action.
+    if (!active_item())
+        msg << "Firing ";
+    else
+    {
+        const launch_retval projected = is_launched(&you, you.weapon(0), you.weapon(1),
+                                                    *active_item());
+        switch (projected)
         {
-            next = i + direction;
-            break;
+        case launch_retval::FUMBLED:  msg << "Tossing away "; break;
+        case launch_retval::LAUNCHED: msg << "Firing ";             break;
+        case launch_retval::THROWN:   msg << "Throwing ";           break;
+        case launch_retval::BUGGY:    msg << "Bugging "; break;
         }
     }
 
-    next = (next + fire_order.size()) % fire_order.size();
-    return fire_order[next];
+    // And a key hint.
+    string key_hint = no_other_items
+                        ? "(<w>%</w> - inventory) "
+                        : "(<w>%</w> - inventory. <w>%</w>/<w>%</w> - cycle) ";
+    insert_commands(key_hint,
+                    { CMD_DISPLAY_INVENTORY,
+                      CMD_CYCLE_QUIVER_BACKWARD,
+                      CMD_CYCLE_QUIVER_FORWARD });
+    msg << key_hint;
+
+    // Describe the selected item for firing.
+    // TODO: are there cases where error is empty that this can happen?
+    if (!active_item())
+        msg << "<red>" << action.get().error << "</red>";
+    else
+    {
+        const char* colour = (selected_from_inventory ? "lightgrey" : "w");
+        msg << "<" << colour << ">"
+            << active_item()->name(DESC_INVENTORY_EQUIP)
+            << "</" << colour << ">";
+    }
+
+    // Write it out.
+    internal_prompt += msg.str();
+
+    // Never unset need_redraw here, because we might have cleared the
+    // screen or something else which demands a redraw.
+    if (internal_prompt != old_prompt)
+        need_redraw = true;
+}
+
+// Cycle to the next (forward == true) or previous (forward == false)
+// fire item.
+void fire_target_behaviour::cycle_fire_item(bool forward)
+{
+    const bool changed = action.cycle(forward ? 1 : -1);
+    const int next = action.get().get_item();
+    if (changed && next != -1)
+    {
+        selected_from_inventory = false;
+        chosen_ammo = true;
+    }
+    set_prompt();
+}
+
+void fire_target_behaviour::pick_fire_item_from_inventory()
+{
+    need_redraw = true;
+    string err;
+    const int selected = _fire_prompt_for_item();
+    if (selected >= 0 && _fire_validate_item(selected, err))
+    {
+        action.set_from_slot(selected);
+        selected_from_inventory = true;
+        chosen_ammo = true;
+    }
+    else if (!err.empty())
+    {
+        mpr(err);
+        more();
+    }
+    set_prompt();
+}
+
+void fire_target_behaviour::display_help()
+{
+    show_targeting_help();
+    redraw_screen();
+    update_screen();
+    need_redraw = true;
+    set_prompt();
+}
+
+command_type fire_target_behaviour::get_command(int key)
+{
+    if (key == CMD_TARGET_CANCEL)
+        chosen_ammo = false;
+    else if (!(-key > CMD_NO_CMD && -key < CMD_MIN_SYNTHETIC)
+                    || context_for_command((command_type) -key) == KMC_DEFAULT)
+    {
+        // that check is really hacky, but if we don't do it mouse targeting
+        // produces all sorts of errors in the call below because the context
+        // isn't right; really we are in a targeting context now, and the use of
+        // KMC_DEFAULT below is also a hack. This whole context system could use
+        // some serious refactoring if commands are really supposed to work in
+        // multiple contexts.
+        switch (key_to_command(key, KMC_DEFAULT))
+        {
+        case CMD_CYCLE_QUIVER_BACKWARD: cycle_fire_item(true);  return CMD_NO_CMD;
+        case CMD_CYCLE_QUIVER_FORWARD: cycle_fire_item(false); return CMD_NO_CMD;
+        case CMD_DISPLAY_INVENTORY: pick_fire_item_from_inventory(); return CMD_NO_CMD;
+        case CMD_DISPLAY_COMMANDS: display_help(); return CMD_NO_CMD;
+        default: break;
+        }
+    }
+
+    return targeting_behaviour::get_command(key);
+}
+
+vector<string> fire_target_behaviour::get_monster_desc(const monster_info& mi)
+{
+    vector<string> descs;
+    if (const item_def* item = active_item())
+    {
+        if (get_ammo_brand(*item) == SPMSL_SILVER && mi.is(MB_CHAOTIC))
+            descs.emplace_back("chaotic");
+        if (item->is_type(OBJ_MISSILES, MI_THROWING_NET)
+            && (mi.body_size() >= SIZE_GIANT
+                || mons_class_is_stationary(mi.type)
+                || mons_class_flag(mi.type, M_INSUBSTANTIAL)))
+        {
+            descs.emplace_back("immune to nets");
+        }
+    }
+    return descs;
 }
 
 /**
@@ -145,6 +319,7 @@ static int _get_blowgun_chance(const int hd)
 static bool _fire_choose_target(int slot, dist& target,
                                          bool teleport = false)
 {
+    fire_target_behaviour beh;
     const bool was_chosen = (slot != -1);
 
     if (was_chosen)
@@ -155,6 +330,8 @@ static bool _fire_choose_target(int slot, dist& target,
             mpr(warn);
             return false;
         }
+        // Force item to be the prechosen one.
+        beh.action.set_from_slot(slot);
     }
 
     direction_chooser_args args;
@@ -166,7 +343,12 @@ static bool _fire_choose_target(int slot, dist& target,
     args.show_distance = true;
 
     direction(target, args);
-
+    
+    if (!beh.action.get().is_valid())
+    {
+        canned_msg(MSG_OK);
+        return false;
+    }
     if (!target.isValid)
     {
         if (target.isCancel)
@@ -179,6 +361,13 @@ static bool _fire_choose_target(int slot, dist& target,
         mprf("There is %s there.", article_a(feat).c_str());
         return false;
     }
+
+    you.quiver_action.set(beh.action);
+    you.m_quiver_history.on_item_fired(*beh.active_item(), beh.chosen_ammo);
+    you.redraw_quiver = true;
+    
+    // TODO: refactor to not refer to items
+    slot = beh.action.get().get_item();
 
     return true;
 }
@@ -289,16 +478,11 @@ bool is_pproj_active()
 
 // If item == -1, prompt the user.
 // If item passed, it will be put into the quiver.
-void fire_thing(coord_def preselect, bool endpoint)
+void fire_thing(dist target)
 {
 #ifdef USE_SOUND
     parse_sound(FIRE_PROMPT_SOUND);
 #endif
-
-    dist target;
-
-    target.target = preselect;
-    target.isEndpoint = endpoint;
 
     if (!aiming_checks(target, is_pproj_active()))
         return;

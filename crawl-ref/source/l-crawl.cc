@@ -428,7 +428,10 @@ static int crawl_do_targeted_command(lua_State *ls)
     }
 
     PLAYERCOORDS(c, 2, 3);
-    const bool endpoint = lua_toboolean(ls, 4);
+    dist target;
+    target.target = c;
+    target.isEndpoint = lua_toboolean(ls, 4); // can be nil
+
 
     // TODO: automagic, other things that can be targeted
     // TODO: could this be unified with main.cc command handling code somehow?
@@ -437,10 +440,10 @@ static int crawl_do_targeted_command(lua_State *ls)
     case CMD_EVOKE_WIELDED:
         // BCADNOTE: Not sure this is Bcadren relevant. 
                   // Will need rework to also evoke WEAPON1 if it is.
-        evoke_item(you.equip[EQ_WEAPON0], c);
+        evoke_item(you.equip[EQ_WEAPON0], target);
         break;
     case CMD_FIRE:
-        fire_thing(c, endpoint);
+        you.quiver_action.get().trigger(target);
         break;
     default:
         luaL_argerror(ls, 1, ("Not a (supported) targeted command: " + command).c_str());

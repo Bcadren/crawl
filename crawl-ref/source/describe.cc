@@ -3476,7 +3476,7 @@ static bool _do_action(item_def &item, const command_type action)
         unwield_item(handedness, true);    
     }
     break;
-    case CMD_QUIVER_ITEM:      quiver_item(slot);                   break;
+    case CMD_QUIVER_ITEM:      you.quiver_action.set_from_slot(slot); break;
     case CMD_WEAR_ARMOUR:      wear_armour(slot);                   break;
     case CMD_REMOVE_ARMOUR:    takeoff_armour(slot);                break;
     case CMD_EAT:              eat_food(slot);                      break;

@@ -634,7 +634,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
                     you.time_taken /= 2;
 
                 you.wield_change = true;
-                you.m_quiver.on_weapon_changed();
+                you.m_quiver_history.on_weapon_changed();
                 you.turn_is_over = true;
             }
 
@@ -1047,7 +1047,7 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         you.time_taken /= 2;
 
     you.wield_change  = true;
-    you.m_quiver.on_weapon_changed();
+    you.m_quiver_history.on_weapon_changed();
     you.turn_is_over  = true;
 
     return true;
@@ -1217,7 +1217,7 @@ bool quick_swap()
         // Still unwielded something so still have to use time.
         if (!unwield_item(false))
         {
-            you.m_quiver.on_weapon_changed();
+            you.m_quiver_history.on_weapon_changed();
             you.turn_is_over = true;
             return true;
         }
@@ -1225,7 +1225,7 @@ bool quick_swap()
         equip_item(EQ_WEAPON0, w1, true);
         equip_item(EQ_WEAPON1, w0, true);
 
-        you.m_quiver.on_weapon_changed();
+        you.m_quiver_history.on_weapon_changed();
         you.turn_is_over = true;
 
         return true;
@@ -1237,7 +1237,7 @@ bool quick_swap()
     equip_item(static_cast<equipment_type>(swapto), swapfrom, true);
 
     you.wield_change = true;
-    you.m_quiver.on_weapon_changed();
+    you.m_quiver_history.on_weapon_changed();
     you.turn_is_over = true;
 
     return true;
@@ -1338,7 +1338,7 @@ bool double_swap()
     equip_item(EQ_WEAPON1, item_slot1, true);
 
     you.wield_change = true;
-    you.m_quiver.on_weapon_changed();
+    you.m_quiver_history.on_weapon_changed();
     you.turn_is_over = true;
 
     return true;
