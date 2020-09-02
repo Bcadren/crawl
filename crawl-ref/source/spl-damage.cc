@@ -915,12 +915,6 @@ spret fire_los_attack_spell(spell_type spell, int pow, actor* agent,
 
 spret vampiric_drain(int pow, monster* mons, bool fail)
 {
-    if (you.hp == you.hp_max)
-    {
-        canned_msg(MSG_FULL_HEALTH);
-        return spret::abort;
-    }
-
     const bool observable = mons && mons->observable();
     if (!mons
         || !observable && !actor_is_susceptible_to_vampirism(*mons))
@@ -955,23 +949,23 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     }
 
     // The practical maximum of this is about 25 (pow @ 100). - bwr
-    int hp_gain = 3 + random2avg(9, 2) + random2(pow) / 7;
+    int dam = 3 + random2avg(9, 2) + random2(pow) / 7;
     if (_is_menacing(&you, SPELL_VAMPIRIC_DRAINING))
-        hp_gain *= div_rand_round(3 * hp_gain, 2);
+        dam *= div_rand_round(3 * dam, 2);
 
-    hp_gain = min(mons->hit_points, hp_gain);
-    hp_gain = min(you.hp_max - you.hp, hp_gain);
-    hp_gain = resist_adjust_damage(mons, BEAM_NEG, hp_gain);
+    dam = resist_adjust_damage(mons, BEAM_NEG, dam);
 
-    if (!hp_gain)
+    if (!dam)
     {
         canned_msg(MSG_NOTHING_HAPPENS);
         return spret::success;
     }
 
-    _player_hurt_monster(*mons, hp_gain, BEAM_NEG);
-
+    int hp_gain = min(mons->hit_points, dam);
     hp_gain = div_rand_round(hp_gain, 2);
+    hp_gain = min(you.hp_max - you.hp, hp_gain);
+
+    _player_hurt_monster(*mons, dam, BEAM_NEG);
 
     if (hp_gain && !you.duration[DUR_DEATHS_DOOR])
     {
