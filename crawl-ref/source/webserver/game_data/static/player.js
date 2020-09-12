@@ -1,6 +1,6 @@
-﻿define(["jquery", "comm", "./enums", "./map_knowledge", "./messages",
-        "./options"],
-function ($, comm, enums, map_knowledge, messages, options) {
+define(["jquery", "comm", "./enums", "./map_knowledge", "./messages",
+        "./options", "./util"],
+function ($, comm, enums, map_knowledge, messages, options, util) {
     "use strict";
 
     var player = {}, last_time;
@@ -202,10 +202,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
             elem.addClass("fg8");
             return elem;
         }
-        else if (player.quiver_item == -1)
-            return "Nothing quivered";
         else
-            return inventory_item_desc(player.quiver_item);
+            return util.formatted_string_to_html(player.quiver_desc);
     }
 
     player.has_status_light = function (status_light, col)
@@ -553,6 +551,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
         $("#stats_weapon1_letter").text(
             index_to_letter(player.equip[enums.equip.WEAPON1]) + ")");
         $("#stats_weapon1").html(wielded_weapon(enums.equip.WEAPON1));
+        // is there any reason to make use of quiver_item any more?
+        $("#stats_quiver").html(quiver());
     }
 
     function handle_player_message(data)

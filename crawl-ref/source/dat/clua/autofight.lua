@@ -98,7 +98,7 @@ local function have_melee()
 end
 
 local function have_throwing(no_move)
-  return (AUTOFIGHT_THROW or no_move and AUTOFIGHT_THROW_NOMOVE) and items.fired_item() ~= nil
+  return (AUTOFIGHT_THROW or no_move and AUTOFIGHT_THROW_NOMOVE) and you.quiver_valid()
 end
 
 local function is_safe_square(dx, dy)

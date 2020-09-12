@@ -1075,7 +1075,6 @@ static void _print_stats_wp(int hand, int y)
     textcolour(LIGHTGREY);
 }
 
-/*
 static void _print_stats_qv(int y)
 {
     CGOTOXY(1, y, GOTO_STAT);
@@ -1087,7 +1086,6 @@ static void _print_stats_qv(int y)
 #endif
     qdesc.chop(max_width, true).display();
 }
-*/
 
 struct status_light
 {
@@ -1470,17 +1468,14 @@ void print_stats()
 
     you.wield_change  = false;
 
-    /*
-    else if (you.redraw_quiver || you.wield_change)
-        _print_stats_qv(11 + yhack);
-    */
+    _print_stats_qv(10 + yhack);
 
     you.redraw_quiver = false;
 
     if (you.redraw_status_lights)
     {
         you.redraw_status_lights = false;
-        _print_status_lights(10 + yhack);
+        _print_status_lights(11 + yhack);
     }
 
 #ifndef USE_TILE_LOCAL
