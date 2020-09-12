@@ -108,7 +108,7 @@ void expire_lantern_shadows()
     }
 }
 
-static bool _reaching_weapon_attack(const item_def& wpn, dist &beam)
+static bool _reaching_weapon_attack(const item_def& wpn, dist *_beam)
 {
     if (you.confused())
     {
@@ -129,6 +129,9 @@ static bool _reaching_weapon_attack(const item_def& wpn, dist &beam)
     }
 
     bool targ_mid = false;
+    dist beam;
+    if (_beam)
+        beam = *_beam;
 
     beam.isEndpoint = true; // is this needed? imported from autofight code
     const reach_type reach_range = weapon_reach(wpn);
@@ -153,6 +156,9 @@ static bool _reaching_weapon_attack(const item_def& wpn, dist &beam)
     args.hitfunc = hitfunc.get();
 
     direction(beam, args);
+    if (_beam)
+        *_beam = beam;
+
     if (!beam.isValid)
     {
         if (beam.isCancel)
@@ -426,7 +432,7 @@ int wand_mp_cost()
     return min(you.magic_points, you.get_mutation_level(MUT_MP_WANDS) * multiplier);
 }
 
-void zap_wand(int slot)
+void zap_wand(int slot, dist *_target)
 {
     if (inv_count() < 1)
     {
@@ -513,7 +519,7 @@ void zap_wand(int slot)
     const spell_type spell =
         spell_in_wand(static_cast<wand_type>(wand.sub_type));
 
-    spret ret = your_spells(spell, power, false, &wand);
+    spret ret = your_spells(spell, power, false, &wand, _target);
 
     if (ret == spret::abort)
         return;
@@ -1507,7 +1513,7 @@ bool evoke_check(int slot, bool quiet)
     return (item_is_evokable(you.inv[slot]));
 }
 
-bool evoke_item(int slot, dist preselect)
+bool evoke_item(int slot, dist *preselect)
 {
     // TODO: implement preselect for items besides weapons
     if (!evoke_check(slot))
@@ -1566,7 +1572,7 @@ bool evoke_item(int slot, dist preselect)
     else switch (item.base_type)
     {
     case OBJ_WANDS:
-        zap_wand(slot);
+        zap_wand(slot, preselect);
         return true;
 
     // No Evocable Shields or Staves exist right now.
