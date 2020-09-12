@@ -399,11 +399,7 @@ void handle_behaviour(monster* mon)
         && (mon->foe == MHITNOT || mon->foe == MHITYOU)
         && !mon->berserk_or_insane()
         && mon->behaviour != BEH_WITHDRAW
-        && mon->type != MONS_BALLISTOMYCETE_SPORE
-        && mon->type != MONS_BALL_LIGHTNING
-        && mon->type != MONS_ENTROPIC_SPHERE
-        && mon->type != MONS_FOXFIRE
-        && mon->type != MONS_EPHEMERAL_SPIRIT
+        && !mons_self_destructs(*mon)
         && !mons_is_avatar(mon->type))
     {
         if (you.pet_target != MHITNOT)
@@ -415,12 +411,7 @@ void handle_behaviour(monster* mon)
     // Instead, berserkers attack nearest monsters.
     if (mon->behaviour != BEH_SLEEP
         && (mon->has_ench(ENCH_INSANE)
-            || ((mon->berserk()
-                 || mon->type == MONS_BALLISTOMYCETE_SPORE
-                 || mon->type == MONS_BALL_LIGHTNING
-                 || mon->type == MONS_ENTROPIC_SPHERE
-                 || mon->type == MONS_FOXFIRE
-                 || mon->type == MONS_EPHEMERAL_SPIRIT)
+            || ((mon->berserk() || mons_self_destructs(*mon))
                 && (mon->foe == MHITNOT
                     || isFriendly && mon->foe == MHITYOU))))
     {
@@ -545,11 +536,7 @@ void handle_behaviour(monster* mon)
                     || !proxPlayer && !isFriendly
                     || isNeutral && !mon->has_ench(ENCH_INSANE)
                     || patrolling
-                    || mon->type == MONS_BALLISTOMYCETE_SPORE
-                    || mon->type == MONS_BALL_LIGHTNING
-                    || mon->type == MONS_ENTROPIC_SPHERE
-                    || mon->type == MONS_FOXFIRE
-                    || mon->type == MONS_EPHEMERAL_SPIRIT)
+                    || mons_self_destructs(*mon))
                 {
                     new_beh = BEH_WANDER;
                 }
@@ -1222,15 +1209,8 @@ void behaviour_event(monster* mon, mon_event_type event, const actor *src,
             break;
 
         // Avoid moving friendly explodey things out of BEH_WANDER.
-        if (mon->friendly()
-            && (mon->type == MONS_BALLISTOMYCETE_SPORE
-                || mon->type == MONS_BALL_LIGHTNING
-                || mon->type == MONS_ENTROPIC_SPHERE
-                || mon->type == MONS_FOXFIRE
-                || mon->type == MONS_EPHEMERAL_SPIRIT))
-        {
+        if (mon->friendly() && mons_self_destructs(*mon))
             break;
-        }
 
         // [ds] Neutral monsters don't react to your presence.
         // XXX: Neutral monsters are a tangled mess of arbitrary logic.
