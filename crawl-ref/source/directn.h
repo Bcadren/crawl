@@ -99,7 +99,9 @@ struct direction_chooser_args
         show_boring_feats(true),
         show_distance(false),
         get_desc_func(nullptr),
-        default_place(0, 0) {}
+        default_place(0, 0)
+    { }
+
 };
 
 class direction_chooser;

@@ -171,7 +171,7 @@ static void _wizard_make_friendly(monster* m)
 
 dist::dist()
     : isValid(false), isTarget(false), isEndpoint(false), isCancel(false),
-      choseRay(false), target(), delta(), ray()
+      choseRay(false), target(), delta(), ray(), find_target(false)
 {
 }
 
@@ -447,10 +447,11 @@ targeting_behaviour direction_chooser::stock_behaviour;
 
 void direction(dist &moves, const direction_chooser_args& args)
 {
-    if (in_bounds(moves.target))
-        direction_chooser(moves, args).noninteractive();
-    else
+    moves.interactive = !(in_bounds(moves.target) || moves.find_target);
+    if (moves.interactive)
         direction_chooser(moves, args).choose_direction();
+    else
+        direction_chooser(moves, args).noninteractive();
 }
 
 direction_chooser::direction_chooser(dist& moves_,
@@ -968,7 +969,10 @@ bool direction_chooser::move_is_ok() const
 
             if (self == confirm_prompt_type::cancel)
             {
-                mprf(MSGCH_EXAMINE_FILTER, "Sorry, you can't target yourself.");
+                // avoid printing this message when autotargeting -- it doesn't
+                // make much sense
+                if (!moves.find_target)
+                    mprf(MSGCH_EXAMINE_FILTER, "Sorry, you can't target yourself.");
                 return false;
             }
         }
@@ -1362,8 +1366,14 @@ bool direction_chooser::select(bool allow_out_of_range, bool endpoint)
          || !allow_out_of_range)
         && !in_range(target()))
     {
-        mprf(MSGCH_EXAMINE_FILTER, "%s",
-             hitfunc? hitfunc->why_not.c_str() : "That is beyond the maximum range.");
+        // if find_target is set, some form of autotargeting is in play and we
+        // leave any messaging to the caller.
+        if (!moves.find_target)
+        {
+            mprf(MSGCH_EXAMINE_FILTER, "%s",
+                                hitfunc ? hitfunc->why_not.c_str()
+                                        : "That is beyond the maximum range.");
+        }
         return false;
     }
     moves.isEndpoint = endpoint || (mons && _mon_exposed(mons));
@@ -2278,6 +2288,12 @@ void direction_chooser::update_validity()
 
 bool direction_chooser::noninteractive()
 {
+    // if target is unset, this will find previous or closest target; if
+    // target is set this will adjust targeting depending on custom
+    // behavior
+    if (moves.find_target)
+        set_target(find_default_target());
+
     update_validity();
     finalize_moves();
     return moves.isValid;
@@ -2537,7 +2553,8 @@ static bool _mons_is_valid_target(const monster* mon, targ_mode_type mode,
 {
     // Monsters that are no threat to you don't count as monsters.
     if (mode != TARG_EVOLVABLE_PLANTS
-        && !mons_is_threatening(*mon))
+        && !mons_is_threatening(*mon)
+        && mon->type != MONS_TEST_STATUE))
     {
         return false;
     }
