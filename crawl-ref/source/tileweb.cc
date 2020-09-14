@@ -1123,7 +1123,9 @@ void TilesFramework::_send_player(bool force_full)
                 you.quiver_action.get().quiver_description().to_colour_string(),
                 "quiver_desc");
 
-    _update_int(force_full, c.quiver_available, !fire_warn_if_impossible(true),
+    _update_int(force_full, c.quiver_available,
+                    you.quiver_action.get().is_valid()
+                                && you.quiver_action.get().is_enabled(),
                 "quiver_available");
     _update_int(force_full, c.hand_lost, (bool)you.get_mutation_level(MUT_MISSING_HAND),
                 "hand_lost");
