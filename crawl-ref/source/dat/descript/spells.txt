@@ -137,8 +137,7 @@ Beastly Appendage spell
     end
 }}
 
-While transformed, any equipped weapons, shields, and auxilliary armour are
-melded.
+While transformed, auxiliary armour on the affected body parts is melded.
 %%%%
 Berserker Rage spell
 
@@ -1145,7 +1144,7 @@ creatures it touches.
 %%%%
 Might Other spell
 
-Significally increases a nearby ally's damage dealt in melee.
+Significantly increases a nearby ally's damage dealt in melee.
 %%%%
 Might spell
 

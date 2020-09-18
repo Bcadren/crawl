@@ -362,7 +362,8 @@ clouds, acidic fog and clouds of negative energy become available.
 %%%%
 corpse
 
-A corpse. You can butcher it to produce chunks of meat.
+A corpse. You can butcher it to produce chunks of meat. Of greater use 
+to practitioners of necromancy.
 %%%%
 crystal ball of energy
 
