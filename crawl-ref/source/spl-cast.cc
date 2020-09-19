@@ -223,6 +223,8 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
         // Preselect the first spell if it's only spell applicable.
         preselect_first = (count == 1);
     }
+    // TODO: maybe fill this from the quiver if there's a quivered spell and
+    // no last cast one?
     if (allow_preselect || preselect_first
                            && you.last_cast_spell != SPELL_NO_SPELL)
     {
@@ -1717,16 +1719,16 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
  **/
 spret your_spells(spell_type spell, int powc, bool allow_fail,
                        const item_def* const evoked_item,
-                       dist *_target)
+                       dist *target)
 {
     ASSERT(!crawl_state.game_is_arena());
     ASSERT(!evoked_item || evoked_item->base_type == OBJ_WANDS);
 
     const bool wiz_cast = (crawl_state.prev_cmd == CMD_WIZARD && !allow_fail);
 
-    dist target;
-    if (_target)
-        target = *_target;
+    dist target_local;
+    if (!target)
+        target = &target_local;
     bolt beam;
     beam.origin_spell = spell;
 
@@ -1773,6 +1775,8 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         const targeting_type dir =
              testbits(flags, spflag::target) ? DIR_TARGET : DIR_NONE;
 
+        // TODO: it's extremely inconsistent when this prompt shows up, not
+        // sure why
         const char *prompt = get_spell_target_prompt(spell);
 
         bool needs_path;
@@ -1864,7 +1868,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         else
             args.self = confirm_prompt_type::none;
         args.get_desc_func = additional_desc;
-        if (!spell_direction(target, beam, &args))
+        if (!spell_direction(*target, beam, &args))
             return spret::abort;
 
         beam.range = range;
@@ -1872,7 +1876,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         if (warped)
             beam.aimed_at_spot = true;
 
-        if (testbits(flags, spflag::not_self) && target.isMe())
+        if (testbits(flags, spflag::not_self) && target->isMe())
         {
             if (spell == SPELL_TELEPORT_OTHER)
                 mpr("Sorry, this spell works on others only.");
@@ -1882,7 +1886,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
             return spret::abort;
         }
 
-        if (target.isMe() && spell == SPELL_INVISIBILITY && !invis_allowed())
+        if (target->isMe() && spell == SPELL_INVISIBILITY && !invis_allowed())
             return spret::abort;
     }
 
@@ -2003,7 +2007,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
     const bool self_target = you.pos() == beam.target;
     const bool had_tele = orig_target && orig_target->has_ench(ENCH_TP);
 
-    spret cast_result = _do_cast(spell, powc, target, beam, god, fail, warped, intensity);
+    spret cast_result = _do_cast(spell, powc, *target, beam, god, fail, warped, intensity);
 
     if (cast_result == spret::fail && !fail)
         antimagic = true;
@@ -2070,7 +2074,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         if (you.wizard && !allow_fail && is_valid_spell(spell)
             && (flags & spflag::monster))
         {
-            _try_monster_cast(spell, powc, target, beam);
+            _try_monster_cast(spell, powc, *target, beam);
             return spret::success;
         }
 #endif

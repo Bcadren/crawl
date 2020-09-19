@@ -4565,6 +4565,7 @@ void tile_item_use_secondary(int idx)
 {
     const item_def item = you.inv[idx];
 
+    // TODO: add quiver stuff here?
     if (you.equip[EQ_WEAPON0] == idx)
         wield_weapon(true, SLOT_BARE_HANDS);
     else if (item_is_wieldable(item))
