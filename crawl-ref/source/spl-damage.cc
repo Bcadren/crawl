@@ -2889,12 +2889,17 @@ spret cast_cascade(const actor *agent, int pow, bool fail)
     bool evil = (you.staff() && is_unrandom_artefact(*you.staff(), UNRAND_MAJIN));
     //targeter_radius hitfunc(agent, LOS_NO_TRANS);
 
+vector<coord_def> get_ignition_blast_sources(const actor *agent)
+{
     // Ignition affects squares that had hostile monsters on them at the time
     // of casting. This way nothing bad happens when monsters die halfway
     // through the spell.
     vector<coord_def> blast_sources;
     vector<coord_def> blast_areas;
     vector<int> blast_intensities;
+
+    if (!agent)
+        return blast_sources;
 
     for (actor_near_iterator ai(agent->pos(), LOS_NO_TRANS);
          ai; ++ai)
@@ -2906,6 +2911,21 @@ spret cast_cascade(const actor *agent, int pow, bool fail)
             blast_sources.push_back(ai->position);
         }
     }
+    return blast_sources;
+}
+
+spret cast_ignition(const actor *agent, int pow, bool fail)
+{
+    ASSERT(agent->is_player());
+
+    fail_check();
+
+    //targeter_radius hitfunc(agent, LOS_NO_TRANS);
+
+    // Ignition affects squares that had hostile monsters on them at the time
+    // of casting. This way nothing bad happens when monsters die halfway
+    // through the spell.
+    vector<coord_def> blast_sources = get_ignition_blast_sources(agent);
 
     if (blast_sources.empty())
         canned_msg(MSG_NOTHING_HAPPENS);
@@ -4821,7 +4841,8 @@ static void _hailstorm_cell(coord_def where, int pow, actor *agent, bool chaos)
 
 spret cast_hailstorm(int pow, bool fail, bool tracer)
 {
-    targeter_radius hitfunc(&you, LOS_NO_TRANS, 3, 0, 2);
+    // used only for vulnerability check, not for the actual targeting
+    auto hitfunc = find_spell_targeter(SPELL_HAILSTORM, pow, 3);
     bool (*vulnerable) (const actor *) = [](const actor * act) -> bool
     {
       // actor guaranteed to be monster from usage,
@@ -4854,7 +4875,7 @@ spret cast_hailstorm(int pow, bool fail, bool tracer)
         return spret::abort;
     }
 
-    if (stop_attack_prompt(hitfunc, "hailstorm", vulnerable))
+    if (stop_attack_prompt(*hitfunc, "hailstorm", vulnerable))
         return spret::abort;
 
     fail_check();
@@ -4931,14 +4952,15 @@ struct dist_sorter
 spret cast_imb(int pow, bool fail)
 {
     int range = spell_range(SPELL_MUSE_OAMS_AIR_BLAST, pow);
-    targeter_radius hitfunc(&you, LOS_SOLID_SEE, range);
+    auto hitfunc = find_spell_targeter(SPELL_MUSE_OAMS_AIR_BLAST, pow, range);
+    //targeter_radius hitfunc(&you, LOS_SOLID_SEE, range);
     bool (*vulnerable) (const actor *) = [](const actor * act) -> bool
     {
         return !(act->is_monster() && mons_is_conjured(act->as_monster()->type)) 
                                    && !cell_is_solid((act->pos()));
     }; 
 
-    if (stop_attack_prompt(hitfunc, "blast", vulnerable))
+    if (stop_attack_prompt(*hitfunc, "blast", vulnerable))
         return spret::abort;
 
     fail_check();

@@ -103,7 +103,7 @@ public:
             action = make_shared<quiver::action>();
         set_prompt();
         if (!action->is_targeted())
-            needs_path = MB_FALSE; // should untargeted() imply no path?
+            needs_path = MB_FALSE; // should !targeted() imply no path?
         else if (is_pproj_active())
             needs_path = frombool(!_slot_is_pprojable(action->get_item()));
     }
@@ -114,7 +114,7 @@ public:
     virtual void update_top_prompt(string* p_top_prompt) override;
     virtual vector<string> get_monster_desc(const monster_info& mi) override;
 
-    bool untargeted() override;
+    bool targeted() override;
 
 public:
     const item_def* active_item();
@@ -158,9 +158,9 @@ const item_def* fire_target_behaviour::active_item()
         return &you.inv[slot];
 }
 
-bool fire_target_behaviour::untargeted()
+bool fire_target_behaviour::targeted()
 {
-    return !action->is_targeted();
+    return action->is_targeted();
 }
 
 void fire_target_behaviour::set_prompt()
@@ -179,7 +179,7 @@ void fire_target_behaviour::set_prompt()
         // with the direction targeter's colors that would need to be fixed
         internal_prompt = action->quiver_description().tostring();
 
-        if (untargeted())
+        if (!targeted())
             internal_prompt = string("Non-targeted ") + lowercase_first(internal_prompt);
     }
 

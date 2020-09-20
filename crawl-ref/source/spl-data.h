@@ -696,7 +696,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_BORGNJORS_REVIVIFICATION, "Borgnjor's Revivification", "",
     spschool::necromancy,
-    spflag::utility,
+    spflag::utility | spflag::selfench,
     8,
     200,
     -1, -1,
@@ -876,7 +876,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SUBLIMATION_OF_BLOOD, "Sublimation of Blood", "",
     spschool::necromancy,
-    spflag::utility,
+    spflag::utility | spflag::selfench,
     2,
     200,
     -1, -1,
@@ -1125,7 +1125,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DEATH_CHANNEL, "Death Channel", "",
     spschool::necromancy | spschool::charms,
-    spflag::helpful | spflag::utility,
+    spflag::helpful | spflag::utility | spflag::selfench,
     6,
     200,
     -1, -1,
