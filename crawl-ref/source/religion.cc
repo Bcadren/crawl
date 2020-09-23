@@ -924,6 +924,13 @@ static void _inc_penance(god_type god, int val)
             }
             // BCADDO: There's probably going to be more here.
         }
+        else if (god == GOD_OKAWARU)
+        {
+            if (you.duration[DUR_HEROISM])
+                okawaru_remove_heroism();
+            if (you.duration[DUR_FINESSE])
+                okawaru_remove_finesse();
+        }
 
         if (you_worship(god))
         {
@@ -3211,6 +3218,13 @@ void excommunication(bool voluntary, god_type new_god)
         you.attribute[ATTR_SERPENTS_LASH] = 0;
         if (you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY))
             wu_jian_end_heavenly_storm();
+        break;
+
+    case GOD_OKAWARU:
+        if (you.duration[DUR_HEROISM])
+            okawaru_remove_heroism();
+        if (you.duration[DUR_FINESSE])
+            okawaru_remove_finesse();
         break;
 
     default:

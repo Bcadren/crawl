@@ -223,3 +223,6 @@ spret tiamat_choice_breath(bool fail);
 spret bahamut_tiamat_transform(bool bahamut);
 
 void wu_jian_heavenly_storm();
+
+void okawaru_remove_heroism();
+void okawaru_remove_finesse();
