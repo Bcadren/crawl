@@ -1359,7 +1359,7 @@ int acquirement_create_item(object_class_type class_wanted,
         if (class_wanted == OBJ_WANDS)
             acq_item.plus = max(static_cast<int>(acq_item.plus), 3 + random2(3));
         else if (class_wanted == OBJ_GOLD)
-            acq_item.quantity = acquire_gold_amt();
+            acq_item.quantity = random_range(200, 1400, 2);
         else if (quant > 1)
             acq_item.quantity = quant;
 
