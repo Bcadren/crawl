@@ -2842,7 +2842,8 @@ static tileidx_t _tileidx_misc(const item_def &item)
                                              : TILE_MISC_PHIAL_OF_FLOODS_INERT;
 
     case MISC_CONDENSER_VANE:
-        return TILE_MISC_CONDENSER_VANE;
+            return evoker_charges(item.sub_type) ? TILE_MISC_CONDENSER_VANE
+                                                 : TILE_MISC_CONDENSER_VANE_INERT;
 
     case MISC_LANTERN_OF_SHADOWS:
         return TILE_MISC_LANTERN_OF_SHADOWS;
