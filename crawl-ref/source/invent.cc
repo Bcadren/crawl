@@ -2273,11 +2273,14 @@ bool item_is_evokable(const item_def &item, bool reach,
     case OBJ_WANDS:
         return true;
 
+    // TODO: move these out of evoke
     case OBJ_WEAPONS:
         if ((!wielded || !reach) && !msg)
             return false;
 
-        if (reach && weapon_reach(item) > REACH_NONE && item_type_known(item))
+        // XX code duplication with evoke_check
+        if (weapon_reach(item) > REACH_NONE && item_type_known(item)
+                || you.weapon(0) && fires_ammo_type(*you.weapon(0)) != MI_NONE)
         {
             if (!wielded)
             {

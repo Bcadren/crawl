@@ -1665,7 +1665,8 @@ static void _tag_construct_you(writer &th)
     marshallByte(th, you.piety_hysteresis);
 
     you.m_quiver_history.save(th);
-    you.quiver_action.save();
+    you.quiver_action.save(QUIVER_MAIN_SAVE_KEY);
+    you.launcher_action.save(QUIVER_LAUNCHER_SAVE_KEY);
 
     CANARY;
 
@@ -4105,7 +4106,8 @@ static void _tag_read_you_items(reader &th)
             you.force_autopickup[i][j] = unmarshallInt(th);
 
     // preconditions: need to have read items, and you (incl props).
-    you.quiver_action.load();
+    you.quiver_action.load(QUIVER_MAIN_SAVE_KEY);
+    you.launcher_action.load(QUIVER_LAUNCHER_SAVE_KEY);
 
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK && you.species == SP_BARACHI)
