@@ -483,7 +483,7 @@ spret cast_corpse_rot(bool fail)
     return corpse_rot(&you);
 }
 
-spret corpse_rot(actor* caster)
+spret corpse_rot(actor* caster, bool actual)
 {
     // If there is no caster (god wrath), centre the effect on the player.
     const coord_def center = caster ? caster->pos() : you.pos();
@@ -496,6 +496,9 @@ spret corpse_rot(actor* caster)
             for (stack_iterator si(*ri); si; ++si)
                 if (si->is_type(OBJ_CORPSES, CORPSE_BODY))
                 {
+                    if (!actual)
+                        return spret::success;
+
                     if (coinflip())
                     {
                         spawn_flies(*si, false);
@@ -521,6 +524,9 @@ spret corpse_rot(actor* caster)
                     break;
                 }
     }
+
+    if (!actual)
+        return spret::abort;
 
     if (saw_rot)
     {

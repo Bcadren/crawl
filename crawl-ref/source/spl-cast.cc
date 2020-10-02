@@ -1658,13 +1658,12 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, range);
     case SPELL_STARBURST:
         return make_unique<targeter_starburst>(&you, range, pow);
-    case SPELL_CORPSE_ROT: // depends on # of corpses, but no easy way to show that?
+    case SPELL_CORPSE_ROT: // maybe should also highlight affected corpses? # of clouds depends on them
     case SPELL_IRRADIATE:
     case SPELL_DISCHARGE: // not entirely accurate...maybe should highlight
                           // all potentially affected monsters?
-        return make_unique<targeter_radius>(&you, LOS_NO_TRANS, 1, 0, 1);
+        return make_unique<targeter_maybe_radius>(&you, LOS_NO_TRANS, 1, 0, 1);
     // BCADDO: Blinding spray.
-    // TODO: ramparts
 
     // at player's position only but not a selfench; most transmut spells go here:
     case SPELL_SPIDER_FORM:
