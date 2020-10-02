@@ -1186,10 +1186,7 @@ namespace quiver
                 cur_quiver.set(s);
                 // a bit hacky:
                 if (&cur_quiver == &you.quiver_action)
-                {
-                    dprf("setting launcher");
                     you.launcher_action.set(s);
-                }
                 return true;
             }
             return false;
@@ -1435,9 +1432,6 @@ namespace quiver
             // Don't do anything if this item is not really fit for throwing.
             if (projected == launch_retval::FUMBLED)
                 return;
-
-            dprf( "item %s is for throwing",
-                 item.name(DESC_PLAIN).c_str());
 
             m_last_used_of_type[quiver::AMMO_THROW] = item;
             m_last_used_of_type[quiver::AMMO_THROW].quantity = 1;
