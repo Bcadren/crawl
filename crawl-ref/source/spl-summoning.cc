@@ -2217,6 +2217,8 @@ bool cast_animate_skeleton(god_type god, bool fail, coord_def pos)
 
 spret cast_animate_dead(int pow, god_type god, bool fail)
 {
+    fail_check();
+
     const int corpses = animate_dead(&you, pow, BEH_FRIENDLY, MHITYOU, &you, "", god, false);
 
     if (!corpses && !you.attribute[ATTR_KIKU_CORPSE])
@@ -2238,13 +2240,27 @@ spret cast_animate_dead(int pow, god_type god, bool fail)
         }
     }
     
-    fail_check();
     canned_msg(MSG_CALL_DEAD);
 
     if (!animate_dead(&you, pow + 1, BEH_FRIENDLY, MHITYOU, &you, "", god))
         canned_msg(MSG_NOTHING_HAPPENS);
 
     return spret::success;
+}
+
+// returns an item index, or -1 on failure
+int find_simulacrable_corpse(coord_def c)
+{
+    int co = -1;
+    for (stack_iterator si(c, true); si; ++si)
+    {
+        if (si->is_type(OBJ_CORPSES, CORPSE_BODY)
+            && mons_class_can_be_zombified(si->mon_type))
+        {
+            co = si->index();
+        }
+    }
+    return co;
 }
 
 /**
@@ -2258,21 +2274,11 @@ spret cast_animate_dead(int pow, god_type god, bool fail)
  */
 spret cast_simulacrum(int pow, god_type god, bool fail)
 {
-    bool found = false;
-    int co = -1;
-    for (stack_iterator si(you.pos(), true); si; ++si)
-    {
-        if (si->is_type(OBJ_CORPSES, CORPSE_BODY)
-            && mons_class_can_be_zombified(si->mon_type))
-        {
-            found = true;
-            co = si->index();
-        }
-    }
+    int co = find_simulacrable_corpse(you.pos());
 
     fail_check();
 
-    if (!found)
+    if (!co)
     {
         if (!you.attribute[ATTR_KIKU_CORPSE])
         {

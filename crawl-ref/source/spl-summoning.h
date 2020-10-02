@@ -96,6 +96,7 @@ int animate_dead(actor *caster, int /*pow*/, beh_type beha,
                  unsigned short hitting, actor *as = nullptr, string nas = "",
                  god_type god = GOD_NO_GOD, bool actual = true);
 
+int find_simulacrable_corpse(coord_def c);
 spret cast_simulacrum(int pow, god_type god, bool fail);
 
 bool twisted_resurrection(actor *caster, int pow, beh_type beha,

@@ -140,6 +140,7 @@ void untargeted_fire(shared_ptr<quiver::action> a)
     direction_chooser_args args;
     args.mode = TARG_HOSTILE;
     args.behaviour = &beh;
+    args.default_place = you.pos();
 
     direction(a->target, args);
 }

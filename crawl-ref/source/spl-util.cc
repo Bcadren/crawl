@@ -1362,6 +1362,24 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     if (spell_is_kiku_ritual(spell) && !you_worship(GOD_KIKUBAAQUDGHA))
         return "you cannot complete the ritual without Kikubaaqudgha.";
 
+    // other Ru spells not affected by the school check; handle these separately
+    // since they may have other constraints
+    switch (spell)
+    {
+    case SPELL_ANIMATE_DEAD:
+    case SPELL_STICKS_TO_SNAKES:
+    case SPELL_SKELETAL_UPRISING:
+    case SPELL_DEATH_CHANNEL:
+    case SPELL_SIMULACRUM:
+    case SPELL_INFESTATION:
+    case SPELL_TUKIMAS_DANCE:
+        if (you.get_mutation_level(MUT_NO_LOVE))
+            return "you cannot coerce anything to obey you.";
+        break;
+    default:
+        break;
+    }
+
     switch (spell)
     {
     case SPELL_BLINK:
@@ -1528,13 +1546,13 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "skeletons already rise from your steps.";
         // intentional fallthrough
     case SPELL_ANIMATE_DEAD:
-    case SPELL_DEATH_CHANNEL:
+        if (!animate_dead(&you, 1, BEH_FRIENDLY, MHITYOU, &you, "", GOD_NO_GOD, false))
+            return "There is nothing nearby to animate!";
+        break;
+
     case SPELL_SIMULACRUM:
-    case SPELL_INFESTATION:
-    case SPELL_STICKS_TO_SNAKES:
-    case SPELL_TUKIMAS_DANCE:
-        if (you.get_mutation_level(MUT_NO_LOVE))
-            return "you cannot coerce anything to obey you.";
+        if (find_simulacrable_corpse(you.pos()) < 0)
+            return "There is nothing here to animate!";
         break;
 
     case SPELL_SONG_OF_SLAYING:
