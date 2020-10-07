@@ -966,6 +966,8 @@ public:
     bool have_serpentine_tail() const;
     bool can_silent_cast() const;
 
+    bool can_blood_cast(int cost) const;
+
     bool clear_far_engulf() override;
 
     bool is_dragonkind() const override;

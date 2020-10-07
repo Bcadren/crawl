@@ -1107,6 +1107,15 @@ bool cast_a_spell(bool check_range, spell_type spell, dist *_target)
         return false;
     }
 
+    // MP, confusion, Ru sacs
+    const auto reason = casting_uselessness_reason(spell, true);
+    if (!reason.empty())
+    {
+        mpr(reason);
+        crawl_state.zero_turns_taken();
+        return false;
+    }
+
     int cost = spell_mana(spell);
 
     int sifcast_amount = 0;
@@ -1117,9 +1126,7 @@ bool cast_a_spell(bool check_range, spell_type spell, dist *_target)
             sifcast_amount = cost - you.magic_points;
             cost = you.magic_points;
         }
-        else if (have_passive(passive_t::power_of_blood) && !you.is_fairy()
-            && you.can_bleed() && you.hp > ((cost - you.magic_points) * 2)
-            && !you.duration[DUR_DEATHS_DOOR])
+        else if (you.can_blood_cast(cost))
         {
             mprf(MSGCH_GOD, "Kikubaaqudgha frees the power of your blood!");
             spret loop = spret::success;
@@ -1135,12 +1142,6 @@ bool cast_a_spell(bool check_range, spell_type spell, dist *_target)
                 crawl_state.zero_turns_taken();
                 return false;
             }
-        }
-        else
-        {
-            mpr("You don't have enough magic to cast that spell.");
-            crawl_state.zero_turns_taken();
-            return false;
         }
     }
 
@@ -1207,6 +1208,7 @@ bool cast_a_spell(bool check_range, spell_type spell, dist *_target)
 
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
+    const int cost = spell_mana(spell);
     dec_mp(cost, true);
 
     const spret cast_result = your_spells(spell, 0, true, nullptr, _target, check_range);
@@ -1439,17 +1441,8 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
 {
     string msg;
 
-    {
-        // FIXME: we might be called in a situation ([a]bilities, Xom) that
-        // isn't evoked but still doesn't use the spell's MP. your_spells,
-        // this function, and spell_uselessness_reason should take a flag
-        // indicating whether MP should be checked (or should never check).
-        const int rest_mp = fake_spell ? 0 : spell_mana(spell);
-
-        // Temporarily restore MP so that we're not uncastable for lack of MP.
-        unwind_var<int> fake_mp(you.magic_points, you.magic_points + rest_mp);
-        msg = spell_uselessness_reason(spell, true, true, fake_spell);
-    }
+    // casting-general checks (MP etc) are not carried out here
+    msg = spell_uselessness_reason(spell, true, true, true);
 
     if (!msg.empty())
     {
@@ -1850,7 +1843,7 @@ class spell_targeting_behaviour : public targeting_behaviour
 public:
     spell_targeting_behaviour(spell_type _spell)
         : targeting_behaviour(false), spell(_spell),
-          err(spell_uselessness_reason(spell, true, false))
+          err(spell_uselessness_reason(spell, true, false, true))
     {
     }
 
@@ -2014,8 +2007,9 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
             }
         }
 
-        // TODO: show uselessness reason somehow?
-        const bool useless = spell_is_useless(spell, true, false);
+        // `true` on fourth param skips MP check and a few others that have
+        // already been carried out
+        const bool useless = spell_is_useless(spell, true, false, true);
         const char *spell_title_color = useless ? "darkgrey" : "w";
         string title = make_stringf("%s: <%s>%s</%s>", is_targeted ? "Aiming" : "Casting", spell_title_color,
                                     spell == SPELL_PROJECTED_NOISE ? (intensity == 0 ? "whisper" : 

@@ -10064,6 +10064,13 @@ bool player::form_uses_xl() const
         || form == transformation::bat;
 }
 
+bool player::can_blood_cast(int cost) const
+{
+    return have_passive(passive_t::power_of_blood) && !is_fairy()
+        && can_bleed() && hp > ((cost - magic_points) * 2)
+        && !duration[DUR_DEATHS_DOOR];
+}
+
 bool player::can_silent_cast() const
 {
     return get_mutation_level(MUT_SILENT_CAST) || (get_mutation_level(MUT_JIBBERING_MAWS) >= 2);
