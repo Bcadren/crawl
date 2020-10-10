@@ -439,19 +439,33 @@ static bool _passive_exceptions(passive_t passive)
     return false;
 }
 
+static bool _god_gives_passive_if(god_type god, passive_t passive,
+                                  function<bool(const god_passive&)> condition)
+{
+    const auto &pasvec = god_passives[god];
+    return any_of(begin(pasvec), end(pasvec),
+                  [&] (const god_passive &p) -> bool
+                  { return p.pasv == passive && condition(p); });
+}
+
+bool god_gives_passive(god_type god, passive_t passive)
+{
+  return _god_gives_passive_if(god, passive,
+                               [] (god_passive /*p*/) { return true; });
+}
+
 bool have_passive(passive_t passive)
 {
     if (_passive_exceptions(passive))
         return false;
 
-    const auto &pasvec = god_passives[you.religion];
-    return any_of(begin(pasvec), end(pasvec),
-                  [passive] (const god_passive &p) -> bool
-                  {
-                      return p.pasv == passive
-                          && piety_rank() >= p.rank
-                          && (!player_under_penance() || p.rank < 0);
-                  });
+    return _god_gives_passive_if(you.religion, passive,
+                                 [] (god_passive p)
+                                 {
+                                     return piety_rank() >= p.rank
+                                         && (!player_under_penance()
+                                             || p.rank < 0);
+                                 });
 }
 
 bool will_have_passive(passive_t passive)
@@ -459,12 +473,8 @@ bool will_have_passive(passive_t passive)
     if (_passive_exceptions(passive))
         return false;
 
-    const auto &pasvec = god_passives[you.religion];
-    return any_of(begin(pasvec), end(pasvec),
-                  [passive] (const god_passive &p) -> bool
-                  {
-                      return p.pasv == passive;
-                  });
+  return _god_gives_passive_if(you.religion, passive,
+                               [] (god_passive/*p*/) { return true; });
 }
 
 // Returns a large number (10) if we will never get this passive.

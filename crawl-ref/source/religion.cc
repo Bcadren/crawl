@@ -4330,7 +4330,7 @@ bool god_protects_from_harm()
         switch (elyvilon_lifesaving())
         {
         case lifesaving_chance::sometimes:
-            if (random2(you.piety) >= piety_breakpoint(0))
+            if (random2(apply_pity(you.piety)) >= piety_breakpoint(0))
                 return true;
             break;
         case lifesaving_chance::always:
