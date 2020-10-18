@@ -760,7 +760,7 @@ void dec_penance(int val)
 static bool _need_water_walking()
 {
     return you.ground_level() && you.species != SP_MERFOLK && you.char_class != JOB_MERFOLK
-           && (grd(you.pos()) == DNGN_DEEP_WATER || grd(you.pos()) == DNGN_DEEP_SLIMY_WATER);
+           && (env.grid(you.pos()) == DNGN_DEEP_WATER || env.grid(you.pos()) == DNGN_DEEP_SLIMY_WATER);
 }
 
 static void _grant_temporary_waterwalk()
@@ -976,9 +976,10 @@ void inc_gift_timeout(int val)
 
 static bool _give_nemelex_gift(bool forced = false)
 {
+    // BCADDO: Unify the terrain check
     // But only if you're not flying over deep water.
-    if (!(feat_has_solid_floor(grd(you.pos()))
-          || feat_is_watery(grd(you.pos())) && species_likes_water(you.species)))
+    if (!(feat_has_solid_floor(env.grid(you.pos()))
+          || feat_is_watery(env.grid(you.pos())) && species_likes_water(you.species)))
     {
         return false;
     }
@@ -1298,8 +1299,8 @@ static int _pakellas_high_misc()
 static bool _give_pakellas_gift()
 {
     // Break early if giving a gift now means it would be lost.
-    if (!(feat_has_solid_floor(grd(you.pos()))
-        || feat_is_watery(grd(you.pos())) && species_likes_water(you.species)))
+    if (!(feat_has_solid_floor(env.grid(you.pos()))
+        || feat_is_watery(env.grid(you.pos())) && species_likes_water(you.species)))
     {
         return false;
     }
@@ -1386,7 +1387,7 @@ static bool _give_pakellas_gift()
 static bool _give_equipment_gift(bool forced)
 {
     // Break early if giving a gift now means it would be lost.
-    if (feat_eliminates_items(grd(you.pos())) || grd(you.pos()) == DNGN_TRAP_SHAFT)
+    if (feat_eliminates_items(env.grid(you.pos())) || env.grid(you.pos()) == DNGN_TRAP_SHAFT)
         return false;
 
     // Should gift catnip instead.
@@ -1501,7 +1502,7 @@ static bool _gift_sif_kiku_gift(bool forced)
     bool success = false;
     book_type gift = NUM_BOOKS;
     // Break early if giving a gift now means it would be lost.
-    if (feat_eliminates_items(grd(you.pos())) || grd(you.pos()) == DNGN_TRAP_SHAFT)
+    if (feat_eliminates_items(env.grid(you.pos())) || env.grid(you.pos()) == DNGN_TRAP_SHAFT)
         return false;
 
     // Kikubaaqudgha gives the lesser Necromancy books in a quick
@@ -4003,7 +4004,7 @@ void join_religion(god_type which_god)
 
 void god_pitch(god_type which_god)
 {
-    if (which_god == GOD_BEOGH && grd(you.pos()) != DNGN_ALTAR_BEOGH)
+    if (which_god == GOD_BEOGH && env.grid(you.pos()) != DNGN_ALTAR_BEOGH)
         mpr("You bow before the missionary of Beogh.");
     else
     {

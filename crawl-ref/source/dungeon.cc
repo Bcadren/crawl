@@ -430,31 +430,31 @@ static void _builder_assertions()
 {
     for (rectangle_iterator ri(0); ri; ++ri)
         if (!in_bounds(*ri))
-            if (!feat_is_valid_border(grd(*ri)))
+            if (!feat_is_valid_border(env.grid(*ri)))
             {
                 switch (you.where_are_you)
                 {
                 case BRANCH_SWAMP:
-                    grd(*ri) = DNGN_MANGROVE;
+                    env.grid(*ri) = DNGN_MANGROVE;
                     break;
                 case BRANCH_SHOALS:
-                    grd(*ri) = DNGN_OPEN_SEA;
+                    env.grid(*ri) = DNGN_OPEN_SEA;
                     break;
                 case BRANCH_VESTIBULE:
                 case BRANCH_GEHENNA:
-                    grd(*ri) = DNGN_LAVA_SEA;
+                    env.grid(*ri) = DNGN_LAVA_SEA;
                     break;
                 case BRANCH_DESOLATION:
-                    grd(*ri) = DNGN_ENDLESS_SALT;
+                    env.grid(*ri) = DNGN_ENDLESS_SALT;
                     break;
                 case BRANCH_DUNGEON:
                     if (you.depth == 2)
-                        grd(*ri) = DNGN_ENDLESS_SLUDGE;
+                        env.grid(*ri) = DNGN_ENDLESS_SLUDGE;
                     else
-                        grd(*ri) = DNGN_PERMAROCK_WALL;
+                        env.grid(*ri) = DNGN_PERMAROCK_WALL;
                     break;
                 default:
-                    grd(*ri) = DNGN_PERMAROCK_WALL;
+                    env.grid(*ri) = DNGN_PERMAROCK_WALL;
                     break;
                 }
 
@@ -697,7 +697,7 @@ static void _dgn_load_colour_grid()
             if (env.grid_colours[x][y] != BLACK)
             {
                 dcgrid[x][y]
-                    = coloured_feature(grd[x][y], env.grid_colours[x][y]);
+                    = coloured_feature(env.grid[x][y], env.grid_colours[x][y]);
             }
 }
 
@@ -711,7 +711,7 @@ static void _dgn_map_colour_fixup()
     for (int y = Y_BOUND_1; y <= Y_BOUND_2; ++y)
         for (int x = X_BOUND_1; x <= X_BOUND_2; ++x)
             if (dcgrid[x][y].colour != BLACK
-                && grd[x][y] != dcgrid[x][y].feature
+                && env.grid[x][y] != dcgrid[x][y].feature
                 && dcgrid[x][y].feature != DNGN_FLOOR)
             {
                 env.grid_colours[x][y] = BLACK;
@@ -728,7 +728,7 @@ void dgn_set_grid_colour_at(const coord_def &c, int colour)
         if (!dgn_colour_grid)
             dgn_colour_grid.reset(new dungeon_colour_grid);
 
-        (*dgn_colour_grid)(c) = coloured_feature(grd(c), colour);
+        (*dgn_colour_grid)(c) = coloured_feature(env.grid(c), colour);
     }
 }
 
@@ -738,7 +738,7 @@ static void _set_grd(const coord_def &c, dungeon_feature_type feat)
     env.tile_flv(c).feat    = 0;
     env.tile_flv(c).special = 0;
     env.grid_colours(c) = 0;
-    grd(c) = feat;
+    env.grid(c) = feat;
 }
 
 static void _dgn_register_vault(const string &name, const unordered_set<string> &tags)
@@ -790,7 +790,7 @@ static void _dgn_unregister_vault(const map_def &map)
 
 bool dgn_square_travel_ok(const coord_def &c)
 {
-    const dungeon_feature_type feat = grd(c);
+    const dungeon_feature_type feat = env.grid(c);
     if (feat_is_trap(feat))
     {
         const trap_def * const trap = trap_at(c);
@@ -823,7 +823,7 @@ static bool _dgn_square_is_ever_passable(const coord_def &c)
 {
     if (!(env.level_map_mask(c) & MMT_OPAQUE))
     {
-        const dungeon_feature_type feat = grd(c);
+        const dungeon_feature_type feat = env.grid(c);
         if (feat == DNGN_DEEP_WATER || feat == DNGN_LAVA || feat == DNGN_DEEP_SLIMY_WATER)
             return true;
     }
@@ -878,7 +878,7 @@ static bool _dgn_fill_zone(
 
 static bool _is_perm_down_stair(const coord_def &c)
 {
-    switch (grd(c))
+    switch (env.grid(c))
     {
     case DNGN_STONE_STAIRS_DOWN_I:
     case DNGN_STONE_STAIRS_DOWN_II:
@@ -902,13 +902,13 @@ static bool _is_upwards_exit_stair(const coord_def &c)
     if (feature_mimic_at(c))
         return false;
 
-    if (feat_is_stone_stair_up(grd(c))
-        || feat_is_branch_exit(grd(c)))
+    if (feat_is_stone_stair_up(env.grid(c))
+        || feat_is_branch_exit(env.grid(c)))
     {
         return true;
     }
 
-    switch (grd(c))
+    switch (env.grid(c))
     {
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
@@ -929,14 +929,14 @@ static bool _is_exit_stair(const coord_def &c)
     // Branch entries, portals, and abyss entries are not considered exit
     // stairs here, as they do not provide an exit (in a transitive sense) from
     // the current level.
-    if (feat_is_stone_stair(grd(c))
-        || feat_is_escape_hatch(grd(c))
-        || feat_is_branch_exit(grd(c)))
+    if (feat_is_stone_stair(env.grid(c))
+        || feat_is_escape_hatch(env.grid(c))
+        || feat_is_branch_exit(env.grid(c)))
     {
         return true;
     }
 
-    switch (grd(c))
+    switch (env.grid(c))
     {
     case DNGN_EXIT_PANDEMONIUM:
     case DNGN_TRANSIT_PANDEMONIUM:
@@ -1066,7 +1066,7 @@ static void _veto_deadly_dispersal(int depth)
 
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (grd(*ri) == DNGN_TRAP_CONGREGATION)
+        if (env.grid(*ri) == DNGN_TRAP_CONGREGATION)
         {
             for (rectangle_iterator si(*ri, LOS_RADIUS); si; ++si)
             {
@@ -1074,13 +1074,13 @@ static void _veto_deadly_dispersal(int depth)
                     continue;
                 if (!cell_see_cell(*ri, *si, LOS_NO_TRANS))
                     continue;
-                if (feat_is_lava(grd(*si)))
+                if (feat_is_lava(env.grid(*si)))
                 {
                     _set_grd(*ri, DNGN_FOUNTAIN_BLOOD);
                     break;
                 }
                 else if ((depth < 4) 
-                    && (grd(*si) == DNGN_DEEP_WATER || grd(*si) == DNGN_DEEP_SLIMY_WATER))
+                    && (env.grid(*si) == DNGN_DEEP_WATER || env.grid(*si) == DNGN_DEEP_SLIMY_WATER))
                 {
                     _set_grd(*ri, DNGN_FOUNTAIN_BLUE);
                     break;
@@ -1097,8 +1097,8 @@ static void _fixup_hell_stairs()
 
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (feat_is_stone_stair_up(grd(*ri))
-            || grd(*ri) == DNGN_ESCAPE_HATCH_UP)
+        if (feat_is_stone_stair_up(env.grid(*ri))
+            || env.grid(*ri) == DNGN_ESCAPE_HATCH_UP)
         {
             _set_grd(*ri, DNGN_ENTER_HELL);
         }
@@ -1117,7 +1117,7 @@ static void _place_sewer_stair_vault()
 
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (feat_is_stone_stair_down(grd(*ri)))
+        if (feat_is_stone_stair_down(env.grid(*ri)))
         {
             stair_num++;
 
@@ -1140,7 +1140,7 @@ static void _fixup_sewer_stairs()
 {
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (feat_is_stone_stair_down(grd(*ri)) &&
+        if (feat_is_stone_stair_down(env.grid(*ri)) &&
             env.tile_flv(*ri).feat != TILE_DNGN_PORTAL_SEWER)
         {
             env.tile_flv(*ri).feat_idx =
@@ -1152,7 +1152,8 @@ static void _fixup_sewer_stairs()
             env.grid_colours(*ri) = GREEN;
             for (adjacent_iterator ai(*ri); ai; ++ai)
             {
-                if (feat_is_wall(grd(*ai)) && feat_is_opaque(grd(*ai)) || feat_is_tree(grd(*ai)))
+                if (feat_is_wall(env.grid(*ai)) 
+                    && feat_is_opaque(env.grid(*ai)) || feat_is_tree(env.grid(*ai)))
                 {
                     _set_grd(*ai, DNGN_METAL_WALL);
                     env.grid_colours(*ai) = GREEN;
@@ -1160,19 +1161,19 @@ static void _fixup_sewer_stairs()
                         store_tilename_get_index("dngn_metal_wall_green");
                     env.tile_flv(*ai).feat = TILE_DNGN_METAL_WALL_GREEN;
                 }
-                else if (grd(*ai) == DNGN_FLOOR)
+                else if (env.grid(*ai) == DNGN_FLOOR)
                 {
                     if (x_chance_in_y(2, 3))
                         _set_grd(*ai, DNGN_SHALLOW_WATER);
                 }
 
-                if ((grd(*ai) == DNGN_DEEP_WATER))
+                if ((env.grid(*ai) == DNGN_DEEP_WATER))
                 {
                     env.tile_flv(*ai).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
                     env.grid_colours(*ai) = LIGHTGREEN;
                 }
 
-                if ((grd(*ai) == DNGN_SHALLOW_WATER))
+                if ((env.grid(*ai) == DNGN_SHALLOW_WATER))
                 {
                     env.tile_flv(*ai).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
                     env.grid_colours(*ai) = LIGHTGREEN;
@@ -1186,8 +1187,8 @@ static void _fixup_pandemonium_stairs()
 {
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (feat_is_stone_stair_up(grd(*ri))
-            || grd(*ri) == DNGN_ESCAPE_HATCH_UP)
+        if (feat_is_stone_stair_up(env.grid(*ri))
+            || env.grid(*ri) == DNGN_ESCAPE_HATCH_UP)
         {
             _set_grd(*ri, DNGN_TRANSIT_PANDEMONIUM);
         }
@@ -1341,7 +1342,7 @@ static coord_def _find_level_feature(int feat)
 {
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (grd(*ri) == feat)
+        if (env.grid(*ri) == feat)
             return *ri;
     }
 
@@ -1587,15 +1588,15 @@ static int _num_mons_wanted()
 
 static bool _sewer_check(coord_def coord)
 {
-    return (grd(coord) == DNGN_STONE_WALL || grd(coord) == DNGN_METAL_WALL 
-         || grd(coord) == DNGN_PERMAROCK_WALL || grd(coord) == DNGN_ENDLESS_SLUDGE);
+    return (env.grid(coord) == DNGN_STONE_WALL || env.grid(coord) == DNGN_METAL_WALL
+         || env.grid(coord) == DNGN_PERMAROCK_WALL || env.grid(coord) == DNGN_ENDLESS_SLUDGE);
 }
 
 /*static void _snow()
 {
     for (rectangle_iterator ri(coord_def(0, 0), coord_def(GXM - 1, GYM - 1)); ri; ++ri)
     {
-        if (feat_has_dry_floor(grd(*ri)) || (feat_is_solid(grd(*ri)) && !feat_is_wall(grd(*ri))))
+        if (feat_has_dry_floor(env.grid(*ri)) || (feat_is_solid(env.grid(*ri)) && !feat_is_wall(env.grid(*ri))))
         {
             bool clumping = false;
             for (adjacent_iterator ai(*ri); ai; ++ai)
@@ -1625,43 +1626,43 @@ static void _sewer_water()
             {
                 if (_sewer_check(coord_def(ri->x, ri->y + 1)) && _sewer_check(coord_def(ri->x, ri->y - 1)))
                 {
-                    grd(*ri) = DNGN_ENDLESS_SLUDGE;
+                    env.grid(*ri) = DNGN_ENDLESS_SLUDGE;
                     if (ri->x == 1)
-                        grd(coord_def(0, ri->y)) = DNGN_ENDLESS_SLUDGE;
+                        env.grid(coord_def(0, ri->y)) = DNGN_ENDLESS_SLUDGE;
                     if (ri->x == GXM - 2)
-                        grd(coord_def(GXM - 1, ri->y)) = DNGN_ENDLESS_SLUDGE;
+                        env.grid(coord_def(GXM - 1, ri->y)) = DNGN_ENDLESS_SLUDGE;
                 }
             }
             if (ri->y == 0 || ri->y == 1 || ri->y == GYM - 1 || ri->y == GYM - 2)
             {
                 if (_sewer_check(coord_def(ri->x + 1, ri->y)) && _sewer_check(coord_def(ri->x - 1, ri->y)))
                 {
-                    grd(*ri) = DNGN_ENDLESS_SLUDGE;
+                    env.grid(*ri) = DNGN_ENDLESS_SLUDGE;
                     if (ri->y == 1)
-                        grd(coord_def(ri->x, 0)) = DNGN_ENDLESS_SLUDGE;
+                        env.grid(coord_def(ri->x, 0)) = DNGN_ENDLESS_SLUDGE;
                     if (ri->y == GYM - 2)
-                        grd(coord_def(ri->x, GYM - 1)) = DNGN_ENDLESS_SLUDGE;
+                        env.grid(coord_def(ri->x, GYM - 1)) = DNGN_ENDLESS_SLUDGE;
                 }
             }
         }
 
-        if ((grd(*ri) == DNGN_FLOOR))
+        if ((env.grid(*ri) == DNGN_FLOOR))
         {
             int water = 0;
             int solid = 0;
             for (adjacent_iterator ai(*ri); ai; ++ai)
             {
-                if (grd(*ai) == DNGN_SHALLOW_WATER || grd(*ai) == DNGN_DEEP_WATER)
+                if (env.grid(*ai) == DNGN_SHALLOW_WATER || env.grid(*ai) == DNGN_DEEP_WATER)
                     water++;
-                if (grd(*ai) == DNGN_ROCK_WALL || grd(*ai) == DNGN_STONE_WALL || grd(*ai) == DNGN_METAL_WALL)
+                if (env.grid(*ai) == DNGN_ROCK_WALL || env.grid(*ai) == DNGN_STONE_WALL || env.grid(*ai) == DNGN_METAL_WALL)
                     solid++;
             }
 
             if (x_chance_in_y(solid, 8) || (water > 3 && solid + water >= 6))
-                grd(*ri) = DNGN_SHALLOW_WATER;
+                env.grid(*ri) = DNGN_SHALLOW_WATER;
         }
 
-        if ((grd(*ri) == DNGN_DEEP_WATER || grd(*ri) == DNGN_SHALLOW_WATER))
+        if ((env.grid(*ri) == DNGN_DEEP_WATER || env.grid(*ri) == DNGN_SHALLOW_WATER))
         {
             if (!actor_at(*ri))
             {
@@ -1682,7 +1683,7 @@ static void _sewer_water()
             }
         }
 
-        if ((grd(*ri) == DNGN_DEEP_WATER))
+        if ((env.grid(*ri) == DNGN_DEEP_WATER))
         {
 #ifdef USE_TILE
             env.tile_bk_bg(*ri) = TILE_DNGN_DEEP_WATER_MURKY;
@@ -1690,7 +1691,7 @@ static void _sewer_water()
             env.grid_colours(*ri) = GREEN;
         }
 
-        if ((grd(*ri) == DNGN_SHALLOW_WATER))
+        if ((env.grid(*ri) == DNGN_SHALLOW_WATER))
         {
 #ifdef USE_TILE
             env.tile_bk_bg(*ri) = TILE_DNGN_SHALLOW_WATER_MURKY;
@@ -1710,17 +1711,17 @@ static void _slimify_water()
 
     for (rectangle_iterator ri(coord_def(0,0), coord_def(GXM-1, GYM-1)); ri; ++ri)
     {
-        if ((grd(*ri) == DNGN_FLOOR))
+        if ((env.grid(*ri) == DNGN_FLOOR))
         {
             int slimy = 0;
             for (adjacent_iterator ai(*ri); ai; ++ai)
             {
-                if (grd(*ai) == DNGN_SLIMY_WALL)
+                if (env.grid(*ai) == DNGN_SLIMY_WALL)
                     slimy++;
             }
             if (slimy > 3 || x_chance_in_y(slimy, 6))
             {
-                grd(*ri) = DNGN_SLIMY_WATER;
+                env.grid(*ri) = DNGN_SLIMY_WATER;
                 if (env.map_knowledge(*ri).seen())
                 {
                     env.map_knowledge(*ri).set_feature(DNGN_SLIMESHROOM, 0,
@@ -1732,19 +1733,19 @@ static void _slimify_water()
             }
         }
 
-        if ((grd(*ri) == DNGN_DEEP_SLIMY_WATER || grd(*ri) == DNGN_SLIMY_WATER))
+        if ((env.grid(*ri) == DNGN_DEEP_SLIMY_WATER || env.grid(*ri) == DNGN_SLIMY_WATER))
         {
             if (!actor_at(*ri))
             {
                 bool clumping = false;
                 for (adjacent_iterator ai(*ri); ai; ++ai)
                 {
-                    if (grd(*ai) == DNGN_SLIMESHROOM)
+                    if (env.grid(*ai) == DNGN_SLIMESHROOM)
                         clumping = true;
                 }
                 if (one_chance_in(25) || clumping && !one_chance_in(3))
                 {
-                    grd(*ri) = DNGN_SLIMESHROOM;
+                    env.grid(*ri) = DNGN_SLIMESHROOM;
                     if (env.map_knowledge(*ri).seen())
                     {
                         env.map_knowledge(*ri).set_feature(DNGN_SLIMESHROOM, 0,
@@ -1765,9 +1766,9 @@ static void _slimify_water()
 
         if (in_bounds(item.pos))
         {
-            if (grd(item.pos) == DNGN_SLIMESHROOM)
+            if (env.grid(item.pos) == DNGN_SLIMESHROOM)
             {
-                grd(item.pos) = DNGN_SLIMY_WATER;
+                env.grid(item.pos) = DNGN_SLIMY_WATER;
                 if (env.map_knowledge(item.pos).seen())
                 {
                     env.map_knowledge(item.pos).set_feature(DNGN_SLIMESHROOM, 0,
@@ -1836,7 +1837,7 @@ void fixup_misplaced_items()
 
         if (in_bounds(item.pos))
         {
-            dungeon_feature_type feat = grd(item.pos);
+            dungeon_feature_type feat = env.grid(item.pos);
             if (feat_has_solid_floor(feat))
                 continue;
 
@@ -1905,17 +1906,17 @@ static void _fixup_branch_stairs()
     {
         const bool vault = map_masked(*ri, MMT_VAULT);
         const auto escape_replacement = vault ? up_hatch : DNGN_FLOOR;
-        if (bottom && (feat_is_stone_stair_down(grd(*ri))
-                       || grd(*ri) == DNGN_ESCAPE_HATCH_DOWN))
+        if (bottom && (feat_is_stone_stair_down(env.grid(*ri))
+                       || env.grid(*ri) == DNGN_ESCAPE_HATCH_DOWN))
         {
             _set_grd(*ri, escape_replacement);
         }
 
         if (top)
         {
-            if (grd(*ri) == DNGN_ESCAPE_HATCH_UP)
+            if (env.grid(*ri) == DNGN_ESCAPE_HATCH_UP)
                 _set_grd(*ri, escape_replacement);
-            else if (feat_is_stone_stair_up(grd(*ri)))
+            else if (feat_is_stone_stair_up(env.grid(*ri)))
             {
 #ifdef DEBUG_DIAGNOSTICS
                 if (count++ && !root)
@@ -1926,7 +1927,7 @@ static void _fixup_branch_stairs()
 #endif
                 if (root)
                 {
-                    env.markers.add(new map_feature_marker(*ri, grd(*ri)));
+                    env.markers.add(new map_feature_marker(*ri, env.grid(*ri)));
                     _set_grd(*ri, exit);
                 }
                 else
@@ -1951,7 +1952,7 @@ static void _fixup_branch_stairs()
         {
             shuffle_array(stairs);
             coord_def coord = *(stairs.begin());
-            env.markers.add(new map_feature_marker(coord, grd(coord)));
+            env.markers.add(new map_feature_marker(coord, env.grid(coord)));
             _set_grd(coord, exit);
             for (auto it = stairs.begin() + 1; it != stairs.end(); it++)
                 _set_grd(*it, DNGN_FLOOR);
@@ -1970,7 +1971,7 @@ static list<coord_def> _find_stone_stairs(bool up_stairs)
         if (feature_mimic_at(c))
             continue;
 
-        const dungeon_feature_type feat = grd(c);
+        const dungeon_feature_type feat = env.grid(c);
         if (feat_is_stone_stair(feat)
             && up_stairs == feat_is_stone_stair_up(feat))
         {
@@ -2007,8 +2008,8 @@ static void _cull_redundant_stairs(list<coord_def> &stairs,
     {
         const coord_def s1_loc = *iter1;
         // Ensure we don't search for the feature at s1. XXX: unwind_var?
-        const dungeon_feature_type saved_feat = grd(s1_loc);
-        grd(s1_loc) = DNGN_FLOOR;
+        const dungeon_feature_type saved_feat = env.grid(s1_loc);
+        env.grid(s1_loc) = DNGN_FLOOR;
 
         auto iter2 = iter1;
         ++iter2;
@@ -2023,7 +2024,7 @@ static void _cull_redundant_stairs(list<coord_def> &stairs,
 
             flood_find<feature_grid, coord_predicate> ff(env.grid,
                                                          in_bounds);
-            ff.add_feat(grd(s2_loc));
+            ff.add_feat(env.grid(s2_loc));
             const coord_def where =
                 ff.find_first_from(s1_loc, env.level_map_mask);
             if (!where.x) // these stairs aren't in the same zone
@@ -2031,11 +2032,11 @@ static void _cull_redundant_stairs(list<coord_def> &stairs,
 
             dprf(DIAG_DNGN,
                  "Too many stairs -- removing one of a connected pair.");
-            grd(s2_loc) = hatch_type;
+            env.grid(s2_loc) = hatch_type;
             stairs.erase(being_examined);
         }
 
-        grd(s1_loc) = saved_feat;
+        env.grid(s1_loc) = saved_feat;
     }
 }
 
@@ -2200,7 +2201,7 @@ static bool _fixup_stone_stairs(bool preserve_vault_stairs,
         ASSERT(needed_stairs == 1);
         ASSERT(stairs.size() == 1 || player_in_branch(root_branch));
         if (stairs.size() == 1)
-            grd(stairs.front()) = DNGN_STONE_STAIRS_UP_I;
+            env.grid(stairs.front()) = DNGN_STONE_STAIRS_UP_I;
 
         return true;
     }
@@ -2211,10 +2212,10 @@ static bool _fixup_stone_stairs(bool preserve_vault_stairs,
     {
         const coord_def s1_loc = stairs.front();
         const coord_def s2_loc = stairs.back();
-        if (grd(s1_loc) == grd(s2_loc))
+        if (env.grid(s1_loc) == env.grid(s2_loc))
         {
             _set_grd(s2_loc, (dungeon_feature_type)
-                     (base + (grd(s2_loc)-base+1) % needed_stairs));
+                     (base + (env.grid(s2_loc)-base+1) % needed_stairs));
         }
 
         stairs.push_back(stairs.front());
@@ -2268,7 +2269,7 @@ static bool _add_feat_if_missing(bool (*iswanted)(const coord_def &),
             bool found_feature = false;
             for (rectangle_iterator ri(0); ri; ++ri)
             {
-                if (grd(*ri) == feat
+                if (env.grid(*ri) == feat
                     && travel_point_distance[ri->x][ri->y] == nzones)
                 {
                     found_feature = true;
@@ -2285,7 +2286,7 @@ static bool _add_feat_if_missing(bool (*iswanted)(const coord_def &),
                 coord_def rnd;
                 rnd.x = random2(GXM);
                 rnd.y = random2(GYM);
-                if (grd(rnd) != DNGN_FLOOR)
+                if (env.grid(rnd) != DNGN_FLOOR)
                     continue;
 
                 if (travel_point_distance[rnd.x][rnd.y] != nzones)
@@ -2301,7 +2302,7 @@ static bool _add_feat_if_missing(bool (*iswanted)(const coord_def &),
 
             for (rectangle_iterator ri(0); ri; ++ri)
             {
-                if (grd(*ri) != DNGN_FLOOR)
+                if (env.grid(*ri) != DNGN_FLOOR)
                     continue;
 
                 if (travel_point_distance[ri->x][ri->y] != nzones)
@@ -2365,7 +2366,7 @@ static bool _branch_entrances_are_connected()
     // stone stairs.
     for (rectangle_iterator ri(0); ri; ++ri)
     {
-        if (!feat_is_branch_entrance(grd(*ri)))
+        if (!feat_is_branch_entrance(env.grid(*ri)))
             continue;
         if (!_has_connected_stone_stairs_from(*ri))
             return false;
@@ -2591,7 +2592,7 @@ struct coord_feat
 
     void set_from(const coord_def &c)
     {
-        feat = grd(c);
+        feat = env.grid(c);
         // Don't copy mimic-ness.
         mask = env.level_map_mask(c) & ~(MMT_MIMIC);
         // Only copy "static" properties.
@@ -2620,11 +2621,11 @@ static void _ruin_level(Iterator iter,
                 continue;
 
             // only try to replace wall and door tiles
-            if (!feat_is_wall(grd(*ri)) && !feat_is_door(grd(*ri)))
+            if (!feat_is_wall(env.grid(*ri)) && !feat_is_door(env.grid(*ri)))
                 continue;
 
             // don't mess with permarock
-            if (grd(*ri) == DNGN_PERMAROCK_WALL)
+            if (env.grid(*ri) == DNGN_PERMAROCK_WALL)
                 continue;
 
             // or vaults
@@ -2637,10 +2638,10 @@ static void _ruin_level(Iterator iter,
             int floor_count = 0;
             for (adjacent_iterator ai(*ri); ai; ++ai)
             {
-                if (!feat_is_wall(grd(*ai)) && !feat_is_door(grd(*ai))
-                    && !feat_is_statuelike(grd(*ai))
+                if (!feat_is_wall(env.grid(*ai)) && !feat_is_door(env.grid(*ai))
+                    && !feat_is_statuelike(env.grid(*ai))
                     // Shouldn't happen, but just in case.
-                    && grd(*ai) != DNGN_MALIGN_GATEWAY)
+                    && env.grid(*ai) != DNGN_MALIGN_GATEWAY)
                 {
                     if (one_chance_in(++floor_count))
                         replacement.set_from(*ai);
@@ -2661,7 +2662,7 @@ static void _ruin_level(Iterator iter,
             ASSERT(replacement != DNGN_UNSEEN);
 
             // Don't replace doors with impassable features.
-            if (feat_is_door(grd(p)))
+            if (feat_is_door(env.grid(p)))
             {
                 if (feat_is_water(replacement))
                     replacement = DNGN_SHALLOW_WATER;
@@ -2677,7 +2678,7 @@ static void _ruin_level(Iterator iter,
             }
 
             // only remove some doors, to preserve tactical options
-            if (feat_is_wall(grd(p)) || coinflip() && feat_is_door(grd(p)))
+            if (feat_is_wall(env.grid(p)) || coinflip() && feat_is_door(env.grid(p)))
             {
                 // Copy the mask and properties too, so that we don't make an
                 // isolated transparent or rtele_into square.
@@ -2689,12 +2690,12 @@ static void _ruin_level(Iterator iter,
             // but remove doors if we've removed all adjacent walls
             for (adjacent_iterator wai(p); wai; ++wai)
             {
-                if (feat_is_door(grd(*wai)))
+                if (feat_is_door(env.grid(*wai)))
                 {
                     bool remove = true;
                     for (adjacent_iterator dai(*wai); dai; ++dai)
                     {
-                        if (feat_is_wall(grd(*dai)))
+                        if (feat_is_wall(env.grid(*dai)))
                             remove = false;
                     }
                     // It's always safe to replace a door with floor.
@@ -2713,7 +2714,7 @@ static void _ruin_level(Iterator iter,
     {
         // replace some ruined walls with plants/fungi/bushes
         if (plant_density && one_chance_in(plant_density)
-            && feat_has_solid_floor(grd(p))
+            && feat_has_solid_floor(env.grid(p))
             && !plant_forbidden_at(p))
         {
             mgen_data mg;
@@ -2743,7 +2744,7 @@ static void _place_feature_mimics()
     for (rectangle_iterator ri(1); ri; ++ri)
     {
         const coord_def pos = *ri;
-        const dungeon_feature_type feat = grd(pos);
+        const dungeon_feature_type feat = env.grid(pos);
 
         // Vault tag prevents mimic.
         if (map_masked(pos, MMT_NO_MIMIC))
@@ -2977,7 +2978,7 @@ static void _check_doors()
 {
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (!feat_is_closed_door(grd(*ri)))
+        if (!feat_is_closed_door(env.grid(*ri)))
             continue;
 
         int solid_count = 0;
@@ -2998,14 +2999,14 @@ int count_feature_in_box(int x0, int y0, int x1, int y1,
     for (int i = x0; i < x1; ++i)
         for (int j = y0; j < y1; ++j)
         {
-            if (grd[i][j] == feat)
+            if (env.grid[i][j] == feat)
                 ++result;
         }
 
     return result;
 }
 
-// Count how many neighbours of grd[x][y] are the feature feat.
+// Count how many neighbours of env.grid[x][y] are the feature feat.
 int count_neighbours(int x, int y, dungeon_feature_type feat)
 {
     return count_feature_in_box(x-1, y-1, x+2, y+2, feat);
@@ -3017,7 +3018,7 @@ static void _prepare_water()
 {
     for (rectangle_iterator ri(1); ri; ++ri)
     {
-        if (map_masked(*ri, MMT_NO_POOL) || grd(*ri) != DNGN_DEEP_WATER)
+        if (map_masked(*ri, MMT_NO_POOL) || env.grid(*ri) != DNGN_DEEP_WATER)
             continue;
 
         bool green = false;
@@ -3027,12 +3028,12 @@ static void _prepare_water()
 
         for (adjacent_iterator ai(*ri); ai; ++ai)
         {
-            const dungeon_feature_type which_grid = grd(*ai);
+            const dungeon_feature_type which_grid = env.grid(*ai);
 
             if (which_grid == DNGN_SHALLOW_WATER && one_chance_in(20)
                 || feat_has_dry_floor(which_grid) && x_chance_in_y(2, 5))
             {
-                grd(*ri) = DNGN_SHALLOW_WATER;
+                env.grid(*ri) = DNGN_SHALLOW_WATER;
                 if (green)
                 {
                     env.tile_flv(*ri).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
@@ -3601,7 +3602,7 @@ static bool _flood_fill_map(FixedArray<bool, GXM, GYM> & connectivity_map)
                 continue;
             coord_def c = coord_def(x, y);
 
-            if (cell_is_solid(c) && !feat_is_closed_door(grd(c)))
+            if (cell_is_solid(c) && !feat_is_closed_door(env.grid(c)))
                 continue;
             if (connectivity_map(c) == true)
                 continue;
@@ -3634,7 +3635,7 @@ static void _fixup_loop(FixedArray<bool, GXM, GYM> & connectivity_map)
     {
         if (!in_bounds(*ri))
             continue;
-        if (feat_is_solid(grd(*ri)))
+        if (feat_is_solid(env.grid(*ri)))
             continue;
         if (connectivity_map(*ri) == true)
             continue;
@@ -3676,10 +3677,10 @@ static void _connectivity_fixup()
     // Establish which areas can reach at least one staircase.
     for (rectangle_iterator ri(0); ri; ++ri)
     {
-        if (feat_is_stone_stair_down(grd(*ri))
-            || end && (feat_is_stone_stair_up(grd(*ri)) || grd(*ri) == DNGN_ENTER_HELL)
-            || pan && grd(*ri) == DNGN_TRANSIT_PANDEMONIUM
-            || grd(*ri) == DNGN_TRANSPORTER) // Assumes all transporters will lead to somewhere that can go to the others.
+        if (feat_is_stone_stair_down(env.grid(*ri))
+            || end && (feat_is_stone_stair_up(env.grid(*ri)) || env.grid(*ri) == DNGN_ENTER_HELL)
+            || pan && env.grid(*ri) == DNGN_TRANSIT_PANDEMONIUM
+            || env.grid(*ri) == DNGN_TRANSPORTER) // Assumes all transporters will lead to somewhere that can go to the others.
             // Actually if the Transporter_Landing failed to place an error would have tripped earlier and the landing is
             // included in the check that must be next to one of these, so the only error condition where this would fail
             // is transporter/landing both trapped in the same place (severely mangled vault).
@@ -3891,7 +3892,7 @@ static void _place_traps()
             // Don't place random traps under vault monsters; if a vault
             // wants this they have to request it specifically.
             if (in_bounds(ts.pos)
-                && grd(ts.pos) == DNGN_FLOOR
+                && env.grid(ts.pos) == DNGN_FLOOR
                 && !map_masked(ts.pos, MMT_NO_TRAP)
                 && mgrd(ts.pos) == NON_MONSTER)
             {
@@ -3916,7 +3917,7 @@ static void _place_traps()
         }
 
         ts.type = type;
-        grd(ts.pos) = ts.feature();
+        env.grid(ts.pos) = ts.feature();
         ts.prepare_ammo();
         env.trap[ts.pos] = ts;
         dprf("placed a %s trap", trap_name(type).c_str());
@@ -3967,8 +3968,8 @@ void dgn_place_stone_stairs(bool maybe_place_hatches)
     existing.init(false);
 
     for (rectangle_iterator ri(0); ri; ++ri)
-        if (grd(*ri) >= stair_start && grd(*ri) < stair_start + stair_count)
-            existing[grd(*ri) - stair_start] = true;
+        if (env.grid(*ri) >= stair_start && env.grid(*ri) < stair_start + stair_count)
+            existing[env.grid(*ri) - stair_start] = true;
 
     int pair_count = 3;
 
@@ -3994,7 +3995,7 @@ void dgn_place_stone_stairs(bool maybe_place_hatches)
 bool dgn_has_adjacent_feat(coord_def c, dungeon_feature_type feat)
 {
     for (adjacent_iterator ai(c); ai; ++ai)
-        if (grd(*ai) == feat)
+        if (env.grid(*ai) == feat)
             return true;
     return false;
 }
@@ -4013,7 +4014,7 @@ static inline bool _point_matches_feat(coord_def c,
                                        dungeon_feature_type adjacent_feat,
                                        bool monster_free)
 {
-    return grd(c) == searchfeat
+    return env.grid(c) == searchfeat
            && (!monster_free || !monster_at(c))
            && !map_masked(c, mapmask)
            && (adjacent_feat == DNGN_UNSEEN ||
@@ -4202,11 +4203,11 @@ static void _place_branch_entrances(bool use_vaults)
 
     for (rectangle_iterator ri(0); ri; ++ri)
     {
-        if (!feat_is_branch_entrance(grd(*ri)))
+        if (!feat_is_branch_entrance(env.grid(*ri)))
             continue;
 
         for (branch_iterator it; it; ++it)
-            if (it->entry_stairs == grd(*ri)
+            if (it->entry_stairs == env.grid(*ri)
                 && !feature_mimic_at(*ri))
             {
                 branch_entrance_placed[it->id] = true;
@@ -4428,7 +4429,7 @@ static void _place_aquatic_monsters()
         if (actor_at(*ri) || env.level_map_mask(*ri) & MMT_NO_MONS)
             continue;
 
-        dungeon_feature_type feat = grd(*ri);
+        dungeon_feature_type feat = env.grid(*ri);
         if (feat == DNGN_SHALLOW_WATER || feat == DNGN_DEEP_WATER)
             water.push_back(*ri);
         else if (feat == DNGN_LAVA)
@@ -4574,7 +4575,7 @@ static void _randomly_place_item(int item)
     {
         itempos = random_in_bounds();
         const monster* mon = monster_at(itempos);
-        found = grd(itempos) == DNGN_FLOOR
+        found = env.grid(itempos) == DNGN_FLOOR
                 && !map_masked(itempos, MMT_NO_ITEM)
                 // oklobs or statues are ok
                 && (!mon || !mons_is_firewood(*mon));
@@ -4643,7 +4644,7 @@ static bool _connect_vault_exit(const coord_def& exit)
 static bool _grid_needs_exit(const coord_def& c)
 {
     return !cell_is_solid(c)
-           || feat_is_closed_door(grd(c));
+           || feat_is_closed_door(env.grid(c));
 }
 
 static bool _map_feat_is_on_edge(const vault_placement &place,
@@ -4675,7 +4676,7 @@ static void _pick_float_exits(vault_placement &place, vector<coord_def> &targets
 
         // The vault is disconnected, does it have a stair inside?
         for (rectangle_iterator ri(place.pos, place.pos + place.size - 1); ri; ++ri)
-            if (feat_is_stair(grd(*ri)))
+            if (feat_is_stair(env.grid(*ri)))
                 return;
 
         mprf(MSGCH_ERROR, "Unable to find exit from %s",
@@ -5550,7 +5551,7 @@ monster* dgn_place_monster(mons_spec &mspec, coord_def where,
 
         const habitat_type habitat = mons_class_primary_habitat(montype);
 
-        if (in_bounds(where) && !monster_habitable_grid(montype, grd(where))
+        if (in_bounds(where) && !monster_habitable_grid(montype, env.grid(where))
             && type != MONS_SPECTRAL_THING)
         {
             dungeon_terrain_changed(where, habitat2grid(habitat));
@@ -5833,17 +5834,17 @@ static void _vault_grid_mapspec(vault_placement &place, const coord_def &where,
     if (f.trap)
         _place_specific_trap(where, f.trap.get(), 0);
     else if (f.feat >= 0)
-        grd(where) = static_cast<dungeon_feature_type>(f.feat);
+        env.grid(where) = static_cast<dungeon_feature_type>(f.feat);
     else if (f.glyph >= 0)
         _vault_grid_glyph(place, where, f.glyph);
     else if (f.shop)
         place_spec_shop(where, *f.shop);
     else
-        grd(where) = DNGN_FLOOR;
+        env.grid(where) = DNGN_FLOOR;
 
     if (f.mimic > 0 && one_chance_in(f.mimic))
     {
-        ASSERT(feat_is_mimicable(grd(where), false));
+        ASSERT(feat_is_mimicable(env.grid(where), false));
         env.level_map_mask(where) |= MMT_MIMIC;
     }
     else if (f.no_mimic)
@@ -5858,12 +5859,12 @@ static void _vault_grid_glyph(vault_placement &place, const coord_def& where,
 {
     // First, set base tile for grids {dlb}:
     if (vgrid != -1)
-        grd(where) = _glyph_to_feat(vgrid);
+        env.grid(where) = _glyph_to_feat(vgrid);
 
-    if (feat_is_altar(grd(where))
-        && is_unavailable_god(feat_altar_god(grd(where))))
+    if (feat_is_altar(env.grid(where))
+        && is_unavailable_god(feat_altar_god(env.grid(where))))
     {
-        grd(where) = DNGN_FLOOR;
+        env.grid(where) = DNGN_FLOOR;
     }
 
     // then, handle oddball grids {dlb}:
@@ -5882,7 +5883,7 @@ static void _vault_grid_glyph(vault_placement &place, const coord_def& where,
         place_specific_trap(where, random_vault_trap());
         break;
     case 'B':
-        grd(where) = _pick_temple_altar();
+        env.grid(where) = _pick_temple_altar();
         break;
     }
 
@@ -6033,9 +6034,9 @@ void dgn_replace_area(const coord_def& p1, const coord_def& p2,
 {
     for (rectangle_iterator ri(p1, p2); ri; ++ri)
     {
-        if (grd(*ri) == replace && !map_masked(*ri, mapmask))
+        if (env.grid(*ri) == replace && !map_masked(*ri, mapmask))
         {
-            grd(*ri) = feature;
+            env.grid(*ri) = feature;
             if (needs_update && env.map_knowledge(*ri).seen())
             {
                 env.map_knowledge(*ri).set_feature(feature, 0,
@@ -6153,10 +6154,10 @@ bool join_the_dots(const coord_def &from, const coord_def &to,
 
     for (auto c : path)
     {
-        auto feat = grd(c);
+        auto feat = env.grid(c);
         if (!map_masked(c, mapmask) && overwriteable(feat))
         {
-            grd(c) = DNGN_FLOOR;
+            env.grid(c) = DNGN_FLOOR;
             dgn_height_set_at(c);
         }
         else
@@ -6686,10 +6687,10 @@ static set<coord_def> _dgn_spotty_connect_path(const coord_def& from,
             if (map_masked(*ai, MMT_VAULT))
                 continue;
 
-            if (grd(*ai) == DNGN_FLOOR)
+            if (env.grid(*ai) == DNGN_FLOOR)
                 success = true; // Through, but let's remove the others, too.
 
-            if (!overwriteable(grd(*ai)) || flatten.count(*ai))
+            if (!overwriteable(env.grid(*ai)) || flatten.count(*ai))
                 continue;
 
             flatten.insert(*ai);
@@ -6721,7 +6722,7 @@ static bool _connect_spotty(const coord_def& from,
     {
         for (auto c : spotty_path)
         {
-            grd(c) = (player_in_branch(BRANCH_SWAMP) && one_chance_in(3))
+            env.grid(c) = (player_in_branch(BRANCH_SWAMP) && one_chance_in(3))
                    ? DNGN_SHALLOW_WATER
                    : DNGN_FLOOR;
             dgn_height_set_at(c);
@@ -6767,7 +6768,7 @@ static void _place_specific_trap(const coord_def& where, trap_spec* spec,
     trap_def t;
     t.type = spec_type;
     t.pos = where;
-    grd(where) = trap_feature(spec_type);
+    env.grid(where) = trap_feature(spec_type);
     t.prepare_ammo(charges);
     env.trap[where] = t;
     dprf("placed a %s trap", trap_name(spec_type).c_str());
@@ -6811,7 +6812,7 @@ static void _add_plant_clumps(int rarity,
         {
             for (radius_iterator rad(*ri, i, C_ROUND); rad; ++rad)
             {
-                if (grd(*rad) != DNGN_FLOOR)
+                if (env.grid(*rad) != DNGN_FLOOR)
                     continue;
 
                 // make sure the iterator stays valid
@@ -6873,7 +6874,7 @@ static coord_def _get_feat_dest(coord_def base_pos, dungeon_feature_type feat,
             {
                 dest_pos = random_in_bounds();
             }
-            while (grd(dest_pos) != DNGN_FLOOR
+            while (env.grid(dest_pos) != DNGN_FLOOR
                    || env.pgrid(dest_pos) & FPROP_NO_TELE_INTO
                    || count_adjacent_slime_walls(dest_pos) != 0);
         }
@@ -6961,14 +6962,14 @@ coord_def dgn_find_nearby_stair(dungeon_feature_type stair_to_find,
     if (stair_to_find == DNGN_STONE_ARCH)
     {
         const coord_def pos(dgn_find_feature_marker(stair_to_find));
-        if (in_bounds(pos) && grd(pos) == stair_to_find)
+        if (in_bounds(pos) && env.grid(pos) == stair_to_find)
             return pos;
     }
 
     if (stair_to_find == your_branch().exit_stairs)
     {
         const coord_def pos(dgn_find_feature_marker(DNGN_STONE_STAIRS_UP_I));
-        if (in_bounds(pos) && grd(pos) == stair_to_find)
+        if (in_bounds(pos) && env.grid(pos) == stair_to_find)
             return pos;
     }
 
@@ -7104,7 +7105,7 @@ coord_def dgn_find_nearby_stair(dungeon_feature_type stair_to_find,
     // can land in vaults, which is considered acceptable.
     for (rectangle_iterator ri(0); ri; ++ri)
     {
-        if (feat_has_dry_floor(grd(*ri)))
+        if (feat_has_dry_floor(env.grid(*ri)))
         {
             found++;
             if (one_chance_in(found))
@@ -7324,7 +7325,7 @@ static bool _fixup_interlevel_connectivity()
         if (feature_mimic_at(*ri))
             continue;
 
-        dungeon_feature_type feat = grd(*ri);
+        dungeon_feature_type feat = env.grid(*ri);
         switch (feat)
         {
         case DNGN_STONE_STAIRS_DOWN_I:
@@ -7598,7 +7599,7 @@ void vault_placement::apply_grid()
             if (feat == ' ')
                 continue;
 
-            const dungeon_feature_type oldgrid = grd(*ri);
+            const dungeon_feature_type oldgrid = env.grid(*ri);
 
             if (clear)
             {
@@ -7620,8 +7621,8 @@ void vault_placement::apply_grid()
                 // this too, but only if oldgrid != newgrid, so we
                 // make sure here.
                 tile_init_flavour(*ri);
-                const dungeon_feature_type newgrid = grd(*ri);
-                grd(*ri) = oldgrid;
+                const dungeon_feature_type newgrid = env.grid(*ri);
+                env.grid(*ri) = oldgrid;
                 dungeon_terrain_changed(*ri, newgrid, true);
                 remove_markers_and_listeners_at(*ri);
             }
@@ -7896,7 +7897,7 @@ static void _calc_density()
         // places in unmodified parts should not suddenly become explorable.
         if (!testbits(env.pgrid(*ri), FPROP_SEEN_OR_NOEXP))
             for (adjacent_iterator ai(*ri, false); ai; ++ai)
-                if (feat_has_solid_floor(grd(*ai)))
+                if (feat_has_solid_floor(env.grid(*ai)))
                 {
                     open++;
                     goto out;

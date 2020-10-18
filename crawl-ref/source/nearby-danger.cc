@@ -273,7 +273,7 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
 
         if (!you.permanent_flight())
         {
-            if ((grd(you.pos()) == DNGN_SLIMY_WATER || grd(you.pos()) == DNGN_DEEP_SLIMY_WATER) && !you_worship(GOD_JIYVA))
+            if ((env.grid(you.pos()) == DNGN_SLIMY_WATER || env.grid(you.pos()) == DNGN_DEEP_SLIMY_WATER) && !you_worship(GOD_JIYVA))
             {
                 if (announce)
                 {
@@ -285,7 +285,7 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
                 return false;
             }
 
-            if (feat_is_lava(grd(you.pos())))
+            if (feat_is_lava(env.grid(you.pos())))
             {
                 if (announce)
                 {
@@ -297,7 +297,8 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
                 return false;
             }
 
-            if ((grd(you.pos()) == DNGN_DEEP_WATER || grd(you.pos()) == DNGN_DEEP_SLIMY_WATER) && !you.can_swim(true) && !you.can_water_walk())
+            if ((env.grid(you.pos()) == DNGN_DEEP_WATER || env.grid(you.pos()) == DNGN_DEEP_SLIMY_WATER) 
+                && !you.can_swim(true) && !you.can_water_walk())
             {
                 if (announce)
                 {
@@ -311,7 +312,7 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
                 return false;
             }
 
-            if (grd(you.pos()) == DNGN_TOXIC_BOG)
+            if (env.grid(you.pos()) == DNGN_TOXIC_BOG)
             {
                 if (announce)
                 {
@@ -323,7 +324,7 @@ bool i_feel_safe(bool announce, bool want_move, bool just_monsters,
                 return false;
             }
 
-            if (grd(you.pos()) == DNGN_QUAGMIRE)
+            if (env.grid(you.pos()) == DNGN_QUAGMIRE)
             {
                 if (announce)
                 {
@@ -455,7 +456,7 @@ void bring_to_safety()
         pos.x = random2(GXM);
         pos.y = random2(GYM);
         if (!in_bounds(pos)
-            || grd(pos) != DNGN_FLOOR
+            || env.grid(pos) != DNGN_FLOOR
             || cloud_at(pos)
             || monster_at(pos)
             || env.pgrid(pos) & FPROP_NO_TELE_INTO
@@ -467,7 +468,7 @@ void bring_to_safety()
         }
 
         for (adjacent_iterator ai(pos); ai; ++ai)
-            if (grd(*ai) == DNGN_SLIMY_WALL)
+            if (env.grid(*ai) == DNGN_SLIMY_WALL)
             {
                 tries++;
                 continue;

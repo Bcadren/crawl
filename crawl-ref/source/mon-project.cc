@@ -326,7 +326,7 @@ static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
         beam.fake_flavour();
 
         // Normal bolt bounce doesn't work, but entropic spheres should be allowed to bolt bounce.
-        if (grd(pos) == DNGN_CRYSTAL_WALL)
+        if (env.grid(pos) == DNGN_CRYSTAL_WALL)
         {
             if (coinflip())
             {
@@ -339,7 +339,7 @@ static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
                 beam.flavour = BEAM_ICY_DEVASTATION;
             }
         }
-        else if (cell_is_solid(pos) && !actor_at(pos) && !feat_is_tree(grd(pos)))
+        else if (cell_is_solid(pos) && !actor_at(pos) && !feat_is_tree(env.grid(pos)))
         {
             if (one_chance_in(5))
             {
@@ -716,7 +716,7 @@ move_again:
     // Boulders stop at lava/water to prevent unusual behaviour;
     // skimming across the water like a pebble could be justifiable, but
     // it raises too many questions.
-    if (!iood && (!feat_has_solid_floor(grd(pos)) || feat_is_water(grd(pos))))
+    if (!iood && (!feat_has_solid_floor(env.grid(pos)) || feat_is_water(env.grid(pos))))
     {
         mprf("%s screeches to a halt.", mon.name(DESC_THE, true).c_str());
         _iood_stop(mon, false);
@@ -780,7 +780,7 @@ static bool _iood_catchup_move(monster& mon)
 
     // Boulder doesn't travel over water/lava.
     if (mon.has_ench(ENCH_ROLLING)
-        && (!feat_has_solid_floor(grd(pos)) || feat_is_water(grd(pos))))
+        && (!feat_has_solid_floor(env.grid(pos)) || feat_is_water(env.grid(pos))))
     {
         _iood_stop(mon, false);
         return true;

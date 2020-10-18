@@ -2443,7 +2443,7 @@ static void _set_door(set<coord_def> door, dungeon_feature_type feat)
 {
     for (const auto &dc : door)
     {
-        grd(dc) = feat;
+        env.grid(dc) = feat;
         set_terrain_changed(dc);
     }
 }
@@ -2472,7 +2472,7 @@ static int _tension_door_closed(set<coord_def> door,
  */
 static bool _can_force_door_shut(const coord_def& door)
 {
-    if (!feat_is_open_door(grd(door)))
+    if (!feat_is_open_door(env.grid(door)))
         return false;
 
     set<coord_def> all_door;
@@ -2537,7 +2537,7 @@ static vector<coord_def> _get_push_spaces_max_tension(const coord_def& pos,
     {
         set<coord_def> all_door;
         find_connected_identical(pos, all_door);
-        dungeon_feature_type old_feat = grd(pos);
+        dungeon_feature_type old_feat = env.grid(pos);
 
         act->move_to_pos(c);
         int new_tension = _tension_door_closed(all_door, old_feat);
@@ -2565,10 +2565,10 @@ static vector<coord_def> _get_push_spaces_max_tension(const coord_def& pos,
  */
 static bool _should_force_door_shut(const coord_def& door)
 {
-    if (!feat_is_open_door(grd(door)))
+    if (!feat_is_open_door(env.grid(door)))
         return false;
 
-    dungeon_feature_type old_feat = grd(door);
+    dungeon_feature_type old_feat = env.grid(door);
 
     set<coord_def> all_door;
     find_connected_identical(door, all_door);
@@ -2624,7 +2624,7 @@ static bool _seal_doors_and_stairs(monster* warden, bool check_only = false)
     for (radius_iterator ri(you.pos(), LOS_RADIUS, C_SQUARE);
                  ri; ++ri)
     {
-        if (feat_is_open_door(grd(*ri)))
+        if (feat_is_open_door(env.grid(*ri)))
         {
             if (!_can_force_door_shut(*ri))
                 continue;
@@ -2672,7 +2672,7 @@ static bool _seal_doors_and_stairs(monster* warden, bool check_only = false)
             vector<coord_def> excludes;
             for (const auto &dc : all_door)
             {
-                grd(dc) = DNGN_CLOSED_DOOR;
+                env.grid(dc) = DNGN_CLOSED_DOOR;
                 set_terrain_changed(dc);
                 dungeon_events.fire_position_event(DET_DOOR_CLOSED, dc);
 
@@ -2704,7 +2704,7 @@ static bool _seal_doors_and_stairs(monster* warden, bool check_only = false)
         }
 
         // Try to seal the door
-        if (feat_is_closed_door(grd(*ri)) && !feat_is_sealed(grd(*ri)))
+        if (feat_is_closed_door(env.grid(*ri)) && !feat_is_sealed(env.grid(*ri)))
         {
             if (check_only)
                 return true;
@@ -2721,13 +2721,13 @@ static bool _seal_doors_and_stairs(monster* warden, bool check_only = false)
                 had_effect = true;
             }
         }
-        else if (feat_is_travelable_stair(grd(*ri)))
+        else if (feat_is_travelable_stair(env.grid(*ri)))
         {
             if (check_only)
                 return true;
 
             dungeon_feature_type stype;
-            if (feat_stair_direction(grd(*ri)) == CMD_GO_UPSTAIRS)
+            if (feat_stair_direction(env.grid(*ri)) == CMD_GO_UPSTAIRS)
                 stype = DNGN_SEALED_STAIRS_UP;
             else
                 stype = DNGN_SEALED_STAIRS_DOWN;
@@ -3191,14 +3191,14 @@ bool mons_word_of_recall(monster* mons, int recall_target)
 
 static bool _valid_vine_spot(coord_def p)
 {
-    if (actor_at(p) || !monster_habitable_grid(MONS_PLANT, grd(p)))
+    if (actor_at(p) || !monster_habitable_grid(MONS_PLANT, env.grid(p)))
         return false;
 
     int num_trees = 0;
     bool valid_trees = false;
     for (adjacent_iterator ai(p); ai; ++ai)
     {
-        if (feat_is_tree(grd(*ai)))
+        if (feat_is_tree(env.grid(*ai)))
         {
             // Make sure this spot is not on a diagonal to its only adjacent
             // tree (so that the vines can pull back against the tree properly)
@@ -3882,7 +3882,7 @@ static coord_def _mons_conjure_flame_pos(const monster &mons)
         int floor_count = 0;
         for (adjacent_iterator ai(*di); ai; ++ai)
         {
-            if (feat_is_traversable(grd(*ai))
+            if (feat_is_traversable(env.grid(*ai))
                 && is_damaging_cloud(cloud_type_at(*ai)))
             {
                 floor_count++;
@@ -3962,7 +3962,7 @@ static coord_def _mons_awaken_earth_target(const monster &mon)
 
         // We can target solid cells, which themselves will awaken, so count
         // those as well.
-        if (_feat_is_awakenable(grd(candidate)))
+        if (_feat_is_awakenable(env.grid(candidate)))
             neighbours++;
 
         if (neighbours > 0)
@@ -4308,7 +4308,7 @@ static bool _should_cast_spell(const monster &mons, spell_type spell,
             || spell == SPELL_BLINK_ALLIES_AWAY))
     {
         for (auto ri = radius_iterator(mons.pos(), LOS_NO_TRANS); ri; ++ri)
-            if (feat_is_trap(grd(*ri)) && you.see_cell(*ri))
+            if (feat_is_trap(env.grid(*ri)) && you.see_cell(*ri))
                 return false;
     }
 
@@ -6206,7 +6206,7 @@ static void _mons_upheaval(monster& mons, actor& /*foe*/)
         switch (beam.flavour)
         {
             case BEAM_LAVA:
-                if (grd(pos) == DNGN_FLOOR && !actor_at(pos) && coinflip())
+                if (env.grid(pos) == DNGN_FLOOR && !actor_at(pos) && coinflip())
                 {
                     temp_change_terrain(
                         pos, DNGN_LAVA,
@@ -6219,12 +6219,12 @@ static void _mons_upheaval(monster& mons, actor& /*foe*/)
                     place_cloud(CLOUD_STORM, pos, random2(7), &mons);
                 break;
             case BEAM_FRAG:
-                if (((grd(pos) == DNGN_ROCK_WALL
-                     || grd(pos) == DNGN_CLEAR_ROCK_WALL
-                     || grd(pos) == DNGN_SLIMY_WALL)
+                if (((env.grid(pos) == DNGN_ROCK_WALL
+                     || env.grid(pos) == DNGN_CLEAR_ROCK_WALL
+                     || env.grid(pos) == DNGN_SLIMY_WALL)
                      && x_chance_in_y(1, 4)
-                     || feat_is_door(grd(pos))
-                     || grd(pos) == DNGN_GRATE))
+                     || feat_is_door(env.grid(pos))
+                     || env.grid(pos) == DNGN_GRATE))
                 {
                     noisy(30, pos);
                     destroy_wall(pos);
@@ -6617,7 +6617,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
     case SPELL_INK_CLOUD:
-        if (!feat_is_watery(grd(mons->pos())))
+        if (!feat_is_watery(env.grid(mons->pos())))
             return;
 
         big_cloud(CLOUD_INK, mons, mons->pos(), 30, 30);
@@ -7087,8 +7087,8 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
             }
 
             // Make sure we have a legitimate tile.
-            if (!safe_tiles.count(grd(*ai)) && !feat_is_trap(grd(*ai))
-                && feat_is_reachable_past(grd(*ai)))
+            if (!safe_tiles.count(env.grid(*ai)) && !feat_is_trap(env.grid(*ai))
+                && feat_is_reachable_past(env.grid(*ai)))
             {
                 sumcount++;
             }
@@ -7115,7 +7115,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
             }
 
             // Make sure we have a legitimate tile.
-            if (safe_tiles.count(grd(*ai)) || feat_is_trap(grd(*ai)))
+            if (safe_tiles.count(env.grid(*ai)) || feat_is_trap(env.grid(*ai)))
             {
                 // All items are moved inside.
                 if (igrd(*ai) != NON_ITEM)
@@ -7930,9 +7930,9 @@ static void _speech_fill_target(string& targ_prep, string& target,
 
             if (targ_prep == "at")
             {
-                if (grd(pbolt.target) != DNGN_FLOOR)
+                if (env.grid(pbolt.target) != DNGN_FLOOR)
                 {
-                    target = feature_description(grd(pbolt.target),
+                    target = feature_description(env.grid(pbolt.target),
                                                  NUM_TRAPS, "", DESC_THE);
                 }
                 else
@@ -8418,7 +8418,7 @@ static void _mons_awaken_earth(monster &mon, const coord_def &target)
 
     for (fair_adjacent_iterator ai(target, false); ai; ++ai)
     {
-        if (!_feat_is_awakenable(grd(*ai))
+        if (!_feat_is_awakenable(env.grid(*ai))
             || env.markers.property_at(*ai, MAT_ANY, "veto_destroy")
                == "veto")
         {
@@ -8580,8 +8580,8 @@ static ai_action::goodness _monster_spell_goodness(monster* mon, mon_spell_slot 
 
         if (!player_in_branch(BRANCH_SHOALS) || mon->has_ench(ENCH_TIDE))
             return ai_action::impossible();
-        else if (!foe || (grd(mon->pos()) == DNGN_DEEP_WATER
-            && grd(foe->pos()) == DNGN_DEEP_WATER))
+        else if (!foe || (env.grid(mon->pos()) == DNGN_DEEP_WATER
+            && env.grid(foe->pos()) == DNGN_DEEP_WATER))
         {
             return ai_action::bad();
         }
@@ -8747,7 +8747,7 @@ static ai_action::goodness _monster_spell_goodness(monster* mon, mon_spell_slot 
 
     case SPELL_WATERSTRIKE:
         ASSERT(foe);
-        return ai_action::good_or_impossible(feat_is_watery(grd(foe->pos())));
+        return ai_action::good_or_impossible(feat_is_watery(env.grid(foe->pos())));
 
     // Don't use unless our foe is close to us and there are no allies already
     // between the two of us

@@ -313,27 +313,27 @@ static void _apply_daction(daction_type act)
     case DACT_KILL_JIYVA:
         for (rectangle_iterator ri(1); ri; ++ri)
         {
-            if (grd(*ri) == DNGN_ALTAR_JIYVA)
-                grd(*ri) = DNGN_RUINED_PLINTH;
+            if (env.grid(*ri) == DNGN_ALTAR_JIYVA)
+                env.grid(*ri) = DNGN_RUINED_PLINTH;
 
-            if (grd(*ri) == DNGN_SLIMY_WALL)
+            if (env.grid(*ri) == DNGN_SLIMY_WALL)
             {
-                grd(*ri) = DNGN_ROCK_WALL;
+                env.grid(*ri) = DNGN_ROCK_WALL;
                 env.grid_colours(*ri) = LIGHTGRAY;
                 env.tile_flv(*ri).feat_idx =
                     store_tilename_get_index("wall_ruined_slime");
                 env.tile_flv(*ri).feat = TILE_WALL_RUINED_SLIME;
             }
 
-            if (grd(*ri) == DNGN_SLIMESHROOM)
+            if (env.grid(*ri) == DNGN_SLIMESHROOM)
             {
                 env.tile_flv(*ri).feat_idx =
                     store_tilename_get_index("dngn_deadshroom");
                 env.tile_flv(*ri).feat = TILE_DNGN_DEADSHROOM;
             }
 
-            if (grd(*ri) == DNGN_SLIMY_WATER || grd(*ri) == DNGN_DEEP_SLIMY_WATER)
-                grd(*ri) = DNGN_FLOOR;
+            if (env.grid(*ri) == DNGN_SLIMY_WATER || env.grid(*ri) == DNGN_DEEP_SLIMY_WATER)
+                env.grid(*ri) = DNGN_FLOOR;
 
             if (you.where_are_you == BRANCH_SLIME)
             {
@@ -342,7 +342,7 @@ static void _apply_daction(daction_type act)
                     store_tilename_get_index("floor_ruined_slime");
                 env.tile_flv(*ri).floor = TILE_FLOOR_RUINED_SLIME;
 
-                if (grd(*ri) == DNGN_STONE_WALL)
+                if (env.grid(*ri) == DNGN_STONE_WALL)
                 {
                     env.grid_colours(*ri) = DARKGRAY;
                     env.tile_flv(*ri).feat_idx =
@@ -350,7 +350,7 @@ static void _apply_daction(daction_type act)
                     env.tile_flv(*ri).feat = TILE_STONE_WALL_RUINED_SLIME;
                 }
 
-                if (!feat_is_solid(grd(*ri)))
+                if (!feat_is_solid(env.grid(*ri)))
                 {
                     if (one_chance_in(20))
                         place_cloud(CLOUD_SALT, *ri, INFINITE_DURATION, &you, 2);
@@ -386,7 +386,7 @@ static void _apply_daction(daction_type act)
             if (feat->feat == DNGN_ABANDONED_SHOP)
             {
                 // TODO: clear shop data out?
-                grd(feat->pos) = DNGN_ABANDONED_SHOP;
+                env.grid(feat->pos) = DNGN_ABANDONED_SHOP;
                 view_update_at(feat->pos);
                 env.markers.remove(feat);
             }

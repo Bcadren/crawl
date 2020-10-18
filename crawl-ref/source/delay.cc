@@ -940,7 +940,7 @@ void PasswallDelay::finish()
     if (dest.x == 0 || dest.y == 0)
         return;
 
-    switch (grd(dest))
+    switch (env.grid(dest))
     {
     default:
         if (!you.is_habitable(dest))

@@ -151,7 +151,7 @@ static void _monster_regenerate(monster* mons)
 
     // Non-land creatures out of their element cannot regenerate.
     if (mons_primary_habitat(*mons) != HT_LAND
-        && !monster_habitable_grid(mons, grd(mons->pos())))
+        && !monster_habitable_grid(mons, env.grid(mons->pos())))
     {
         return;
     }
@@ -305,7 +305,7 @@ static bool _do_mon_spell(monster* mons)
 
 static void _swim_or_move_energy(monster& mon)
 {
-    const dungeon_feature_type feat = grd(mon.pos());
+    const dungeon_feature_type feat = env.grid(mon.pos());
 
     // FIXME: Replace check with mons_is_swimming()?
     mon.lose_energy(((feat_is_lava(feat) || feat_is_water(feat))
@@ -397,7 +397,7 @@ static bool _allied_monster_at(monster* mon, coord_def a, coord_def b,
 // some monster types.
 static bool _mon_on_interesting_grid(monster* mon)
 {
-    const dungeon_feature_type feat = grd(mon->pos());
+    const dungeon_feature_type feat = env.grid(mon->pos());
 
     switch (feat)
     {
@@ -915,7 +915,7 @@ static bool _handle_swoop(monster& mons)
         if (tracer.path_taken[j] != target)
             continue;
 
-        if (!monster_habitable_grid(&mons, grd(tracer.path_taken[j+1]))
+        if (!monster_habitable_grid(&mons, env.grid(tracer.path_taken[j+1]))
             || actor_at(tracer.path_taken[j+1]))
         {
             continue;
@@ -979,8 +979,8 @@ static bool _handle_reaching(monster* mons)
         && delta.rdist() <= range
         // And with no dungeon furniture in the way of the reaching
         // attack;
-        && (feat_is_reachable_past(grd(first_middle))
-            || feat_is_reachable_past(grd(second_middle)))
+        && (feat_is_reachable_past(env.grid(first_middle))
+            || feat_is_reachable_past(env.grid(second_middle)))
         // The foe should be on the map (not stepped from time).
         && in_bounds(foepos))
     {
@@ -1888,7 +1888,7 @@ void handle_monster_move(monster* mons, int tries)
                 invalid_move++;
             else if (actor_at(*ai))
                 invalid_move++;
-            else if (!monster_habitable_grid(mons, grd(*ai)))
+            else if (!monster_habitable_grid(mons, env.grid(*ai)))
                 invalid_move++;
         }
         if ((invalid_move == 8) || (tries > 10000) || one_chance_in(3))
@@ -2224,7 +2224,7 @@ void handle_monster_move(monster* mons, int tries)
             // Wants to stop drowning.
             want_move = (mons->submerged() && !mons->swimming());
             // Wants to get into a wall.
-            want_move |= ((mons_primary_habitat(*mons) == HT_ROCK || mons_primary_habitat(*mons) == HT_STEEL) && !feat_is_solid(grd(mons->pos())) && preferred_available);
+            want_move |= ((mons_primary_habitat(*mons) == HT_ROCK || mons_primary_habitat(*mons) == HT_STEEL) && !feat_is_solid(env.grid(mons->pos())) && preferred_available);
             // Wants to get out of the cloud.
             want_move |= (mons_avoids_cloud(mons, mons->pos()) && preferred_available);
         }
@@ -2581,7 +2581,7 @@ static void _post_monster_move(monster* mons)
 
     if (mons->type == MONS_LAVA_GLOB)
     {
-        dungeon_feature_type grid = grd(mons->pos());
+        dungeon_feature_type grid = env.grid(mons->pos());
         if (!feat_is_critical(grid) && !feat_is_watery(grid))
             temp_change_terrain(mons->pos(), DNGN_LAVA, INFINITE_DURATION, TERRAIN_CHANGE_FLOOD, mons);
     }
@@ -2589,10 +2589,10 @@ static void _post_monster_move(monster* mons)
     if (mons->type == MONS_WATER_NYMPH)
     {
         for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
-            if (feat_has_solid_floor(grd(*ai))
+            if (feat_has_solid_floor(env.grid(*ai))
                 && (coinflip() || *ai == mons->pos()))
             {
-                if (grd(*ai) != DNGN_SHALLOW_WATER && grd(*ai) != DNGN_FLOOR
+                if (env.grid(*ai) != DNGN_SHALLOW_WATER && env.grid(*ai) != DNGN_FLOOR
                     && you.see_cell(*ai))
                 {
                     mprf("%s watery aura covers %s.",
@@ -2623,7 +2623,7 @@ static void _post_monster_move(monster* mons)
 
     // Clear push/pull data if the monster is in a safe spot.
     if ((mons->submerged() || !mons_avoids_cloud(mons, mons->pos()))
-        && (!mons->airborne() || monster_habitable_grid(mons, grd(mons->pos()))))
+        && (!mons->airborne() || monster_habitable_grid(mons, env.grid(mons->pos()))))
     {
         if (mons->props.exists(KNOCKBACK_KEY))
             mons->props.erase(KNOCKBACK_KEY);
@@ -2943,7 +2943,7 @@ static bool _handle_pickup(monster* mons)
     // Flying over water doesn't let you pick up stuff. This is inexact, as
     // a merfolk could be flying, but that's currently impossible except for
     // being tornadoed, and with *that* low life expectancy let's not care.
-    dungeon_feature_type feat = grd(mons->pos());
+    dungeon_feature_type feat = env.grid(mons->pos());
 
     if ((feat == DNGN_LAVA || feat == DNGN_DEEP_WATER || feat == DNGN_DEEP_SLIMY_WATER) && mons->airborne())
         return false;
@@ -3031,7 +3031,7 @@ static void _mons_open_door(monster& mons, const coord_def &pos)
 static bool _no_habitable_adjacent_grids(const monster* mon)
 {
     for (adjacent_iterator ai(mon->pos()); ai; ++ai)
-        if (monster_habitable_grid(mon, grd(*ai)))
+        if (monster_habitable_grid(mon, env.grid(*ai)))
             return false;
 
     return true;
@@ -3243,7 +3243,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     if (is_sanctuary(mons->pos()) && actor_at(targ))
         return false;
 
-    const dungeon_feature_type target_grid = grd(targ);
+    const dungeon_feature_type target_grid = env.grid(targ);
     const habitat_type habitat = mons_primary_habitat(*mons);
 
     // No monster may enter the open sea.
@@ -3300,7 +3300,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     {
         // If the monster somehow ended up in this habitat (and is
         // not dead by now), give it a chance to get out again.
-        if (grd(mons->pos()) == target_grid && mons->ground_level()
+        if (env.grid(mons->pos()) == target_grid && mons->ground_level()
             && _no_habitable_adjacent_grids(mons))
         {
             return true;
@@ -3374,7 +3374,7 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
     if (habitat == HT_WATER
         && targ != you.pos()
         && target_grid != DNGN_DEEP_WATER
-        && grd(mons->pos()) == DNGN_DEEP_WATER
+        && env.grid(mons->pos()) == DNGN_DEEP_WATER
         && mons->hit_points < (mons->max_hit_points * 3) / 4)
     {
         return false;
@@ -3726,11 +3726,11 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
         }
     }
 
-    if (feat_is_closed_door(grd(f)))
+    if (feat_is_closed_door(env.grid(f)))
     {
         if (mons_can_destroy_door(mons, f))
         {
-            grd(f) = DNGN_FLOOR;
+            env.grid(f) = DNGN_FLOOR;
             set_terrain_changed(f);
 
             if (you.see_cell(f))
@@ -3754,7 +3754,7 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
         }
         else if (mons_can_eat_door(mons, f))
         {
-            grd(f) = DNGN_FLOOR;
+            env.grid(f) = DNGN_FLOOR;
             set_terrain_changed(f);
 
             _jelly_grows(mons);
@@ -3795,7 +3795,7 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
 
     _escape_water_hold(mons);
 
-    if (grd(mons.pos()) == DNGN_DEEP_WATER && grd(f) != DNGN_DEEP_WATER
+    if (env.grid(mons.pos()) == DNGN_DEEP_WATER && env.grid(f) != DNGN_DEEP_WATER
         && !monster_habitable_grid(&mons, DNGN_DEEP_WATER)
         && !mons.is_wall_clinging())
     {
@@ -3865,7 +3865,7 @@ static bool _can_move(monster* mons, move_array * moves, bool * preferred_availa
 
             if (mon_can_move_to_pos(mons, coord_def(count_x - 1, count_y - 1)))
             {
-                const dungeon_feature_type target_grid = grd[targ_x][targ_y];
+                const dungeon_feature_type target_grid = env.grid[targ_x][targ_y];
                 const habitat_type habitat = mons_primary_habitat(*mons);
 
                 retval = true;
@@ -3945,8 +3945,8 @@ static bool _monster_move(monster* mons)
             if (!cell_is_solid(*ai))
             {
                 adj_move.push_back(*ai);
-                if (habitat == HT_WATER && feat_is_watery(grd(*ai))
-                    || habitat == HT_LAVA && feat_is_lava(grd(*ai)))
+                if (habitat == HT_WATER && feat_is_watery(env.grid(*ai))
+                    || habitat == HT_LAVA && feat_is_lava(env.grid(*ai)))
                 {
                     adj_water.push_back(*ai);
                 }
@@ -3983,7 +3983,6 @@ static bool _monster_move(monster* mons)
 
     if (!_can_move(mons, &good_move, &preferred_available))
         return false;
-
     // Now we know where we _can_ move.
 
     const coord_def newpos = mons->pos() + mmov;
@@ -3992,15 +3991,15 @@ static bool _monster_move(monster* mons)
     // is in good health.
     if (habitat == HT_WATER
         && preferred_available
-        && grd(mons->pos()) != DNGN_DEEP_WATER
-        && grd(newpos) != DNGN_DEEP_WATER
+        && env.grid(mons->pos()) != DNGN_DEEP_WATER
+        && env.grid(newpos) != DNGN_DEEP_WATER
         && newpos != you.pos()
         && (one_chance_in(3)
             || mons->hit_points <= (mons->max_hit_points * 3) / 4))
     {
         _preferential_move(good_move, mons,
             [](monster * m, coord_def c) 
-        { return grd[m->pos().x + c.x - 1][m->pos().y + c.y - 1] == DNGN_DEEP_WATER; });
+        { return env.grid[m->pos().x + c.x - 1][m->pos().y + c.y - 1] == DNGN_DEEP_WATER; });
     }
 
     // Submerged non-aquatic monsters prefer to get out of water (even over attacking)
@@ -4008,7 +4007,7 @@ static bool _monster_move(monster* mons)
     {
         _preferential_move(good_move, mons,
             [](monster * m, coord_def c)
-        { return feat_has_solid_floor(grd[m->pos().x + c.x - 1][m->pos().y + c.y - 1]) 
+        { return feat_has_solid_floor(env.grid[m->pos().x + c.x - 1][m->pos().y + c.y - 1])
              && !actor_at(coord_def(m->pos().x + c.x - 1,m->pos().y + c.y - 1))
              && (grid_distance(m->target, coord_def(m->pos().x + c.x - 1, m->pos().y + c.y - 1)) <=
                  grid_distance(m->target, m->pos())); });
@@ -4017,7 +4016,7 @@ static bool _monster_move(monster* mons)
     // Monsters that can go through walls prefer to do so.
     else if ((habitat == HT_ROCK || habitat == HT_STEEL)
         && preferred_available
-        && !feat_is_solid(grd(newpos)))
+        && !feat_is_solid(env.grid(newpos)))
     {
         _preferential_move(good_move, mons,
             [](monster * m, coord_def c)
@@ -4048,7 +4047,7 @@ static bool _monster_move(monster* mons)
 
     if (mons->type == MONS_SPATIAL_MAELSTROM)
     {
-        const dungeon_feature_type feat = grd(mons->pos() + mmov);
+        const dungeon_feature_type feat = env.grid(mons->pos() + mmov);
         if (!feat_is_permarock(feat) && feat_is_solid(feat))
         {
             const coord_def target(mons->pos() + mmov);
@@ -4067,7 +4066,7 @@ static bool _monster_move(monster* mons)
     // Take care of Dissolution burrowing, lerny, etc
     if (burrows || flattens_trees || digs)
     {
-        const dungeon_feature_type feat = grd(mons->pos() + mmov);
+        const dungeon_feature_type feat = env.grid(mons->pos() + mmov);
         if ((feat == DNGN_ROCK_WALL || feat == DNGN_CLEAR_ROCK_WALL)
                 && !burrows && digs
             || feat == DNGN_GRATE && digs)
@@ -4184,7 +4183,7 @@ static bool _monster_move(monster* mons)
         if (mons->type == MONS_PAIN_ELEMENTAL)
             place_cloud(CLOUD_NEGATIVE_ENERGY, mons->pos(), 2 + random2(4), mons);
 
-        if (mons->type == MONS_CINDER_NEWT && feat_is_watery(grd(mons->pos())))
+        if (mons->type == MONS_CINDER_NEWT && feat_is_watery(env.grid(mons->pos())))
             place_cloud(CLOUD_STEAM, mons->pos(), 2 + random2(4), mons);
 
         if (mons->type == MONS_EPHEMERAL_SPIRIT)
@@ -4198,7 +4197,7 @@ static bool _monster_move(monster* mons)
 
         if (mons->type == MONS_LAVA_GLOB)
         {
-            dungeon_feature_type grid = grd(mons->pos());
+            dungeon_feature_type grid = env.grid(mons->pos());
             if (!feat_is_critical(grid) && !feat_is_watery(grid))
                 temp_change_terrain(mons->pos(), DNGN_LAVA, 20 + random2(40), TERRAIN_CHANGE_FLOOD);
         }

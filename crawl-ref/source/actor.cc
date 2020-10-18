@@ -80,12 +80,12 @@ bool actor::can_wield(const item_def* item, bool ignore_curse,
 
 bool actor::can_pass_through(int x, int y) const
 {
-    return can_pass_through_feat(grd[x][y]);
+    return can_pass_through_feat(env.grid[x][y]);
 }
 
 bool actor::can_pass_through(const coord_def &c) const
 {
-    return can_pass_through_feat(grd(c));
+    return can_pass_through_feat(env.grid(c));
 }
 
 bool actor::is_habitable(const coord_def &_pos) const
@@ -93,7 +93,7 @@ bool actor::is_habitable(const coord_def &_pos) const
     if (can_cling_to(_pos))
         return true;
 
-    return is_habitable_feat(grd(_pos));
+    return is_habitable_feat(env.grid(_pos));
 }
 
 bool actor::handle_trap()
@@ -452,7 +452,7 @@ bool actor::is_wall_clinging() const
  */
 bool actor::can_cling_to(const coord_def& p) const
 {
-    if (!is_wall_clinging() || !can_pass_through_feat(grd(p)))
+    if (!is_wall_clinging() || !can_pass_through_feat(env.grid(p)))
         return false;
 
     return cell_can_cling_to(pos(), p);
@@ -711,7 +711,7 @@ bool actor::has_invalid_constrictor(bool move) const
     // Indirect constriction requires the defender not to move.
     return move
         // Indirect constriction requires reachable ground.
-        || !feat_has_solid_floor(grd(pos()))
+        || !feat_has_solid_floor(env.grid(pos()))
         // Constriction doesn't work out of LOS.
         || !ignoring_player && !attacker->see_cell(pos());
 }
@@ -819,7 +819,7 @@ bool actor::can_constrict(const actor* defender, bool direct) const
 
     return can_see(*defender)
         // All current indrect forms of constriction require reachable ground.
-        && feat_has_solid_floor(grd(defender->pos()));
+        && feat_has_solid_floor(env.grid(defender->pos()));
 }
 
 #ifdef DEBUG_DIAGNOSTICS
@@ -949,7 +949,7 @@ bool actor::can_submerge_in(const coord_def &c) const
     if (airborne())
         return false;
 
-    const dungeon_feature_type grid = grd(c);
+    const dungeon_feature_type grid = env.grid(c);
 
     if (feat_is_watery(grid))
     {
@@ -1132,7 +1132,7 @@ void actor::collide(coord_def newpos, const actor *agent, int pow)
 
     if (you.can_see(*this))
     {
-        if (!can_pass_through_feat(grd(newpos)))
+        if (!can_pass_through_feat(env.grid(newpos)))
         {
             mprf("%s %s into %s!",
                  name(DESC_THE).c_str(), conj_verb("slam").c_str(),

@@ -1144,7 +1144,7 @@ void player_reacts()
         slime_wall_damage(&you, you.time_taken);
 
     // Icy shield and armour melt over lava.
-    if (grd(you.pos()) == DNGN_LAVA)
+    if (env.grid(you.pos()) == DNGN_LAVA)
         maybe_melt_player_enchantments(BEAM_FIRE, you.time_taken);
 
     // Handle starvation before subtracting hunger for this turn (including

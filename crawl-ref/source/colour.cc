@@ -267,7 +267,7 @@ static int _etc_tree(int, const coord_def& loc)
     h+=h<<10; h^=h>>6;
     h+=h<<3; h^=h>>11; h+=h<<15;
     return (h>>30) ? GREEN :
-        grd(loc) == DNGN_MANGROVE ? BROWN  : LIGHTGREEN;
+        env.grid(loc) == DNGN_MANGROVE ? BROWN  : LIGHTGREEN;
 }
 
 static int _etc_slimeshroom(int, const coord_def& loc)
@@ -300,7 +300,7 @@ bool get_tornado_phase(const coord_def& loc)
 static int _etc_tornado(int, const coord_def& loc)
 {
     const bool phase = get_tornado_phase(loc);
-    switch (grd(loc))
+    switch (env.grid(loc))
     {
     case DNGN_LAVA:
         return phase ? LIGHTRED : RED;

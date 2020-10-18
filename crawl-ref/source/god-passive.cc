@@ -855,7 +855,7 @@ static bool is_ash_portal(dungeon_feature_type feat)
 // Yay for rectangle_iterator and radius_iterator not sharing a base type
 static bool _check_portal(coord_def where)
 {
-    const dungeon_feature_type feat = grd(where);
+    const dungeon_feature_type feat = env.grid(where);
     if (feat != env.map_knowledge(where).feat() && is_ash_portal(feat))
     {
         env.map_knowledge(where).set_feature(feat);
@@ -1203,7 +1203,7 @@ void qazlal_storm_clouds()
         bool water = false;
         for (adjacent_iterator ai(candidates[i]); ai; ++ai)
         {
-            if (feat_is_watery(grd(*ai)))
+            if (feat_is_watery(env.grid(*ai)))
                 water = true;
         }
 
@@ -2034,7 +2034,7 @@ void uskayaw_bonds_audience()
 
 static void _slimify_feat(coord_def pos)
 {
-    dungeon_feature_type feat = grd(pos);
+    dungeon_feature_type feat = env.grid(pos);
 
     if (feat_is_critical(feat))
         return;

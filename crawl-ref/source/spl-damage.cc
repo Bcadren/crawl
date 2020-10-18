@@ -90,9 +90,9 @@ spret cast_fire_storm(int pow, bolt &beam, bool fail)
 
     if (cell_is_solid(beam.target))
     {
-        const char *feat = feat_type_name(grd(beam.target));
+        const char *feat = feat_type_name(env.grid(beam.target));
         mprf("You can't place the storm on %s.", article_a(feat).c_str());
-        if (feat_is_tree(grd(beam.target)) && feat_is_door(grd(beam.target)))
+        if (feat_is_tree(env.grid(beam.target)) && feat_is_door(env.grid(beam.target)))
             mpr("Place your storm next to the wood you want to burn.");
         return spret::abort;
     }
@@ -1529,7 +1529,7 @@ static int _shatter_walls(coord_def where, int /*pow*/, actor *agent)
     if (env.markers.property_at(where, MAT_ANY, "veto_destroy") == "veto")
         return 0;
 
-    const dungeon_feature_type grid = grd(where);
+    const dungeon_feature_type grid = env.grid(where);
 
     switch (grid)
     {
@@ -1662,7 +1662,7 @@ static void _shatter_chaos(actor * agent, int pow)
 
     for (rectangle_iterator ri(agent->pos(), LOS_RADIUS, true); ri; ++ri)
     {
-        if (!feat_is_solid(grd(*ri)) && agent->see_cell_no_trans(*ri) && one_chance_in(40))
+        if (!feat_is_solid(env.grid(*ri)) && agent->see_cell_no_trans(*ri) && one_chance_in(40))
         {
             bolt beam;
             beam.set_agent(agent);
@@ -1682,11 +1682,11 @@ static void _shatter_chaos(actor * agent, int pow)
                 zappy(ZAP_CHAOS_ERUPTION, pow, false, beam);
                 beam.explode();
                 eruptions++;
-                if (!feat_is_critical(grd(*ri)))
-                    dungeon_terrain_changed(*ri, feat_is_water(grd(*ri)) ? DNGN_OBSIDIAN : DNGN_LAVA, false, true);
+                if (!feat_is_critical(env.grid(*ri)))
+                    dungeon_terrain_changed(*ri, feat_is_water(env.grid(*ri)) ? DNGN_OBSIDIAN : DNGN_LAVA, false, true);
                 for (rectangle_iterator sri(*ri, 1); sri; ++sri)
-                    if (!feat_is_critical(grd(*sri)) && x_chance_in_y(2, 3) && (!feat_is_solid(grd(*sri)) || feat_is_tree(grd(*sri))))
-                        dungeon_terrain_changed(*sri, feat_is_water(grd(*sri)) ? DNGN_OBSIDIAN : DNGN_LAVA, false, true);
+                    if (!feat_is_critical(env.grid(*sri)) && x_chance_in_y(2, 3) && (!feat_is_solid(env.grid(*sri)) || feat_is_tree(env.grid(*sri))))
+                        dungeon_terrain_changed(*sri, feat_is_water(env.grid(*sri)) ? DNGN_OBSIDIAN : DNGN_LAVA, false, true);
                 break;
             case SE_ICEFALL:
                 zappy(ZAP_CHAOS_ICEFALL, pow, false, beam);
@@ -1697,7 +1697,7 @@ static void _shatter_chaos(actor * agent, int pow)
                 zappy(ZAP_CHAOS_STALACTITE, pow, false, beam);
                 beam.explode();
                 stalactites++;
-                if (!feat_is_critical(grd(*ri)) && !(grd(*ri) == DNGN_FLOOR))
+                if (!feat_is_critical(env.grid(*ri)) && !(env.grid(*ri) == DNGN_FLOOR))
                     dungeon_terrain_changed(*ri, DNGN_FLOOR, false, true, false, false);
                 break;
             case SE_ANNOYED_DEMON:
@@ -1733,7 +1733,7 @@ static void _shatter_chaos(actor * agent, int pow)
                 statues++;
                 break;
             case SE_CAVEIN:
-                if (!actor_at(*ri) && !feat_is_critical(grd(*ri)))
+                if (!actor_at(*ri) && !feat_is_critical(env.grid(*ri)))
                 {
                     beam.flavour = BEAM_VISUAL;
                     beam.colour = BROWN;
@@ -1741,7 +1741,7 @@ static void _shatter_chaos(actor * agent, int pow)
                     dungeon_terrain_changed(*ri, (you.where_are_you == BRANCH_SLIME && !jiyva_is_dead()) ? DNGN_SLIMY_WALL : DNGN_ROCK_WALL, true, true, false, false);
                     cavein = true;
                     for (rectangle_iterator tri(*ri, 1); tri; ++tri)
-                        if (!feat_is_critical(grd(*tri)) && x_chance_in_y(3, 4))
+                        if (!feat_is_critical(env.grid(*tri)) && x_chance_in_y(3, 4))
                             dungeon_terrain_changed(*tri, (you.where_are_you == BRANCH_SLIME && !jiyva_is_dead()) ? DNGN_SLIMY_WALL : DNGN_ROCK_WALL, true, true, false, false);
                 }
                 break;
@@ -2212,7 +2212,7 @@ static int _ignite_poison_bog(coord_def where, beam_type damtype, int pow, actor
 {
     const bool tracer = (pow == -1);  // Only testing damage, not dealing it
 
-    if (grd(where) != DNGN_TOXIC_BOG && grd(where) != DNGN_QUAGMIRE)
+    if (env.grid(where) != DNGN_TOXIC_BOG && env.grid(where) != DNGN_QUAGMIRE)
         return false;
 
     if (tracer)
@@ -2582,7 +2582,7 @@ static bool _olgreb_check(actor * agent)
                 if (c->type == CLOUD_POISON || c->type == CLOUD_MEPHITIC)
                     return true;
             }
-            if (grd(*ri) == DNGN_TOXIC_BOG || grd(*ri) == DNGN_QUAGMIRE)
+            if (env.grid(*ri) == DNGN_TOXIC_BOG || env.grid(*ri) == DNGN_QUAGMIRE)
                 return true;
         }
     }
@@ -2703,7 +2703,7 @@ static coord_def _pick_target(bolt beam, int max_dist)
         const int cur_dist = grid_distance(you.pos(), *ri);
 
         if (!in_bounds(*ri) || !cell_see_cell(you.pos(), *ri, LOS_SOLID)
-            || *ri == you.pos() || is_feat_dangerous(grd(*ri)) || !you.can_pass_through(*ri))
+            || *ri == you.pos() || is_feat_dangerous(env.grid(*ri)) || !you.can_pass_through(*ri))
         {
             continue;
         }
@@ -3255,7 +3255,7 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
     beam.damage = dice_def(0, 5 + pow / 5);
 
     monster* mon = monster_at(target);
-    const dungeon_feature_type grid = grd(target);
+    const dungeon_feature_type grid = env.grid(target);
 
     destroy = false;
 
@@ -3538,7 +3538,7 @@ spret cast_fragmentation(int pow, const actor *caster,
     bool hole                = true;
     bool destroy             = false;
     const char *what         = nullptr;
-    const dungeon_feature_type grid = grd(target);
+    const dungeon_feature_type grid = env.grid(target);
 
     bolt beam;
 
@@ -3736,7 +3736,7 @@ actor* forest_near_enemy(const actor *mon)
             continue;
 
         for (adjacent_iterator ai(*ri); ai; ++ai)
-            if (feat_is_tree(grd(*ai)) && cell_see_cell(pos, *ai, LOS_DEFAULT))
+            if (feat_is_tree(env.grid(*ai)) && cell_see_cell(pos, *ai, LOS_DEFAULT))
                 return foe;
     }
 
@@ -3747,7 +3747,7 @@ actor* forest_near_enemy(const actor *mon)
 void forest_message(const coord_def pos, const string &msg, msg_channel_type ch)
 {
     for (radius_iterator ri(pos, LOS_DEFAULT); ri; ++ri)
-        if (feat_is_tree(grd(*ri))
+        if (feat_is_tree(env.grid(*ri))
             && cell_see_cell(you.pos(), *ri, LOS_DEFAULT))
         {
             mprf(ch, "%s", msg.c_str());
@@ -3780,7 +3780,7 @@ void forest_damage(actor *mon)
             continue;
 
         for (adjacent_iterator ai(*ri); ai; ++ai)
-            if (feat_is_tree(grd(*ai)) && cell_see_cell(pos, *ai, LOS_NO_TRANS))
+            if (feat_is_tree(env.grid(*ai)) && cell_see_cell(pos, *ai, LOS_NO_TRANS))
             {
                 int dmg = 0;
                 string msg;
@@ -4939,13 +4939,13 @@ void actor_apply_toxic_bog(actor * act)
     if (!act->alive())
         return;
 
-    if (grd(act->pos()) != DNGN_TOXIC_BOG && grd(act->pos()) != DNGN_QUAGMIRE)
+    if (env.grid(act->pos()) != DNGN_TOXIC_BOG && env.grid(act->pos()) != DNGN_QUAGMIRE)
         return;
 
     if (!act->ground_level())
         return;
 
-    const bool chaos = grd(act->pos()) == DNGN_QUAGMIRE;
+    const bool chaos = env.grid(act->pos()) == DNGN_QUAGMIRE;
     const bool player = act->is_player();
     monster *mons = !player ? act->as_monster() : nullptr;
 

@@ -424,7 +424,7 @@ static void _place_dragon()
         vector<coord_def> spots;
         for (adjacent_iterator ai(target->pos()); ai; ++ai)
         {
-            if (monster_habitable_grid(MONS_FIRE_DRAGON, grd(*ai))
+            if (monster_habitable_grid(MONS_FIRE_DRAGON, env.grid(*ai))
                 && !actor_at(*ai))
             {
                 spots.push_back(*ai);
@@ -521,7 +521,7 @@ void doom_howl(int time)
         vector<coord_def> spots;
         for (adjacent_iterator ai(target->pos()); ai; ++ai)
         {
-            if (monster_habitable_grid(howlcalled, grd(*ai))
+            if (monster_habitable_grid(howlcalled, env.grid(*ai))
                 && !actor_at(*ai))
             {
                 spots.push_back(*ai);
@@ -1058,7 +1058,7 @@ spret cast_summon_lightning_spire(int pow, const coord_def& where, god_type god,
         return spret::abort;
     }
 
-    if (!monster_habitable_grid(MONS_HUMAN, grd(where)))
+    if (!monster_habitable_grid(MONS_HUMAN, env.grid(where)))
     {
         mpr("You can't construct there.");
         return spret::abort;
@@ -1388,7 +1388,7 @@ coord_def find_gateway_location(actor* caster)
         for (int t = 0; t < 11; t++)
         {
             test = caster->pos() + (delta * (2+t));
-            if (!in_bounds(test) || !feat_is_malign_gateway_suitable(grd(test))
+            if (!in_bounds(test) || !feat_is_malign_gateway_suitable(env.grid(test))
                 || actor_at(test)
                 || count_neighbours_with_func(test, &feat_is_solid) != 0
                 || !caster->see_cell_no_trans(test))
@@ -1510,7 +1510,7 @@ static bool _water_adjacent(coord_def p)
 {
     for (orth_adjacent_iterator ai(p); ai; ++ai)
     {
-        if (feat_is_water(grd(*ai)))
+        if (feat_is_water(env.grid(*ai)))
             return true;
     }
 
@@ -1578,7 +1578,7 @@ spret cast_summon_jungle(int pow, god_type god, bool fail)
             for (distance_iterator di(you.pos(), false, true,
                 6 + div_rand_round(pow, 50)); di; ++di)
             {
-                if ((feat_is_wall(grd(*di)) && !feat_is_permarock(grd(*di))))
+                if ((feat_is_wall(env.grid(*di)) && !feat_is_permarock(env.grid(*di))))
                 {
                     if (one_chance_in(3))
                     {
@@ -1590,7 +1590,7 @@ spret cast_summon_jungle(int pow, god_type god, bool fail)
                         temp_change_terrain(*di, DNGN_MANGROVE, duration,
                             TERRAIN_CHANGE_FORESTED);
                 }
-                else if (grd(*di) == DNGN_FLOOR && x_chance_in_y(pow, 750)
+                else if (env.grid(*di) == DNGN_FLOOR && x_chance_in_y(pow, 750)
                     && !actor_at(*di) && !plant_forbidden_at(*di, true))
                 {
                     temp_change_terrain(*di, DNGN_MANGROVE, duration,
@@ -1604,7 +1604,7 @@ spret cast_summon_jungle(int pow, god_type god, bool fail)
 
             for (distance_iterator di(pond, true, false, 7); di && num > 0; ++di)
             {
-                if (grd(*di) == DNGN_FLOOR
+                if (env.grid(*di) == DNGN_FLOOR
                     && (di.radius() == 0 || _water_adjacent(*di))
                     && x_chance_in_y(4, di.radius() + 3))
                 {
@@ -1681,9 +1681,9 @@ spret cast_summon_forest(actor* caster, int pow, coord_def &where, god_type god,
         for (distance_iterator di(caster->pos(), false, true,
                                   LOS_DEFAULT_RANGE); di; ++di)
         {
-            if ((feat_is_wall(grd(*di)) && !feat_is_permarock(grd(*di))
+            if ((feat_is_wall(env.grid(*di)) && !feat_is_permarock(env.grid(*di))
                  && x_chance_in_y(pow, 150))
-                || (grd(*di) == DNGN_FLOOR && x_chance_in_y(pow, 1250)
+                || (env.grid(*di) == DNGN_FLOOR && x_chance_in_y(pow, 1250)
                     && !actor_at(*di) && !plant_forbidden_at(*di, true)))
             {
                 if (player_in_branch(BRANCH_SLIME))
@@ -1710,7 +1710,7 @@ spret cast_summon_forest(actor* caster, int pow, coord_def &where, god_type god,
 
             for (distance_iterator di(pond, true, false, 4); di && num > 0; ++di)
             {
-                if (grd(*di) == DNGN_FLOOR
+                if (env.grid(*di) == DNGN_FLOOR
                     && (di.radius() == 0 || _water_adjacent(*di))
                     && x_chance_in_y(4, di.radius() + 3))
                 {
@@ -2280,7 +2280,7 @@ spret cast_simulacrum(int pow, god_type god, bool fail)
             return spret::abort;
         }
 
-        if (feat_destroys_items(grd(you.pos())))
+        if (feat_destroys_items(env.grid(you.pos())))
         {
             mpr("Any corpse summoned here would be destroyed before you could use it!");
             return spret::abort;

@@ -376,7 +376,7 @@ void debug_mons_scan()
             }
         } // if (mgrd(m->pos()) != i)
 
-        if (feat_is_wall(grd(pos)) && mons_primary_habitat(*m) != HT_ROCK
+        if (feat_is_wall(env.grid(pos)) && mons_primary_habitat(*m) != HT_ROCK
             && mons_primary_habitat(*m) != HT_STEEL
             && mons_primary_habitat(*m) != HT_INCORPOREAL
             && m->type != MONS_SPECTRAL_THING)
@@ -387,7 +387,7 @@ void debug_mons_scan()
 #endif
             mprf(MSGCH_ERROR, "Monster %s in %s at (%d, %d)%s",
                  m->full_name(DESC_PLAIN).c_str(),
-                 dungeon_feature_name(grd(pos)),
+                 dungeon_feature_name(env.grid(pos)),
                  pos.x, pos.y,
                  _vault_desc(pos).c_str());
         }
@@ -643,7 +643,7 @@ void check_map_validity()
 
     for (rectangle_iterator ri(0); ri; ++ri)
     {
-        dungeon_feature_type feat = grd(*ri);
+        dungeon_feature_type feat = env.grid(*ri);
         if (feat <= DNGN_UNSEEN || feat >= NUM_FEATURES)
             die("invalid feature %d at (%d,%d)", feat, ri->x, ri->y);
         const char *name = dungeon_feature_name(feat);

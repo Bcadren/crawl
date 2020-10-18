@@ -1252,7 +1252,7 @@ static bool _apply_grasping_roots(monster* mons)
         found_hostile = true;
 
         // Roots can't reach things over deep water or lava
-        if (!feat_has_solid_floor(grd(ai->pos())))
+        if (!feat_has_solid_floor(env.grid(ai->pos())))
             continue;
 
         // Some messages are suppressed for monsters, to reduce message spam.
@@ -1314,8 +1314,8 @@ static bool _merfolk_avatar_movement_effect(const monster* mons)
         const coord_def newpos = tracer.path_taken[0];
 
         if (!in_bounds(newpos)
-            || is_feat_dangerous(grd(newpos))
-            || !you.can_pass_through_feat(grd(newpos))
+            || is_feat_dangerous(env.grid(newpos))
+            || !you.can_pass_through_feat(env.grid(newpos))
             || !cell_see_cell(mons->pos(), newpos, LOS_NO_TRANS))
         {
             do_resist = true;
@@ -1424,7 +1424,7 @@ static void _merfolk_avatar_song(monster* mons)
     // Can only call up drowned souls if there's free deep water nearby
     vector<coord_def> deep_water;
     for (radius_iterator ri(mons->pos(), LOS_RADIUS, C_SQUARE); ri; ++ri)
-        if (grd(*ri) == DNGN_DEEP_WATER && !actor_at(*ri))
+        if (env.grid(*ri) == DNGN_DEEP_WATER && !actor_at(*ri))
             deep_water.push_back(*ri);
 
     if (deep_water.size())
@@ -1590,6 +1590,7 @@ void monster::apply_enchantment(const mon_enchant &me)
             del_ench(ENCH_AQUATIC_LAND);
             break;
         }
+
         if (mons_primary_habitat(*this) == HT_WATER && feat_is_watery(env.grid(this->pos())))
         {
             del_ench(ENCH_AQUATIC_LAND);
@@ -1651,7 +1652,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     // Assumption: monster::res_fire has already been checked.
     case ENCH_STICKY_FLAME:
     {
-        if (feat_is_watery(grd(pos())) && ground_level())
+        if (feat_is_watery(env.grid(pos())) && ground_level())
         {
             if (you.can_see(*this))
             {
@@ -1724,7 +1725,7 @@ void monster::apply_enchantment(const mon_enchant &me)
 
             for (fair_adjacent_iterator ai(pos()); ai; ++ai)
             {
-                if (mons_class_can_pass(MONS_BALLISTOMYCETE_SPORE, grd(*ai))
+                if (mons_class_can_pass(MONS_BALLISTOMYCETE_SPORE, env.grid(*ai))
                     && !actor_at(*ai))
                 {
                     beh_type plant_attitude = SAME_ATTITUDE(this);

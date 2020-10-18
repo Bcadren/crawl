@@ -1874,7 +1874,7 @@ void slimify_position(int iterations, coord_def pos, bool boost_slime_rate)
 {
     for (int x = iterations; x > 0; x--)
     {
-        dungeon_feature_type feat = grd(pos);
+        dungeon_feature_type feat = env.grid(pos);
         int dur = iterations == 1 ? 1 + random2(3) : 3 + random2(you.skill(SK_INVOCATIONS));
         coord_def target = pos;
         if ((feat == DNGN_SLIMY_WATER && !one_chance_in(4)) || feat == DNGN_DEEP_SLIMY_WATER || feat_is_critical(feat))
@@ -1882,12 +1882,12 @@ void slimify_position(int iterations, coord_def pos, bool boost_slime_rate)
             int y = 1;
             for (adjacent_iterator ai(pos); ai; ++ai)
             {
-                feat = grd(*ai);
+                feat = env.grid(*ai);
                 if ((feat_has_solid_floor(feat) || feat == DNGN_DEEP_WATER || feat_is_wall(feat)) && !feat_is_critical(feat) && one_chance_in(y++))
                     target = *ai;
             }
         }
-        feat = grd(target);
+        feat = env.grid(target);
 
         if (feat_is_critical(feat))
             break; // Failed to find a non-critical target; unlikely but could happen.
@@ -2439,7 +2439,7 @@ bool kiku_receive_corpses(int pow)
     for (radius_iterator ri(you.pos(), corpse_delivery_radius, C_SQUARE,
                             LOS_NO_TRANS, true); ri; ++ri)
     {
-        if (mons_class_can_pass(MONS_HUMAN, grd(*ri)))
+        if (mons_class_can_pass(MONS_HUMAN, env.grid(*ri)))
             spaces_for_corpses++;
     }
     // floating over lava, heavy tomb abuse, etc
@@ -2454,7 +2454,7 @@ bool kiku_receive_corpses(int pow)
     for (radius_iterator ri(you.pos(), corpse_delivery_radius, C_SQUARE,
                             LOS_NO_TRANS); ri; ++ri)
     {
-        bool square_is_walkable = mons_class_can_pass(MONS_HUMAN, grd(*ri));
+        bool square_is_walkable = mons_class_can_pass(MONS_HUMAN, env.grid(*ri));
         bool square_is_player_square = (*ri == you.pos());
         bool square_gets_corpse =
             random2(100) < percent_chance_a_square_receives_extra_corpse
@@ -2895,7 +2895,7 @@ static int _spawn_corpse_mushrooms(item_def& corpse,
 
         for (fair_adjacent_iterator ai(current); ai; ++ai)
         {
-            if (in_bounds(*ai) && mons_class_can_pass(MONS_TOADSTOOL, grd(*ai)))
+            if (in_bounds(*ai) && mons_class_can_pass(MONS_TOADSTOOL, env.grid(*ai)))
             {
                 const int index = ai->x + ai->y * X_WIDTH;
                 if (visited_indices.insert(index).second)
@@ -3050,7 +3050,7 @@ int fedhas_fungal_bloom()
 
 static bool _create_plant(coord_def& target, int hp_adjust = 0)
 {
-    if (actor_at(target) || !mons_class_can_pass(MONS_PLANT, grd(target)))
+    if (actor_at(target) || !mons_class_can_pass(MONS_PLANT, env.grid(target)))
         return 0;
 
     if (monster *plant = create_monster(mgen_data(MONS_PLANT,
@@ -3191,7 +3191,7 @@ void process_sunlights(bool future)
         // most once peer coord per invocation.
 
         // If this is a water square we will evaporate it.
-        dungeon_feature_type ftype = grd(c);
+        dungeon_feature_type ftype = env.grid(c);
         dungeon_feature_type orig_type = ftype;
 
         switch (ftype)
@@ -3442,7 +3442,7 @@ int fedhas_rain(const coord_def &target)
         int rain_thresh = 2;
         coord_def local = *rad - target;
 
-        dungeon_feature_type ftype = grd(*rad);
+        dungeon_feature_type ftype = env.grid(*rad);
 
         if (local.rdist() > rain_thresh)
         {
@@ -4299,7 +4299,7 @@ bool dithmenos_shadow_step()
          apostrophise(victim->name(DESC_THE)).c_str());
     // Using 'stepped = true' here because it's Shadow *Step*.
     // This helps to evade splash upon landing on water.
-    moveto_location_effects(grd(old_pos), true, old_pos);
+    moveto_location_effects(env.grid(old_pos), true, old_pos);
 
     return true;
 }
@@ -4611,7 +4611,7 @@ bool gozag_setup_call_merchant(bool quiet)
             return false;
         }
     }
-    if (grd(you.pos()) != DNGN_FLOOR)
+    if (env.grid(you.pos()) != DNGN_FLOOR)
     {
         if (!quiet)
         {
@@ -4810,7 +4810,7 @@ static string _gozag_shop_spec(int index)
  */
 static void _gozag_place_shop(int index)
 {
-    ASSERT(grd(you.pos()) == DNGN_FLOOR);
+    ASSERT(env.grid(you.pos()) == DNGN_FLOOR);
     keyed_mapspec kmspec;
     kmspec.set_feat(_gozag_shop_spec(index), false);
 
@@ -4985,10 +4985,10 @@ bool gozag_check_bribe_branch(bool quiet)
     }
     branch_type branch = you.where_are_you;
     branch_type branch2 = NUM_BRANCHES;
-    if (feat_is_branch_entrance(grd(you.pos())))
+    if (feat_is_branch_entrance(env.grid(you.pos())))
     {
         for (branch_iterator it; it; ++it)
-            if (it->entry_stairs == grd(you.pos())
+            if (it->entry_stairs == env.grid(you.pos())
                 && gozag_branch_bribable(it->id))
             {
                 branch2 = it->id;
@@ -5023,10 +5023,10 @@ bool gozag_bribe_branch()
     ASSERT(you.gold >= bribe_amount);
     bool prompted = false;
     branch_type branch = gozag_fixup_branch(you.where_are_you);
-    if (feat_is_branch_entrance(grd(you.pos())))
+    if (feat_is_branch_entrance(env.grid(you.pos())))
     {
         for (branch_iterator it; it; ++it)
-            if (it->entry_stairs == grd(you.pos())
+            if (it->entry_stairs == env.grid(you.pos())
                 && gozag_branch_bribable(it->id))
             {
                 branch_type stair_branch = gozag_fixup_branch(it->id);
@@ -5120,7 +5120,7 @@ spret qazlal_upheaval(coord_def target, bool quiet, bool fail)
         if (cell_is_solid(beam.target))
         {
             mprf("There is %s there.",
-                 article_a(feat_type_name(grd(beam.target))).c_str());
+                 article_a(feat_type_name(env.grid(beam.target))).c_str());
             return spret::abort;
         }
 
@@ -5235,7 +5235,7 @@ spret qazlal_upheaval(coord_def target, bool quiet, bool fail)
         switch (beam.flavour)
         {
             case BEAM_LAVA:
-                if (grd(pos) == DNGN_FLOOR && !actor_at(pos) && coinflip())
+                if (env.grid(pos) == DNGN_FLOOR && !actor_at(pos) && coinflip())
                 {
                     temp_change_terrain(
                         pos, DNGN_LAVA,
@@ -5252,12 +5252,12 @@ spret qazlal_upheaval(coord_def target, bool quiet, bool fail)
                 }
                 break;
             case BEAM_FRAG:
-                if (((grd(pos) == DNGN_ROCK_WALL
-                     || grd(pos) == DNGN_CLEAR_ROCK_WALL
-                     || grd(pos) == DNGN_SLIMY_WALL)
+                if (((env.grid(pos) == DNGN_ROCK_WALL
+                     || env.grid(pos) == DNGN_CLEAR_ROCK_WALL
+                     || env.grid(pos) == DNGN_SLIMY_WALL)
                      && x_chance_in_y(pow / 4, 100)
-                    || feat_is_door(grd(pos))
-                    || grd(pos) == DNGN_GRATE))
+                    || feat_is_door(env.grid(pos))
+                    || env.grid(pos) == DNGN_GRATE))
                 {
                     noisy(30, pos);
                     destroy_wall(pos);
@@ -6633,19 +6633,19 @@ bool ru_power_leap()
             continue;
         }
 
-        if (grd(beam.target) == DNGN_OPEN_SEA)
+        if (env.grid(beam.target) == DNGN_OPEN_SEA)
         {
             clear_messages();
             mpr("You can't leap into the sea!");
             continue;
         }
-        else if (grd(beam.target) == DNGN_ENDLESS_SLUDGE)
+        else if (env.grid(beam.target) == DNGN_ENDLESS_SLUDGE)
         {
             clear_messages();
             mpr("You can't leap into the putrid sewage!");
             continue;
         }
-        else if (grd(beam.target) == DNGN_LAVA_SEA)
+        else if (env.grid(beam.target) == DNGN_LAVA_SEA)
         {
             clear_messages();
             mpr("You can't leap into the sea of lava!");
@@ -7035,19 +7035,19 @@ bool uskayaw_line_pass()
             continue;
         }
 
-        if (grd(beam.target) == DNGN_OPEN_SEA)
+        if (env.grid(beam.target) == DNGN_OPEN_SEA)
         {
             clear_messages();
             mpr("You can't line pass into the sea!");
             continue;
         }
-        else if (grd(beam.target) == DNGN_ENDLESS_SLUDGE)
+        else if (env.grid(beam.target) == DNGN_ENDLESS_SLUDGE)
         {
             clear_messages();
             mpr("You can't line pass into the putrid sewage!");
             continue;
         }
-        else if (grd(beam.target) == DNGN_LAVA_SEA)
+        else if (env.grid(beam.target) == DNGN_LAVA_SEA)
         {
             clear_messages();
             mpr("You can't line pass into the sea of lava!");
@@ -7411,7 +7411,7 @@ spret hepliaklqana_transference(bool fail)
     if (uninhabitable && victim_visible)
     {
         mprf("%s can't be transferred into %s.",
-             victim->name(DESC_THE).c_str(), feat_type_name(grd(destination)));
+             victim->name(DESC_THE).c_str(), feat_type_name(env.grid(destination)));
         return spret::abort;
     }
 
@@ -7546,7 +7546,7 @@ void hepliaklqana_choose_identity()
 bool wu_jian_can_wall_jump_in_principle(const coord_def& target)
 {
     if (!have_passive(passive_t::wu_jian_wall_jump)
-        || !feat_can_wall_jump_against(grd(target))
+        || !feat_can_wall_jump_against(env.grid(target))
         || you.is_stationary()
         || you.digging)
     {
@@ -7565,7 +7565,7 @@ bool wu_jian_can_wall_jump(const coord_def& target, string &error_ret)
 
     if (!wu_jian_can_wall_jump_in_principle(target))
     {
-        if (!feat_can_wall_jump_against(grd(target)))
+        if (!feat_can_wall_jump_against(env.grid(target)))
         {
             error_ret = string("You cannot wall jump against ") +
                 feature_description_at(target, false, DESC_THE) + ".";
@@ -7597,7 +7597,7 @@ bool wu_jian_can_wall_jump(const coord_def& target, string &error_ret)
     }
 
     const actor* landing_actor = actor_at(wall_jump_landing_spot);
-    if (feat_is_solid(grd(you.pos() + wall_jump_direction))
+    if (feat_is_solid(env.grid(you.pos() + wall_jump_direction))
         || !in_bounds(wall_jump_landing_spot)
         || !you.is_habitable(wall_jump_landing_spot)
         || landing_actor)

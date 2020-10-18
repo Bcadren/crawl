@@ -26,7 +26,7 @@ const opacity_excl opc_excl = opacity_excl();
 
 opacity_type opacity_default::operator()(const coord_def& p) const
 {
-    dungeon_feature_type f = grd(p);
+    dungeon_feature_type f = env.grid(p);
     if (feat_is_tree(f))
         return OPC_HALF;
     if (feat_is_opaque(f))
@@ -42,7 +42,7 @@ opacity_type opacity_mon::operator()(const coord_def& p) const
 {
     if (cell_is_runed(p))
         return OPC_OPAQUE;
-    dungeon_feature_type f = grd(p);
+    dungeon_feature_type f = env.grid(p);
     if (feat_is_tree(f))
         return OPC_HALF;
     if (feat_is_opaque(f))
@@ -64,7 +64,7 @@ opacity_type opacity_fullyopaque::operator()(const coord_def& p) const
 
 opacity_type opacity_no_trans::operator()(const coord_def& p) const
 {
-    dungeon_feature_type f = grd(p);
+    dungeon_feature_type f = env.grid(p);
     if (feat_is_opaque(f) || feat_is_wall(f) || feat_is_closed_door(f))
         return OPC_OPAQUE;
     else if (is_opaque_cloud(cloud_type_at(p)))
@@ -76,7 +76,7 @@ opacity_type opacity_no_trans::operator()(const coord_def& p) const
 
 opacity_type opacity_rocky::operator()(const coord_def& p) const
 {
-    dungeon_feature_type f = grd(p);
+    dungeon_feature_type f = env.grid(p);
     if (f == DNGN_ROCK_WALL || f == DNGN_CLEAR_ROCK_WALL || f == DNGN_SLIMY_WALL)
         return OPC_CLEAR;
     if (feat_is_wall(f) || feat_is_closed_door(f))
@@ -101,7 +101,7 @@ opacity_type opacity_steel::operator()(const coord_def& p) const
 
 opacity_type opacity_fully_no_trans::operator()(const coord_def& p) const
 {
-    dungeon_feature_type f = grd(p);
+    dungeon_feature_type f = env.grid(p);
     if (feat_is_opaque(f) || feat_is_wall(f) || feat_is_closed_door(f))
         return OPC_OPAQUE;
     return OPC_CLEAR;

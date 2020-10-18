@@ -3101,7 +3101,7 @@ void get_feature_desc(const coord_def &pos, describe_info &inf, bool include_ext
         env.markers.property_at(pos, MAT_ANY, "feature_description_long");
 
     // suppress this if the feature changed out of view
-    if (!marker_desc.empty() && grd(pos) == feat)
+    if (!marker_desc.empty() && env.grid(pos) == feat)
         long_desc += marker_desc;
 
     // Display branch descriptions on the entries to those branches.
@@ -5048,7 +5048,7 @@ static string _monster_stat_description(const monster_info& mi)
 
     if (mi.is(MB_SUBMERGED))
     {
-        const dungeon_feature_type feat = grd(mi.pos);
+        const dungeon_feature_type feat = env.grid(mi.pos);
         const bool slimy = (feat == DNGN_SLIMY_WATER || feat == DNGN_DEEP_SLIMY_WATER);
 
         result << uppercase_first(pronoun) << " "

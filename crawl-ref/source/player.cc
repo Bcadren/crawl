@@ -404,7 +404,7 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
         return false;
 
     // Don't move onto dangerous terrain.
-    if (is_feat_dangerous(grd(mons->pos())))
+    if (is_feat_dangerous(env.grid(mons->pos())))
     {
         canned_msg(MSG_UNTHINKING_ACT);
         return false;
@@ -462,13 +462,13 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
     }
 
     // First try: move monster onto your position.
-    bool swap = !monster_at(loc) && monster_habitable_grid(mons, grd(loc));
+    bool swap = !monster_at(loc) && monster_habitable_grid(mons, env.grid(loc));
 
     if (monster_at(loc)
         && monster_at(loc)->type == MONS_TOADSTOOL
         && mons->type == MONS_WANDERING_MUSHROOM)
     {
-        swap = monster_habitable_grid(mons, grd(loc));
+        swap = monster_habitable_grid(mons, env.grid(loc));
     }
 
     // Choose an appropriate habitat square at random around the target.
@@ -477,7 +477,7 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
         int num_found = 0;
 
         for (adjacent_iterator ai(mons->pos()); ai; ++ai)
-            if (!monster_at(*ai) && monster_habitable_grid(mons, grd(*ai))
+            if (!monster_at(*ai) && monster_habitable_grid(mons, env.grid(*ai))
                 && one_chance_in(++num_found))
             {
                 loc = *ai;
@@ -604,10 +604,10 @@ void move_player_to_grid(const coord_def& p, bool stepped)
     const coord_def old_pos = you.pos();
     const bool from_above = (old_pos == p);
     const dungeon_feature_type old_grid =
-        (from_above) ? DNGN_FLOOR : grd(old_pos);
+        (from_above) ? DNGN_FLOOR : env.grid(old_pos);
 
     // Really must be clear.
-    ASSERT(you.can_pass_through_feat(grd(p)));
+    ASSERT(you.can_pass_through_feat(env.grid(p)));
 
     // Better not be an unsubmerged monster either.
     // BCADNOTE: Had to kill this ASSERT for Unstable Fiery Dash.
@@ -1896,7 +1896,7 @@ int player::res_corr(bool mt) const
 {
     if (mt)
     {
-        const dungeon_feature_type grid = grd(pos());
+        const dungeon_feature_type grid = env.grid(pos());
         const bool slimy = (grid == DNGN_SLIMY_WATER || grid == DNGN_DEEP_SLIMY_WATER);
         const int sub = (!slimy && submerged(true)) ? 1 : 0;
 
@@ -4111,7 +4111,7 @@ int player_stealth()
                 stealth /= 2;       // splashy-splashy
         }
 
-        if (!you.liquefied_ground() && feat_has_solid_floor(grd(you.pos())))
+        if (!you.liquefied_ground() && feat_has_solid_floor(env.grid(you.pos())))
         {
             if ((boots && get_armour_ego_type(*boots) == SPARM_STEALTH)
                 || (bard && get_armour_ego_type(*bard) == SPARM_STEALTH))
@@ -5509,7 +5509,7 @@ bool napalm_player(int amount, string source, string source_aux)
 
     if (player_res_sticky_flame() || amount <= 0 || you.duration[DUR_WATER_HOLD]
         || you.duration[DUR_AIR_HOLD] || you.duration[DUR_SWALLOWED] 
-        || (!you.airborne() && feat_is_watery(grd(you.pos()))))
+        || (!you.airborne() && feat_is_watery(env.grid(you.pos()))))
     {
         return false;
     }
@@ -5530,7 +5530,7 @@ void dec_napalm_player(int delay)
 {
     delay = min(delay, you.duration[DUR_LIQUID_FLAMES]);
 
-    if (feat_is_watery(grd(you.pos())))
+    if (feat_is_watery(env.grid(you.pos())))
     {
         if (you.ground_level())
             mprf(MSGCH_WARN, "The flames go out!");
@@ -5945,9 +5945,9 @@ void force_land_player(actor */*foe*/, bool damage)
     {
         if (damage)
         {
-            if (feat_is_water(grd(you.pos())))
+            if (feat_is_water(env.grid(you.pos())))
                 mprf(MSGCH_WARN, "You fall straight down and sink like a stone!");
-            else if (grd(you.pos()) == DNGN_LAVA)
+            else if (env.grid(you.pos()) == DNGN_LAVA)
                 mprf(MSGCH_WARN, "You fall straight down and make a sizzling splash on the lava!");
             else
             {
@@ -6520,12 +6520,12 @@ bool player::is_sufficiently_rested() const
 
 bool player::in_water() const
 {
-    return ground_level() && !you.can_water_walk() && feat_is_water(grd(pos()));
+    return ground_level() && !you.can_water_walk() && feat_is_water(env.grid(pos()));
 }
 
 bool player::in_lava() const
 {
-    return ground_level() && feat_is_lava(grd(pos()));
+    return ground_level() && feat_is_lava(env.grid(pos()));
 }
 
 bool player::in_liquid() const
@@ -6555,7 +6555,7 @@ bool player::can_water_walk() const
 
 int player::visible_igrd(const coord_def &where) const
 {
-    if (feat_eliminates_items(grd(where)))
+    if (feat_eliminates_items(env.grid(where)))
         return NON_ITEM;
 
     return igrd(where);
@@ -7711,7 +7711,7 @@ bool player::is_insubstantial() const
 // pure version for output.
 int player_res_acid() 
 {
-    const dungeon_feature_type grid = grd(you.pos());
+    const dungeon_feature_type grid = env.grid(you.pos());
     const bool slimy = (grid == DNGN_SLIMY_WATER || grid == DNGN_DEEP_SLIMY_WATER);
 
     if (you.get_mutation_level(MUT_SLIME) > 2 || you.get_mutation_level(MUT_OOZOMORPH))
@@ -7762,7 +7762,7 @@ int player_res_acid()
 // includes randoms and mount option
 int player::res_acid(bool mt) const
 {
-    const dungeon_feature_type grid = grd(pos());
+    const dungeon_feature_type grid = env.grid(pos());
     const bool slimy = (grid == DNGN_SLIMY_WATER || grid == DNGN_DEEP_SLIMY_WATER);
 
     if (mt)
@@ -9626,7 +9626,7 @@ bool player::do_shaft()
     // Handle instances of do_shaft() being invoked magically when
     // the player isn't standing over a shaft.
     if (get_trap_type(pos()) != TRAP_SHAFT
-        && !feat_is_shaftable(grd(pos())))
+        && !feat_is_shaftable(env.grid(pos())))
     {
         return false;
     }
@@ -9649,7 +9649,7 @@ bool player::can_do_shaft_ability(bool quiet) const
         return false;
     }
 
-    if (feat_is_shaftable(grd(pos())))
+    if (feat_is_shaftable(env.grid(pos())))
     {
         if (!is_valid_shaft_level())
         {
@@ -10221,7 +10221,7 @@ void player_open_door(coord_def doorpos)
     for (const auto &dc : all_door)
     {
         if (cell_is_runed(dc))
-            explored_tracked_feature(grd(dc));
+            explored_tracked_feature(env.grid(dc));
         dgn_open_door(dc);
         set_terrain_changed(dc);
         dungeon_events.fire_position_event(DET_DOOR_OPENED, dc);
@@ -10231,9 +10231,9 @@ void player_open_door(coord_def doorpos)
         // door!
         if (env.map_knowledge(dc).seen())
         {
-            env.map_knowledge(dc).set_feature(grd(dc));
+            env.map_knowledge(dc).set_feature(env.grid(dc));
 #ifdef USE_TILE
-            env.tile_bk_bg(dc) = tileidx_feature_base(grd(dc));
+            env.tile_bk_bg(dc) = tileidx_feature_base(env.grid(dc));
 #endif
         }
 
@@ -10402,9 +10402,9 @@ void player_close_door(coord_def doorpos)
         // want the entire door to be updated.
         if (env.map_knowledge(dc).seen())
         {
-            env.map_knowledge(dc).set_feature(grd(dc));
+            env.map_knowledge(dc).set_feature(env.grid(dc));
 #ifdef USE_TILE
-            env.tile_bk_bg(dc) = tileidx_feature_base(grd(dc));
+            env.tile_bk_bg(dc) = tileidx_feature_base(env.grid(dc));
 #endif
         }
 

@@ -61,7 +61,7 @@ static void _apply_move_time_taken(int additional_time_taken = 0);
 static void _swap_places(monster* mons, const coord_def &loc)
 {
     ASSERT(map_bounds(loc));
-    ASSERT(monster_habitable_grid(mons, grd(loc)));
+    ASSERT(monster_habitable_grid(mons, env.grid(loc)));
 
     if (monster_at(loc))
     {
@@ -107,7 +107,7 @@ static int _check_adjacent(dungeon_feature_type feat, coord_def& delta)
     set<coord_def> doors;
     for (adjacent_iterator ai(you.pos(), true); ai; ++ai)
     {
-        if (grd(*ai) == feat)
+        if (env.grid(*ai) == feat)
         {
             // Specialcase doors to take into account gates.
             if (feat_is_door(feat))
@@ -292,7 +292,7 @@ bool apply_slime_trail(const coord_def old_pos)
 {
     if (you.get_mutation_level(MUT_MELT) >= 2)
     {
-        const dungeon_feature_type feat = grd(old_pos);
+        const dungeon_feature_type feat = env.grid(old_pos);
         if (!feat_is_critical(feat) && !cell_is_solid(old_pos) && !feat_is_watery(feat) && one_chance_in(5))
         {
             const int dur = random_range(5, 12);
@@ -314,12 +314,12 @@ bool cancel_confused_move(bool stationary)
     for (adjacent_iterator ai(you.pos(), false); ai; ++ai)
     {
         if (!stationary
-            && is_feat_dangerous(grd(*ai), true)
-            && need_expiration_warning(grd(*ai))
-            && (dangerous == DNGN_FLOOR || grd(*ai) == DNGN_LAVA))
+            && is_feat_dangerous(env.grid(*ai), true)
+            && need_expiration_warning(env.grid(*ai))
+            && (dangerous == DNGN_FLOOR || env.grid(*ai) == DNGN_LAVA))
         {
-            dangerous = grd(*ai);
-            if (need_expiration_warning(DUR_FLIGHT, grd(*ai)))
+            dangerous = env.grid(*ai);
+            if (need_expiration_warning(DUR_FLIGHT, env.grid(*ai)))
                 flight = true;
             break;
         }
@@ -453,7 +453,7 @@ void open_door_action(coord_def move)
         return;
     }
 
-    const dungeon_feature_type feat = (in_bounds(doorpos) ? grd(doorpos)
+    const dungeon_feature_type feat = (in_bounds(doorpos) ? env.grid(doorpos)
                                                           : DNGN_UNSEEN);
     switch (feat)
     {
@@ -529,7 +529,7 @@ void close_door_action(coord_def move)
         delta = move;
 
     const coord_def doorpos = you.pos() + delta;
-    const dungeon_feature_type feat = (in_bounds(doorpos) ? grd(doorpos)
+    const dungeon_feature_type feat = (in_bounds(doorpos) ? env.grid(doorpos)
                                                           : DNGN_UNSEEN);
 
     switch (feat)
@@ -652,7 +652,7 @@ static spret _rampage_forward(coord_def move)
 
         // Don't rampage if our tracer path is broken by something we can't
         // safely pass through before it reaches a monster.
-        if (!you.can_pass_through(p) || is_feat_dangerous(grd(p)))
+        if (!you.can_pass_through(p) || is_feat_dangerous(env.grid(p)))
             return spret::fail;
 
         const monster* mon = monster_at(p);
@@ -928,7 +928,7 @@ void move_player_action(coord_def move)
     // wu_jian_can_wall_jump, to avoid printing a spurious message (see 11940).
     bool can_wall_jump = Options.wall_jump_move
                          && (!in_bounds(targ)
-                             || !feat_is_closed_door(grd(targ)))
+                             || !feat_is_closed_door(env.grid(targ)))
                          && wu_jian_can_wall_jump(targ, wall_jump_err);
     bool did_wall_jump = false;
     // You can't walk out of bounds!
@@ -976,12 +976,12 @@ void move_player_action(coord_def move)
             you.digging = false;
             canned_msg(MSG_TOO_HUNGRY);
         }
-        else if (feat_is_diggable(grd(targ), true))
+        else if (feat_is_diggable(env.grid(targ), true))
             targ_pass = true;
         else // moving or attacking ends dig
         {
             you.digging = false;
-            if (feat_is_solid(grd(targ)))
+            if (feat_is_solid(env.grid(targ)))
                 mpr("You can't dig through that.");
             else
                 mpr("You retract your mandibles.");
@@ -989,7 +989,7 @@ void move_player_action(coord_def move)
     }
 
     if (you.mounted() && (you.mount == mount_type::slime) 
-        && (feat_is_diggable(grd(targ), true) || feat_is_tree(grd(targ))))
+        && (feat_is_diggable(env.grid(targ), true) || feat_is_tree(env.grid(targ))))
     {
         targ_pass = true;
         you.digging = true;
@@ -1198,17 +1198,17 @@ void move_player_action(coord_def move)
     // BCR - Easy doors single move
     if ((Options.travel_open_doors || !you.running)
         && !attacking
-        && feat_is_closed_door(grd(targ)))
+        && feat_is_closed_door(env.grid(targ)))
     {
         open_door_action(move);
         move.reset();
         return;
     }
-    else if (!targ_pass && grd(targ) == DNGN_MALIGN_GATEWAY
+    else if (!targ_pass && env.grid(targ) == DNGN_MALIGN_GATEWAY
              && !attacking && !you.is_stationary())
     {
         if (!crawl_state.disables[DIS_CONFIRMATIONS]
-            && !prompt_dangerous_portal(grd(targ)))
+            && !prompt_dangerous_portal(env.grid(targ)))
         {
             // No rampage check because the portal blocks the
             // rampage tracer
@@ -1226,18 +1226,18 @@ void move_player_action(coord_def move)
         // No rampage check here, since you can't rampage at walls
         if (you.is_stationary())
             canned_msg(MSG_CANNOT_MOVE);
-        else if (grd(targ) == DNGN_OPEN_SEA)
+        else if (env.grid(targ) == DNGN_OPEN_SEA)
             mpr("The ferocious winds and tides of the open sea thwart your progress.");
-        else if (grd(targ) == DNGN_ENDLESS_SLUDGE)
+        else if (env.grid(targ) == DNGN_ENDLESS_SLUDGE)
         {
             if (you.can_smell())
                 mpr("The horrid stench of the seemingly endless sewage repels you from going further.");
             else
                 mpr("The rot and filth of the seemingly endless sewage repels you from going further.");
         }
-        else if (grd(targ) == DNGN_LAVA_SEA)
+        else if (env.grid(targ) == DNGN_LAVA_SEA)
             mpr("The endless sea of lava is not a nice place.");
-        else if (feat_is_tree(grd(targ)) && you_worship(GOD_FEDHAS))
+        else if (feat_is_tree(env.grid(targ)) && you_worship(GOD_FEDHAS))
             mpr("You cannot walk through the dense trees.");
 
         stop_running();

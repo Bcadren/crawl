@@ -1061,9 +1061,9 @@ void bolt::digging_wall_effect()
         finish_beam();
         return;
     }
-    
+
     bool stop_dig = false;
-    const dungeon_feature_type feat = grd(pos());
+    const dungeon_feature_type feat = env.grid(pos());
     if (feat_is_endless(feat) || feat_is_permarock(feat) 
         || feat_is_closed_door(feat) || feat_is_tree(feat)
         || (feat_is_metal(feat) && feat != DNGN_GRATE)
@@ -1155,7 +1155,7 @@ void bolt::digging_wall_effect()
 
 void bolt::burn_wall_effect()
 {
-    dungeon_feature_type feat = grd(pos());
+    dungeon_feature_type feat = env.grid(pos());
     // Fire affects trees and (wooden) doors.
     if ((!feat_is_tree(feat) && !feat_is_door(feat))
         || env.markers.property_at(pos(), MAT_ANY, "veto_fire") == "veto"
@@ -1225,8 +1225,7 @@ void bolt::affect_wall()
         const bool vetoed =
             env.markers.property_at(pos(), MAT_ANY, "veto_destroy") == "veto";
 
-        // XXX: should check env knowledge for feat_is_tree()
-        if (god_relevant && feat_is_tree(grd(pos())) && !vetoed && env.map_knowledge(pos()).known()
+        if (god_relevant && feat_is_tree(env.grid(pos())) && !vetoed && env.map_knowledge(pos()).known()
             && !is_targeting && YOU_KILL(thrower) && !dont_stop_trees)
         {
             const string prompt =
@@ -1243,7 +1242,7 @@ void bolt::affect_wall()
             }
         }
 
-        if (grd(pos()) == DNGN_ORCISH_IDOL && !vetoed && env.map_knowledge(pos()).known()
+        if (env.grid(pos()) == DNGN_ORCISH_IDOL && !vetoed && env.map_knowledge(pos()).known()
             && !is_targeting && YOU_KILL(thrower) && flavour == BEAM_DIGGING)
         {
             if (!yesno("Really insult Beogh by defacing this idol?", false, 'n'))
@@ -1265,7 +1264,7 @@ void bolt::affect_wall()
             digging_wall_effect();
         else if (can_burn_trees())
             burn_wall_effect();
-        else if (grd(pos()) == DNGN_GRATE)
+        else if (env.grid(pos()) == DNGN_GRATE)
         {
             destroy_wall(pos());
 
@@ -1454,7 +1453,7 @@ void bolt::do_fire()
             break;
         }
 
-        const dungeon_feature_type feat = grd(pos());
+        const dungeon_feature_type feat = env.grid(pos());
 
         if (in_bounds(target)
             // Starburst beams are essentially untargeted; some might even hit
@@ -2107,7 +2106,7 @@ vector<coord_def> create_feat_splash(coord_def center, int radius, int number, i
 
     for (distance_iterator di(center, true, false, radius); di && number > 0; ++di)
     {
-        const dungeon_feature_type feature = grd(*di);
+        const dungeon_feature_type feature = env.grid(*di);
         if ((feature == DNGN_FLOOR || feature == feat || feature == DNGN_LAVA)
             && cell_see_cell(center, *di, LOS_NO_TRANS))
         {
@@ -2496,14 +2495,14 @@ void bolt::affect_endpoint()
         {
             bool lava = (flavour == BEAM_LAVA);
             int dur = damage.roll();
-            if (grd(pos()) == DNGN_FLOOR)
+            if (env.grid(pos()) == DNGN_FLOOR)
                 temp_change_terrain(pos(), lava ? DNGN_LAVA : DNGN_SHALLOW_WATER,
                     random_range(dur * 2, dur * 3), TERRAIN_CHANGE_FLOOD);
             for (rectangle_iterator ri(pos(), lava ? 1 : 2); ri; ++ri)
             {
                 if (!in_bounds(*ri))
                     continue;
-                if ((grd(*ri) == DNGN_FLOOR) && ((lava && one_chance_in(4)) || !lava && !one_chance_in(3)))
+                if ((env.grid(*ri) == DNGN_FLOOR) && ((lava && one_chance_in(4)) || !lava && !one_chance_in(3)))
                     temp_change_terrain(*ri, lava ? DNGN_LAVA : DNGN_SHALLOW_WATER,
                         random_range(dur * 2, dur * 3), TERRAIN_CHANGE_FLOOD);
             }
@@ -2630,14 +2629,14 @@ void bolt::affect_endpoint()
     {
         if (!hit_something)
         {
-            if (feat_is_water(grd(pos())) || grd(pos()) == DNGN_LAVA)
+            if (feat_is_water(env.grid(pos())) || env.grid(pos()) == DNGN_LAVA)
             {
                 noisy(2, pos(), source_id);
                 noise_generated = true;
                 if (!silenced(you.pos()))
                 {
                     string x = "";
-                    if (grd(pos()) == DNGN_LAVA)
+                    if (env.grid(pos()) == DNGN_LAVA)
                         x = " sizzling";
                     mprf("You hear a%s splash.", x.c_str());
                 }
@@ -2660,11 +2659,11 @@ void bolt::affect_endpoint()
     case SPELL_ENSNARE:
     case SPELL_WAND_ENSNARE:
     {
-        if (!actor_at(pos()) && grd(pos()) == DNGN_FLOOR)
+        if (!actor_at(pos()) && env.grid(pos()) == DNGN_FLOOR)
         {
             const int pow = damage.roll();
             place_specific_trap(pos(), TRAP_WEB, pow + random2(pow));
-            grd(pos()) = DNGN_TRAP_WEB;
+            env.grid(pos()) = DNGN_TRAP_WEB;
         }
         break;
     }
@@ -2813,7 +2812,7 @@ bool bolt::can_burn_trees() const
 
 bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
 {
-    dungeon_feature_type wall = grd(p);
+    dungeon_feature_type wall = env.grid(p);
 
     // digging might affect unseen squares, as far as the player knows
     if (map_knowledge && flavour == BEAM_DIGGING &&
@@ -2844,7 +2843,7 @@ void bolt::affect_place_clouds()
         affect_place_explosion_clouds();
 
     const coord_def p = pos();
-    const dungeon_feature_type feat = grd(p);
+    const dungeon_feature_type feat = env.grid(p);
     actor * defender = actor_at(p);
     int see_preservation = 0;
 
@@ -2933,7 +2932,6 @@ void bolt::affect_place_clouds()
     }
 
     // No clouds here, free to make new ones.
-
     if (origin_spell == SPELL_POISONOUS_CLOUD)
         place_cloud(CLOUD_POISON, p, (damage.roll() + damage.roll()) / 3, agent());
 
@@ -2943,7 +2941,8 @@ void bolt::affect_place_clouds()
     if (origin_spell == SPELL_FLAMING_CLOUD)
         place_cloud(CLOUD_FIRE, p, (damage.roll() + damage.roll()) / 3, agent());
 
-    if (!feat_is_critical(grd(pos())) && !feat_is_watery(grd(pos())) && (is_explosion && origin_spell == SPELL_SLIME_SHARDS && !one_chance_in(3)
+    if (!feat_is_critical(env.grid(pos())) && !feat_is_watery(env.grid(pos())) 
+        && (is_explosion && origin_spell == SPELL_SLIME_SHARDS && !one_chance_in(3)
         || flavour == BEAM_ACID_WAVE))
     {
         const int d = 6 + random2(3 + you.skill(SK_INVOCATIONS));
@@ -3041,8 +3040,9 @@ void bolt::affect_place_explosion_clouds()
     const coord_def p = pos();
 
     // First check: fire/cold over water/lava.
-    if (grd(p) == DNGN_LAVA && flavour == BEAM_COLD
-        || feat_is_watery(grd(p)) && (grd(p) != DNGN_SLIMY_WATER) && (grd(p) != DNGN_DEEP_SLIMY_WATER) && is_fiery())
+    if (env.grid(p) == DNGN_LAVA && flavour == BEAM_COLD
+        || feat_is_watery(env.grid(p)) && (env.grid(p) != DNGN_SLIMY_WATER) 
+        && (env.grid(p) != DNGN_DEEP_SLIMY_WATER) && is_fiery())
     {
         place_cloud(CLOUD_STEAM, p, 2 + random2(5), agent());
         return;
@@ -3051,7 +3051,7 @@ void bolt::affect_place_explosion_clouds()
     if (is_fiery() && is_snowcovered(p) && x_chance_in_y(damage.roll(), 100))
         env.pgrid(p) &= ~FPROP_SNOW;
 
-    if (feat_is_door(grd(p)) && is_fiery())
+    if (feat_is_door(env.grid(p)) && is_fiery())
     {
         destroy_wall(p);
         place_cloud(CLOUD_FIRE, p, 2 + random2(5), agent());
@@ -3078,7 +3078,7 @@ void bolt::affect_place_explosion_clouds()
         place_cloud(chaos ? chaos_cloud() : CLOUD_FIRE, p, 2 + random2avg(5,2), agent());
 
         // XXX: affect other open spaces?
-        if (grd(p) == DNGN_FLOOR && !monster_at(p) && one_chance_in(4))
+        if (env.grid(p) == DNGN_FLOOR && !monster_at(p) && one_chance_in(4))
         {
             const god_type god =
                 (crawl_state.is_god_acting()) ? crawl_state.which_god_acting()
@@ -7060,7 +7060,7 @@ void bolt::determine_affected_cells(explosion_map& m, const coord_def& delta,
         return;
     }
 
-    const dungeon_feature_type dngn_feat = grd(loc);
+    const dungeon_feature_type dngn_feat = env.grid(loc);
 
     bool at_wall = false;
 

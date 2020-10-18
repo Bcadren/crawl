@@ -487,7 +487,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             coord_def hopspot = mons->pos() - (foepos - mons->pos()).sgn();
 
             bool found = false;
-            if (!monster_habitable_grid(mons, grd(hopspot)) ||
+            if (!monster_habitable_grid(mons, env.grid(hopspot)) ||
                 actor_at(hopspot))
             {
                 for (adjacent_iterator ai(mons->pos()); ai; ++ai)
@@ -496,7 +496,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
                         continue;
                     else
                     {
-                        if (monster_habitable_grid(mons, grd(*ai))
+                        if (monster_habitable_grid(mons, env.grid(*ai))
                             && !actor_at(*ai))
                         {
                             hopspot = *ai;

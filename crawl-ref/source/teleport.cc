@@ -149,10 +149,10 @@ static coord_def _random_monster_nearby_space(const monster& mon, const bool saf
         if (grid_distance(*ri, mon.pos()) < 2)
             continue;
 
-        if ((safe || _override_safe(mon)) && !monster_habitable_grid(&mon, grd(*ri)))
+        if ((safe || _override_safe(mon)) && !monster_habitable_grid(&mon, env.grid(*ri)))
             continue;
         
-        if (!disp_center.origin() && (grd(*ri) == DNGN_TRAP_CONGREGATION || *ri == disp_center))
+        if (!disp_center.origin() && (env.grid(*ri) == DNGN_TRAP_CONGREGATION || *ri == disp_center))
             continue;
 
         if (!mon.can_pass_through(*ri))
@@ -203,7 +203,7 @@ bool monster_space_valid(const monster* mons, coord_def target,
     if (testbits(env.pgrid(target), FPROP_NO_TELE_INTO))
         return false;
 
-    return monster_habitable_grid(mons, grd(target), false);
+    return monster_habitable_grid(mons, env.grid(target), false);
 }
 
 static bool _monster_random_space(const monster* mons, coord_def& target,

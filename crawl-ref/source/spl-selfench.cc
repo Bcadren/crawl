@@ -330,8 +330,8 @@ spret cast_noxious_bog(int pow, bool fail)
 
 void noxious_bog_cell(coord_def p)
 {
-    if (grd(p) == DNGN_DEEP_WATER || grd(p) == DNGN_LAVA
-        || grd(p) == DNGN_SLIMY_WATER || grd(p) == DNGN_DEEP_SLIMY_WATER)
+    if (env.grid(p) == DNGN_DEEP_WATER || env.grid(p) == DNGN_LAVA
+        || env.grid(p) == DNGN_SLIMY_WATER || env.grid(p) == DNGN_DEEP_SLIMY_WATER)
     {
         return;
     }

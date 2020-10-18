@@ -195,8 +195,8 @@ static bool _reaching_weapon_attack(const item_def& wpn)
         const coord_def first_middle(x_first_middle, y_first_middle);
         const coord_def second_middle(x_second_middle, y_second_middle);
 
-        if (!feat_is_reachable_past(grd(first_middle))
-            && !feat_is_reachable_past(grd(second_middle)))
+        if (!feat_is_reachable_past(env.grid(first_middle))
+            && !feat_is_reachable_past(env.grid(second_middle)))
         {
             canned_msg(MSG_SOMETHING_IN_WAY);
             return false;
@@ -204,8 +204,8 @@ static bool _reaching_weapon_attack(const item_def& wpn)
 
         // Choose one of the two middle squares (which might be the same).
         const coord_def middle =
-            !feat_is_reachable_past(grd(first_middle)) ? second_middle :
-            !feat_is_reachable_past(grd(second_middle)) ? first_middle :
+            !feat_is_reachable_past(env.grid(first_middle)) ? second_middle :
+            !feat_is_reachable_past(env.grid(second_middle)) ? first_middle :
         random_choose(first_middle, second_middle);
 
         bool success = true;
@@ -679,7 +679,7 @@ static bool _sack_of_spiders()
             // Don't destroy non-web traps or try to trap monsters
             // currently caught by something.
             if (you.pos().distance_from((*mi)->pos()) > rad
-                || (!trap && grd((*mi)->pos()) != DNGN_FLOOR)
+                || (!trap && env.grid((*mi)->pos()) != DNGN_FLOOR)
                 || (trap && trap->type != TRAP_WEB)
                 || (*mi)->friendly()
                 || (*mi)->caught())
@@ -701,7 +701,7 @@ static bool _sack_of_spiders()
 
                 place_specific_trap((*mi)->pos(), TRAP_WEB, 1); // 1 ammo = temp
                 // Reveal the trap
-                grd((*mi)->pos()) = DNGN_TRAP_WEB;
+                env.grid((*mi)->pos()) = DNGN_TRAP_WEB;
                 trap = trap_at((*mi)->pos());
                 trap->trigger(**mi);
             }
@@ -716,7 +716,7 @@ static bool _sack_of_spiders()
 
 static bool _make_zig(item_def &zig)
 {
-    if (feat_is_critical(grd(you.pos())))
+    if (feat_is_critical(env.grid(you.pos())))
     {
         mpr("You can't place a gateway to a ziggurat here.");
         return false;

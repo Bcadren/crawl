@@ -942,17 +942,18 @@ void check_monsters_sense(sense_type sense, int range, const coord_def& where)
     }
 }
 
+// BCADNOTE: Why is this in Shout?
 static void _maybe_spawn_sharks(const coord_def& where)
 {
     if (you.where_are_you != BRANCH_SHOALS
         || you.pos() != where
-        || !feat_is_water(grd(where)))
+        || !feat_is_water(env.grid(where)))
         return;
 
     int water_count = 0;
     for (adjacent_iterator ai(where); ai; ++ai)
     {
-        if (feat_is_water(grd(*ai)) && !actor_at(*ai))
+        if (feat_is_water(env.grid(*ai)) && !actor_at(*ai))
             water_count++;
     }
 
@@ -964,7 +965,7 @@ static void _maybe_spawn_sharks(const coord_def& where)
         {
             for (adjacent_iterator ai(where); ai; ++ai)
             {
-                if (feat_is_water(grd(*ai)) && x_chance_in_y(shark_count, water_count + 1))
+                if (feat_is_water(env.grid(*ai)) && x_chance_in_y(shark_count, water_count + 1))
                 {
                     mgen_data mg(MONS_SHARK, BEH_HOSTILE, *ai, MHITYOU, MG_FORCE_BEH | MG_AUTOFOE);
                     if (monster *mons = create_monster(mg))
@@ -998,7 +999,7 @@ void blood_smell(int strength, const coord_def& where)
 // Permarock walls are assumed to completely kill noise.
 static int _noise_attenuation_millis(const coord_def &pos)
 {
-    const dungeon_feature_type feat = grd(pos);
+    const dungeon_feature_type feat = env.grid(pos);
 
     if (feat_is_permarock(feat))
         return NOISE_ATTENUATION_COMPLETE;
@@ -1405,7 +1406,7 @@ void noise_grid::write_noise_grid(FILE *outf) const
             if (you.pos() == coord_def(x, y))
                 write_cell(outf, p, '@');
             else
-                write_cell(outf, p, get_feature_def(grd[x][y]).symbol());
+                write_cell(outf, p, get_feature_def(env.grid[x][y]).symbol());
         }
         fprintf(outf, "<br>\n");
     }

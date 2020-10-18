@@ -240,7 +240,7 @@ string Form::transform_message(transformation previous_trans) const
         start = "You fly out of the water as y";
     else if (get_form(previous_trans)->player_can_fly()
              && player_can_swim()
-             && feat_is_water(grd(you.pos())))
+             && feat_is_water(env.grid(you.pos())))
         start = "As you dive into the water, y";
     else
         start = "Y";

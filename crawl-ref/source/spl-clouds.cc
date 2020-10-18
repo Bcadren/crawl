@@ -77,7 +77,7 @@ spret conjure_flame(const actor *agent, int pow, const coord_def& where,
     {
         if (agent->is_player())
         {
-            const char *feat = feat_type_name(grd(where));
+            const char *feat = feat_type_name(env.grid(where));
             mprf("You can't place the cloud on %s.", article_a(feat).c_str());
         }
         return spret::abort;
@@ -228,7 +228,7 @@ spret cast_big_c(int pow, spell_type spl, const actor *caster, bolt &beam,
 
     if (cell_is_solid(beam.target))
     {
-        const char *feat = feat_type_name(grd(beam.target));
+        const char *feat = feat_type_name(env.grid(beam.target));
         mprf("You can't place clouds on %s.", article_a(feat).c_str());
         return spret::abort;
     }
@@ -395,7 +395,7 @@ spret cast_corpse_rot(bool fail)
         {
             monster * mons = monster_at(*ri);
             if (mons && !mons->wont_attack() && !mons->res_rotting()
-                && !cell_is_solid(*ri) && !feat_destroys_items(grd(*ri))
+                && !cell_is_solid(*ri) && !feat_destroys_items(env.grid(*ri))
                 && !mons->cloud_immune() && !cloud_at(*ri))
             {
                 bool include = true;
@@ -436,7 +436,7 @@ spret cast_corpse_rot(bool fail)
                 coord_def t = coord_def (0, 0);
                 for (adjacent_iterator ai(targets[random2(targets.size())]); ai; ++ai)
                 {
-                    if (cell_is_solid(*ai) || feat_destroys_items(grd(*ai))
+                    if (cell_is_solid(*ai) || feat_destroys_items(env.grid(*ai))
                         || cloud_at(*ai))
                     {
                         continue;

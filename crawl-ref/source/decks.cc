@@ -1338,7 +1338,7 @@ static void _shaft_card(int power, deck_rarity_type rarity)
 
     if (is_valid_shaft_level())
     {
-        if (grd(you.pos()) == DNGN_FLOOR)
+        if (env.grid(you.pos()) == DNGN_FLOOR)
         {
             place_specific_trap(you.pos(), TRAP_SHAFT);
             trap_at(you.pos())->reveal();
@@ -1368,7 +1368,7 @@ static void _stairs_card(int /*power*/, deck_rarity_type /*rarity*/)
     you.duration[DUR_REPEL_STAIRS_MOVE]  = 0;
     you.duration[DUR_REPEL_STAIRS_CLIMB] = 0;
 
-    if (feat_stair_direction(grd(you.pos())) == CMD_NO_CMD)
+    if (feat_stair_direction(env.grid(you.pos())) == CMD_NO_CMD)
         you.duration[DUR_REPEL_STAIRS_MOVE]  = 1000;
     else
         you.duration[DUR_REPEL_STAIRS_CLIMB] =  500; // more annoying
@@ -1377,7 +1377,7 @@ static void _stairs_card(int /*power*/, deck_rarity_type /*rarity*/)
 
     for (radius_iterator ri(you.pos(), LOS_DEFAULT, true); ri; ++ri)
     {
-        dungeon_feature_type feat = grd(*ri);
+        dungeon_feature_type feat = env.grid(*ri);
         if (feat_stair_direction(feat) != CMD_NO_CMD
             && feat != DNGN_ENTER_SHOP)
         {
@@ -1838,7 +1838,7 @@ static void _cloud_card(int power, deck_rarity_type rarity)
             if (*ai == you.pos() || monster_at(*ai))
                 continue;
 
-            if (grd(*ai) == DNGN_FLOOR && !cloud_at(*ai))
+            if (env.grid(*ai) == DNGN_FLOOR && !cloud_at(*ai))
             {
                 const int cloud_power = 5 + random2((power_level + 1) * 3);
                 place_cloud(cloudy, *ai, cloud_power, &you);
@@ -1875,8 +1875,8 @@ static void _storm_card(int power, deck_rarity_type rarity)
         if (mons && mons->wont_attack())
             continue;
 
-        if ((feat_has_solid_floor(grd(*ri))
-             || grd(*ri) == DNGN_DEEP_WATER)
+        if ((feat_has_solid_floor(env.grid(*ri))
+             || env.grid(*ri) == DNGN_DEEP_WATER)
             && !cloud_at(*ri))
         {
             place_cloud(CLOUD_STORM, *ri,

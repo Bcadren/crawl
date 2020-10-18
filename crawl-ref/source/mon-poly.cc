@@ -606,15 +606,15 @@ void slimify_monster(monster* mon)
                 target = MONS_AZURE_JELLY;
         }
 
-        if (feat_is_water(grd(mon->pos()))) // Pick something amphibious.
+        if (feat_is_water(env.grid(mon->pos()))) // Pick something amphibious.
             target = (x < 7) ? MONS_JELLY : MONS_SLIME_CREATURE;
     }
 
-    if (feat_is_lava(grd(mon->pos())))
+    if (feat_is_lava(env.grid(mon->pos())))
         target = MONS_LAVA_GLOB;
 
     // Bail out if jellies can't live here.
-    if (!monster_habitable_grid(target, grd(mon->pos())))
+    if (!monster_habitable_grid(target, env.grid(mon->pos())))
     {
         simple_monster_message(*mon, " quivers momentarily.");
         return;

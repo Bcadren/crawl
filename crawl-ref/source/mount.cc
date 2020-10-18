@@ -457,7 +457,7 @@ bool mount_submerged()
     if (you.airborne())
         return false;
 
-    return (grd(you.pos()) == DNGN_DEEP_WATER || grd(you.pos()) == DNGN_DEEP_SLIMY_WATER);
+    return (env.grid(you.pos()) == DNGN_DEEP_WATER || env.grid(you.pos()) == DNGN_DEEP_SLIMY_WATER);
 }
 
 int mount_gdr()
