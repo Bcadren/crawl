@@ -639,7 +639,7 @@ static void _handle_movement(monster* mons)
     // First, check whether the monster is smart enough to even consider
     // this.
     if ((newpos == you.pos()
-           || monster_at(newpos) && mons->foe == mgrd(newpos))
+           || monster_at(newpos) && mons->foe == env.mgrid(newpos))
         && mons_intel(*mons) > I_BRAINLESS
         && coinflip()
         && !mons_is_confused(*mons) && !mons->caught()
@@ -1874,7 +1874,7 @@ void handle_monster_move(monster* mons, int tries)
                               entry->energy_usage.swim);
 
 #ifdef DEBUG_MONS_SCAN
-    bool monster_was_floating = mgrd(mons->pos()) != mons->mindex();
+    bool monster_was_floating = env.mgrid(mons->pos()) != mons->mindex();
 #endif
     coord_def old_pos = mons->pos();
 
@@ -1914,9 +1914,9 @@ void handle_monster_move(monster* mons, int tries)
 
 #ifdef DEBUG_MONS_SCAN
     if (!monster_was_floating
-        && mgrd(mons->pos()) != mons->mindex())
+        && env.mgrid(mons->pos()) != mons->mindex())
     {
-        mprf(MSGCH_ERROR, "Monster %s became detached from mgrd "
+        mprf(MSGCH_ERROR, "Monster %s became detached from env.mgrid "
                           "in handle_monster_move() loop",
              mons->name(DESC_PLAIN, true).c_str());
         mprf(MSGCH_WARN, "[[[[[[[[[[[[[[[[[[");
@@ -1925,9 +1925,9 @@ void handle_monster_move(monster* mons, int tries)
         monster_was_floating = true;
     }
     else if (monster_was_floating
-             && mgrd(mons->pos()) == mons->mindex())
+             && env.mgrid(mons->pos()) == mons->mindex())
     {
-        mprf(MSGCH_DIAGNOSTICS, "Monster %s re-attached itself to mgrd "
+        mprf(MSGCH_DIAGNOSTICS, "Monster %s re-attached itself to env.mgrid "
                                 "in handle_monster_move() loop",
              mons->name(DESC_PLAIN, true).c_str());
         monster_was_floating = false;

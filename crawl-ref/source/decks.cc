@@ -1899,7 +1899,7 @@ static void _illusion_card(int power, deck_rarity_type rarity)
     mon->attitude = ATT_FRIENDLY;
     mon->set_position(you.pos());
     mon->mid = MID_PLAYER;
-    mgrd(you.pos()) = mon->mindex();
+    env.mgrid(you.pos()) = mon->mindex();
 
     mons_summon_illusion_from(mon, (actor *)&you, SPELL_NO_SPELL, power_level);
     mon->reset();

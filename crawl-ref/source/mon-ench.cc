@@ -1355,13 +1355,13 @@ static bool _merfolk_avatar_movement_effect(const monster* mons)
                         return do_resist;
                     }
 
-                    int swap_mon = mgrd(newpos);
+                    int swap_mon = env.mgrid(newpos);
                     // Pick the monster up.
-                    mgrd(newpos) = NON_MONSTER;
+                    env.mgrid(newpos) = NON_MONSTER;
                     mon->moveto(oldpos);
 
                     // Plunk it down.
-                    mgrd(mon->pos()) = swap_mon;
+                    env.mgrid(mon->pos()) = swap_mon;
 
                     mprf("You swap places with %s.",
                          mon->name(DESC_THE).c_str());

@@ -41,7 +41,7 @@ spret cast_iood(actor *caster, int pow, bolt *beam, float vx, float vy,
     fail_check();
 
     int mtarg = !beam ? MHITNOT :
-        beam->target == you.pos() ? int{ MHITYOU } : mgrd(beam->target);
+        beam->target == you.pos() ? int{ MHITYOU } : env.mgrid(beam->target);
     bool chaos = determine_chaos(caster, SPELL_IOOD);
     bool menace = caster->staff() && staff_enhances_spell(caster->staff(), SPELL_IOOD)
                                   && (get_staff_facet(*caster->staff()) == SPSTF_MENACE);

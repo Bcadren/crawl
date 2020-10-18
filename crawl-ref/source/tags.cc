@@ -5887,7 +5887,7 @@ static void _tag_read_level(reader &th)
                 env.map_seen.set(i, j);
             env.pgrid[i][j].flags = unmarshallInt(th);
 
-            mgrd[i][j] = NON_MONSTER;
+            env.mgrid[i][j] = NON_MONSTER;
         }
 
 #if TAG_MAJOR_VERSION == 34
@@ -6326,7 +6326,7 @@ static void _tag_read_level_monsters(reader &th)
                  i, m.name(DESC_PLAIN, true).c_str(),
                  m.pos().x, m.pos().y);
         }
-        int midx = mgrd(m.pos());
+        int midx = env.mgrid(m.pos());
         if (midx != NON_MONSTER)
         {
             mprf(MSGCH_ERROR, "(%d, %d) for %s already occupied by %s",
@@ -6335,7 +6335,7 @@ static void _tag_read_level_monsters(reader &th)
                  env.mons[midx].name(DESC_PLAIN, true).c_str());
         }
 #endif
-        mgrd(m.pos()) = i;
+        env.mgrid(m.pos()) = i;
     }
 }
 
