@@ -1246,7 +1246,7 @@ static void _grab_followers()
                     continue;
 
                 visited[ai->x][ai->y] = true;
-                if (_grab_follower_at(*ai, can_follow))
+                if (_grab_follower_at(*ai))
                     places[!place_set].push_back(*ai);
             }
         }
