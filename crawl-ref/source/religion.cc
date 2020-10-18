@@ -1024,7 +1024,7 @@ static bool _give_nemelex_gift(bool forced = false)
                 rare_weight,   DECK_RARITY_RARE,
                 legend_weight, DECK_RARITY_LEGENDARY);
 
-            item_def &deck(mitm[thing_created]);
+            item_def &deck(env.item[thing_created]);
 
             deck.deck_rarity = rarity;
             deck.flags |= ISFLAG_KNOW_TYPE;
@@ -1548,7 +1548,7 @@ static bool _gift_sif_kiku_gift(bool forced)
         // Replace a Kiku gift by a custom-random book.
         if (you_worship(GOD_KIKUBAAQUDGHA) && gift != BOOK_KIKU_RITUALS)
         {
-            make_book_kiku_gift(mitm[thing_created],
+            make_book_kiku_gift(env.item[thing_created],
                                 gift == BOOK_NECROMANCY);
         }
         if (thing_created == NON_ITEM)

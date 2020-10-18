@@ -38,7 +38,7 @@ void give_specific_item(monster* mon, int thing, bool on_spawn)
     if (thing == NON_ITEM || thing == -1)
         return;
 
-    item_def &mthing = mitm[thing];
+    item_def &mthing = env.item[thing];
     ASSERT(mthing.defined());
 
     dprf(DIAG_MONPLACE, "Giving %s to %s...", mthing.name(DESC_PLAIN).c_str(),
@@ -94,7 +94,7 @@ void give_specific_item(monster* mon, const item_def& tpl, bool on_spawn)
     if (thing == NON_ITEM)
         return;
 
-    mitm[thing] = tpl;
+    env.item[thing] = tpl;
     give_specific_item(mon, thing, on_spawn);
 }
 
@@ -116,7 +116,7 @@ static void _give_book(monster* mon, int level)
 
     // Maybe give Roxanne a random book containing Statue Form instead.
     if (coinflip())
-        make_book_roxanne_special(&mitm[thing_created]);
+        make_book_roxanne_special(&env.item[thing_created]);
 
     give_specific_item(mon, thing_created);
 }
@@ -157,7 +157,7 @@ static void _give_jewels(monster* mon, int level)
     if (idx == NON_ITEM)
         return;
 
-    item_def item = mitm[idx];
+    item_def item = env.item[idx];
 
     if (fragile)
     {
@@ -203,7 +203,7 @@ static void _give_wand(monster* mon, int level, bool summoned)
     if (mon->type == MONS_CRAZY_YIUF)
     { 
         const int idx = items(false, OBJ_WANDS, WAND_RANDOM_EFFECTS, level);
-        item_def& wand = mitm[idx];
+        item_def& wand = env.item[idx];
         wand.flags = 0;
         wand.charges = 1 + random2(2);
         give_specific_item(mon, idx);
@@ -211,7 +211,7 @@ static void _give_wand(monster* mon, int level, bool summoned)
     }
 
     int idx = items(false, OBJ_WANDS, OBJ_RANDOM, level);
-    item_def& wand = mitm[idx];
+    item_def& wand = env.item[idx];
     
     while (idx == NON_ITEM || no_high_tier && is_high_tier_wand(wand.sub_type) || !mon->likes_wand(wand)
         || (wand.sub_type == WAND_HEAL_WOUNDS && !one_chance_in(10)) // Keep Heal Wounds rare.
@@ -219,7 +219,7 @@ static void _give_wand(monster* mon, int level, bool summoned)
     {
         destroy_item(idx, true);
         idx = items(false, OBJ_WANDS, OBJ_RANDOM, level);
-        wand = mitm[idx];
+        wand = env.item[idx];
     }
 
     wand.flags = 0;
@@ -239,7 +239,7 @@ static void _give_potion(monster* mon, int level)
         if (thing_created == NON_ITEM)
             return;
 
-        mitm[thing_created].flags = ISFLAG_KNOW_TYPE;
+        env.item[thing_created].flags = ISFLAG_KNOW_TYPE;
         give_specific_item(mon, thing_created);
     }
     else if ((mons_is_unique(mon->type) && one_chance_in(4)
@@ -251,7 +251,7 @@ static void _give_potion(monster* mon, int level)
         if (thing_created == NON_ITEM)
             return;
 
-        mitm[thing_created].flags = 0;
+        env.item[thing_created].flags = 0;
         give_specific_item(mon, thing_created);
     }
 }
@@ -1371,20 +1371,20 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
 
     if (fragile)
     {
-        if (is_unrandom_artefact(mitm[thing_created]))
-            curse_item(mitm[thing_created]);
+        if (is_unrandom_artefact(env.item[thing_created]))
+            curse_item(env.item[thing_created]);
         else
-            apply_curse(mitm[thing_created], ARTP_FRAGILE, true);
+            apply_curse(env.item[thing_created], ARTP_FRAGILE, true);
     }
 
     // Copy temporary item into the item array if were forcing it, since
     // items() won't have done it for us.
     if (force_item)
-        mitm[thing_created] = item;
+        env.item[thing_created] = item;
     else
-        mitm[thing_created].flags |= item.flags;
+        env.item[thing_created].flags |= item.flags;
 
-    item_def &i = mitm[thing_created];
+    item_def &i = env.item[thing_created];
     if (melee_only && (i.base_type != OBJ_WEAPONS || is_range_weapon(i)))
     {
         destroy_item(thing_created);
@@ -1400,12 +1400,12 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         set_ident_flags(i, ISFLAG_KNOW_CURSE); // despoiler
     }
 
-    if (!is_artefact(mitm[thing_created]) && !floor_tile.empty())
+    if (!is_artefact(env.item[thing_created]) && !floor_tile.empty())
     {
         ASSERT(!equip_tile.empty());
-        mitm[thing_created].props["item_tile_name"] = floor_tile;
-        mitm[thing_created].props["worn_tile_name"] = equip_tile;
-        bind_item_tile(mitm[thing_created]);
+        env.item[thing_created].props["item_tile_name"] = floor_tile;
+        env.item[thing_created].props["worn_tile_name"] = equip_tile;
+        bind_item_tile(env.item[thing_created]);
     }
 
     return thing_created;
@@ -1446,7 +1446,7 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
     if (second_weapon)
         return;
 
-    const item_def &i = mitm[thing_created];
+    const item_def &i = env.item[thing_created];
 
     if ((i.base_type != OBJ_WEAPONS
                 && i.base_type != OBJ_STAVES
@@ -1476,18 +1476,18 @@ item_def* make_item_for_monster(monster* mons, object_class_type base,
     if (thing_created == NON_ITEM)
         return 0;
 
-    mitm[thing_created].flags |= flags;
+    env.item[thing_created].flags |= flags;
 
     if (fragile)
     {
-        if (is_unrandom_artefact(mitm[thing_created]))
-            curse_item(mitm[thing_created]);
+        if (is_unrandom_artefact(env.item[thing_created]))
+            curse_item(env.item[thing_created]);
         else
-            apply_curse(mitm[thing_created], ARTP_FRAGILE, true);
+            apply_curse(env.item[thing_created], ARTP_FRAGILE, true);
     }
 
     give_specific_item(mons, thing_created, on_spawn);
-    return &mitm[thing_created];
+    return &env.item[thing_created];
 }
 
 static void _give_shield(monster* mon, int level)
@@ -1702,7 +1702,7 @@ static void _give_shield(monster* mon, int level)
         if (thing_created == NON_ITEM)
             break;
 
-        mitm[thing_created] = shld;
+        env.item[thing_created] = shld;
         give_specific_item(mon, thing_created);
     }
         break;
@@ -2158,17 +2158,17 @@ int make_mons_armour(monster_type type, int level)
     // Copy temporary item into the item array if were forcing it, since
     // items() won't have done it for us.
     if (force_item)
-        mitm[thing_created] = item;
+        env.item[thing_created] = item;
 
     if (fragile)
     {
-        if (is_unrandom_artefact(mitm[thing_created]))
-            curse_item(mitm[thing_created]);
+        if (is_unrandom_artefact(env.item[thing_created]))
+            curse_item(env.item[thing_created]);
         else
-            apply_curse(mitm[thing_created], ARTP_FRAGILE, true);
+            apply_curse(env.item[thing_created], ARTP_FRAGILE, true);
     }
 
-    item_def &i = mitm[thing_created];
+    item_def &i = env.item[thing_created];
 
     if (force_item)
         item_set_appearance(i);

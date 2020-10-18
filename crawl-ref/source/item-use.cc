@@ -4508,13 +4508,13 @@ void read_scroll(item_def& scroll)
 
 void tile_item_use_floor(int idx)
 {
-    if (mitm[idx].is_type(OBJ_CORPSES, CORPSE_BODY))
-        butchery(&mitm[idx]);
+    if (env.item[idx].is_type(OBJ_CORPSES, CORPSE_BODY))
+        butchery(&env.item[idx]);
 }
 
 void tile_item_pickup(int idx, bool part)
 {
-    if (item_is_stationary(mitm[idx]))
+    if (item_is_stationary(env.item[idx]))
     {
         mpr("You can't pick that up.");
         return;
@@ -4547,8 +4547,8 @@ void tile_item_drop(int idx, bool partdrop)
 
 void tile_item_eat_floor(int idx)
 {
-    if (can_eat(mitm[idx], false))
-        eat_item(mitm[idx]);
+    if (can_eat(env.item[idx], false))
+        eat_item(env.item[idx]);
 }
 
 void tile_item_use_secondary(int idx)

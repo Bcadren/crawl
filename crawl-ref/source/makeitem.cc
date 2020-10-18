@@ -2123,7 +2123,7 @@ static void _generate_misc_item(item_def& item, int force_type, int force_ego)
  */
 void squash_plusses(int item_slot)
 {
-    item_def& item(mitm[item_slot]);
+    item_def& item(env.item[item_slot]);
 
     ASSERT(!is_deck(item));
     item.plus         = 0;
@@ -2263,7 +2263,7 @@ int items(bool allow_uniques,
     if (p == NON_ITEM)
         return NON_ITEM;
 
-    item_def& item(mitm[p]);
+    item_def& item(env.item[p]);
 
     const bool force_good = item_level >= ISPEC_GIFT;
 
@@ -2330,8 +2330,8 @@ int items(bool allow_uniques,
         const int unrand_id = -force_ego;
         if (get_unique_item_status(unrand_id) == UNIQ_NOT_EXISTS)
         {
-            make_item_unrandart(mitm[p], unrand_id);
-            ASSERT(mitm[p].is_valid());
+            make_item_unrandart(env.item[p], unrand_id);
+            ASSERT(env.item[p].is_valid());
             return p;
         }
 
@@ -2441,7 +2441,7 @@ int items(bool allow_uniques,
     item.link = NON_ITEM;
 
     // Note that item might be invalidated now, since p could have changed.
-    ASSERTM(mitm[p].is_valid(),
+    ASSERTM(env.item[p].is_valid(),
             "idx: %d, qty: %hd, base: %d, sub: %d, spe: %d, col: %d, rnd: %d",
             item.index(), item.quantity,
             (int)item.base_type, (int)item.sub_type, item.special,

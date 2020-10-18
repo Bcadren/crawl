@@ -614,7 +614,7 @@ static void _try_brand_switch(const int item_index)
     if (item_index == NON_ITEM)
         return;
 
-    item_def &item(mitm[item_index]);
+    item_def &item(env.item[item_index]);
 
     if (item.base_type != OBJ_WEAPONS)
         return;
@@ -651,7 +651,7 @@ static void _xom_make_item(object_class_type base, int subtype, int power)
 
     static char gift_buf[100];
     snprintf(gift_buf, sizeof(gift_buf), "god gift: %s",
-             mitm[thing_created].name(DESC_PLAIN).c_str());
+             env.item[thing_created].name(DESC_PLAIN).c_str());
     take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, gift_buf), true);
 
     canned_msg(MSG_SOMETHING_APPEARS);
@@ -687,7 +687,7 @@ static void _xom_acquirement(int /*sever*/)
     _try_brand_switch(item_index);
 
     const string note = make_stringf("god gift: %s",
-                                     mitm[item_index].name(DESC_PLAIN).c_str());
+                                     env.item[item_index].name(DESC_PLAIN).c_str());
     take_note(Note(NOTE_XOM_EFFECT, you.piety, -1, note), true);
 
     stop_running();
@@ -793,7 +793,7 @@ static bool _choose_chaos_upgrade(const monster& mon)
 
             if (midx == NON_ITEM)
                 continue;
-            const item_def &item(mitm[midx]);
+            const item_def &item(env.item[midx]);
 
             // The monster already has a chaos weapon. Give the upgrade to
             // a different monster.
@@ -1258,7 +1258,7 @@ static void _xom_snakes_to_sticks(int /*sever*/)
         if (item_slot == NON_ITEM)
             continue;
 
-        item_def &item(mitm[item_slot]);
+        item_def &item(env.item[item_slot]);
 
         // Always limit the quantity to 1.
         item.quantity = 1;
@@ -1290,7 +1290,7 @@ static monster* _find_monster_with_animateable_weapon()
         if (mweap == NON_ITEM)
             continue;
 
-        const item_def weapon = mitm[mweap];
+        const item_def weapon = env.item[mweap];
 
         if (weapon.base_type == OBJ_WEAPONS
             && !(weapon.flags & ISFLAG_SUMMONED)
@@ -1338,13 +1338,13 @@ static void _xom_animate_monster_weapon(int sever)
 
     mprf("%s %s dances into the air!",
          apostrophise(mon->name(DESC_THE)).c_str(),
-         mitm[wpn].name(DESC_PLAIN).c_str());
+         env.item[wpn].name(DESC_PLAIN).c_str());
 
     destroy_item(dancing->inv[MSLOT_WEAPON]);
 
     dancing->inv[MSLOT_WEAPON] = wpn;
-    mitm[wpn].set_holding_monster(*dancing);
-    dancing->colour = mitm[wpn].get_colour();
+    env.item[wpn].set_holding_monster(*dancing);
+    dancing->colour = env.item[wpn].get_colour();
 }
 
 static void _xom_give_mutations(bool good)

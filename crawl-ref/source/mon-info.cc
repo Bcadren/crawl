@@ -530,7 +530,7 @@ monster_info::monster_info(const monster* m, int milev)
             && m->inv[MSLOT_WEAPON] != NON_ITEM)
         {
             inv[MSLOT_WEAPON].reset(
-                new item_def(get_item_info(mitm[m->inv[MSLOT_WEAPON]])));
+                new item_def(get_item_info(env.item[m->inv[MSLOT_WEAPON]])));
         }
         return;
     }
@@ -690,7 +690,7 @@ monster_info::monster_info(const monster* m, int milev)
             ok = true;
         else if (i == MSLOT_WAND)
             ok = true;
-        else if (m->props.exists("ash_id") && item_type_known(mitm[m->inv[i]]))
+        else if (m->props.exists("ash_id") && item_type_known(env.item[m->inv[i]]))
             ok = true;
         else if (i == MSLOT_ALT_WEAPON)
             ok = wields_two_weapons();
@@ -699,7 +699,7 @@ monster_info::monster_info(const monster* m, int milev)
         else
             ok = true;
         if (ok)
-            inv[i].reset(new item_def(get_item_info(mitm[m->inv[i]])));
+            inv[i].reset(new item_def(get_item_info(env.item[m->inv[i]])));
     }
 
     fire_blocker = DNGN_UNSEEN;

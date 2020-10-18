@@ -1282,7 +1282,7 @@ static void _do_lost_monsters()
 // followers won't be considered lost.
 static void _do_lost_items()
 {
-    for (const auto &item : mitm)
+    for (const auto &item : env.item)
         if (item.defined() && item.pos != ITEM_IN_INVENTORY)
             item_was_lost(item);
 }
@@ -1291,9 +1291,9 @@ static void _do_lost_items()
 static void _fedhas_rot_all_corpses(const level_id& old_level)
 {
     bool messaged = false;
-    for (size_t mitm_index = 0; mitm_index < mitm.size(); ++mitm_index)
+    for (size_t mitm_index = 0; mitm_index < env.item.size(); ++mitm_index)
     {
-        item_def &item = mitm[mitm_index];
+        item_def &item = env.item[mitm_index];
         if (!item.defined()
             || !item.is_type(OBJ_CORPSES, CORPSE_BODY)
             || item.props.exists(CORPSE_NEVER_DECAYS))

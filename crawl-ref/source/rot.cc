@@ -355,7 +355,7 @@ void rot_floor_items(int elapsedTime)
 
     for (int mitm_index = 0; mitm_index < MAX_ITEMS; ++mitm_index)
     {
-        item_def &it = mitm[mitm_index];
+        item_def &it = env.item[mitm_index];
 
         if (is_shop_item(it) || !_item_needs_rot_check(it))
             continue;

@@ -2505,7 +2505,7 @@ bool final_book_gift(god_type god)
     {
         return false;
     }
-    set_ident_type(mitm[thing_created], true);
+    set_ident_type(env.item[thing_created], true);
     if (god == GOD_BAHAMUT_TIAMAT)
         mprf(MSGCH_GOD, "<lightgreen>Tiamat grants you a gift!</lightgreen>");
     else

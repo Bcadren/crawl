@@ -532,7 +532,7 @@ void mark_mon_equipment_seen(const monster *mons)
         if (item_id == NON_ITEM)
             continue;
 
-        item_def &item = mitm[item_id];
+        item_def &item = env.item[item_id];
 
         item.flags |= ISFLAG_SEEN;
 

@@ -192,7 +192,7 @@ int InventoryRegion::handle_mouse(wm_mouse_event &event)
             }
             else
             {
-                describe_item(mitm[idx]);
+                describe_item(env.item[idx]);
                 redraw_screen();
                 update_screen();
             }
@@ -310,7 +310,7 @@ bool InventoryRegion::update_tip_text(string& tip)
     vector<command_type> cmd;
     if (m_items[item_idx].flag & TILEI_FLAG_FLOOR)
     {
-        const item_def &item = mitm[idx];
+        const item_def &item = env.item[idx];
 
         if (!item.defined())
             return false;
@@ -577,7 +577,7 @@ bool InventoryRegion::update_alt_text(string &alt)
     const item_def *item;
 
     if (m_items[item_idx].flag & TILEI_FLAG_FLOOR)
-        item = &mitm[idx];
+        item = &env.item[idx];
     else
         item = &you.inv[idx];
 
@@ -619,8 +619,8 @@ void InventoryRegion::draw_tag()
         draw_desc("Next page");
     else if (_is_prev_button(curs_index))
         draw_desc("Previous page");
-    else if (floor && mitm[idx].defined())
-        draw_desc(mitm[idx].name(DESC_PLAIN).c_str());
+    else if (floor && env.item[idx].defined())
+        draw_desc(env.item[idx].name(DESC_PLAIN).c_str());
     else if (!floor && you.inv[idx].defined())
         draw_desc(you.inv[idx].name(DESC_INVENTORY_EQUIP).c_str());
 }
@@ -685,7 +685,7 @@ void InventoryRegion::update()
     memset(inv_shown, 0, sizeof(inv_shown));
 
     int num_ground = 0;
-    for (int i = you.visible_igrd(you.pos()); i != NON_ITEM; i = mitm[i].link)
+    for (int i = you.visible_igrd(you.pos()); i != NON_ITEM; i = env.item[i].link)
         num_ground++;
 
     char32_t c;
@@ -805,16 +805,16 @@ void InventoryRegion::update()
         object_class_type type = item_class_by_sym(c);
 
         for (int i = you.visible_igrd(you.pos()); i != NON_ITEM;
-             i = mitm[i].link)
+             i = env.item[i].link)
         {
             if ((int)m_items.size() >= mx * my * (m_grid_page+1))
                 break;
 
-            if (ground_shown[i] || !show_any && mitm[i].base_type != type)
+            if (ground_shown[i] || !show_any && env.item[i].base_type != type)
                 continue;
 
             InventoryTile desc;
-            _fill_item_info(desc, get_item_info(mitm[i]));
+            _fill_item_info(desc, get_item_info(env.item[i]));
             desc.idx = i;
             ground_shown[i] = true;
 

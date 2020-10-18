@@ -82,34 +82,34 @@ void monster_drop_things(monster* mons,
     {
         int item = mons->inv[i];
 
-        if (item != NON_ITEM && suitable(mitm[item]))
+        if (item != NON_ITEM && suitable(env.item[item]))
         {
-            bool destroy = testbits(mitm[item].flags, ISFLAG_SUMMONED);
-                 destroy |= mitm[item].base_type == OBJ_MISSILES;
-                 destroy |= (mitm[item].base_type != OBJ_BOOKS) && mitm[item].fragile();
+            bool destroy = testbits(env.item[item].flags, ISFLAG_SUMMONED);
+                 destroy |= env.item[item].base_type == OBJ_MISSILES;
+                 destroy |= (env.item[item].base_type != OBJ_BOOKS) && env.item[item].fragile();
             if (destroy)
             {
-                item_was_destroyed(mitm[item]);
+                item_was_destroyed(env.item[item]);
                 destroy_item(item);
             }
             else
             {
-                if (mark_item_origins && mitm[item].defined())
-                    origin_set_monster(mitm[item], mons);
+                if (mark_item_origins && env.item[item].defined())
+                    origin_set_monster(env.item[item], mons);
 
-                mitm[item].props[DROPPER_MID_KEY].get_int() = mons->mid;
+                env.item[item].props[DROPPER_MID_KEY].get_int() = mons->mid;
 
-                if (mitm[item].props.exists("autoinscribe"))
+                if (env.item[item].props.exists("autoinscribe"))
                 {
-                    add_inscription(mitm[item],
-                        mitm[item].props["autoinscribe"].get_string());
-                    mitm[item].props.erase("autoinscribe");
+                    add_inscription(env.item[item],
+                        env.item[item].props["autoinscribe"].get_string());
+                    env.item[item].props.erase("autoinscribe");
                 }
 
                 // Unrands held by fixed monsters would give awfully redundant
                 // messages ("Cerebov hits you with the Sword of Cerebov."),
                 // thus delay identification until drop/death.
-                autoid_unrand(mitm[item]);
+                autoid_unrand(env.item[item]);
 
                 // If a monster is swimming, the items are ALREADY
                 // underwater.

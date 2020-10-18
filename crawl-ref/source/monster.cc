@@ -490,7 +490,7 @@ int monster::has_claws(bool /*allow_tran*/) const
 
 item_def *monster::missiles() const
 {
-    return inv[MSLOT_MISSILE] != NON_ITEM ? &mitm[inv[MSLOT_MISSILE]] : nullptr;
+    return inv[MSLOT_MISSILE] != NON_ITEM ? &env.item[inv[MSLOT_MISSILE]] : nullptr;
 }
 
 item_def *monster::launcher() const
@@ -537,7 +537,7 @@ item_def *monster::weapon(int which_attack) const
             weap = offhand;
     }
 
-    return weap == NON_ITEM ? nullptr : &mitm[weap];
+    return weap == NON_ITEM ? nullptr : &env.item[weap];
 }
 
 /**
@@ -604,7 +604,7 @@ bool monster::can_wield(const item_def& item, bool /*ignore_curse*/,
 
     item_def* weap1 = nullptr;
     if (inv[MSLOT_WEAPON] != NON_ITEM)
-        weap1 = &mitm[inv[MSLOT_WEAPON]];
+        weap1 = &env.item[inv[MSLOT_WEAPON]];
 
     // int       avail_slots = 1;
     item_def* weap2       = nullptr;
@@ -615,7 +615,7 @@ bool monster::can_wield(const item_def& item, bool /*ignore_curse*/,
 
         const int offhand = _mons_offhand_weapon_index(this);
         if (offhand != NON_ITEM)
-            weap2 = &mitm[offhand];
+            weap2 = &env.item[offhand];
     }
 
     // If we're already wielding it, then of course we can wield it.
@@ -633,8 +633,6 @@ bool monster::can_wield(const item_def& item, bool /*ignore_curse*/,
 
         if (two_handed && !ignore_shield)
             return false;
-
-        //_shield = &mitm[inv[MSLOT_SHIELD]];
     }
 
     return could_wield(item, ignore_brand, ignore_transform);
@@ -1154,7 +1152,7 @@ bool monster::pickup(item_def &item, mon_inv_type slot, bool msg)
 
     if (inv[slot] != NON_ITEM)
     {
-        item_def &dest(mitm[inv[slot]]);
+        item_def &dest(env.item[inv[slot]]);
         if (items_stack(item, dest))
         {
             dungeon_events.fire_position_event(
@@ -1206,7 +1204,7 @@ bool monster::drop_item(mon_inv_type eslot, bool msg)
     if (item_index == NON_ITEM)
         return true;
 
-    item_def& pitem = mitm[item_index];
+    item_def& pitem = env.item[item_index];
 
     // Unequip equipped items before dropping them; unequip() prevents
     // cursed items from being removed.
@@ -2161,7 +2159,7 @@ item_def *monster::slot_item(equipment_type eq, bool /*include_melded*/) const
 item_def *monster::mslot_item(mon_inv_type mslot) const
 {
     const int mi = (mslot == NUM_MONSTER_SLOTS) ? NON_ITEM : inv[mslot];
-    return mi == NON_ITEM ? nullptr : &mitm[mi];
+    return mi == NON_ITEM ? nullptr : &env.item[mi];
 }
 
 item_def *monster::shield() const
@@ -3842,20 +3840,20 @@ int monster::strength_bonus() const
         const int shld = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS
-            && get_armour_ego_type(mitm[armour]) == SPARM_STRENGTH)
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS
+            && get_armour_ego_type(env.item[armour]) == SPARM_STRENGTH)
         {
             retval += 3;
         }
 
-        if (shld != NON_ITEM && (mitm[shld].base_type == OBJ_ARMOURS ||
-            mitm[shld].base_type == OBJ_SHIELDS && !is_hybrid(mitm[shld].sub_type))
-            && get_armour_ego_type(mitm[shld]) == SPARM_STRENGTH)
+        if (shld != NON_ITEM && (env.item[shld].base_type == OBJ_ARMOURS ||
+            env.item[shld].base_type == OBJ_SHIELDS && !is_hybrid(env.item[shld].sub_type))
+            && get_armour_ego_type(env.item[shld]) == SPARM_STRENGTH)
         {
             retval += 3;
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].is_type(OBJ_JEWELLERY, RING_STRENGTH))
+        if (jewellery != NON_ITEM && env.item[jewellery].is_type(OBJ_JEWELLERY, RING_STRENGTH))
             retval += 5;
 
         // Don't let this go too negative.
@@ -3876,13 +3874,13 @@ int monster::intelligence_bonus() const
         const int armour = inv[MSLOT_ARMOUR];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS
-            && get_armour_ego_type(mitm[armour]) == SPARM_INTELLIGENCE)
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS
+            && get_armour_ego_type(env.item[armour]) == SPARM_INTELLIGENCE)
         {
             retval += 3;
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].is_type(OBJ_JEWELLERY, RING_INTELLIGENCE))
+        if (jewellery != NON_ITEM && env.item[jewellery].is_type(OBJ_JEWELLERY, RING_INTELLIGENCE))
             retval += 5;
 
         // Don't let this go too negative.
@@ -3903,13 +3901,13 @@ int monster::dexterity_bonus() const
         const int armour = inv[MSLOT_ARMOUR];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS
-            && get_armour_ego_type(mitm[armour]) == SPARM_DEXTERITY)
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS
+            && get_armour_ego_type(env.item[armour]) == SPARM_DEXTERITY)
         {
             retval += 3;
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].is_type(OBJ_JEWELLERY, RING_DEXTERITY))
+        if (jewellery != NON_ITEM && env.item[jewellery].is_type(OBJ_JEWELLERY, RING_DEXTERITY))
             retval += 5;
 
         // Don't let this go too negative.
@@ -3934,17 +3932,17 @@ int monster::res_fire(bool /*mount*/) const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
-            u += get_armour_res_fire(mitm[armour], false);
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS)
+            u += get_armour_res_fire(env.item[armour], false);
 
-        if (shld != NON_ITEM && (mitm[shld].base_type == OBJ_ARMOURS ||
-            mitm[shld].base_type == OBJ_SHIELDS && !is_hybrid(mitm[shld].sub_type)))
+        if (shld != NON_ITEM && (env.item[shld].base_type == OBJ_ARMOURS ||
+            env.item[shld].base_type == OBJ_SHIELDS && !is_hybrid(env.item[shld].sub_type)))
         {
-            u += get_armour_res_fire(mitm[shld], false);
+            u += get_armour_res_fire(env.item[shld], false);
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
-            u += get_jewellery_res_fire(mitm[jewellery], false);
+        if (jewellery != NON_ITEM && env.item[jewellery].base_type == OBJ_JEWELLERY)
+            u += get_jewellery_res_fire(env.item[jewellery], false);
 
         const item_def *w = primary_weapon();
         if (w && w->is_type(OBJ_STAVES, STAFF_FIRE))
@@ -4001,17 +3999,17 @@ int monster::res_cold(bool /*mount*/) const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
-            u += get_armour_res_cold(mitm[armour], false);
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS)
+            u += get_armour_res_cold(env.item[armour], false);
 
-        if (shld != NON_ITEM && (mitm[shld].base_type == OBJ_ARMOURS ||
-            mitm[shld].base_type == OBJ_SHIELDS && !is_hybrid(mitm[shld].sub_type)))
+        if (shld != NON_ITEM && (env.item[shld].base_type == OBJ_ARMOURS ||
+            env.item[shld].base_type == OBJ_SHIELDS && !is_hybrid(env.item[shld].sub_type)))
         {
-            u += get_armour_res_cold(mitm[shld], false);
+            u += get_armour_res_cold(env.item[shld], false);
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
-            u += get_jewellery_res_cold(mitm[jewellery], false);
+        if (jewellery != NON_ITEM && env.item[jewellery].base_type == OBJ_JEWELLERY)
+            u += get_jewellery_res_cold(env.item[jewellery], false);
 
         const item_def *w = primary_weapon();
         if (w && w->is_type(OBJ_STAVES, STAFF_COLD))
@@ -4054,11 +4052,11 @@ int monster::res_elec(bool /*mount*/) const
         const int armour    = inv[MSLOT_ARMOUR];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
-            u += get_armour_res_elec(mitm[armour], false);
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS)
+            u += get_armour_res_elec(env.item[armour], false);
 
-        if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
-            u += get_jewellery_res_elec(mitm[jewellery], false);
+        if (jewellery != NON_ITEM && env.item[jewellery].base_type == OBJ_JEWELLERY)
+            u += get_jewellery_res_elec(env.item[jewellery], false);
 
         const item_def *w = primary_weapon();
         if (w && w->is_type(OBJ_STAVES, STAFF_AIR))
@@ -4156,17 +4154,17 @@ int monster::res_poison(bool /*mount*/) const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
-            u += get_armour_res_poison(mitm[armour], false);
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS)
+            u += get_armour_res_poison(env.item[armour], false);
 
-        if (shld != NON_ITEM && (mitm[shld].base_type == OBJ_ARMOURS ||
-            mitm[shld].base_type == OBJ_SHIELDS && !is_hybrid(mitm[shld].sub_type)))
+        if (shld != NON_ITEM && (env.item[shld].base_type == OBJ_ARMOURS ||
+            env.item[shld].base_type == OBJ_SHIELDS && !is_hybrid(env.item[shld].sub_type)))
         {
-            u += get_armour_res_poison(mitm[shld], false);
+            u += get_armour_res_poison(env.item[shld], false);
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
-            u += get_jewellery_res_poison(mitm[jewellery], false);
+        if (jewellery != NON_ITEM && env.item[jewellery].base_type == OBJ_JEWELLERY)
+            u += get_jewellery_res_poison(env.item[jewellery], false);
 
         const item_def *w = primary_weapon();
         if (w && w->is_type(OBJ_STAVES, STAFF_POISON))
@@ -4255,17 +4253,17 @@ int monster::res_negative_energy(bool /*mount*/) const
         const int shld      = inv[MSLOT_SHIELD];
         const int jewellery = inv[MSLOT_JEWELLERY];
 
-        if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS)
-            u += get_armour_life_protection(mitm[armour], false);
+        if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS)
+            u += get_armour_life_protection(env.item[armour], false);
 
-        if (shld != NON_ITEM && (mitm[shld].base_type == OBJ_ARMOURS ||
-            mitm[shld].base_type == OBJ_SHIELDS && !is_hybrid(mitm[shld].sub_type)))
+        if (shld != NON_ITEM && (env.item[shld].base_type == OBJ_ARMOURS ||
+            env.item[shld].base_type == OBJ_SHIELDS && !is_hybrid(env.item[shld].sub_type)))
         {
-            u += get_armour_life_protection(mitm[shld], false);
+            u += get_armour_life_protection(env.item[shld], false);
         }
 
-        if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY)
-            u += get_jewellery_life_protection(mitm[jewellery], false);
+        if (jewellery != NON_ITEM && env.item[jewellery].base_type == OBJ_JEWELLERY)
+            u += get_jewellery_life_protection(env.item[jewellery], false);
 
         const item_def *w = primary_weapon();
         if (w && w->is_type(OBJ_STAVES, STAFF_DEATH))
@@ -4302,7 +4300,7 @@ bool monster::res_petrify(bool /*mt*/) const
 {
     const int armour = inv[MSLOT_ARMOUR];
 
-    if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS && mitm[armour].brand == SPARM_SOFT)
+    if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS && env.item[armour].brand == SPARM_SOFT)
         return true;
 
     return is_insubstantial() || get_mons_resist(*this, MR_RES_PETRIFY) > 0;
@@ -4394,23 +4392,23 @@ int monster::res_magic(bool calc_unid) const
     // XXX: should also include artefacts mr props
     // (remove ", false" and add appropriate flag checks for calc_unid)
 
-    if (armour != NON_ITEM && mitm[armour].base_type == OBJ_ARMOURS
-        && (calc_unid || (mitm[armour].flags & ISFLAG_KNOW_TYPE)))
+    if (armour != NON_ITEM && env.item[armour].base_type == OBJ_ARMOURS
+        && (calc_unid || (env.item[armour].flags & ISFLAG_KNOW_TYPE)))
     {
-        u += get_armour_res_magic(mitm[armour], false);
+        u += get_armour_res_magic(env.item[armour], false);
     }
 
-    if (shld != NON_ITEM  && (mitm[shld].base_type == OBJ_ARMOURS ||
-        mitm[shld].base_type == OBJ_SHIELDS && !is_hybrid(mitm[shld].sub_type))
-        && (calc_unid || (mitm[shld].flags & ISFLAG_KNOW_TYPE)))
+    if (shld != NON_ITEM  && (env.item[shld].base_type == OBJ_ARMOURS ||
+        env.item[shld].base_type == OBJ_SHIELDS && !is_hybrid(env.item[shld].sub_type))
+        && (calc_unid || (env.item[shld].flags & ISFLAG_KNOW_TYPE)))
     {
-        u += get_armour_res_magic(mitm[shld], false);
+        u += get_armour_res_magic(env.item[shld], false);
     }
 
-    if (jewellery != NON_ITEM && mitm[jewellery].base_type == OBJ_JEWELLERY
+    if (jewellery != NON_ITEM && env.item[jewellery].base_type == OBJ_JEWELLERY
         && calc_unid) // XXX: can you ever see monster jewellery?
     {
-        u += get_jewellery_res_magic(mitm[jewellery], false);
+        u += get_jewellery_res_magic(env.item[jewellery], false);
     }
 
     if (has_ench(ENCH_RAISED_MR)) //trog's hand
@@ -7111,9 +7109,9 @@ void monster::steal_item_from_player()
         if (inv[MSLOT_GOLD] != NON_ITEM)
         {
             // If Maurice already's got some gold, simply increase the amount.
-            mitm[inv[MSLOT_GOLD]].quantity += stolen_amount;
+            env.item[inv[MSLOT_GOLD]].quantity += stolen_amount;
             // Don't re-tithe stolen gold under Zin.
-            mitm[inv[MSLOT_GOLD]].tithe_state = (you_worship(GOD_ZIN))
+            env.item[inv[MSLOT_GOLD]].tithe_state = (you_worship(GOD_ZIN))
                                                 ? TS_NO_TITHE : TS_NO_PIETY;
         }
         else
@@ -7123,7 +7121,7 @@ void monster::steal_item_from_player()
             if (idx == NON_ITEM)
                 return;
 
-            item_def &new_item = mitm[idx];
+            item_def &new_item = env.item[idx];
             new_item.base_type = OBJ_GOLD;
             new_item.sub_type  = 0;
             // Don't re-tithe stolen gold under Zin.
@@ -7198,7 +7196,7 @@ item_def* monster::take_item(int steal_what, mon_inv_type mslot,
     if (index == NON_ITEM)
         return nullptr;
 
-    item_def &new_item = mitm[index];
+    item_def &new_item = env.item[index];
 
     // Copy item.
     new_item = you.inv[steal_what];

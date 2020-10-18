@@ -267,7 +267,7 @@ static void _mark_net_trapping(const coord_def& where)
     {
         net = get_trapping_net(where, false);
         if (net != NON_ITEM)
-            _maybe_split_nets(mitm[net], where);
+            _maybe_split_nets(env.item[net], where);
     }
 }
 
@@ -1101,13 +1101,13 @@ void free_self_from_net()
         return;
     }
 
-    int hold = mitm[net].net_durability;
+    int hold = env.item[net].net_durability;
     dprf("net.net_durability: %d", hold);
 
     const int damage = 1 + random2(4);
 
     hold -= damage;
-    mitm[net].net_durability = hold;
+    env.item[net].net_durability = hold;
 
     if (hold < NET_MIN_DURABILITY)
     {
@@ -1162,7 +1162,7 @@ void mons_clear_trapping_net(monster* mon)
 
 void free_stationary_net(int item_index)
 {
-    item_def &item = mitm[item_index];
+    item_def &item = env.item[item_index];
     if (item.is_type(OBJ_MISSILES, MI_THROWING_NET))
     {
         const coord_def pos = item.pos;
@@ -1513,15 +1513,15 @@ void handle_items_on_shaft(const coord_def& pos)
 
     while (o != NON_ITEM)
     {
-        int next = mitm[o].link;
+        int next = env.item[o].link;
 
-        if (mitm[o].defined() && !item_is_stationary_net(mitm[o]))
+        if (env.item[o].defined() && !item_is_stationary_net(env.item[o]))
         {
             if (env.map_knowledge(pos).visible())
             {
                 mprf("%s fall%s through the shaft.",
-                     mitm[o].name(DESC_INVENTORY).c_str(),
-                     mitm[o].quantity == 1 ? "s" : "");
+                    env.item[o].name(DESC_INVENTORY).c_str(),
+                    env.item[o].quantity == 1 ? "s" : "");
 
                 env.map_knowledge(pos).clear_item();
                 StashTrack.update_stash(pos);
@@ -1529,12 +1529,12 @@ void handle_items_on_shaft(const coord_def& pos)
 
             // Item will be randomly placed on the destination level.
             unlink_item(o);
-            mitm[o].pos = INVALID_COORD;
-            add_item_to_transit(dest, mitm[o]);
+            env.item[o].pos = INVALID_COORD;
+            add_item_to_transit(dest, env.item[o]);
 
-            mitm[o].base_type = OBJ_UNASSIGNED;
-            mitm[o].quantity = 0;
-            mitm[o].props.clear();
+            env.item[o].base_type = OBJ_UNASSIGNED;
+            env.item[o].quantity = 0;
+            env.item[o].props.clear();
         }
 
         o = next;

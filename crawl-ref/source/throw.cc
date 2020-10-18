@@ -613,7 +613,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
             typ = fires_ammo_type(*you.weapon(0));
         else typ = random_stone();
         t = items(false, OBJ_MISSILES, typ, 1, SPMSL_NORMAL);
-        thrown = &mitm[t];
+        thrown = &env.item[t];
         thrown->quantity = 1;
         thrown->brand = SPMSL_NORMAL;
     }
@@ -910,7 +910,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     bool returning = false;
 
     // Some initial convenience & initializations.
-    ASSERT(mitm[msl].base_type == OBJ_MISSILES);
+    ASSERT(env.item[msl].base_type == OBJ_MISSILES);
 
     const int weapon    = mons->inv[MSLOT_WEAPON];
 
@@ -919,14 +919,14 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     if (!teleport)
     {
         const int energy = mons->action_energy(EUT_MISSILE);
-        const int delay = mons->attack_delay(&mitm[msl]).roll();
+        const int delay = mons->attack_delay(&env.item[msl]).roll();
         ASSERT(energy > 0);
         ASSERT(delay > 0);
         mons->speed_increment -= div_rand_round(energy * delay, 10);
     }
 
     // Dropping item copy, since the launched item might be different.
-    item_def item = mitm[msl];
+    item_def item = env.item[msl];
     item.quantity = 1;
 
     if (_setup_missile_beam(mons, beam, item, ammo_name, returning))
@@ -939,7 +939,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
 
     launch_retval projected =
         is_launched(mons, mons->mslot_item(MSLOT_WEAPON), mons->mslot_item(MSLOT_WEAPON),
-                    mitm[msl]);
+                    env.item[msl]);
 
     if (projected == launch_retval::THROWN)
         returning = returning && !teleport;
@@ -949,11 +949,11 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     if (mons->observable())
     {
         if (projected == launch_retval::LAUNCHED
-               && item_type_known(mitm[weapon])
+               && item_type_known(env.item[weapon])
             || projected == launch_retval::THROWN
-               && mitm[msl].base_type == OBJ_MISSILES)
+               && env.item[msl].base_type == OBJ_MISSILES)
         {
-            set_ident_flags(mitm[msl], ISFLAG_KNOW_TYPE);
+            set_ident_flags(env.item[msl], ISFLAG_KNOW_TYPE);
             set_ident_flags(item, ISFLAG_KNOW_TYPE);
         }
     }

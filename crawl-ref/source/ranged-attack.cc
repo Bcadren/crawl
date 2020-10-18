@@ -261,7 +261,7 @@ bool ranged_attack::handle_phase_end()
         if (attack_count > 1)
             x = MI_DOUBLE_BOLT;
         int i = items(false, OBJ_MISSILES, x, 1);
-        item_def item = mitm[i];
+        item_def item = env.item[i];
         item.quantity = 1;
         continuation.item = &item;
         continuation.aux_source.clear();
@@ -278,7 +278,7 @@ bool ranged_attack::handle_phase_end()
         continuation.range = 3;
         continuation.source = defender->pos();
         int i = items(false, OBJ_MISSILES, MI_SLING_BULLET, 1);
-        item_def item = mitm[i];
+        item_def item = env.item[i];
         item.quantity = 1;
         continuation.item = &item;
         continuation.aux_source.clear();

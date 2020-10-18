@@ -378,7 +378,7 @@ static void _do_one_fsim_round(monster &mon, fight_data &fd, bool defend, int fo
                     is_range_weapon(*iweap))
         {
             int t = get_mitm_slot();
-            item_def * thrown = &mitm[t];
+            item_def * thrown = &env.item[t];
             thrown->base_type = OBJ_MISSILES;
             thrown->sub_type  = fires_ammo_type(*iweap);
             thrown->quantity  = 1;

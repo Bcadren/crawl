@@ -1037,7 +1037,7 @@ static bool _handle_scroll(monster& mons)
         for (int tries = 3; tries > 0; --tries)
         {
             int x = items(true, type, OBJ_RANDOM, ISPEC_GIFT);
-            item_def &item = mitm[x];
+            item_def &item = env.item[x];
             give_specific_item(&mons, x, false);
             if (item.defined())
             {
@@ -1052,7 +1052,7 @@ static bool _handle_scroll(monster& mons)
         if (!success)
         {
             int x = get_mitm_slot();
-            item_def &item = mitm[x];
+            item_def &item = env.item[x];
             item.base_type = OBJ_GOLD;
             item.quantity = acquire_gold_amt();
             simple_monster_message(mons, " didn't like any of the acquirement options so just took some gold.");
@@ -1094,7 +1094,7 @@ static bool _handle_scroll(monster& mons)
         }
         else if (mons.inv[MSLOT_ARMOUR] != NON_ITEM)
         {
-            item_def &item = mitm[mons.inv[MSLOT_ARMOUR]];
+            item_def &item = env.item[mons.inv[MSLOT_ARMOUR]];
             if (!is_artefact(item) && armour_is_enchantable(item))
             {
                 simple_monster_message(mons, " reads a scroll.");
@@ -1458,7 +1458,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     case SPELL_THROW_BLOWGUN:
     {
         m = items(false, OBJ_MISSILES, MI_NEEDLE, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         if (x_chance_in_y(mons->get_experience_level(), 25))
         {
             missile->brand = random_choose_weighted(60, SPMSL_CURARE,
@@ -1473,7 +1473,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     case SPELL_THROW_CURARE:
     {
         m = items(false, OBJ_MISSILES, MI_NEEDLE, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         if (x_chance_in_y(mons->get_experience_level(), 25))
         {
             missile->brand = random_choose_weighted(5, SPMSL_PETRIFICATION,
@@ -1487,7 +1487,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     case SPELL_THROW_JAVELIN:
     {
         m = items(false, OBJ_MISSILES, MI_JAVELIN, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         if (x_chance_in_y(mons->get_experience_level(), 25))
         {
             missile->brand = random_choose_weighted(52, SPMSL_PENETRATION,
@@ -1502,7 +1502,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     case SPELL_THROW_TOMAHAWK:
     {
         m = items(false, OBJ_MISSILES, MI_TOMAHAWK, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         if (x_chance_in_y(mons->get_experience_level(), 25))
         {
             missile->brand = random_choose_weighted(15, SPMSL_POISONED,
@@ -1518,7 +1518,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     case SPELL_THROW_DISPERSAL:
     {
         m = items(false, OBJ_MISSILES, MI_TOMAHAWK, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         missile->brand = SPMSL_DISPERSAL;
     }
     break;
@@ -1537,7 +1537,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
                 return false;
         }
         m = items(false, OBJ_MISSILES, MI_THROWING_NET, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         missile->brand = SPMSL_NORMAL;
     }
     break;
@@ -1545,7 +1545,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     {
         int stone = random_stone();
         m = items(false, OBJ_MISSILES, stone, 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         missile->brand = SPMSL_NORMAL;
     }
     break;
@@ -1555,7 +1555,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
         if (!launcher)
             return false;
         m = items(false, OBJ_MISSILES, fires_ammo_type(*launcher), 1);
-        missile = &mitm[m];
+        missile = &env.item[m];
         missile->brand = SPMSL_NORMAL;
     }
     break;
@@ -2446,9 +2446,9 @@ void monster::struggle_against_net()
     if (speed != 0)
         damage = div_rand_round(damage * speed, 10);
 
-    mitm[net].net_durability -= damage;
+    env.item[net].net_durability -= damage;
 
-    if (mitm[net].net_durability < NET_MIN_DURABILITY)
+    if (env.item[net].net_durability < NET_MIN_DURABILITY)
     {
         if (you.see_cell(pos()))
         {

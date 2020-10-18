@@ -3604,7 +3604,7 @@ void change_drac_colour (draconian_colour new_colour)
         else
         {
             int i = items(false, OBJ_FOOD, FOOD_CHUNK, 1);
-            item_def& item = mitm[i];
+            item_def& item = env.item[i];
             item.quantity = roll_dice(2, 4);
             move_item_to_grid(&i, you.pos());
 

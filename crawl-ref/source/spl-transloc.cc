@@ -1154,7 +1154,7 @@ spret cast_apportation(int pow, bool fail)
         if (item_idx == NON_ITEM || !in_bounds(*ri))
             continue;
 
-        item_def& item = mitm[item_idx];
+        item_def& item = env.item[item_idx];
 
         const int seen_int = you.visible_igrd(*ri);
         if (seen_int && seen_int == item_idx)
@@ -1193,7 +1193,7 @@ spret cast_apportation(int pow, bool fail)
 
     for (int x : items_to_apport)
     {
-        item_def& item = mitm[x];
+        item_def& item = env.item[x];
         coord_def where = item.pos;
 
         // We need to modify the item *before* we move it, because
