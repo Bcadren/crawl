@@ -3198,8 +3198,8 @@ bool fire_battlesphere(monster* mons)
         beam.source_name = "battlesphere";
 
         // If we are locked onto a foe, use its current position
-        if (!invalid_monster_index(mons->foe) && menv[mons->foe].alive())
-            beam.target = menv[mons->foe].pos();
+        if (!invalid_monster_index(mons->foe) && env.mons[mons->foe].alive())
+            beam.target = env.mons[mons->foe].pos();
         else
             beam.target = mons->props["firing_target"].get_coord();
 
@@ -3305,7 +3305,7 @@ bool fire_battlesphere(monster* mons)
     // following the player
     if ((mons->foe == MHITNOT || !mons->can_see(*agent)
          || (!invalid_monster_index(mons->foe)
-             && !agent->can_see(menv[mons->foe])))
+             && !agent->can_see(env.mons[mons->foe])))
         && !mons->props.exists("tracking"))
     {
         mons->foe = agent->mindex();

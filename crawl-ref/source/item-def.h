@@ -126,7 +126,7 @@ public:
     /**
      * Sets this item as being held by a given monster.
      *
-     * @param mon The monster. Must be in menv!
+     * @param mon The monster. Must be in env.mons!
      */
     void set_holding_monster(const monster& mon);
 

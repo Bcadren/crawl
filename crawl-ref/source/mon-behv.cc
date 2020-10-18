@@ -214,7 +214,7 @@ static void _decide_monster_firing_position(monster* mon, actor* owner)
     else
     {
         // We have a foe but it's not the player.
-        monster* target = &menv[mon->foe];
+        monster* target = &env.mons[mon->foe];
         mon->target = target->pos();
 
         if (_should_keep_range(mon)
@@ -454,7 +454,7 @@ void handle_behaviour(monster* mon)
     // Friendly and good neutral monsters do not attack other friendly
     // and good neutral monsters.
     if (!mons_is_avatar(mon->type) && mon->foe != MHITNOT && mon->foe != MHITYOU
-        && wontAttack && menv[mon->foe].wont_attack())
+        && wontAttack && env.mons[mon->foe].wont_attack())
     {
         mon->foe = MHITNOT;
     }
@@ -463,7 +463,7 @@ void handle_behaviour(monster* mon)
     if (isNeutral
         && !mon->has_ench(ENCH_INSANE)
         && mon->foe != MHITNOT
-        && (mon->foe == MHITYOU || menv[mon->foe].neutral()))
+        && (mon->foe == MHITYOU || env.mons[mon->foe].neutral()))
     {
         mon->foe = MHITNOT;
     }
@@ -657,7 +657,7 @@ void handle_behaviour(monster* mon)
                         else
                         {
                             if (coinflip())     // XXX: cheesy!
-                                mon->target = menv[mon->foe].pos();
+                                mon->target = env.mons[mon->foe].pos();
                             else
                                 mon->foe_memory = 0;
                         }
@@ -1431,7 +1431,7 @@ beh_type attitude_creation_behavior(mon_attitude_type att)
     }
 }
 
-// If you're invis and throw/zap whatever, alerts menv to your position.
+// If you're invis and throw/zap whatever, alerts env.mons to your position.
 void alert_nearby_monsters()
 {
     // Judging from the above comment, this function isn't

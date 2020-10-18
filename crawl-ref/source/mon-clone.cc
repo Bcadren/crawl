@@ -326,7 +326,7 @@ monster* clone_mons(const actor* orig, bool quiet, bool* obvious,
     if (orig->is_player() && !you.mounted())
         return nullptr;
 
-    // Is there an open slot in menv?
+    // Is there an open slot in env.mons?
     monster* mons = get_free_monster();
     coord_def pos(0, 0);
 

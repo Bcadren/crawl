@@ -1164,7 +1164,7 @@ static void _shunt_monsters_out_of_walls()
 {
     for (int i = 0; i < MAX_MONSTERS; ++i)
     {
-        monster &m(menv[i]);
+        monster &m(env.mons[i]);
         if (m.alive() && in_bounds(m.pos()) && cell_is_solid(m.pos())
             && (grd(m.pos()) != DNGN_MALIGN_GATEWAY
                 || mons_genus(m.type) != MONS_ELDRITCH_TENTACLE))
@@ -5764,12 +5764,12 @@ static void _tag_construct_level_monsters(writer &th)
         marshallMonType(th, env.mons_alloc[i]);
 
     // how many monsters?
-    nm = _last_used_index(menv, MAX_MONSTERS);
+    nm = _last_used_index(env.mons, MAX_MONSTERS);
     marshallShort(th, nm);
 
     for (int i = 0; i < nm; i++)
     {
-        monster& m(menv[i]);
+        monster& m(env.mons[i]);
 
 #if defined(DEBUG) || defined(DEBUG_MONS_SCAN)
         if (m.type != MONS_NO_MONSTER)
@@ -6286,7 +6286,7 @@ static void _tag_read_level_monsters(reader &th)
 
     for (int i = 0; i < count; i++)
     {
-        monster& m = menv[i];
+        monster& m = env.mons[i];
         unmarshallMonster(th, m);
 
         // place monster
@@ -6332,7 +6332,7 @@ static void _tag_read_level_monsters(reader &th)
             mprf(MSGCH_ERROR, "(%d, %d) for %s already occupied by %s",
                  m.pos().x, m.pos().y,
                  m.name(DESC_PLAIN, true).c_str(),
-                 menv[midx].name(DESC_PLAIN, true).c_str());
+                 env.mons[midx].name(DESC_PLAIN, true).c_str());
         }
 #endif
         mgrd(m.pos()) = i;

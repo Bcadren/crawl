@@ -271,7 +271,7 @@ void monster::add_enchantment_effect(const mon_enchant &ench, bool quiet)
             if (foe == MHITYOU)
                 target = you.pos();
             else if (foe != MHITNOT)
-                target = menv[source_actor->as_monster()->foe].pos();
+                target = env.mons[source_actor->as_monster()->foe].pos();
         }
 
         if (type == MONS_FLAYED_GHOST)

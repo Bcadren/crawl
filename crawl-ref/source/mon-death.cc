@@ -254,7 +254,7 @@ static int _calc_monster_experience(monster* victim, killer_type killer,
     if (!experience || !MON_KILL(killer) || invalid_monster_index(killer_index))
         return 0;
 
-    monster* mon = &menv[killer_index];
+    monster* mon = &env.mons[killer_index];
     if (!mon->alive() || !mons_gives_xp(*victim, *mon))
         return 0;
 
@@ -266,7 +266,7 @@ static void _give_monster_experience(int experience, int killer_index)
     if (experience <= 0 || invalid_monster_index(killer_index))
         return;
 
-    monster* mon = &menv[killer_index];
+    monster* mon = &env.mons[killer_index];
     if (!mon->alive())
         return;
 
@@ -678,7 +678,7 @@ static bool _is_pet_kill(killer_type killer, int i)
     if (invalid_monster_index(i))
         return false;
 
-    const monster* m = &menv[i];
+    const monster* m = &env.mons[i];
     if (m->friendly()) // This includes enslaved monsters.
         return true;
 
@@ -698,9 +698,9 @@ int exp_rate(int killer)
     // so the player does not lose any exp from dealing damage with a spectral weapon summon
     // ditto hep ancestors
     if (!invalid_monster_index(killer)
-        && (menv[killer].type == MONS_SPECTRAL_WEAPON
-            || mons_is_hepliaklqana_ancestor(menv[killer].type))
-        && menv[killer].summoner == MID_PLAYER)
+        && (env.mons[killer].type == MONS_SPECTRAL_WEAPON
+            || mons_is_hepliaklqana_ancestor(env.mons[killer].type))
+        && env.mons[killer].summoner == MID_PLAYER)
     {
         return 2;
     }
@@ -766,7 +766,7 @@ static bool _ely_heal_monster(monster* mons, killer_type killer, int i)
 
     if (MON_KILL(killer) && !invalid_monster_index(i))
     {
-        monster* mon = &menv[i];
+        monster* mon = &env.mons[i];
         if (!mon->friendly())
             return false;
 
@@ -867,7 +867,7 @@ static bool _beogh_maybe_convert_orc(monster &mons, killer_type killer,
 
     if (MON_KILL(killer) && !invalid_monster_index(killer_index))
     {
-        const monster* responsible_monster = &menv[killer_index];
+        const monster* responsible_monster = &env.mons[killer_index];
         if (is_follower(*responsible_monster) && !one_chance_in(3))
             return _beogh_forcibly_convert_orc(mons, killer);
     }
@@ -2167,9 +2167,9 @@ item_def* monster_die(monster& mons, killer_type killer,
     // instead. Ditto Dithmenos shadow melee and shadow throw.
     if (MON_KILL(killer)
         && !invalid_monster_index(killer_index)
-        && ((menv[killer_index].type == MONS_SPECTRAL_WEAPON
-             && menv[killer_index].summoner == MID_PLAYER)
-            || mons_is_player_shadow(menv[killer_index])))
+        && ((env.mons[killer_index].type == MONS_SPECTRAL_WEAPON
+             && env.mons[killer_index].summoner == MID_PLAYER)
+            || mons_is_player_shadow(env.mons[killer_index])))
     {
         killer_index = you.mindex();
     }
@@ -2597,7 +2597,7 @@ item_def* monster_die(monster& mons, killer_type killer,
 
             monster* killer_mon = nullptr;
             if (!anon)
-                killer_mon = &menv[killer_index];
+                killer_mon = &env.mons[killer_index];
 
             if (!invalid_monster_index(killer_index)
                 && _god_will_bless_follower(&mons))
@@ -2855,7 +2855,7 @@ item_def* monster_die(monster& mons, killer_type killer,
         // killer when running the fineff.)
         mummy_death_curse_fineff::schedule(
                 invalid_monster_index(killer_index)
-                                            ? nullptr : &menv[killer_index],
+                                            ? nullptr : &env.mons[killer_index],
                 mons.name(DESC_A),
                 killer,
                 mummy_curse_power(mons.type));
