@@ -2502,7 +2502,7 @@ static bool _can_force_door_shut(const coord_def& door)
         // If there are items in the way, see if there's room to push them
         // out of the way. Having push space for an actor doesn't guarantee
         // push space for items (e.g. with a flying actor over lava).
-        if (igrd(dc) != NON_ITEM)
+        if (env.igrid(dc) != NON_ITEM)
         {
             if (!has_push_spaces(dc, false, &door_spots))
                 return false;
@@ -7118,7 +7118,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
             if (safe_tiles.count(env.grid(*ai)) || feat_is_trap(env.grid(*ai)))
             {
                 // All items are moved inside.
-                if (igrd(*ai) != NON_ITEM)
+                if (env.igrid(*ai) != NON_ITEM)
                     move_items(*ai, mons->pos());
 
                 // All clouds are destroyed.

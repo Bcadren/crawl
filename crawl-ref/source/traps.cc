@@ -1506,7 +1506,7 @@ void handle_items_on_shaft(const coord_def& pos)
     if (dest == level_id::current())
         return;
 
-    int o = igrd(pos);
+    int o = env.igrid(pos);
 
     if (o == NON_ITEM)
         return;

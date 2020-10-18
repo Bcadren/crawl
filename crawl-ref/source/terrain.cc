@@ -1174,7 +1174,7 @@ static void _dgn_check_terrain_items(const coord_def &pos, bool preserve_items)
 {
     const dungeon_feature_type feat = env.grid(pos);
 
-    int item = igrd(pos);
+    int item = env.igrid(pos);
     while (item != NON_ITEM)
     {
         const int curr = item;
@@ -2780,7 +2780,7 @@ bool push_items_from(const coord_def& pos, const vector<coord_def>* excluded)
     if (targets.empty())
         return false;
     // TODO: splashing is flavorful, but how annoying is it in practice?
-    while (igrd(pos) != NON_ITEM)
+    while (env.igrid(pos) != NON_ITEM)
         result |= move_top_item(pos, targets[random2(targets.size())]);
     return result;
 }

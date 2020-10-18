@@ -2932,7 +2932,7 @@ static bool _monster_eat_item(monster* mons)
 
 static bool _handle_pickup(monster* mons)
 {
-    if (igrd(mons->pos()) == NON_ITEM
+    if (env.igrid(mons->pos()) == NON_ITEM
         // Summoned monsters never pick anything up.
         || mons->is_summoned() || mons->is_perm_summoned()
         || mons->asleep())

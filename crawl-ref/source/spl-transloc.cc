@@ -1150,7 +1150,7 @@ spret cast_apportation(int pow, bool fail)
         // Let's look at the top item in that square...
         // And don't allow apporting from shop inventories.
         // Using visible_igrd takes care of deep water/lava where appropriate.
-        const int item_idx = igrd(*ri);
+        const int item_idx = env.igrid(*ri);
         if (item_idx == NON_ITEM || !in_bounds(*ri))
             continue;
 
