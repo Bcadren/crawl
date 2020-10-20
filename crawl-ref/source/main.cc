@@ -65,6 +65,7 @@
 #include "dungeon.h"
 #include "end.h"
 #include "env.h"
+#include "tile-env.h"
 #include "errors.h"
 #include "evoke.h"
 #include "fight.h"
@@ -168,6 +169,7 @@ CLua clua(true);
 CLua dlua(false);      // Lua interpreter for the dungeon builder.
 #endif
 crawl_environment env; // Requires dlua.
+crawl_tile_environment tile_env;
 
 player you;
 

@@ -2649,7 +2649,7 @@ static void _xom_open_door(int /*sever*/)
             {
                 env.map_knowledge(*ri).set_feature(env.grid(*ri));
 #ifdef USE_TILE
-                env.tile_bk_bg(*ri) = tileidx_feature_base(env.grid(*ri));
+                tile_env.bk_bg(*ri) = tileidx_feature_base(env.grid(*ri));
 #endif
             }
 

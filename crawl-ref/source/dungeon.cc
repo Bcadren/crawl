@@ -35,6 +35,7 @@
 #include "dgn-overview.h"
 #include "dgn-shoals.h"
 #include "end.h"
+#include "tile-env.h"
 #include "files.h"
 #include "flood-find.h"
 #include "ghost.h"
@@ -735,8 +736,8 @@ void dgn_set_grid_colour_at(const coord_def &c, int colour)
 static void _set_grd(const coord_def &c, dungeon_feature_type feat)
 {
     // It might be good to clear some pgrid flags as well.
-    env.tile_flv(c).feat    = 0;
-    env.tile_flv(c).special = 0;
+    tile_env.flv(c).feat    = 0;
+    tile_env.flv(c).special = 0;
     env.grid_colours(c) = 0;
     env.grid(c) = feat;
 }
@@ -1141,14 +1142,14 @@ static void _fixup_sewer_stairs()
     for (rectangle_iterator ri(1); ri; ++ri)
     {
         if (feat_is_stone_stair_down(env.grid(*ri)) &&
-            env.tile_flv(*ri).feat != TILE_DNGN_PORTAL_SEWER)
+            tile_env.flv(*ri).feat != TILE_DNGN_PORTAL_SEWER)
         {
-            env.tile_flv(*ri).feat_idx =
+            tile_env.flv(*ri).feat_idx =
                 store_tilename_get_index("dngn_portal_sewer");
-            env.tile_flv(*ri).feat = TILE_DNGN_PORTAL_SEWER;
-            env.tile_flv(*ri).floor_idx =
+            tile_env.flv(*ri).feat = TILE_DNGN_PORTAL_SEWER;
+            tile_env.flv(*ri).floor_idx =
                 store_tilename_get_index("floor_iron");
-            env.tile_flv(*ri).floor = TILE_FLOOR_IRON;
+            tile_env.flv(*ri).floor = TILE_FLOOR_IRON;
             env.grid_colours(*ri) = GREEN;
             for (adjacent_iterator ai(*ri); ai; ++ai)
             {
@@ -1157,9 +1158,9 @@ static void _fixup_sewer_stairs()
                 {
                     _set_grd(*ai, DNGN_METAL_WALL);
                     env.grid_colours(*ai) = GREEN;
-                    env.tile_flv(*ai).feat_idx =
+                    tile_env.flv(*ai).feat_idx =
                         store_tilename_get_index("dngn_metal_wall_green");
-                    env.tile_flv(*ai).feat = TILE_DNGN_METAL_WALL_GREEN;
+                    tile_env.flv(*ai).feat = TILE_DNGN_METAL_WALL_GREEN;
                 }
                 else if (env.grid(*ai) == DNGN_FLOOR)
                 {
@@ -1169,13 +1170,13 @@ static void _fixup_sewer_stairs()
 
                 if ((env.grid(*ai) == DNGN_DEEP_WATER))
                 {
-                    env.tile_flv(*ai).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
+                    tile_env.flv(*ai).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
                     env.grid_colours(*ai) = LIGHTGREEN;
                 }
 
                 if ((env.grid(*ai) == DNGN_SHALLOW_WATER))
                 {
-                    env.tile_flv(*ai).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
+                    tile_env.flv(*ai).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
                     env.grid_colours(*ai) = LIGHTGREEN;
                 }
             }
@@ -1295,10 +1296,10 @@ dgn_register_place(const vault_placement &place, bool register_vault)
         tileidx_t rock;
         if (tile_dngn_index(place.map.rock_tile.c_str(), &rock))
         {
-            env.tile_default.wall_idx =
+            tile_env.default_flavour.wall_idx =
                 store_tilename_get_index(place.map.rock_tile);
 
-            env.tile_default.wall = rock;
+            tile_env.default_flavour.wall = rock;
         }
     }
 
@@ -1307,10 +1308,10 @@ dgn_register_place(const vault_placement &place, bool register_vault)
         tileidx_t floor;
         if (tile_dngn_index(place.map.floor_tile.c_str(), &floor))
         {
-            env.tile_default.floor_idx =
+            tile_env.default_flavour.floor_idx =
                 store_tilename_get_index(place.map.floor_tile);
 
-            env.tile_default.floor = floor;
+            tile_env.default_flavour.floor = floor;
         }
     }
 
@@ -1500,7 +1501,7 @@ void dgn_reset_level(bool enable_random_maps)
     // Clear custom tile settings from vaults
     tile_init_default_flavour();
     tile_clear_flavour();
-    env.tile_names.clear();
+    tile_env.names.clear();
 
     update_portal_entrances();
 }
@@ -1686,7 +1687,7 @@ static void _sewer_water()
         if ((env.grid(*ri) == DNGN_DEEP_WATER))
         {
 #ifdef USE_TILE
-            env.tile_bk_bg(*ri) = TILE_DNGN_DEEP_WATER_MURKY;
+            tile_env.bk_bg(*ri) = TILE_DNGN_DEEP_WATER_MURKY;
 #endif
             env.grid_colours(*ri) = GREEN;
         }
@@ -1694,7 +1695,7 @@ static void _sewer_water()
         if ((env.grid(*ri) == DNGN_SHALLOW_WATER))
         {
 #ifdef USE_TILE
-            env.tile_bk_bg(*ri) = TILE_DNGN_SHALLOW_WATER_MURKY;
+            tile_env.bk_bg(*ri) = TILE_DNGN_SHALLOW_WATER_MURKY;
 #endif
             env.grid_colours(*ri) = LIGHTGREEN;
         }
@@ -1727,7 +1728,7 @@ static void _slimify_water()
                     env.map_knowledge(*ri).set_feature(DNGN_SLIMESHROOM, 0,
                         get_trap_type(*ri));
 #ifdef USE_TILE
-                    env.tile_bk_bg(*ri) = DNGN_SLIMY_WATER;
+                    tile_env.bk_bg(*ri) = DNGN_SLIMY_WATER;
 #endif
                 }
             }
@@ -1751,7 +1752,7 @@ static void _slimify_water()
                         env.map_knowledge(*ri).set_feature(DNGN_SLIMESHROOM, 0,
                             get_trap_type(*ri));
 #ifdef USE_TILE
-                        env.tile_bk_bg(*ri) = DNGN_SLIMESHROOM;
+                        tile_env.bk_bg(*ri) = DNGN_SLIMESHROOM;
 #endif
                     }
                 }
@@ -1774,7 +1775,7 @@ static void _slimify_water()
                     env.map_knowledge(item.pos).set_feature(DNGN_SLIMESHROOM, 0,
                         get_trap_type(item.pos));
 #ifdef USE_TILE
-                    env.tile_bk_bg(item.pos) = DNGN_SLIMY_WATER;
+                    tile_env.bk_bg(item.pos) = DNGN_SLIMY_WATER;
 #endif
                 }
             }
@@ -3036,7 +3037,7 @@ static void _prepare_water()
                 env.grid(*ri) = DNGN_SHALLOW_WATER;
                 if (green)
                 {
-                    env.tile_flv(*ri).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
+                    tile_env.flv(*ri).feat = TILE_DNGN_SHALLOW_WATER_MURKY;
                     env.grid_colours(*ri) = LIGHTGREEN;
                 }
                 break;
@@ -6042,7 +6043,7 @@ void dgn_replace_area(const coord_def& p1, const coord_def& p2,
                 env.map_knowledge(*ri).set_feature(feature, 0,
                                                    get_trap_type(*ri));
 #ifdef USE_TILE
-                env.tile_bk_bg(*ri) = feature;
+                tile_env.bk_bg(*ri) = feature;
 #endif
             }
         }

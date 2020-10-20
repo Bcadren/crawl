@@ -26,6 +26,7 @@
 #include "religion.h"
 #include "state.h"
 #include "terrain.h"
+#include "tile-env.h"
 #include "rltiles/tiledef-dngn.h"
 #include "view.h"
 
@@ -320,16 +321,16 @@ static void _apply_daction(daction_type act)
             {
                 env.grid(*ri) = DNGN_ROCK_WALL;
                 env.grid_colours(*ri) = LIGHTGRAY;
-                env.tile_flv(*ri).feat_idx =
+                tile_env.flv(*ri).feat_idx =
                     store_tilename_get_index("wall_ruined_slime");
-                env.tile_flv(*ri).feat = TILE_WALL_RUINED_SLIME;
+                tile_env.flv(*ri).feat = TILE_WALL_RUINED_SLIME;
             }
 
             if (env.grid(*ri) == DNGN_SLIMESHROOM)
             {
-                env.tile_flv(*ri).feat_idx =
+                tile_env.flv(*ri).feat_idx =
                     store_tilename_get_index("dngn_deadshroom");
-                env.tile_flv(*ri).feat = TILE_DNGN_DEADSHROOM;
+                tile_env.flv(*ri).feat = TILE_DNGN_DEADSHROOM;
             }
 
             if (env.grid(*ri) == DNGN_SLIMY_WATER || env.grid(*ri) == DNGN_DEEP_SLIMY_WATER)
@@ -338,16 +339,16 @@ static void _apply_daction(daction_type act)
             if (you.where_are_you == BRANCH_SLIME)
             {
                 env.grid_colours(*ri) = WHITE;
-                env.tile_flv(*ri).floor_idx =
+                tile_env.flv(*ri).floor_idx =
                     store_tilename_get_index("floor_ruined_slime");
-                env.tile_flv(*ri).floor = TILE_FLOOR_RUINED_SLIME;
+                tile_env.flv(*ri).floor = TILE_FLOOR_RUINED_SLIME;
 
                 if (env.grid(*ri) == DNGN_STONE_WALL)
                 {
                     env.grid_colours(*ri) = DARKGRAY;
-                    env.tile_flv(*ri).feat_idx =
+                    tile_env.flv(*ri).feat_idx =
                         store_tilename_get_index("stone_wall_ruined_slime");
-                    env.tile_flv(*ri).feat = TILE_STONE_WALL_RUINED_SLIME;
+                    tile_env.flv(*ri).feat = TILE_STONE_WALL_RUINED_SLIME;
                 }
 
                 if (!feat_is_solid(env.grid(*ri)))

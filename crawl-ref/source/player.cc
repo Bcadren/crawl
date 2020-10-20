@@ -32,6 +32,7 @@
 #include "directn.h"
 #include "english.h"
 #include "env.h"
+#include "tile-env.h"
 #include "errors.h"
 #include "exercise.h"
 #include "files.h"
@@ -10233,7 +10234,7 @@ void player_open_door(coord_def doorpos)
         {
             env.map_knowledge(dc).set_feature(env.grid(dc));
 #ifdef USE_TILE
-            env.tile_bk_bg(dc) = tileidx_feature_base(env.grid(dc));
+            tile_env.bk_bg(dc) = tileidx_feature_base(env.grid(dc));
 #endif
         }
 
@@ -10404,7 +10405,7 @@ void player_close_door(coord_def doorpos)
         {
             env.map_knowledge(dc).set_feature(env.grid(dc));
 #ifdef USE_TILE
-            env.tile_bk_bg(dc) = tileidx_feature_base(env.grid(dc));
+            tile_env.bk_bg(dc) = tileidx_feature_base(env.grid(dc));
 #endif
         }
 

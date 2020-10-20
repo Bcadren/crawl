@@ -28,6 +28,7 @@
 #include "directn.h"
 #include "english.h"
 #include "env.h"
+#include "tile-env.h"
 #include "evoke.h"
 #include "exclude.h"
 #include "fight.h"
@@ -2693,7 +2694,7 @@ static bool _seal_doors_and_stairs(monster* warden, bool check_only = false)
                     {
                         env.map_knowledge(dc).set_feature(DNGN_CLOSED_DOOR);
 #ifdef USE_TILE
-                        env.tile_bk_bg(dc) = TILE_DNGN_CLOSED_DOOR;
+                        tile_env.bk_bg(dc) = TILE_DNGN_CLOSED_DOOR;
 #endif
                     }
                 }
@@ -3578,9 +3579,9 @@ static void _order(monster *mons)
         {
             temp_change_terrain(it, DNGN_FLOOR, INFINITE_DURATION, TERRAIN_CHANGE_IMPRISON, mons);
 #ifdef USE_TILE
-            env.tile_flv(it).floor_idx =
+            tile_env.flv(it).floor_idx =
                 store_tilename_get_index("floor_limestone");
-            env.tile_flv(it).floor = TILE_FLOOR_LIMESTONE;
+            tile_env.flv(it).floor = TILE_FLOOR_LIMESTONE;
 #endif // USE_TILE
         }
     }
