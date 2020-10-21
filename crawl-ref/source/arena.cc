@@ -896,7 +896,7 @@ namespace arena
 
         if (contest_cancelled)
         {
-            mpr("Canceled contest at user request");
+            mpr("Cancelled contest at user request");
             ui::delay(Options.view_delay);
             clear_messages();
             return;

@@ -6949,7 +6949,7 @@ bool uskayaw_stomp()
 
     if (player_spec_invo() > 0)
         god_speaks(you.religion, "You feel a surge of divine energy.");
-    mpr("You stomp with the beat, sending a shockwave through the revelers "
+    mpr("You stomp with the beat, sending a shockwave through the revellers "
             "around you!");
     apply_monsters_around_square(_get_stomped, you.pos());
     return true;
