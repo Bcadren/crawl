@@ -61,6 +61,7 @@
 #include "state.h"
 #include "stepdown.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "teleport.h"
 #include "terrain.h"
 #include "tile-env.h"

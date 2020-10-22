@@ -14,6 +14,7 @@
 #include "options.h"
 #include "religion.h" // jiyva_is_dead()
 #include "stringutil.h"
+#include "tag-version.h"
 #include "tiles-build-specific.h"
 #include "libutil.h" // map_find
 

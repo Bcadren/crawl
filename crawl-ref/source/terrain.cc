@@ -46,6 +46,7 @@
 #include "state.h"
 #include "stringutil.h"
 #include "rltiles/tiledef-dngn.h"
+#include "tag-version.h"
 #include "teleport.h"
 #include "tileview.h"
 #include "transform.h"

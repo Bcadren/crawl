@@ -38,6 +38,7 @@
 #include "spl-goditem.h" // dispellable_enchantments
 #include "state.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #ifdef USE_TILE
 #include "tilepick.h"
 #endif

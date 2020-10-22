@@ -32,6 +32,7 @@
 #include "spl-util.h"
 #include "stringutil.h"
 #include "state.h"
+#include "tag-version.h"
 #include "xom.h"
 
 #define MIN_START_STAT       1

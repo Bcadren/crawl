@@ -6,6 +6,7 @@
 #pragma once
 
 #include "enum.h"
+#include "tag-version.h"
 
 #define CARD_KEY "cards"
 #define CARD_FLAG_KEY "card_flags"

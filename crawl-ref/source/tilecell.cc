@@ -13,6 +13,7 @@
 #include "tile-flags.h"
 #include "rltiles/tiledef-dngn.h"
 #include "rltiles/tiledef-main.h"
+#include "tag-version.h"
 #include "viewgeom.h"
 
 void packed_cell::clear()

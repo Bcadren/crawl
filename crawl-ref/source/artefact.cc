@@ -32,6 +32,7 @@
 #include "spl-book.h"
 #include "state.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "unicode.h"
 
 // Putting this here since art-enum.h is generated.

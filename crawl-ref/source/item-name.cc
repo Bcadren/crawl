@@ -47,6 +47,7 @@
 #include "spl-book.h"
 #include "state.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "throw.h"
 #include "transform.h"
 #include "unicode.h"

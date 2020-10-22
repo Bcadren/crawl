@@ -34,6 +34,7 @@
 #include "state.h"
 #include "status.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "transform.h"
 #include "unicode.h"
 #include "view.h"

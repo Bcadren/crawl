@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "tag-version.h"
+
 #define HERD_COMFORT_RANGE 6
 
 enum corpse_effect_type

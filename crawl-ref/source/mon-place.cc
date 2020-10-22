@@ -47,6 +47,7 @@
 #include "spl-summoning.h"
 #include "state.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "terrain.h"
 #ifdef USE_TILE
  #include "rltiles/tiledef-player.h"

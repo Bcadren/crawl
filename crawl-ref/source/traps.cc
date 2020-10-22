@@ -45,6 +45,7 @@
 #include "stash.h"
 #include "state.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "teleport.h"
 #include "terrain.h"
 #include "travel.h"

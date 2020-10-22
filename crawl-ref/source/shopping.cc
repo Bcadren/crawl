@@ -39,6 +39,7 @@
 #include "state.h"
 #include "stepdown.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #ifdef USE_TILE_LOCAL
 #include "tilereg-crt.h"
 #endif

@@ -37,6 +37,7 @@
 #include "state.h"
 #include "status.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "terrain.h"
 #include "rltiles/tiledef-dngn.h"
 #include "traps.h"

@@ -5,6 +5,7 @@
 #include "cloud.h"
 #include "god-passive.h"
 #include "spl-other.h"
+#include "tag-version.h"
 
 #define PAIN_WEAPON_KEY "pained_weapon"
 

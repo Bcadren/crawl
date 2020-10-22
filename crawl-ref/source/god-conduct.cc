@@ -14,6 +14,7 @@
 #include "religion.h"
 #include "state.h"
 #include "stringutil.h" // uppercase_first
+#include "tag-version.h"
 
 #include <functional>
 

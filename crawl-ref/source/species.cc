@@ -13,6 +13,7 @@
 #include "random.h"
 #include "skills.h"
 #include "stringutil.h"
+#include "tag-version.h"
 #include "tiledoll.h"
 
 #include "species-data.h"

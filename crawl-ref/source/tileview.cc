@@ -24,6 +24,7 @@
 #include "religion.h"
 #include "season.h"
 #include "state.h"
+#include "tag-version.h"
 #include "terrain.h"
 #include "tile-flags.h"
 #include "rltiles/tiledef-dngn.h"

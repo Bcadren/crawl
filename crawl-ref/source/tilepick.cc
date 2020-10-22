@@ -39,6 +39,7 @@
 #include "rltiles/tiledef-main.h"
 #include "rltiles/tiledef-player.h"
 #include "rltiles/tiledef-unrand.h"
+#include "tag-version.h"
 #include "tilemcache.h"
 #include "tileview.h"
 #include "transform.h"

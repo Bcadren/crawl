@@ -69,6 +69,7 @@
 #include "stash.h"
 #include "state.h"
 #include "stringutil.h" // to_string on Cygwin
+#include "tag-version.h"
 #include "terrain.h"
 #include "tile-flags.h"
 #include "tilepick.h"

@@ -28,6 +28,7 @@
 #include "terrain.h"
 #include "tile-env.h"
 #include "rltiles/tiledef-dngn.h"
+#include "tag-version.h"
 #include "view.h"
 
 static void _daction_hog_to_human(monster *mon, bool in_transit);
