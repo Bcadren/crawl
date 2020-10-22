@@ -2,6 +2,9 @@
  * Status defaults for durations.
  */
 
+#pragma once
+
+#include "act-iter.h"
 #include "cloud.h"
 #include "god-passive.h"
 #include "spl-other.h"
