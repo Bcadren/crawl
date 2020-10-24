@@ -24,6 +24,7 @@
 #include "flush-reason-type.h"
 #include "game-chapter.h"
 #include "gender-type.h"
+#include "kill-method-type.h"
 #include "kills.h"
 #include "mon-holy-type.h"
 #include "mount.h"
