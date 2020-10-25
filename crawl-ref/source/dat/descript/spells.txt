@@ -919,6 +919,11 @@ Infuses the caster's melee attacks with magic, drawing from their reserves of
 magical energy to deal additional damage whenever an enemy is hit. It has no
 effect when the caster's magic is depleted.
 %%%%
+Inject Eggs spell
+
+Injects eggs into the wounds of an adjacent injured creature. When that
+creature dies, insects born from the eggs will burst out.
+%%%%
 Injury Bond spell
 
 Binds the caster to nearby allies, redirecting half of any damage they suffer
@@ -1577,20 +1582,11 @@ Spit Poison spell
 
 <Spit Poison ability>
 %%%%
-<<<<<<< HEAD
-=======
 Splinterspray spell
 
 Fires a directed stream of sharp wooden splinters. Its damage is strongly
 reduced by armour.
 %%%%
-Sporulate spell
-
-Releases a fast, gas-filled floating spore. After seeking out its foe, the
-spore will explode, damaging anything caught in the blast and further confusing
-living creatures.
-%%%%
->>>>>>> 575ee1b540 (New monster: eleionoma)
 Sprint spell
 
 Causes the caster to move across terrain more rapidly for a short duration.

@@ -64,6 +64,7 @@ dazed DAZED
 confused CONFUSED
 black_mark BLACK_MARK
 sealing_rune SEALING_RUNE
+insect_eggs INSECT_EGGS
 
 something_under SOMETHING_UNDER
 new_stair NEW_STAIR

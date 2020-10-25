@@ -195,6 +195,7 @@ enum monster_info_flags
     MB_CLOUD_RING_DRAINING,
     MB_CLOUD_RING_ACID,
     MB_CLOUD_RING_MIASMA,
+    MB_INSECT_EGGS,
     NUM_MB_FLAGS
 };
 

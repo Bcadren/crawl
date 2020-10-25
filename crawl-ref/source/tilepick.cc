@@ -2148,6 +2148,9 @@ tileidx_t tileidx_monster(const monster_info& mons)
         ch |= TILE_FLAG_POSSESSABLE;
     if (mons.is(MB_BLACK_MARK))
         ch |= TILE_FLAG_BLACK_MARK;
+// BCADDO: Consider restoring when there is room.
+//    if (mons.is(MB_INSECT_EGGS))
+//        ch |= TILE_FLAG_INSECT_EGGS;
 
     if (mons.attitude == ATT_FRIENDLY)
         ch |= TILE_FLAG_PET;

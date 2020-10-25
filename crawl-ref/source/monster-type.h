@@ -195,6 +195,7 @@ enum monster_type                      // env.mons[].type
     MONS_HORNET,
 #if TAG_MAJOR_VERSION > 34
     MONS_SPARK_WASP,
+    MONS_DEVOURING_SWARM,
 #endif
 #if TAG_MAJOR_VERSION == 34
     MONS_BEETLE,
@@ -1059,6 +1060,7 @@ enum monster_type                      // env.mons[].type
     MONS_BALLOON_DOG,
     MONS_CACODEMON,
     MONS_NAMELESS,
+    MONS_DEVOURING_SWARM,
     MONS_GOLIATH_FROG,
     MONS_ELEIONOMA,
 #endif

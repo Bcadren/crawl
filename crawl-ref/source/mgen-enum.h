@@ -122,6 +122,7 @@ enum band_type
     BAND_CYSTS,
     BAND_LUMPS,
     BAND_TROUT,
+    BAND_DEVOURING_SWARM,
     NUM_BANDS                   // always last
 };
 

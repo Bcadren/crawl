@@ -175,6 +175,8 @@ struct mgen_data
                || cls == MONS_ORB_OF_CHAOS || cls == MONS_ENTROPIC_SPHERE
                || cls == MONS_BATTLESPHERE
                || summon_type == SPELL_STICKS_TO_SNAKES
+               || cls == MONS_BATTLESPHERE
+               || cls == MONS_DEVOURING_SWARM // should check MON_SUMM_EGGS
                || summon_type == SPELL_DEATH_CHANNEL
                || summon_type == SPELL_BIND_SOULS
                || summon_type == SPELL_SIMULACRUM

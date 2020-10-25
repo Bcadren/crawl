@@ -1014,6 +1014,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             simple_monster_message(*this, " is no longer infested.");
         break;
 
+    case ENCH_INSECT_EGGS:
+        if (!quiet)
+            simple_monster_message(*this, " picks the eggs out of its wounds.");
+        break;
+
     case ENCH_VILE_CLUTCH:
         if (is_constricted())
         {
@@ -1566,6 +1571,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_WAND_COOLDOWN:
     case ENCH_SEAL:
     case ENCH_NO_CHARMS:
+    case ENCH_INSECT_EGGS:
         decay_enchantment(en);
         break;
 
@@ -2337,7 +2343,7 @@ static const char *enchant_names[] =
     "elec_vuln", "cold_vuln", "phys_vuln", "staff_shield_down", "entropic_burst",
     "chaotic_infusion", "chaosnado", "sacred_order", "swallowed", "swallowing",
     "ring_of_flames", "ring_chaos", "ring_mutation", "ring_fog", "ring_ice", 
-    "ring_neg", "ring_acid", "ring_miasma",
+    "ring_neg", "ring_acid", "ring_miasma", "insect_eggs",
     "buggy", // NUM_ENCHANTMENTS
 };
 
@@ -2612,6 +2618,9 @@ int mon_enchant::calc_duration(const monster* mons,
         break;
     case ENCH_EMPOWERED_SPELLS:
         cturn = 20 * 10 / _mod_speed(10, mons->speed);
+        break;
+    case ENCH_INSECT_EGGS:
+        cturn = random_range(8, 12) * 10 / _mod_speed(10, mons->speed);
         break;
     case ENCH_RING_OF_THUNDER:
     case ENCH_RING_OF_FLAMES:

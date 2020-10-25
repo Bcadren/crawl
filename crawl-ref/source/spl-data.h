@@ -139,6 +139,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_IMPLANT_EGGS, "Implant Eggs", ""
+    spschool::hexes | spschool::transmutation | spschool::evocation,
+    spflag::monster,
+    6,
+    200,
+    1, 1,
+    0, 0,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
     SPELL_BOLT_OF_MAGMA, "Bolt of Magma", "Chaos Bolt",
     spschool::fire | spschool::earth,
     spflag::dir_or_target | spflag::needs_tracer,
