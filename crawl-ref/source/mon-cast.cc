@@ -145,6 +145,7 @@ static bool _los_spell_worthwhile(const monster &caster, spell_type spell);
 static void _setup_fake_beam(bolt& beam, const monster&, int = -1);
 static void _branch_summon(monster &caster, mon_spell_slot slot, bolt&);
 static void _branch_summon_helper(monster* mons, spell_type spell_cast);
+static void _cast_marshlight(monster &caster, mon_spell_slot slot, bolt&);
 static bool _prepare_ghostly_sacrifice(monster &caster, bolt &beam);
 static void _setup_ghostly_sacrifice_beam(bolt& beam, const monster& caster,
                                           int power);
@@ -402,6 +403,10 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         nullptr,
         MSPELL_NO_AUTO_NOISE,
     } },
+    { SPELL_MARSHLIGHT, {
+       _always_worthwhile,
+       _cast_marshlight,
+    } },
     { SPELL_IMPLANT_EGGS, { _implant_eggs_goodness, _cast_implant_eggs } },
     { SPELL_STILL_WINDS, { _still_winds_goodness, _cast_still_winds } },
     { SPELL_SMITING, { _always_worthwhile, _cast_smiting, } },
@@ -542,12 +547,6 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             const actor* foe = caster.get_foe();
             ASSERT(foe);
             return ai_action::good_or_impossible(torment_vulnerable(foe));
-        }, 6)
-    },
-    { SPELL_AGONY, _hex_logic(SPELL_AGONY, [](const monster &caster) {
-            const actor* foe = caster.get_foe();
-            ASSERT(foe);
-            return ai_action::good_or_impossible(_torment_vulnerable(foe));
         }, 6)
     },
     { SPELL_STRIP_RESISTANCE,
@@ -5890,6 +5889,12 @@ static void _branch_summon_helper(monster* mons, spell_type spell_cast)
         monster * x = create_monster(mg);
         chaos_summon(spell_cast, x, mons);
     }
+}
+
+static void _cast_marshlight(monster &mons, mon_spell_slot, bolt&)
+{
+    const int pow = _mons_spellpower(SPELL_MARSHLIGHT, mons);
+    cast_foxfire(mons, pow, GOD_NO_GOD, false);
 }
 
 static void _cast_flay(monster &caster, mon_spell_slot, bolt&)

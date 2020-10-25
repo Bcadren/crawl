@@ -3860,18 +3860,20 @@ int count_summons(const actor *summoner, spell_type spell)
     return count;
 }
 
-spret cast_foxfire(int pow, god_type god, bool fail)
+spret cast_foxfire(actor &agent, int pow, god_type god, bool fail)
 {
     fail_check();
     int created = 0;
 
     bool chaos = determine_chaos(&you, SPELL_FOXFIRE);
 
-    for (fair_adjacent_iterator ai(you.pos()); ai; ++ai)
+    for (fair_adjacent_iterator ai(agent.pos()); ai; ++ai)
     {
-        mgen_data fox(chaos ? MONS_EPHEMERAL_SPIRIT : MONS_FOXFIRE, BEH_FRIENDLY,
-                      *ai, MHITNOT, MG_FORCE_PLACE);
-        fox.set_summoned(&you, 0, SPELL_FOXFIRE, god);
+        const auto att = agent.is_player() ? BEH_FRIENDLY
+                                           : SAME_ATTITUDE(agent.as_monster());
+        mgen_data fox(chaos ? MONS_EPHEMERAL_SPIRIT : MONS_FOXFIRE, att,
+                      *ai, MHITNOT, MG_FORCE_PLACE | MG_AUTOFOE);
+        fox.set_summoned(&agent, 0, SPELL_FOXFIRE, god);
         fox.hd = pow;
         monster *foxfire;
 
@@ -3882,21 +3884,34 @@ spret cast_foxfire(int pow, god_type god, bool fail)
             foxfire->add_ench(ENCH_SHORT_LIVED);
             foxfire->steps_remaining = you.current_vision + 2;
 
-            set_random_target(foxfire);
+            // Avoid foxfire without targets always moving towards (0,0)
+            if (!foxfire->get_foe()
+                || !foxfire->get_foe()->is_monster() && !agent.is_monster())
+            {
+                set_random_target(foxfire);
+            }
         }
 
         if (created == 2)
             break;
     }
-
+    
     if (created)
     {
         if (chaos)
-            mpr("Some ephemeral spirits of chaos come forth from the void!");
+        {
+            mprf("%s pull%s some ephemeral spirits from the void!",
+                agent.name(DESC_THE).c_str(),
+                agent.is_monster() ? "s" : "");
+        }
         else
-            mpr("You conjure some foxfire!");
+        {
+            mprf("%s conjure%s some foxfire!",
+                agent.name(DESC_THE).c_str(),
+                agent.is_monster() ? "s" : "");
+        }
     }
-    else
+    else if (agent.is_player())
         canned_msg(MSG_NOTHING_HAPPENS);
 
     return spret::success;

@@ -1084,6 +1084,12 @@ the light of the candle offsets the dark, musty atmosphere of the dungeon, and
 makes the affected creature appreciably easier to hit. If it misses, it will
 fall to the floor and light the tile briefly; unless it falls into water.
 %%%%
+Marshlight spell
+
+Conjures two balls of burning swamp gas adjacent to the caster. The balls will
+rapidly seek the nearest monster and burn them. Wizards attempted to copy this
+with the spell 'Foxfire', but their version is far less powerful.
+%%%%
 Mass Confusion spell
 
 Causes confusion in all who gaze upon the caster.

@@ -2287,7 +2287,7 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
         return cast_still_winds(powc, fail);
 
     case SPELL_FOXFIRE:
-        return cast_foxfire(powc, god, fail);
+        return cast_foxfire(you, powc, god, fail);
 
     case SPELL_NOXIOUS_BOG:
         return cast_noxious_bog(powc, fail);

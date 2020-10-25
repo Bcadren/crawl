@@ -1065,6 +1065,7 @@ enum monster_type                      // env.mons[].type
     MONS_GOLIATH_FROG,
     MONS_ELEIONOMA,
     MONS_FENSTRIDER_WITCH,
+    MONS_WILL_O_THE_WISP,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

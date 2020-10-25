@@ -1158,6 +1158,7 @@ hungry_ghost MONS_HUNGRY_GHOST
 %sdir mon/unique
 %sdir mon/nonliving
 insubstantial_wisp MONS_INSUBSTANTIAL_WISP
+will_o_the_wisp MONS_WILL_O_THE_WISP
 
 ## Dwarves ('q')
 %sdir mon/humanoids
