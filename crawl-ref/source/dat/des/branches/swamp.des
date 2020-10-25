@@ -1600,11 +1600,7 @@ WEIGHT:  5
 MONS:    spectral hydra / spectral swamp dragon, death drake, necromancer
 MONS:    bog body w:8 / w:5 wraith / w:3 phantasmal warrior / w:1 freezing wraith
 KMONS:   5 = bog body / spriggan zombie w:4 / troll zombie w:4
-<<<<<<< HEAD
-KMONS:   6 = large abomination w:2 / swamp worm zombie / spiny frog zombie / \
-=======
 KMONS:   6 = large abomination w:2 / swamp worm zombie / goliath frog zombie / \
->>>>>>> fbaea20957 (Rework Swamp vault spawns)
              tyrant leech zombie w:6 / alligator zombie w:6
 KMONS:   q = withered plant
 KFEAT:   56 = W

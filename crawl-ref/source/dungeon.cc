@@ -1608,6 +1608,7 @@ static int _mon_count_base()
             return 12;
         }
     case BRANCH_PANDEMONIUM:
+    case BRANCH_SWAMP:
         return 8;
     case BRANCH_CRYPT:
         return 10;
