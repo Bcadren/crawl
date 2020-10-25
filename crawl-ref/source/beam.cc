@@ -2482,7 +2482,7 @@ void bolt::affect_endpoint()
             else if (monster* mon = monster_at(entry.first))
                 tracer_affect_monster(mon);
 
-            if (agent()->is_player() && beam_cancelled)
+            if (agent() && agent()->is_player() && beam_cancelled)
                 return;
         }
 
@@ -2544,8 +2544,9 @@ void bolt::affect_endpoint()
             ench_power /= 2;
         }
 
-        const int num = agent() && agent()->is_player() ? div_rand_round(ench_power * 3, 20) + 3 + random2(7)
-                                                        : random_range(3, 12, 2);
+        const bool is_player = agent() && agent()->is_player();
+        const int num = is_player ? div_rand_round(ench_power * 3, 20) + 3 + random2(7)
+                                  : random_range(3, 12, 2);
         const int dur = div_rand_round(ench_power * 4, 3) + 66;
 
         vector<coord_def> locations;
