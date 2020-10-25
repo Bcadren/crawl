@@ -311,6 +311,7 @@ string mon_attack_name(attack_type attack, bool with_object = true);
 bool is_plain_attack_type(attack_type attack);
 bool flavour_triggers_damageless(attack_flavour flavour);
 int flavour_damage(attack_flavour flavour, int HD, bool random = true);
+bool flavour_has_reach(attack_flavour flavour);
 
 corpse_effect_type mons_corpse_effect(monster_type mc);
 

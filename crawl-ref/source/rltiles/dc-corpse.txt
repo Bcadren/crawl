@@ -244,6 +244,7 @@ jellyfish CORPSE_JELLYFISH
 bullfrog CORPSE_BULLFROG
 blink_frog CORPSE_BLINK_FROG
 spiny_frog CORPSE_SPINY_FROG
+goliath_frog CORPSE_GOLIATH_FROG
 
 ## Snakes ('S')
 ball_python CORPSE_BALL_PYTHON

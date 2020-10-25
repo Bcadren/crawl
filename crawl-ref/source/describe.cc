@@ -4431,7 +4431,7 @@ static const char* _special_flavour_prefix(attack_flavour flavour)
  */
 static const char* _flavour_range_desc(attack_flavour flavour)
 {
-    if (flavour == AF_REACH || flavour == AF_REACH_STING)
+    if (flavour_has_reach(flavour))
         return " from a distance";
     return "";
 }
@@ -4493,6 +4493,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_MIASMATA,          "inject with foul rotting flesh" },
         { AF_TRAMPLE,           "knock back the defender" },
         { AF_REACH_STING,       "cause poisoning" },
+        { AF_REACH_TONGUE,      "deal extra acid damage" },
         { AF_WEAKNESS,          "cause weakness" },
         { AF_KITE,              "" },
         { AF_SWOOP,             "" },

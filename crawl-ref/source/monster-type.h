@@ -94,6 +94,7 @@ enum monster_type                      // env.mons[].type
     MONS_BLINK_FROG,
 #if TAG_MAJOR_VERSION > 34
     MONS_BARACHI,
+    MONS_GOLIATH_FROG,
     MONS_BEAR,                  // genus
 #endif
 #if TAG_MAJOR_VERSION == 34
@@ -1058,6 +1059,7 @@ enum monster_type                      // env.mons[].type
     MONS_BALLOON_DOG,
     MONS_CACODEMON,
     MONS_NAMELESS,
+    MONS_GOLIATH_FROG,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
