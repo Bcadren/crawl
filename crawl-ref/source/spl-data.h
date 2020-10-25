@@ -1558,6 +1558,18 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_WOODWEAL, "Woodweal", "",
+    spschool::necromancy | spschool::transmutation,
+    spflag::recovery | spflag::helpful | spflag::monster | spflag::selfench
+        | spflag::emergency | spflag::utility | spflag::not_evil,
+    4,
+    0,
+    1, 1,
+    5, 0,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
     SPELL_HURL_HELLFIRE, "Hurl Hellfire", "",
     spschool::fire | spschool::evocation,
     spflag::dir_or_target | spflag::unholy | spflag::needs_tracer,
@@ -1721,6 +1733,16 @@ static const struct spell_desc spelldata[] =
     5,
     0,
     4, 4,
+    5, 0,
+    TILEG_METAL_SPLINTERS, // BCADDO: Give own sprite.
+},
+
+    SPELL_SPLINTERSPRAY, "Splinterspray", "",
+    spschool::earth | spschool::evocation,
+    spflag::dir_or_target | spflag::monster | spflag::needs_tracer,
+    4,
+    0,
+    3, 3,
     5, 0,
     TILEG_METAL_SPLINTERS, // BCADDO: Give own sprite.
 },
