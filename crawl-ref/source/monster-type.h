@@ -656,6 +656,8 @@ enum monster_type                      // env.mons[].type
     MONS_GHOUL,
 #if TAG_MAJOR_VERSION == 34
     MONS_FLAMING_CORPSE,
+#else
+    MONS_BLOATED_HUSK,
 #endif
     MONS_MUMMY,
     MONS_BOG_BODY,
@@ -1061,6 +1063,7 @@ enum monster_type                      // env.mons[].type
     MONS_BALLOON_DOG,
     MONS_CACODEMON,
     MONS_NAMELESS,
+    MONS_BLOATED_HUSK,
     MONS_DEVOURING_SWARM,
     MONS_GOLIATH_FROG,
     MONS_ELEIONOMA,

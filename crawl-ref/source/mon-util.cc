@@ -4303,7 +4303,8 @@ bool mons_blows_up(const monster& m)
         || m.type == MONS_BALL_LIGHTNING
         || m.type == MONS_ENTROPIC_SPHERE
         || m.type == MONS_LURKING_HORROR
-        || m.type == MONS_FULMINANT_PRISM;
+        || m.type == MONS_FULMINANT_PRISM
+        || m.type == MONS_BLOATED_HUSK;
 }
 
 bool mons_self_destructs(const monster& m)

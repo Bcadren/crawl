@@ -1354,9 +1354,9 @@ static void _explosion_knockback(monster * mons, coord_def pos, int size, string
     {
         if (!(act->wearing_ego(EQ_BOOTS, SPARM_STURDY) || act->is_stationary()) && pos != mons->pos())
         {
-            coord_def newpos = coord_def(0,0);
+            coord_def newpos = coord_def(0, 0);
             const bool is_left = (mons->pos().x - pos.x) >= 0;
-            const bool is_up   = (mons->pos().y - pos.y) >= 0;
+            const bool is_up = (mons->pos().y - pos.y) >= 0;
             for (rectangle_iterator sai(pos, size); sai; ++sai)
             {
                 if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos()) && act->is_habitable(*sai)
@@ -1365,7 +1365,7 @@ static void _explosion_knockback(monster * mons, coord_def pos, int size, string
                     const int d0 = grid_distance(pos, *sai);
                     const int d1 = newpos.origin() ? 0 : grid_distance(pos, newpos);
                     const bool left = (pos.x - (*sai).x) >= 0;
-                    const bool up   = (pos.y - (*sai).y) >= 0;
+                    const bool up = (pos.y - (*sai).y) >= 0;
                     if (is_left == left && is_up == up && (newpos.origin() || (d0 > d1)))
                         newpos = *sai;
                 }
@@ -1400,6 +1400,17 @@ static void _explosion_knockback(monster * mons, coord_def pos, int size, string
         if (!newpos.origin())
             swap_clouds(pos, newpos);
     }
+}
+
+static void _setup_bloated_husk_explosion(bolt & beam, const monster& origin)
+{
+    _setup_base_explosion(beam, origin);
+    beam.flavour = BEAM_MMISSILE;
+    beam.damage  = dice_def(8, origin.get_hit_dice());
+    beam.name    = "blast of putrescent gases";
+    beam.explode_noise_msg = "You hear an high-pitched explosion!";
+    beam.colour  = GREEN;
+    beam.ex_size = 2;
 }
 
 static bool _explode_monster(monster* mons, killer_type killer,
@@ -1454,6 +1465,11 @@ static bool _explode_monster(monster* mons, killer_type killer,
     case MONS_LAVA_GLOB:
         _setup_lava_burst(beam, *mons);
         sanct_msg = "By Zin's power, the glob's inner magma is contained.";
+        break;
+    case MONS_BLOATED_HUSK:
+        _setup_bloated_husk_explosion(beam, *mons);
+        sanct_msg    = "By Zin's power, the bloated husk's explosion is "
+                       "contained.";
         break;
     default:
         if (mons->has_ench(ENCH_INNER_FLAME))
@@ -2026,6 +2042,7 @@ static bool _monster_explodes(const monster &mons) {
         case MONS_BALL_LIGHTNING:
         case MONS_ENTROPIC_SPHERE:
         case MONS_LURKING_HORROR:
+        case MONS_BLOATED_HUSK:
         case MONS_BENNU:
         case MONS_LAVA_GLOB:
         case MONS_BALLOON_DOG:
