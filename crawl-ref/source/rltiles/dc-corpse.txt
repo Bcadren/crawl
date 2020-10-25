@@ -437,8 +437,11 @@ jiangshi CORPSE_JIANGSHI
 %sdir player
 %back blood_blue blood_blue1 blood_blue2 blood_blue3 blood_blue4
 base/octopode1 CORPSE_OCTOPODE
+%sdir mon/animals
+bunyip CORPSE_BUNYIP
 
 ## Draconians ('d')
+%sdir player
 %back blood_puddle_red blood_puddle_red1 blood_puddle_red2 blood_puddle_red3 blood_puddle_red4
 %start
 %compose drcwing/drcwing_black

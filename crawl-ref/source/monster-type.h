@@ -634,6 +634,7 @@ enum monster_type                      // env.mons[].type
     MONS_SPATIAL_MAELSTROM,
     MONS_WORLDBINDER,
     MONS_ENTROPY_WEAVER, // not sure where else to put it
+    MONS_BUNYIP,
 #endif
     MONS_ELDRITCH_TENTACLE,
     MONS_ELDRITCH_TENTACLE_SEGMENT,
@@ -1064,6 +1065,7 @@ enum monster_type                      // env.mons[].type
     MONS_CACODEMON,
     MONS_NAMELESS,
     MONS_BLOATED_HUSK,
+    MONS_BUNYIP,
     MONS_DEVOURING_SWARM,
     MONS_GOLIATH_FROG,
     MONS_ELEIONOMA,

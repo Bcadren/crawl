@@ -733,6 +733,12 @@ An unusually aggressive amphibian that ensnares @possessive@ prey with @possessi
 sticky, lashing tongue. @Possessive@ croak is loud and distinctive, but unlike @possessive@
 smaller counterparts above ground, dungeon bullfrogs are as large as they sound.
 %%%%
+bunyip
+
+A flesh-eating beast that uses its five long limbs interchangeably. It moves
+with alarming speed, but must pause to reorganize itself after each attack.
+Its distinctive screams carry far and wide.
+%%%%
 butterfly
 
 A large, brightly coloured butterfly with beautifully patterned wings,
