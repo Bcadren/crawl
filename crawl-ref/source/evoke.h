@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include <vector>
+
+using std::vector;
+
 bool skill_has_manual(skill_type skill);
 string manual_skill_names(bool short_text=false);
 

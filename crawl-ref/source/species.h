@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "enum.h"
 #include "ability-type.h"
 #include "item-prop-enum.h"
@@ -10,6 +12,9 @@
 #include "species-def.h"
 #include "species-type.h"
 
+using std::vector;
+
+// BCADDO: Seperate header for this?
 enum draconian_colour
 {
     DR_BROWN,

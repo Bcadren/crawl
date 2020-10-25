@@ -6,6 +6,7 @@
 #pragma once
 
 #include <functional>
+#include <vector>
 
 #include "enum.h"
 #include "gender-type.h"
@@ -14,6 +15,8 @@
 #include "mon-inv-type.h"
 #include "monuse-flags.h"
 #include "player.h"
+
+using std::vector;
 
 struct bolt;
 struct mgen_data;

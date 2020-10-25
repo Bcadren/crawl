@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "artefact-prop-type.h"
 #include "beam-type.h"
 #include "conduct-type.h"
@@ -18,6 +20,8 @@
 #include "stat-type.h"
 
 #define CLING_KEY "clinging" // 'is creature clinging' property key
+
+using std::vector;
 
 enum class ev_ignore
 {
