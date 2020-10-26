@@ -2124,6 +2124,13 @@ static string _describe_weapon(const item_def &item, bool verbose)
             "and up to half again as much damage against particularly "
             "susceptible opponents.";
     }
+    else if (is_unrandom_artefact(item, UNRAND_GUARD))
+    {
+        description += "\n\nIt is grafted with the soul of a guardsman."
+                       " In the hands of one skilled in evocations this"
+                       " spirit is drawn out to fight along side the"
+                       " wielder.";
+    }
 
     if (is_artefact(item))
     {
