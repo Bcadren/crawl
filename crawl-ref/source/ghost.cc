@@ -20,6 +20,7 @@
 #include "jobs.h"
 #include "mon-cast.h"
 #include "mon-transit.h"
+#include "mpr.h"
 #include "ng-input.h"
 #include "options.h"
 #include "skills.h"

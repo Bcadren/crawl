@@ -20,6 +20,7 @@
 #include "item-status-flag-type.h"
 #include "items.h"
 #include "libutil.h" // map_find
+#include "mpr.h"
 #include "randbook.h"
 #include "season.h"
 #include "skills.h" // is_removed_skill
