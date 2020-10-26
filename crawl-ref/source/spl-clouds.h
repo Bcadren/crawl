@@ -1,9 +1,11 @@
 #pragma once
 
+#include "cloud-type.h"
 #include "spl-cast.h"
 
 struct bolt;
 class dist;
+class actor;
 
 cloud_type chaos_cloud(bool player = false);
 

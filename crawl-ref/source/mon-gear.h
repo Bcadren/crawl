@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include "item-def.h"
+#include "monster-type.h"
+
+class monster;
 
 item_def* make_item_for_monster(monster* mons, object_class_type base, int subtype,
     int level, bool on_spawn = true, int allow_uniques = 0, iflags_t flags = 0);

@@ -2,11 +2,14 @@
 
 #include <vector>
 
+#include "externs.h"
 #include "god-type.h"
 #include "mount.h"
 #include "spl-cast.h"
 
 using std::vector;
+
+class actor;
 
 spret cast_projected_noise(int pow, bool fail, coord_def pos);
 spret cast_sublimation_of_blood(int pow, bool fail);

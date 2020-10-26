@@ -8,6 +8,8 @@
 #include "tag-version.h"
 #include "torment-source-type.h"
 
+class actor;
+
 spret cast_healing(int pow, bool fail);
 spret try_to_pacify(monster &mon, int healed, int pow, bool fail = false);
 vector<string> desc_pacify_chance(const monster_info& mi, const int pow);
