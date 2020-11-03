@@ -658,7 +658,7 @@ static const weapon_def Weapon_prop[] =
                                     { SPWPN_DISTORTION,      2 },
                                     { SPWPN_ANTIMAGIC,       1 },
                                     { SPWPN_CHAOS,           1 }, } },
-    { WPN_BROAD_AXE,         "broad axe",          13, -2, 16,
+    { WPN_BROAD_AXE,         "broad axe",          13, -2, 17,
         SK_AXES_HAMMERS,       SIZE_LITTLE, SIZE_MEDIUM, SIZE_GIANT, MI_NONE,
         WPNF_NO_FLAGS, DAMV_CHOPPING, 4, 10, 40, AXE_BRANDS },
     { WPN_BATTLEAXE,         "battleaxe",          23, -4, 17,

@@ -195,12 +195,6 @@ enum monster_info_flags
     MB_CLOUD_RING_DRAINING,
     MB_CLOUD_RING_ACID,
     MB_CLOUD_RING_MIASMA,
-<<<<<<< HEAD
-    MB_INSECT_EGGS,
-=======
-    MB_WITHERING,
-    MB_CRUMBLING,
->>>>>>> 747a3e5df7 (Remove devouring swarms)
     NUM_MB_FLAGS
 };
 
