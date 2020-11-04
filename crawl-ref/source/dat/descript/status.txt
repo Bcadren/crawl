@@ -44,8 +44,8 @@ and stealth.
 %%%%
 Brill status
 
-You are unnaturally smart. This provides bonuses to your intelligence,
-spellcasting success, and spellpower.
+You are unnaturally smart, and gain a bonus to the power of your spells as well
+as halving their mana cost (rounding up) and making them easier to cast.
 %%%%
 Might status
 

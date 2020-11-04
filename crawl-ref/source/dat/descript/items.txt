@@ -784,7 +784,7 @@ A potion containing the essence of life.
 potion of brilliance
 
 A potion which greatly increases the intelligence and spell power of one who
-drinks it.
+drinks it. Also halves the cost of said spells (rounding up).
 %%%%
 potion of cancellation
 

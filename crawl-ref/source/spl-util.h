@@ -71,7 +71,7 @@ bool del_spell_from_memory_by_slot(int slot);
 bool del_spell_from_memory(spell_type spell);
 
 int spell_hunger(spell_type which_spell, bool base = false);
-int spell_mana(spell_type which_spell);
+int spell_mana(spell_type which_spell, bool real_spell = true);
 int spell_difficulty(spell_type which_spell);
 int spell_power_cap(spell_type spell);
 int spell_range(spell_type spell, int pow, bool allow_bonus = true);

@@ -481,18 +481,24 @@ bool spell_harms_area(spell_type spell)
     return false;
 }
 
-int spell_mana(spell_type which_spell)
+// How much MP does it cost for the player to cast this spell?
+//
+// @param real_spell  True if the player is casting the spell normally,
+// not via an evocable or other odd source.
+int spell_mana(spell_type which_spell, bool real_spell))
 {
-    int base = _seekspell(which_spell)->level;
+    int cost = _seekspell(which_spell)->level;
     if (you.species == SP_FAIRY)
-        return min(1, base - 1);
+        return min(1, cost - 1);
     item_def * stf = you.staff();
     if (stf && staff_enhances_spell(stf, which_spell) && get_staff_facet(*stf) == SPSTF_ENERGY
         || player_equip_unrand(UNRAND_WUCAD_MU))
     {
-        return base - 1;
+        cost -= 1;
     }
-    return base;
+    if (real_spell && you.duration[DUR_BRILLIANCE])
+        cost = div_round_up(cost, 2);
+    return cost;
 }
 
 // applied in naughties (more difficult = higher level knowledge = worse)
