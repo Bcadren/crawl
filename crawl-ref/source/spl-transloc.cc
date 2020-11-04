@@ -1533,6 +1533,13 @@ spret cast_gravitas(int pow, const coord_def& where, bool fail)
     return spret::success;
 }
 
+static bool _can_beckon(const actor &beckoned)
+{
+    return !beckoned.is_stationary()  // don't move statues, etc
+        && !beckoned.wearing_ego(EQ_BOOTS, SPARM_STURDY)
+        && !mons_is_tentacle_or_tentacle_segment(beckoned.type); // a mess...
+}
+
 /**
  * Where is the closest point along the given path to its source that the given
  * actor can be moved to?
@@ -1544,12 +1551,9 @@ spret cast_gravitas(int pow, const coord_def& where, bool fail)
  */
 static coord_def _beckon_destination(const coord_def &origin, const actor &beckoned, const bolt &path, int pow, const actor &agent)
 {
-    if (beckoned.is_stationary()  // don't move statues, etc
-        || beckoned.wearing_ego(EQ_BOOTS, SPARM_STURDY) // ego immunity
-        || mons_is_tentacle_or_tentacle_segment(beckoned.type)) // a mess...
-    {
+
+    if (!_can_beckon(beckoned))
         return beckoned.pos();
-    }
 
     pow -= 6;
     int distance = grid_distance(origin, beckoned.pos());
@@ -1649,4 +1653,50 @@ bool beckon(coord_def &origin, actor &beckoned, const bolt &path, int pow, actor
         mons_relocated(beckoned.as_monster()); // cleanup tentacle segments
 
     return true;
+}
+
+static bool _can_move_mons_to(const monster &mons, coord_def pos)
+{
+    return mons.can_pass_through_feat(env.grid(pos))
+           && !actor_at(pos)
+           && mons.is_habitable(pos);
+}
+
+/**
+  * Attempt to pull nearby monsters toward the player.
+ */
+void attract_monsters()
+{
+    for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
+    {
+        if (!_can_beckon(**mi))
+            continue;
+
+        const int orig_dist = grid_distance(you.pos(), mi->pos());
+        if (orig_dist <= 1)
+            continue;
+
+        ray_def ray;
+        if (!find_ray(mi->pos(), you.pos(), ray, opc_solid))
+            continue;
+
+        const int max_move = 3;
+        for (int i = 0; i < max_move && i < orig_dist - 1; i++)
+            ray.advance();
+
+        while (!_can_move_mons_to(**mi, ray.pos()) && ray.pos() != mi->pos())
+            ray.regress();
+
+        if (ray.pos() == mi->pos())
+            continue;
+
+        const coord_def old_pos = mi->pos();
+        if (!mi->move_to_pos(ray.pos()))
+            continue;
+
+        mprf("%s is pulled toward you!", mi->name(DESC_THE).c_str());
+
+        mi->apply_location_effects(old_pos);
+        mons_relocated(*mi);
+    }
 }

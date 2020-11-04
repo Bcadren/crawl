@@ -45,6 +45,7 @@ enum potion_type
 #endif
     POT_LIGNIFY,
     POT_BENEFICIAL_MUTATION,
+    POT_ATTRACTION,
     NUM_POTIONS
 };
 
@@ -60,6 +61,7 @@ const vector<potion_type> potion_types =
     POT_MIGHT,
     POT_BRILLIANCE,
     POT_AMNESIA,
+    POT_ATTRACTION,
     POT_CANCELLATION,
     POT_AMBROSIA,
     POT_INVISIBILITY,

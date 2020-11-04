@@ -37,3 +37,4 @@ bool fatal_attraction(const coord_def& pos, const actor *agent, int pow);
 spret cast_gravitas(int pow, const coord_def& where, bool fail);
 
 bool beckon(coord_def &origin, actor &beckoned, const bolt &path, int pow, actor &agent);
+void attract_monsters();

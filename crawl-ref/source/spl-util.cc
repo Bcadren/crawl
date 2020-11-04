@@ -485,7 +485,7 @@ bool spell_harms_area(spell_type spell)
 //
 // @param real_spell  True if the player is casting the spell normally,
 // not via an evocable or other odd source.
-int spell_mana(spell_type which_spell, bool real_spell))
+int spell_mana(spell_type which_spell, bool real_spell)
 {
     int cost = _seekspell(which_spell)->level;
     if (you.species == SP_FAIRY)

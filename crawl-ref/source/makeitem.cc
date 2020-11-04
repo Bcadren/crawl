@@ -1724,12 +1724,13 @@ static void _generate_potion_item(item_def& item, int force_type,
         // Currently does nothing, until we come up with a boring potion.
         do
         {
-            // total weight: 982
+            // total weight: 1048
             stype = random_choose_weighted(192, POT_CURING,
                                            105, POT_HEAL_WOUNDS,
                                             73, POT_LIGNIFY,
                                             73, POT_HASTE,
                                             66, POT_MUTATION,
+                                            66, POT_ATTRACTION,
                                             66, POT_MIGHT,
                                             66, POT_AGILITY,
                                             66, POT_BRILLIANCE,

@@ -874,6 +874,10 @@ potion of slowing
 
 An accursed beverage which slows the actions of anyone who drinks it.
 %%%%
+potion of attraction
+
+A potion which makes the drinker attract monsters, pulling them quickly closer.
+%%%%
 quad damage
 
 A mysterious item resembling a rune of some kind. Once evoked, it will make the
