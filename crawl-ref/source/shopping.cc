@@ -719,15 +719,11 @@ unsigned int item_value(item_def item, bool ident)
 
         case MISC_FAN_OF_GALES:
         case MISC_PHIAL_OF_FLOODS:
-<<<<<<< HEAD
         case MISC_LAMP_OF_FIRE:
-        case MISC_LIGHTNING_ROD:
-=======
-        case MISC_TIN_OF_TREMORSTONES:
         case MISC_BOX_OF_BEASTS:
         case MISC_CONDENSER_VANE:
         case MISC_PHANTOM_MIRROR:
->>>>>>> ca8acebb32 (Adjust XP evocable prices)
+        case MISC_SACK_OF_SPIDERS:
             valued += 400;
             break;
 
@@ -735,14 +731,6 @@ unsigned int item_value(item_def item, bool ident)
             valued += 300;
             break;
 
-<<<<<<< HEAD
-        case MISC_BOX_OF_BEASTS:
-        case MISC_SACK_OF_SPIDERS:
-            valued += 200;
-            break;
-
-=======
->>>>>>> ca8acebb32 (Adjust XP evocable prices)
         default:
             if (is_deck(item))
                 valued += 80 + item.deck_rarity * 60;
