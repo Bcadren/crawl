@@ -451,7 +451,7 @@ int zap_to_hit(zap_type z_type, int power, bool is_monster)
                                                : zinfo->player_tohit;
     if (!zinfo->is_enchantment)
         ASSERT(hit_calc);
-    const int hit = hit_calc ? (*hit_calc)(power) : 0;
+    int hit = hit_calc ? (*hit_calc)(power) : 0;
     if (hit != AUTOMATIC_HIT && !is_monster && crawl_state.need_save)
     {
         hit *= (10 + you.vision());
