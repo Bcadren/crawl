@@ -552,13 +552,22 @@ static void _describe_book(const spellbook_contents &book,
         const int range_len = range_str.empty() ? 0 : 3;
         const int effect_range_space = effect_len && range_len ? 1 : 0;
         const int chop_len = 29 - effect_len - range_len - effect_range_space;
+        
+        string spell_name = mi_spell_title(spell, mon_owner);
+        if (spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
+            && chop_len < (int)spell_name.length())
+        {
+            // looks nicer than Lehudib's Crystal S
+            spell_name = "Crystal Spear";
+        }
 
         description += formatted_string::parse_string(
                 make_stringf("%c - %s%s%s%s", spell_letter,
-                chop_string(mi_spell_title(spell, mon_owner), chop_len).c_str(),
-                            effect_str.c_str(),
-                            effect_range_space ? " " : "",
-                            range_str.c_str()));
+                             chop_string(spell_name, chop_len).c_str(),
+                             effect_str.c_str(),
+                             effect_range_space ? " " : "",
+                             range_str.c_str()));
+
         // only display type & level for book spells
         if (doublecolumn)
         {
