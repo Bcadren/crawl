@@ -238,7 +238,9 @@ static bool _is_public_key(string key)
      || key == MON_GENDER_KEY
      || key == SEEN_SPELLS_KEY
      || key == VAULT_HD_KEY
-     || key == ABOM_DEF)
+     || key == ABOM_DEF
+     || key == VAULT_HD_KEY
+     || key == POLY_SET_KEY)
     {
         return true;
     }

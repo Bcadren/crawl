@@ -4474,12 +4474,7 @@ bool monster::airborne() const
 
     // For dancing weapons, this function can get called before their
     // ghost_demon is created, so check for a nullptr ghost. -cao
-    return mons_is_ghost_demon(type) && ghost && ghost->flies
-           // check both so spectral humans and zombified dragons both fly
-           || mons_class_flag(mons_base_type(*this), M_FLIES)
-           || mons_class_flag(type, M_FLIES)
-           || has_abom_facet(FAC_WINGS)
-           || has_facet(BF_BAT)
+    return monster_inherently_flies(*this)
            || scan_artefacts(ARTP_FLY) > 0
            || has_ench(ENCH_FLIGHT);
 }
@@ -5767,7 +5762,7 @@ bool monster::polymorph(poly_power_type power)
         return true;
     }
 
-    return monster_polymorph(this, RANDOM_MONSTER, power);
+    return monster_polymorph(this, RANDOM_POLYMORPH_MONSTER, power);
 }
 
 bool monster::is_icy() const
