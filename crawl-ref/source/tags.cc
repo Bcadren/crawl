@@ -6026,6 +6026,23 @@ static void _tag_read_level(reader &th)
     }
 }
 
+#if TAG_MAJOR_VERSION == 34
+static bool _need_poly_refresh(const monster &mon)
+{
+    if (!mon.props.exists(POLY_SET_KEY))
+        return true;
+    const CrawlVector &set = mon.props[POLY_SET_KEY].get_vector();
+    for (int poly_mon : set)
+    {
+        const monster_type mc = (monster_type)poly_mon;
+        // removed monster
+        if (mc == MONS_PROGRAM_BUG || mons_species(mc) == MONS_PROGRAM_BUG)
+            return true;
+    }
+    return false;
+}
+#endif
+
 static void _tag_read_level_items(reader &th)
 {
     unwind_bool dont_scan(crawl_state.crash_debug_scans_safe, false);
@@ -6243,7 +6260,8 @@ void unmarshallMonster(reader &th, monster& m)
         m.props.erase("old_attitude");
     }
 
-    if (th.getMinorVersion() < TAG_MINOR_SETPOLY)
+
+    if (th.getMinorVersion() < TAG_MINOR_SETPOLY || _need_poly_refresh(m))
         init_poly_set(&m);
 #endif
 
