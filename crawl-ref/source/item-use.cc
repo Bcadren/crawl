@@ -3356,15 +3356,15 @@ static void _rebrand_weapon(item_def& wpn)
         else
         {
             new_brand = random_choose_weighted(
-                                    30, SPWPN_MOLTEN,
-                                    30, SPWPN_FREEZING,
-                                    25, SPWPN_VORPAL,
-                                    20, SPWPN_VENOM,
-                                    15, SPWPN_ACID,
-                                    15, SPWPN_ELECTROCUTION,
-                                    12, SPWPN_PROTECTION,
-                                     8, SPWPN_VAMPIRISM,
-                                     3, SPWPN_CHAOS);
+                                    28, SPWPN_MOLTEN,
+                                    28, SPWPN_FREEZING,
+                                    23, SPWPN_VORPAL,
+                                    18, SPWPN_VENOM,
+                                    14, SPWPN_ACID,
+                                    14, SPWPN_ELECTROCUTION,
+                                    11, SPWPN_PROTECTION,
+                                    8, SPWPN_VAMPIRISM,
+                                    3, SPWPN_CHAOS);
         }
     }
 
@@ -3661,6 +3661,11 @@ void brand_weapon(item_def &wpn, bool player)
     case SPWPN_ACID:
         flash_colour = ETC_SLIME;
         mprf("%s oozes corrosive slime.", itname.c_str());
+        break;
+
+    case SPWPN_SPECTRAL:
+        flash_colour = BLUE;
+        mprf("%s acquires a faint afterimage.", itname.c_str());
         break;
 
     default:
