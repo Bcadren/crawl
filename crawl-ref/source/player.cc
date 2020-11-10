@@ -9436,7 +9436,7 @@ void player::beam_effects(beam_type flavour, int original, int hurted, bolt *bea
         }
         break;
 
-    case BEAM_DAMNATION:
+    case BEAM_HELLFIRE:
         if (!mt && drac_colour == DR_BLOOD)
             mpr("Your gory crimson scales reflect some of the hellish flames.");
         break;

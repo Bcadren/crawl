@@ -125,7 +125,7 @@ bool cast_smitey_damnation(int pow, bolt &beam)
     beam.name              = "pillar of hellfire";
     beam.aux_source        = "hellfire";
     beam.ex_size           = 1;
-    beam.flavour           = BEAM_DAMNATION;
+    beam.flavour           = BEAM_HELLFIRE;
     beam.real_flavour      = beam.flavour;
     beam.glyph             = dchar_glyph(DCHAR_FIRED_BURST);
     beam.colour            = LIGHTRED;
@@ -1049,7 +1049,7 @@ spret cast_freeze(int pow, monster* mons, bool fail)
         case BEAM_ELECTRICITY: dam_verb = "shock";          dam_noun = "electricity";       break;
         case BEAM_NEG:         dam_verb = "drain";          dam_noun = "negative energy";   break;
         case BEAM_ACID:        dam_verb = "dissolve";       dam_noun = "acid";              break;
-        case BEAM_DAMNATION:   dam_verb = "sear";           dam_noun = "hellfire";          break;
+        case BEAM_HELLFIRE:    dam_verb = "sear";           dam_noun = "hellfire";          break;
         case BEAM_HOLY:        dam_verb = "smite";          dam_noun = "holy light";        break;
         default:                                                                            break;
         case BEAM_DEVASTATION: dam_verb = "discombobulate"; dam_noun = "exploding force";   break;
@@ -4568,7 +4568,7 @@ static void _chaos_bolt_flavour(bolt beam, int x)
         }
         else
         {
-            beam.flavour = BEAM_DAMNATION;
+            beam.flavour = BEAM_HELLFIRE;
             beam.colour = LIGHTRED;
         }
         break;

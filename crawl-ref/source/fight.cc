@@ -727,7 +727,7 @@ static int _beam_to_resist(const actor* defender, beam_type flavour, bool mount)
         case BEAM_FIRE:
         case BEAM_LAVA:
             return defender->res_fire(mount);
-        case BEAM_DAMNATION:
+        case BEAM_HELLFIRE:
             return defender->res_hellfire(mount);
         case BEAM_STEAM:
             return max(defender->res_steam(mount), defender->res_fire(mount));
@@ -880,7 +880,7 @@ int resist_adjust_damage(const actor* defender, beam_type flavour, int rawdamage
             rawdamage += rawdamage / 2;
         if (res > 0)
             return 0;
-    case BEAM_DAMNATION:
+    case BEAM_HELLFIRE:
         if (!is_mon && !mount && you.drac_colour == DR_BLOOD)
             rawdamage /= 2;
         // fallthrough

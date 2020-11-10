@@ -1429,6 +1429,13 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_SANDBLAST:
     case SPELL_HARPOON_SHOT:
     case SPELL_THROW_PIE:
+    case SPELL_NOXIOUS_CLOUD:
+    case SPELL_POISONOUS_CLOUD:
+    case SPELL_THORN_VOLLEY:
+    case SPELL_HELLFIRE_BLAST:
+    case SPELL_HURL_HELLFIRE:
+    case SPELL_SPIT_POISON:
+    case SPELL_MIASMA_BREATH:      // death drake
 
     // Wands
     case SPELL_WAND_FLAME:
@@ -1458,6 +1465,11 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         zappy(ZAP_FREEZING_BLAST, power, true, beam);
         break;
 
+    case SPELL_ENERGY_BOLT:
+        zappy(spell_to_zap(real_spell), power, true, beam);
+        beam.short_name = "energy";
+        break;
+
     case SPELL_DISPEL_UNDEAD:
         beam.flavour  = BEAM_DISPEL_UNDEAD;
         beam.damage   = dice_def(3, min(6 + power / 10, 40));
@@ -1472,58 +1484,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.foe_ratio = random_range(40, 55);
         break;
 
-    case SPELL_HELLFIRE_BLAST:
-        beam.aux_source   = "hellfire";
-        beam.name         = "hellfire blast";
-        beam.ex_size      = 1;
-        beam.flavour      = BEAM_DAMNATION;
-        beam.is_explosion = true;
-        beam.colour       = LIGHTRED;
-        beam.aux_source.clear();
-        beam.is_tracer    = false;
-        beam.hit          = 20;
-        beam.damage       = dice_def(3, 15);
-        break;
-
-    case SPELL_NOXIOUS_CLOUD:
-        beam.name     = "noxious blast";
-        beam.damage   = dice_def(1, 0);
-        beam.colour   = GREEN;
-        beam.flavour  = BEAM_MEPHITIC;
-        beam.hit      = 18 + power / 25;
-        beam.pierce   = true;
-        break;
-
-    case SPELL_POISONOUS_CLOUD:
-        beam.name     = "blast of poison";
-        beam.damage   = dice_def(3, 3 + power / 25);
-        beam.colour   = LIGHTGREEN;
-        beam.flavour  = BEAM_POISON;
-        beam.hit      = 18 + power / 25;
-        beam.pierce   = true;
-        break;
-
-    case SPELL_ENERGY_BOLT:        // eye of devastation
-        beam.colour     = YELLOW;
-        beam.name       = "bolt of energy";
-        beam.short_name = "energy";
-        beam.damage     = dice_def(3, 20);
-        beam.hit        = 15 + power / 30;
-        beam.flavour    = BEAM_ENERGY; // DEVASTATION is BEAM_MMISSILE
-        beam.pierce     = true;             // (except bloodier)
-        break;
-
-    case SPELL_SPIT_POISON:
-        beam.colour   = GREEN;
-        beam.name     = "splash of poison";
-        beam.damage   = dice_def(1, 4 + power / 10);
-        beam.hit      = 16 + power / 20;
-        beam.flavour  = BEAM_POISON;
-        break;
-
     // BCADNOTE: Are Spit Acid and Acid Splash the same effect exactly?
         // Can I delete one and refer to just the remaining? they look identical.
-
     case SPELL_SPIT_ACID:
         beam.colour   = YELLOW;
         beam.name     = "splash of acid";
@@ -1590,34 +1552,9 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.pierce   = true;
         break;
 
-    case SPELL_MIASMA_BREATH:      // death drake
-        beam.name     = "foul vapour";
-        beam.damage   = dice_def(3, 5 + power / 24);
-        beam.colour   = DARKGREY;
-        beam.flavour  = BEAM_MIASMA;
-        beam.hit      = 17 + power / 20;
-        beam.pierce   = true;
-        break;
-
-    case SPELL_HURL_HELLFIRE:           // fiend's hellfire
-        beam.name         = "hellfire blast";
-        beam.aux_source   = "hellfire";
-        beam.colour       = LIGHTRED;
-        beam.damage       = dice_def(3, 20);
-        beam.hit          = 24;
-        beam.flavour      = BEAM_DAMNATION;
-        beam.pierce       = true; // needed?
-        beam.is_explosion = true;
-        break;
-
     case SPELL_METAL_SPLINTERS:
-        beam.name       = "spray of metal splinters";
+        zappy(spell_to_zap(real_spell), power, true, beam);
         beam.short_name = "metal splinters";
-        beam.damage     = dice_def(3, 20 + power / 20);
-        beam.colour     = CYAN;
-        beam.flavour    = BEAM_FRAG;
-        beam.hit        = 19 + power / 30;
-        beam.pierce     = true;
         break;
 
     case SPELL_SILVER_SPLINTERS:
@@ -1640,12 +1577,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.pierce = true;
 
     case SPELL_SPLINTERSPRAY:
-        beam.name       = "spray of wooden splinters";
+        zappy(spell_to_zap(real_spell), power, true, beam);
         beam.short_name = "splinters";
-        beam.damage     = dice_def(3, 15 + power / 20);
-        beam.colour     = BROWN;
-        beam.flavour    = BEAM_FRAG;
-        beam.hit        = 17 + power / 30;
         break;
 
     case SPELL_BLINK_OTHER:
@@ -1746,13 +1679,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         break;
 
     case SPELL_PETRIFYING_CLOUD:
-        beam.name     = "blast of calcifying dust";
-        beam.colour   = WHITE;
-        beam.damage   = dice_def(2, 6);
-        beam.hit      = AUTOMATIC_HIT;
-        beam.flavour  = BEAM_PETRIFYING_CLOUD;
+        zappy(spell_to_zap(real_spell), power, true, beam);
         beam.foe_ratio = 30;
-        beam.pierce   = true;
         break;
 
     case SPELL_ENSNARE:
@@ -1775,14 +1703,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
 
     case SPELL_DIMENSION_ANCHOR:
         beam.flavour    = BEAM_DIMENSION_ANCHOR;
-        break;
-
-    case SPELL_THORN_VOLLEY:
-        beam.colour   = BROWN;
-        beam.name     = "volley of thorns";
-        beam.damage   = dice_def(3, 5 + (power / 13));
-        beam.hit      = 20 + power / 15;
-        beam.flavour  = BEAM_MMISSILE;
         break;
 
     // XXX: This seems needed to give proper spellcasting messages, even though
@@ -5112,7 +5032,7 @@ static bool _mons_cast_freeze(monster* mons)
         case BEAM_ELECTRICITY: dam_verb = "shocked";   break;
         case BEAM_NEG:         dam_verb = "drained";   break;
         case BEAM_ACID:        dam_verb = "dissolved"; break;
-        case BEAM_DAMNATION:   dam_verb = "scorched";  break;
+        case BEAM_HELLFIRE:    dam_verb = "scorched";  break;
         case BEAM_HOLY:        dam_verb = "smitten";   break;
         default:                                       break;
         case BEAM_DEVASTATION: dam_verb = "ruptured";  break;

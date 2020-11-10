@@ -38,8 +38,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_THROW_ICICLE,           ZAP_THROW_ICICLE },
     // Wizard mode only.
     { SPELL_PORKALATOR,             ZAP_PORKALATOR },
-    // Should only be available from Staff of Dispater
-    { SPELL_HURL_HELLFIRE,         ZAP_DAMNATION },
+    { SPELL_HURL_HELLFIRE,          ZAP_HURL_HELLFIRE },
     { SPELL_MAGIC_CANDLE,           ZAP_MAGIC_CANDLE },
     { SPELL_ENSLAVEMENT,            ZAP_ENSLAVEMENT },
     { SPELL_BANISHMENT,             ZAP_BANISHMENT },
@@ -87,10 +86,19 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_VIRULENCE,              ZAP_VIRULENCE },
     { SPELL_SAP_MAGIC,              ZAP_SAP_MAGIC },
     { SPELL_DRAIN_MAGIC,            ZAP_DRAIN_MAGIC },
-    { SPELL_HARPOON_SHOT,           ZAP_HARPOON_SHOT},
-    { SPELL_THROW_PIE,              ZAP_THROW_PIE},
-    { SPELL_SILVER_SPLINTERS,       ZAP_BREATHE_SILVER},
-    { SPELL_BONE_SHARDS,            ZAP_BREATHE_BONE},
+    { SPELL_HARPOON_SHOT,           ZAP_HARPOON_SHOT },
+    { SPELL_THROW_PIE,              ZAP_THROW_PIE },
+    { SPELL_SILVER_SPLINTERS,       ZAP_BREATHE_SILVER },
+    { SPELL_BONE_SHARDS,            ZAP_BREATHE_BONE },
+    { SPELL_NOXIOUS_CLOUD,          ZAP_NOXIOUS_CLOUD },
+    { SPELL_POISONOUS_CLOUD,        ZAP_POISONOUS_CLOUD },
+    { SPELL_ENERGY_BOLT,            ZAP_ENERGY_BOLT },
+    { SPELL_SPLINTERSPRAY,          ZAP_SPLINTERSPRAY },
+    { SPELL_THORN_VOLLEY,           ZAP_THORN_VOLLEY },
+    { SPELL_HELLFIRE_BLAST,         ZAP_HELLFIRE },
+    { SPELL_SPIT_POISON,            ZAP_SPIT_POISON },
+    { SPELL_MIASMA_BREATH,          ZAP_MIASMA_BREATH },
+    { SPELL_PETRIFYING_CLOUD,       ZAP_PETRIFYING_CLOUD },
 
     // These are all for zap -> spell lookup.
     { SPELL_QUICKSILVER_BOLT,       ZAP_QUICKSILVER_BOLT },

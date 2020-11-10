@@ -628,7 +628,7 @@ static beam_type _chaos_enchant_type()
         5, BEAM_POLYMORPH,
         // Seen through miscast effects.
         5, BEAM_ACID,
-        5, BEAM_DAMNATION,
+        5, BEAM_HELLFIRE,
         5, BEAM_STICKY_FLAME,
         5, BEAM_DISINTEGRATION,
         // These are not actualy used by SPWPN_CHAOS, but are here to augment
@@ -784,7 +784,7 @@ void bolt::apply_beam_conducts()
     {
         switch (flavour)
         {
-        case BEAM_DAMNATION:
+        case BEAM_HELLFIRE:
         {
             const int level = 2 + random2(3);
             did_god_conduct(DID_EVIL, level, god_cares());
@@ -937,7 +937,7 @@ void bolt::fake_flavour()
         case 11:
         case 14:
         default: // Just in case.
-            flavour = BEAM_DAMNATION;
+            flavour = BEAM_HELLFIRE;
             colour = LIGHTRED;
             name += "hellfire";
             break;
@@ -1031,7 +1031,7 @@ void bolt::fake_flavour()
             name += "water";
             break;
         case 7:
-            flavour = BEAM_DAMNATION;
+            flavour = BEAM_HELLFIRE;
             colour = LIGHTRED;
             if (!is_good_god(you.religion))
             {
@@ -4652,7 +4652,7 @@ int bolt::apply_AC(const actor *victim, int hurted, int max_dmg, bool mount)
 {
     switch (flavour)
     {
-    case BEAM_DAMNATION:
+    case BEAM_HELLFIRE:
     case BEAM_ENSNARE:
         ac_rule = ac_type::none; break;
     case BEAM_ELECTRICITY:
@@ -6714,7 +6714,7 @@ int bolt::range_used_on_hit() const
         return BEAM_STOP;
 
     // These beams fully penetrate regardless of anything else.
-    if (flavour == BEAM_DAMNATION
+    if (flavour == BEAM_HELLFIRE
         || flavour == BEAM_DIGGING
         || flavour == BEAM_VILE_CLUTCH)
     {
@@ -7445,7 +7445,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_MIASMA:                return "miasma";
     case BEAM_SPORE:                 return "spores";
     case BEAM_POISON_ARROW:          return "strong poison";
-    case BEAM_DAMNATION:             return "hellfire";
+    case BEAM_HELLFIRE:              return "hellfire";
     case BEAM_STICKY_FLAME:          return "sticky fire";
     case BEAM_STEAM:                 return "steam";
     case BEAM_ENERGY:                return "energy";

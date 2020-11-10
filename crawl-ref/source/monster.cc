@@ -6400,7 +6400,7 @@ void monster::beam_effects(beam_type flavour, int original, int hurted, bolt *pb
         }
         break;
 
-    case BEAM_DAMNATION:
+    case BEAM_HELLFIRE:
         if (res_hellfire())
             simple_monster_message(*this, " completely resists.");
         break;

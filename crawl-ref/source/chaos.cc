@@ -24,7 +24,7 @@ beam_type eldritch_damage_type()
         1, BEAM_COLD,
         3, BEAM_DRAIN,
         3, BEAM_ACID,
-        4, BEAM_DAMNATION,
+        4, BEAM_HELLFIRE,
         3, BEAM_DEVASTATION,
         1, BEAM_ELECTRICITY);
 }
@@ -36,10 +36,10 @@ beam_type chaos_damage_type(bool player)
         4, BEAM_COLD,
         4, BEAM_DRAIN,
         4, BEAM_ACID,
-        1, BEAM_DAMNATION,
+        1, BEAM_HELLFIRE,
         6, BEAM_DEVASTATION,
         3, BEAM_ELECTRICITY);
-    if (player && is_good_god(you.religion) && (retval == BEAM_DRAIN || retval == BEAM_DAMNATION))
+    if (player && is_good_god(you.religion) && (retval == BEAM_DRAIN || retval == BEAM_HELLFIRE))
         return BEAM_HOLY;
     return retval;
 }
