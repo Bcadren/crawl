@@ -877,7 +877,7 @@ An accursed beverage which slows the actions of anyone who drinks it.
 scroll of gravitation
 
 A scroll containing a spell that creates a shortlived gravitational 
-anomaly on the caster, pulling other creatures towards them for a time.
+anomaly on the caster, pulling their enemies towards them for a time.
 %%%%
 quad damage
 

@@ -756,8 +756,8 @@ point – typically colliding with each other, or with a victim standing there.
 %%%%
 Gell's Gravitation spell
 
-Creates a gravitational anomaly around the caster, pulling nearby creatures 
-towards the caster for a decent duration. The warped space pulls from as far 
+Creates a gravitational anomaly around the caster, pulling their foes 
+towards them for a decent duration. The warped space pulls from as far 
 as the caster can see, but pulls harmlessly; dealing no direct damage to the 
 caster or their victims. It doesn't even wake up sleeping monsters.
 %%%%
