@@ -4314,6 +4314,7 @@ bool mons_destroyed_on_impact(const monster& m)
 bool mons_blows_up(const monster& m)
 {
     return m.type == MONS_BALLISTOMYCETE_SPORE
+        || m.type == MONS_HYPERACTIVE_BALLISTOMYCETE
         || m.type == MONS_BALL_LIGHTNING
         || m.type == MONS_ENTROPIC_SPHERE
         || m.type == MONS_LURKING_HORROR
