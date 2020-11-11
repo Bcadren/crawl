@@ -125,6 +125,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_BORGNJORS_VILE_CLUTCH,  ZAP_VILE_CLUTCH},
     { SPELL_OZOCUBUS_REFRIGERATION, ZAP_REFRIGERATE},
     { SPELL_FOXFIRE,                ZAP_FOXFIRE },
+    { SPELL_MARSHLIGHT,             ZAP_FOXFIRE },
     { SPELL_HURL_SLUDGE,            ZAP_HURL_SLUDGE },
 };
 
