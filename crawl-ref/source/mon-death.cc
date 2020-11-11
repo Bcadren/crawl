@@ -1247,31 +1247,38 @@ void setup_spore_explosion(bolt & beam, const monster& origin)
     beam.ex_size = 2;
 }
 
-static void _setup_lightning_explosion(bolt & beam, const monster& origin, bool chaos)
+static void _finish_ball_lightning_explosion(bolt & beam, const monster& origin)
 {
-    _setup_base_explosion(beam, origin);
-    if (chaos)
-    {
-        beam.flavour = BEAM_CHAOTIC_DEVASTATION;
-        beam.name = "blast of pure entropy";
-        beam.explode_noise_msg = "You hear a bemusing cacophonous burst!";
-        beam.colour = ETC_JEWEL;
-    }
-    else
-    {
-        beam.flavour = BEAM_ELECTRICITY;
-        beam.name = "blast of lightning";
-        beam.explode_noise_msg = "You hear a clap of thunder!";
-        beam.colour = LIGHTCYAN;
-    }
-    beam.damage       = dice_def(3, 5 + origin.get_hit_dice() * 5 / 4);
+    beam.damage = dice_def(3, 5 + origin.get_hit_dice() * 5 / 4);
     beam.origin_spell = SPELL_CONJURE_BALL_LIGHTNING;
-    beam.ex_size      = x_chance_in_y(origin.get_hit_dice(), 24) ? 3 : 2;
+    beam.ex_size = x_chance_in_y(origin.get_hit_dice(), 24) ? 3 : 2;
     if (origin.summoner)
         beam.origin_spell = SPELL_CONJURE_BALL_LIGHTNING;
     // Don't credit the player for ally-summoned ball lightning explosions.
     if (origin.summoner && origin.summoner != MID_PLAYER)
         beam.thrower = KILL_MON;
+}
+
+static void _setup_chaos_explosion(bolt & beam, const monster &origin)
+{
+    _setup_base_explosion(beam, origin);
+    beam.flavour = BEAM_CHAOTIC_DEVASTATION;
+    beam.name = "blast of pure entropy";
+    beam.explode_noise_msg = "You hear a bemusing cacophonous burst!";
+    beam.colour = ETC_JEWEL;
+
+    _finish_ball_lightning_explosion(beam, origin);
+}
+
+static void _setup_lightning_explosion(bolt & beam, const monster& origin)
+{
+    _setup_base_explosion(beam, origin);    
+    beam.flavour = BEAM_ELECTRICITY;
+    beam.name = "blast of lightning";
+    beam.explode_noise_msg = "You hear a clap of thunder!";
+    beam.colour = LIGHTCYAN;
+
+    _finish_ball_lightning_explosion(beam, origin);
 }
 
 static void _setup_prism_explosion(bolt& beam, const monster& origin)
@@ -1413,6 +1420,23 @@ static void _setup_bloated_husk_explosion(bolt & beam, const monster& origin)
     beam.ex_size = 2;
 }
 
+struct monster_explosion {
+    function<void(bolt&, const monster&)> prep_explode;
+    string sanct_effect;
+};
+
+static const map<monster_type, monster_explosion> explosions{
+    { MONS_BALLISTOMYCETE_SPORE, { setup_spore_explosion } },
+    { MONS_BALL_LIGHTNING, { _setup_lightning_explosion } },
+    { MONS_ENTROPIC_SPHERE, { _setup_chaos_explosion, "entropic burst is contained" } },
+    { MONS_BALLOON_DOG, { _setup_balloon_pop, "balloon burst is contained" } },
+    { MONS_LURKING_HORROR, { nullptr, "torment is averted" } },
+    { MONS_FULMINANT_PRISM, { _setup_prism_explosion } },
+    { MONS_BENNU, { _setup_bennu_explosion, "fires are quelled" } },
+    { MONS_LAVA_GLOB, { _setup_lava_burst, "inner magma is contained" } },
+    { MONS_BLOATED_HUSK, { _setup_bloated_husk_explosion } },
+};
+
 static bool _explode_monster(monster* mons, killer_type killer,
                              bool pet_kill, bool wizard)
 {
@@ -1425,94 +1449,50 @@ static bool _explode_monster(monster* mons, killer_type killer,
     }
 
     bolt beam;
-    const int type = mons->type;
-    const char* sanct_msg = nullptr;
+    const monster_type type = mons->type;
+    string sanct_msg = "";
     actor* agent = mons;
 
-    switch (type)
+    auto it = explosions.find(type);
+    if (it != explosions.end())
     {
-    case MONS_BALLISTOMYCETE_SPORE:
-        setup_spore_explosion(beam, *mons);
-        sanct_msg    = "By Zin's power, the ballistomycete spore's "
-                       "explosion is contained.";
-        break;
-    case MONS_BALL_LIGHTNING:
-        _setup_lightning_explosion(beam, *mons, false);
-        sanct_msg = "By Zin's power, the ball lightning's explosion is "
-            "contained.";
-        break;
-    case MONS_ENTROPIC_SPHERE:
-        _setup_lightning_explosion(beam, *mons, true);
-        sanct_msg = "By Zin's power, the entropic burst "
-                    "is contained.";
-        break;
-    case MONS_BALLOON_DOG:
-        _setup_balloon_pop(beam, *mons);
-        sanct_msg = "By Zin's power, the force of the balloon bursting "
-                    "is contained.";
-        break;
-    case MONS_LURKING_HORROR:
-        sanct_msg = "The lurking horror fades away harmlessly.";
-        break;
-    case MONS_FULMINANT_PRISM:
-        _setup_prism_explosion(beam, *mons);
-        sanct_msg = "By Zin's power, the prism's explosion is contained.";
-        break;
-    case MONS_BENNU:
-        _setup_bennu_explosion(beam, *mons);
-        sanct_msg = "By Zin's power, the bennu's fires are quelled.";
-        break;
-    case MONS_LAVA_GLOB:
-        _setup_lava_burst(beam, *mons);
-        sanct_msg = "By Zin's power, the glob's inner magma is contained.";
-        break;
-    case MONS_BLOATED_HUSK:
-        _setup_bloated_husk_explosion(beam, *mons);
-        sanct_msg    = "By Zin's power, the bloated husk's explosion is "
-                       "contained.";
-        break;
-    default:
-        if (mons->has_ench(ENCH_INNER_FLAME))
-        {
-            mon_enchant i_f = mons->get_ench(ENCH_INNER_FLAME);
-            ASSERT(i_f.ench == ENCH_INNER_FLAME);
-            agent = actor_by_mid(i_f.source);
-            _setup_inner_flame_explosion(beam, *mons, agent);
-            // This might need to change if monsters ever get the ability to cast
-            // Inner Flame...
-            if (agent && agent->is_player())
-                mons_add_blame(mons, "hexed by the player character");
-            else if (agent)
-                mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
-            mons->flags |= MF_EXPLODE_KILL;
-            sanct_msg = "By Zin's power, the fiery explosion is contained.";
-            beam.aux_source = "exploding inner flame";
-        }
-        else if (mons->has_ench(ENCH_ENTROPIC_BURST))
-        {
-            mon_enchant i_f = mons->get_ench(ENCH_ENTROPIC_BURST);
-            ASSERT(i_f.ench == ENCH_ENTROPIC_BURST);
-            agent = actor_by_mid(i_f.source);
-            _setup_inner_flame_explosion(beam, *mons, agent, true);
-            // This might need to change if monsters ever get the ability to cast
-            // Inner Flame...
-            if (agent && agent->is_player())
-                mons_add_blame(mons, "hexed by the player character");
-            else if (agent)
-                mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
-            mons->flags |= MF_EXPLODE_KILL;
-            sanct_msg = "By Zin's power, the chaotic explosion "
-                "is contained.";
-            beam.aux_source = "entropic burst";
-        }
-        else
+        const monster_explosion &explosion = it->second;
+        if (explosion.prep_explode)
+            explosion.prep_explode(beam, *mons);
+        string effect = "explosion is contained";
+        if (explosion.sanct_effect != "")
+            effect = explosion.sanct_effect;
+        sanct_msg = string("By Zin's power, ") +
+                    apostrophise(mons->name(DESC_THE)) + " " +
+                    effect + ".";
+    } else {
+        if (!mons->has_ench(ENCH_INNER_FLAME)
+            && !mons->has_ench(ENCH_ENTROPIC_BURST))
         {
             msg::streams(MSGCH_DIAGNOSTICS) << "Unknown spore type: "
                 << static_cast<int>(type)
                 << endl;
             return false;
         }
-        break;
+        mon_enchant i_f;
+        if (mons->has_ench(ENCH_INNER_FLAME))
+            i_f = mons->get_ench(ENCH_INNER_FLAME);
+        else
+            i_f = mons->get_ench(ENCH_ENTROPIC_BURST);
+        ASSERT(i_f.ench == ENCH_INNER_FLAME || i_f.ench == ENCH_ENTROPIC_BURST);
+        const bool chaos = (i_f.ench == ENCH_ENTROPIC_BURST);
+        agent = actor_by_mid(i_f.source);
+        _setup_inner_flame_explosion(beam, *mons, agent, chaos);
+        // This might need to change if monsters ever get the ability to cast
+        // Inner Flame...
+        if (agent && agent->is_player())
+            mons_add_blame(mons, "hexed by the player character");
+        else if (agent)
+            mons_add_blame(mons, "hexed by " + agent->name(DESC_A, true));
+        mons->flags    |= MF_EXPLODE_KILL;
+        sanct_msg       = make_stringf("By Zin's power, the %s explosion is contained.",
+            chaos ? "chaotic" : "fiery");
+        beam.aux_source = chaos ? "entropic burst" : "exploding inner flame";
     }
 
     if (beam.aux_source.empty())
@@ -1540,7 +1520,7 @@ static bool _explode_monster(monster* mons, killer_type killer,
         viewwindow();
         update_screen();
         if (is_sanctuary(mons->pos()))
-            mprf(MSGCH_GOD, "%s", sanct_msg);
+            mprf(MSGCH_GOD, "%s", sanct_msg.c_str());
         else if (type == MONS_BENNU)
             mprf(MSGCH_MONSTER_DAMAGE, MDAM_DEAD, "%s blazes out!",
                  mons->full_name(DESC_THE).c_str());
