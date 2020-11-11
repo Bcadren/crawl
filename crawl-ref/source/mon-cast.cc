@@ -5971,9 +5971,9 @@ static bool _spell_charged(monster *mons)
 }
 
 /// How much damage does the given monster do when casting Waterstrike?
-dice_def waterstrike_damage(const monster &mons)
+dice_def waterstrike_damage(int spell_hd)
 {
-    return dice_def(3, 7 + mons.spell_hd(SPELL_WATERSTRIKE));
+    return dice_def(3, 7 + spell_hd);
 }
 
 /**
@@ -6361,7 +6361,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 
         ASSERT(foe);
 
-        dice_def calc = waterstrike_damage(*mons);
+        dice_def calc = waterstrike_damage(mons->spell_hd(spell_cast));
         int damage_taken = calc.roll();
         int maximum_damage = calc.max();
         damage_taken = resist_adjust_damage(foe, pbolt.flavour, damage_taken, mount_defend);
