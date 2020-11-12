@@ -162,10 +162,27 @@ bool cast_smitey_damnation(int pow, bolt &beam)
 static bool _is_menacing(const actor * caster, spell_type spell)
 {
     item_def * staff = caster->staff();
-    if (staff && get_staff_facet(*staff) == SPSTF_MENACE 
-              && staff_enhances_spell(staff, spell))
+    if (staff && get_staff_facet(*staff) == SPSTF_MENACE
+        && staff_enhances_spell(staff, spell))
         return true;
     return false;
+}
+
+string desc_chain_lightning_dam(int pow)
+{
+    // Damage is 5d(9.2 + pow / 30), but if lots of targets are around
+    // it can hit the player precisely once at very low (e.g. 1) power
+    // and deal 5 damage.
+    int min = 5;
+
+    // Max damage per bounce is 46 + pow / 6; in the worst case every other
+    // bounce hits the player, losing 8 pow on the bounce away and 8 on the
+    // bounce back for a total of 16; thus, for n bounces, it's:
+    // (46 + pow/6) * n less 16/6 times the (n - 1)th triangular number.
+    int n = (pow + 15) / 16;
+    int max = (46 + (pow / 6)) * n - 4 * n * (n - 1) / 3;
+
+    return make_stringf("%d-%d", min, max);
 }
 
 // XXX no friendly check
