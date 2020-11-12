@@ -15,3 +15,4 @@ void cast_iood_burst(int pow, coord_def target);
 bool iood_act(monster& mon, bool no_trail = false);
 void iood_catchup(monster* mon, int turns);
 void boulder_start(monster* mon, bolt* beam);
+dice_def iood_damage(int pow, int dist, bool random = true);

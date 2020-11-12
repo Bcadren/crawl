@@ -310,6 +310,19 @@ static bool _boulder_hit(monster& mon, const coord_def &pos)
     return victim && victim->alive();
 }
 
+dice_def iood_damage(int pow, int dist, bool random)
+{
+    pow = pow * 10 + pow * dist;
+    if (random)
+        pow = div_rand_round(pow, 10);
+    else
+        pow = div_round_up(pow, 10);
+    pow = stepdown_value(pow, 30, 30, 200, -1);
+    if (dist < 4)
+        pow = pow * (dist*2+3) / 10;
+    return dice_def(9, pow / 4);
+}
+
 static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
 {
     if (mon.has_ench(ENCH_ROLLING))
@@ -391,12 +404,8 @@ static bool _iood_hit(monster& mon, const coord_def &pos, bool big_boom = false)
 
     int pow = mon.props[IOOD_POW].get_short();
     const int dist = mon.props[IOOD_DIST].get_int();
-    pow = div_rand_round(pow * 10 + pow * dist, 10);
-    pow = stepdown_value(pow, 30, 30, 200, -1);
     ASSERT(dist >= 0);
-    if (dist < 4)
-        pow = pow * (dist*2+3) / 10;
-    beam.damage = dice_def(9, pow / 4);
+    beam.damage = iood_damage(pow, dist);
 
     if (dist > 7)
         beam.name = "huge " + beam.name;
