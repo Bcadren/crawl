@@ -583,6 +583,9 @@
     <ClCompile Include="..\mon-ench.cc">
       <Filter>cc</Filter>
     </ClCompile>
+    <ClCompile Include="..\mon-explode.cc">
+      <Filter>cc</Filter>
+    </ClCompile>
     <ClCompile Include="..\mon-death.cc">
       <Filter>cc</Filter>
     </ClCompile>
