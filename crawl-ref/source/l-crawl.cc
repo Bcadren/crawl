@@ -1756,6 +1756,9 @@ LUAFN(crawl_rng_wrap)
     return lua_gettop(ls);
 }
 
+LUAWRAP(crawl_clear_message_store, clear_message_store())
+
+
 static const struct luaL_reg crawl_dlib[] =
 {
 { "args", _crawl_args },
@@ -1774,6 +1777,7 @@ static const struct luaL_reg crawl_dlib[] =
 { "hints_type", crawl_hints_type },
 { "unavailable_god", _crawl_unavailable_god },
 { "rng_wrap", crawl_rng_wrap },
+{ "clear_message_store", crawl_clear_message_store },
 
 { nullptr, nullptr }
 };
