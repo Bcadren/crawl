@@ -158,7 +158,7 @@ yVV...VVyyyy
 yV.YYY`VVyyyyyyyyyyyyyyyyyyyyyyy
 yV.YAY`.Vyyyyyyyyyyyyyyxxxxyxxxy
 yV.YYY`.UUyyyyxxxxxxyxxx..xxxxxy
-yVV.```` UUUyUU....xxx.........@
+yVV.````.UUUyUU....xxx.........@
 yyVVVVU.``.UUU................xy
 yyyyyyUU.`````......`.`.`.`...xy
      yyUUU..`.``...``........xxy
@@ -1590,7 +1590,7 @@ ENDMAP
 ##############################################################################
 ##############################################################################
 NAME:    dpeg_arrival_arbitrary_a
-TAGS:    arrival
+TAGS:    arrival transparent
 ORIENT:  float
 SUBST:   ' : . x ':40, '=.x
 NSUBST:  . = 1:d / *:.
@@ -1598,7 +1598,7 @@ NSUBST:  { = 1:{ / *:.
 ITEM:    scroll of random uselessness
 MAP
     xxxxxxxxxxxxxxxxx
-   xx''xx''''''xx''xx
+   xx''xx'''x''xx''xx
    x''..'..xxx.'x..'x
   xx'.{...xx'......'x
   x'.....x''..{...'xx
@@ -1614,7 +1614,7 @@ x'...'''x'.xx..'xxxxx
 x'..........xxxxxxxxx
 xx'..{.xxx'....''xxxx
  xx'....xxxx''...''xx
-  xxxx'''x xxx''...'x
+  xxxx'''xxxxx''...'x
      xxxxxxxxxx..@..x
 ENDMAP
 
