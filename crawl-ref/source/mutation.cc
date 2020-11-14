@@ -1430,6 +1430,10 @@ bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll)
         return true;
     }
 
+    // Only Palentonga can go on a roll.
+    if (you.species != SP_ROCK_TROLL && mutat == MUT_ROLL)
+        return true;
+
     // Felids have innate claws, and unlike trolls/ghouls, there are no
     // increases for them.
     if (you.species == SP_FELID  && mutat == MUT_CLAWS)
