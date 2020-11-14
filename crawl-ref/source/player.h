@@ -230,7 +230,6 @@ public:
     FixedVector<unsigned int, NUM_SKILLS> skill_points;
     FixedVector<unsigned int, NUM_SKILLS> manual_points; ///< Manual points
     FixedVector<unsigned int, NUM_SKILLS> training_targets; ///< Training targets, scaled by 10 (so [0,270]).  0 means no target.
-    int experience_pool; ///< XP waiting to be applied.
 
     /// track skill points gained by crosstraining
     FixedVector<unsigned int, NUM_SKILLS> ct_skill_points;
@@ -1128,8 +1127,7 @@ void display_char_status();
 void forget_map(bool rot = false);
 
 int get_exp_progress(bool percent = true);
-unsigned int gain_exp(unsigned int exp_gained);
-void apply_exp();
+void gain_exp(unsigned int exp_gained, unsigned int* actual_gain = nullptr);
 
 int xp_to_level_diff(int xp, int scale=1);
 

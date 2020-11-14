@@ -984,8 +984,6 @@ static void _input()
         update_screen();
     }
 
-    apply_exp();
-
     // Unhandled things that should have caused death.
     ASSERT(you.hp > 0);
 
