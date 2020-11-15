@@ -1174,6 +1174,13 @@ LUAFN(you_quiver_enabled)
     PLUARET(boolean, !q.is_empty() && q.get().is_enabled());
 }
 
+LUAFN(you_quiver_uses_mp)
+{
+    // ignore launcher quiver here
+    const auto &q = you.quiver_action;
+    PLUARET(boolean, q.get().uses_mp());
+}
+
 static const struct luaL_reg you_clib[] =
 {
     { "turn_is_over", you_turn_is_over },
@@ -1314,6 +1321,7 @@ static const struct luaL_reg you_clib[] =
     { "have_orb",           you_have_orb},
     { "quiver_valid",       you_quiver_valid},
     { "quiver_enabled",     you_quiver_enabled},
+    { "quiver_uses_mp",     you_quiver_uses_mp},
 
     { nullptr, nullptr },
 };
