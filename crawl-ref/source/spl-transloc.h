@@ -3,6 +3,7 @@
 #include "spl-cast.h"
 
 class actor;
+class dist;
 
 spret cast_disjunction(int pow, bool fail);
 void disjunction_spell();
@@ -15,7 +16,7 @@ spret controlled_blink(bool fail, bool safe_cancel = true, int power = 200);
 void wizard_blink();
 
 spret frog_hop(bool fail, bool spider = false);
-spret rolling_charge(bool fail);
+spret rolling_charge(bool fail, dist *target = nullptr);
 int rolling_charge_range();
 
 bool dangerous_terrain_seen();
