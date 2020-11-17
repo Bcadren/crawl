@@ -3785,6 +3785,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_PLANT_ROOTS;
     case ABIL_DEROOT:
         return TILEG_ABILITY_UPROOT;
+    case ABIL_ROLLING_CHARGE:
+        return TILEG_ABILITY_ROLL;
 
     // Others
     case ABIL_END_UPRISING:
