@@ -10,6 +10,8 @@
 #include "mon-util.h"
 #include "mgen-data.h"
 
+struct bolt;
+
 class final_effect
 {
 public:
@@ -238,6 +240,41 @@ protected:
     coord_def position;
     int power;
     mon_attitude_type attitude;
+};
+
+enum class iflame
+{
+    none = 0,            // should be left as 0
+    normal,
+    chaos,
+};
+
+class explosion_fineff : public final_effect
+{
+public:
+    // One explosion at a time, please.
+    bool mergeable(const final_effect &) const override { return false; }
+    void fire() override;
+
+    static void schedule(bolt &beam, string boom, string sanct,
+                         iflame inner_flame, const actor* flame_agent)
+    {
+        final_effect::schedule(new explosion_fineff(beam, boom, sanct,
+                                                    inner_flame, flame_agent));
+    }
+protected:
+    explosion_fineff(const bolt &beem, string boom, string sanct,
+                     iflame flame, const actor* agent)
+        : final_effect(0, 0, coord_def()), beam(beem),
+          boom_message(boom), sanctuary_message(sanct),
+          inner_flame(flame), flame_agent(agent)
+    {
+    }
+    bolt beam;
+    string boom_message;
+    string sanctuary_message;
+    iflame inner_flame;
+    const actor* flame_agent;
 };
 
 // A fineff that triggers a daction; otherwise the daction

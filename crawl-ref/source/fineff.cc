@@ -9,6 +9,7 @@
 #include "fineff.h"
 
 #include "attack.h"     // attack_strength_punctuation
+#include "beam.h"
 #include "bloodspatter.h"
 #include "coordit.h"
 #include "dactions.h"
@@ -20,6 +21,7 @@
 #include "god-abil.h"
 #include "god-passive.h"
 #include "libutil.h"
+#include "losglobal.h"
 #include "message.h"
 #include "mon-abil.h"
 #include "mon-act.h"
@@ -29,6 +31,7 @@
 #include "mon-place.h"
 #include "ouch.h"
 #include "religion.h"
+#include "spl-clouds.h" // Chaos_cloud . BCADNOTE: Should move to cloud?
 #include "spl-miscast.h"
 #include "spl-summoning.h"
 #include "state.h"
@@ -484,6 +487,96 @@ void shock_serpent_discharge_fineff::fire()
 
     if (post_res)
         oppressor.expose_to_element(BEAM_ELECTRICITY, abs(post_res));
+}
+
+static void _explosion_knockback(monster * mons, coord_def pos, int size, string description, bool do_clouds)
+{
+    if (actor * act = actor_at(pos))
+    {
+        if (!(act->wearing_ego(EQ_BOOTS, SPARM_STURDY) || act->is_stationary()) && pos != mons->pos())
+        {
+            coord_def newpos = coord_def(0, 0);
+            const bool is_left = (mons->pos().x - pos.x) >= 0;
+            const bool is_up = (mons->pos().y - pos.y) >= 0;
+            for (rectangle_iterator sai(pos, size); sai; ++sai)
+            {
+                if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos()) && act->is_habitable(*sai)
+                    && !actor_at(*sai) && cell_see_cell(pos, *sai, LOS_SOLID))
+                {
+                    const int d0 = grid_distance(pos, *sai);
+                    const int d1 = newpos.origin() ? 0 : grid_distance(pos, newpos);
+                    const bool left = (pos.x - (*sai).x) >= 0;
+                    const bool up = (pos.y - (*sai).y) >= 0;
+                    if (is_left == left && is_up == up && (newpos.origin() || (d0 > d1)))
+                        newpos = *sai;
+                }
+            }
+            if (!newpos.origin())
+            {
+                act->move_to_pos(newpos);
+                mprf("%s %s knocked back by the %s.", act->name(DESC_THE).c_str(),
+                    act->is_player() ? "are" : "is", description.c_str());
+            }
+        }
+    }
+
+    if (do_clouds && cloud_at(pos))
+    {
+        coord_def newpos = coord_def(0, 0);
+        const bool is_left = (mons->pos().x - pos.x) >= 0;
+        const bool is_up = (mons->pos().y - pos.y) >= 0;
+        for (rectangle_iterator sai(pos, size); sai; ++sai)
+        {
+            if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos())
+                && !cloud_at(*sai) && !cell_is_solid(*sai) && cell_see_cell(pos, *sai, LOS_NO_TRANS))
+            {
+                const int d0 = grid_distance(pos, *sai);
+                const int d1 = newpos.origin() ? 0 : grid_distance(pos, newpos);
+                const bool left = (pos.x - (*sai).x) >= 0;
+                const bool up = (pos.y - (*sai).y) >= 0;
+                if (is_left == left && is_up == up && (newpos.origin() || (d0 > d1)))
+                    newpos = *sai;
+            }
+        }
+        if (!newpos.origin())
+            swap_clouds(pos, newpos);
+    }
+}
+
+void explosion_fineff::fire()
+{
+    if (is_sanctuary(beam.target))
+    {
+        if (you.see_cell(beam.target))
+            mprf(MSGCH_GOD, "%s", sanctuary_message.c_str());
+        return;
+    }
+
+    if (you.see_cell(beam.target))
+        mprf(MSGCH_MONSTER_DAMAGE, MDAM_DEAD, "%s", boom_message.c_str());
+
+    /*
+    else if (mons->type == MONS_LAVA_GLOB)
+    {
+        for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
+        {
+            _explosion_knockback(mons, *ai, 2, "lava burst", false);
+            if (!cell_is_solid(*ai) && !feat_is_critical(env.grid(*ai)) && !feat_is_watery(env.grid(*ai)))
+                temp_change_terrain(*ai, DNGN_LAVA, 20 + random2(80), TERRAIN_CHANGE_FLOOD);
+        }
+    }
+    else if (mons->type == MONS_BALLOON_DOG)
+    {
+        for (rectangle_iterator ai(mons->pos(), 3); ai; ++ai)
+            _explosion_knockback(mons, *ai, 4, "rushing air", true);
+    } */
+
+    if (inner_flame != iflame::none)
+        for (adjacent_iterator ai(beam.target, false); ai; ++ai)
+            if (!cell_is_solid(*ai) && !cloud_at(*ai) && !one_chance_in(5))
+                place_cloud((inner_flame == iflame::normal) ? CLOUD_FIRE : chaos_cloud(), *ai, 10 + random2(10), flame_agent);
+
+    beam.explode();
 }
 
 void delayed_action_fineff::fire()

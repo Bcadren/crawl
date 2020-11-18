@@ -14,8 +14,8 @@
 #include "dungeon-char-type.h"
 #include "english.h"
 #include "env.h"
+#include "fineff.h"
 #include "fprop.h"
-#include "losglobal.h"
 #include "message.h"
 #include "monster.h"
 #include "mon-death.h" // YOU_KILL
@@ -23,8 +23,8 @@
 #include "mon-util.h"
 #include "mpr.h"
 #include "state.h"
-#include "spl-clouds.h" // Chaos_cloud . BCADNOTE: Should move to cloud?
 #include "spl-goditem.h"
+#include "state.h"
 #include "stringutil.h"
 #include "target.h"
 #include "terrain.h"
@@ -174,60 +174,6 @@ static void _setup_balloon_pop(bolt & beam, const monster & origin)
     beam.source_name = origin.name(DESC_A, true);
 }
 
-static void _explosion_knockback(monster * mons, coord_def pos, int size, string description, bool do_clouds)
-{
-    if (actor * act = actor_at(pos))
-    {
-        if (!(act->wearing_ego(EQ_BOOTS, SPARM_STURDY) || act->is_stationary()) && pos != mons->pos())
-        {
-            coord_def newpos = coord_def(0, 0);
-            const bool is_left = (mons->pos().x - pos.x) >= 0;
-            const bool is_up = (mons->pos().y - pos.y) >= 0;
-            for (rectangle_iterator sai(pos, size); sai; ++sai)
-            {
-                if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos()) && act->is_habitable(*sai)
-                    && !actor_at(*sai) && cell_see_cell(pos, *sai, LOS_SOLID))
-                {
-                    const int d0 = grid_distance(pos, *sai);
-                    const int d1 = newpos.origin() ? 0 : grid_distance(pos, newpos);
-                    const bool left = (pos.x - (*sai).x) >= 0;
-                    const bool up = (pos.y - (*sai).y) >= 0;
-                    if (is_left == left && is_up == up && (newpos.origin() || (d0 > d1)))
-                        newpos = *sai;
-                }
-            }
-            if (!newpos.origin())
-            {
-                act->move_to_pos(newpos);
-                mprf("%s %s knocked back by the %s.", act->name(DESC_THE).c_str(),
-                    act->is_player() ? "are" : "is", description.c_str());
-            }
-        }
-    }
-
-    if (do_clouds && cloud_at(pos))
-    {
-        coord_def newpos = coord_def(0, 0);
-        const bool is_left = (mons->pos().x - pos.x) >= 0;
-        const bool is_up = (mons->pos().y - pos.y) >= 0;
-        for (rectangle_iterator sai(pos, size); sai; ++sai)
-        {
-            if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos())
-                && !cloud_at(*sai) && !cell_is_solid(*sai) && cell_see_cell(pos, *sai, LOS_NO_TRANS))
-            {
-                const int d0 = grid_distance(pos, *sai);
-                const int d1 = newpos.origin() ? 0 : grid_distance(pos, newpos);
-                const bool left = (pos.x - (*sai).x) >= 0;
-                const bool up = (pos.y - (*sai).y) >= 0;
-                if (is_left == left && is_up == up && (newpos.origin() || (d0 > d1)))
-                    newpos = *sai;
-            }
-        }
-        if (!newpos.origin())
-            swap_clouds(pos, newpos);
-    }
-}
-
 static void _setup_bloated_husk_explosion(bolt & beam, const monster& origin)
 {
     _setup_base_explosion(beam, origin);
@@ -287,7 +233,9 @@ bool explode_monster(monster* mons, killer_type killer,
     bolt beam;
     const monster_type type = mons->type;
     string sanct_msg = "";
-    actor* agent = mons;
+    string boom_msg = make_stringf("%s explodes!", mons->full_name(DESC_THE).c_str());
+    actor* agent = nullptr;
+    iflame inner_flame = iflame::none;
 
     auto it = explosions.find(type);
     if (it != explosions.end())
@@ -301,6 +249,8 @@ bool explode_monster(monster* mons, killer_type killer,
         sanct_msg = string("By Zin's power, ") +
             apostrophise(mons->name(DESC_THE)) + " " +
             effect + ".";
+        if (type == MONS_BENNU)
+            boom_msg = make_stringf("%s blazes out!", mons->full_name(DESC_THE).c_str());
     }
     else {
         if (!mons->has_ench(ENCH_INNER_FLAME)
@@ -320,6 +270,7 @@ bool explode_monster(monster* mons, killer_type killer,
         const bool chaos = (i_f.ench == ENCH_ENTROPIC_BURST);
         agent = actor_by_mid(i_f.source);
         _setup_inner_flame_explosion(beam, *mons, agent, chaos);
+        inner_flame = chaos ? iflame::chaos : iflame::normal;
         // This might need to change if monsters ever get the ability to cast
         // Inner Flame...
         if (agent && agent->is_player())
@@ -350,50 +301,15 @@ bool explode_monster(monster* mons, killer_type killer,
         }
     }
 
-    bool saw = false;
-    if (you.can_see(*mons))
+    if (is_sanctuary(mons->pos()))
     {
-        saw = true;
-        viewwindow();
-        update_screen();
-        if (is_sanctuary(mons->pos()))
+        if (you.can_see(*mons))
             mprf(MSGCH_GOD, "%s", sanct_msg.c_str());
-        else if (type == MONS_BENNU)
-            mprf(MSGCH_MONSTER_DAMAGE, MDAM_DEAD, "%s blazes out!",
-                mons->full_name(DESC_THE).c_str());
-        else
-            mprf(MSGCH_MONSTER_DAMAGE, MDAM_DEAD, "%s explodes!",
-                mons->full_name(DESC_THE).c_str());
+        return false;
     }
 
-    if (is_sanctuary(mons->pos()))
-        return false;
-
-    // Explosion side-effects.
     if (type == MONS_LURKING_HORROR)
         torment(mons, TORMENT_LURKING_HORROR, mons->pos());
-    else if (mons->has_ench(ENCH_INNER_FLAME) || mons->has_ench(ENCH_ENTROPIC_BURST))
-    {
-        for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
-        {
-            if (!cell_is_solid(*ai) && !cloud_at(*ai) && !one_chance_in(5))
-                place_cloud(mons->has_ench(ENCH_INNER_FLAME) ? CLOUD_FIRE : chaos_cloud(), *ai, 10 + random2(10), agent);
-        }
-    }
-    else if (mons->type == MONS_LAVA_GLOB)
-    {
-        for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
-        {
-            _explosion_knockback(mons, *ai, 2, "lava burst", false);
-            if (!cell_is_solid(*ai) && !feat_is_critical(env.grid(*ai)) && !feat_is_watery(env.grid(*ai)))
-                temp_change_terrain(*ai, DNGN_LAVA, 20 + random2(80), TERRAIN_CHANGE_FLOOD);
-        }
-    }
-    else if (mons->type == MONS_BALLOON_DOG)
-    {
-        for (rectangle_iterator ai(mons->pos(), 3); ai; ++ai)
-            _explosion_knockback(mons, *ai, 4, "rushing air", true);
-    }
 
     // Detach monster from the grid first, so it doesn't get hit by
     // its own explosion. (GDL)
@@ -409,11 +325,6 @@ bool explode_monster(monster* mons, killer_type killer,
 
     // Exploding kills the monster a bit earlier than normal.
     mons->hit_points = -16;
-    if (saw)
-    {
-        viewwindow();
-        update_screen();
-    }
 
     // FIXME: show_more == you.see_cell(mons->pos())
     if (type == MONS_LURKING_HORROR)
@@ -422,7 +333,7 @@ bool explode_monster(monster* mons, killer_type killer,
         flash_view_delay(UA_MONSTER, DARKGRAY, 300, &hitfunc);
     }
     else
-        beam.explode();
+        explosion_fineff::schedule(beam, boom_msg, sanct_msg, inner_flame, agent);
 
     activate_ballistomycetes(mons, beam.target, YOU_KILL(beam.killer()));
     // Monster died in explosion, so don't re-attach it to the grid.

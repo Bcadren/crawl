@@ -2026,7 +2026,6 @@ int species_apt(skill_type skill, species_type species)
             mod = 3;
         else if (!is_magic_skill(skill) && skill != SK_EVOCATIONS)
             mod = -2;
-
     }
 
     if (you.char_class == JOB_VINE_STALKER)
