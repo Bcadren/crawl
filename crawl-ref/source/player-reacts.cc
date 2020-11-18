@@ -214,7 +214,7 @@ static void _decrement_petrification(int delay)
         if ((dur -= delay) <= 0)
         {
             dur = 0;
-            you.fully_petrify(nullptr);
+            you.fully_petrify();
         }
         else if (dur < 15 && old_dur >= 15)
             mpr("Your limbs are stiffening.");

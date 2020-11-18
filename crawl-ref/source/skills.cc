@@ -1280,13 +1280,7 @@ static int _train(skill_type exsk, int &max_exp, bool simu)
         you.manual_points[exsk] -= bonus;
 
         if (!you.manual_points[exsk] && !simu && !crawl_state.simulating_xp_gain)
-        {
             mprf("You finish your manual of %s.", skill_name(exsk));
-
-            // Might no longer be able to train manual skill.
-            if (training_restricted(exsk))
-                you.stop_train.insert(exsk);
-        }
     }
 
     const skill_type old_best_skill = best_skill(SK_FIRST_SKILL, SK_LAST_SKILL);

@@ -492,7 +492,7 @@ public:
     bool sicken(int strength) override;
     void paralyse(actor *, int str, string source = "") override;
     void petrify(actor *, bool force = false, bool /*mt*/ = false) override;
-    bool fully_petrify(actor *foe, bool quiet = false, bool /*mt*/ = false) override;
+    bool fully_petrify(bool quiet = false, bool /*mt*/ = false) override;
     void slow_down(actor *, int str, bool do_msg = true) override;
     void confuse(actor *, int strength) override;
     bool drain_exp(const actor *, bool quiet = false, int pow = 3) override;
@@ -532,7 +532,7 @@ public:
 
     int     shield_bonus(bool random = true) const override;
     int     shield_block_penalty() const override;
-    void    shield_block_succeeded(actor *foe) override;
+    void    shield_block_succeeded() override;
     int     shield_bypass_ability(int tohit) const override;
     int     missile_deflection() const override;
     void    ablate_deflection() override;

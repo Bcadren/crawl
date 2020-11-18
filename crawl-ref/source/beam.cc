@@ -3576,7 +3576,7 @@ bool bolt::misses_player()
                 mprf("You block the %s.", name.c_str());
                 finish_beam();
             }
-            you.shield_block_succeeded(agent());
+            you.shield_block_succeeded();
             return true;
         }
 
@@ -5510,7 +5510,7 @@ bool bolt::attempt_block(monster* mon)
     }
 
     mon_lose_staff_shield(*mon, flavour, 2);
-    mon->shield_block_succeeded(agent());
+    mon->shield_block_succeeded();
     return true;
 }
 

@@ -3199,9 +3199,9 @@ int monster::shield_block_penalty() const
     return 4 * shield_blocks * shield_blocks;
 }
 
-void monster::shield_block_succeeded(actor *attacker)
+void monster::shield_block_succeeded()
 {
-    actor::shield_block_succeeded(attacker);
+    actor::shield_block_succeeded();
 
     ++shield_blocks;
 }
@@ -4912,7 +4912,7 @@ void monster::petrify(actor *atk, bool /*force*/, bool /*mt*/)
     enchant_actor_with_flavour(this, atk, BEAM_PETRIFY);
 }
 
-bool monster::fully_petrify(actor *atk, bool quiet, bool /*mt*/)
+bool monster::fully_petrify(bool quiet, bool /*mt*/)
 {
     bool msg = !quiet && simple_monster_message(*this, mons_is_immotile(*this) ?
                          " turns to stone!" : " stops moving altogether!");
