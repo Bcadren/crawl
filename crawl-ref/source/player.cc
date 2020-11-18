@@ -8710,7 +8710,7 @@ void player::paralyse(const actor *who, int str, string source)
     end_searing_ray();
 }
 
-void player::petrify(actor *who, bool force, bool mt)
+void player::petrify(const actor *who, bool force, bool mt)
 {
     ASSERT(!crawl_state.game_is_arena());
 

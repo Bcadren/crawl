@@ -4907,7 +4907,7 @@ void monster::paralyse(const actor *atk, int strength, string /*cause*/)
     add_ench(mon_enchant(ENCH_PARALYSIS, 1, atk, strength));
 }
 
-void monster::petrify(actor *atk, bool /*force*/, bool /*mt*/)
+void monster::petrify(const actor *atk, bool /*force*/, bool /*mt*/)
 {
     enchant_actor_with_flavour(this, atk, BEAM_PETRIFY);
 }
