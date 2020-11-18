@@ -495,9 +495,9 @@ public:
     bool fully_petrify(actor *foe, bool quiet = false, bool /*mt*/ = false) override;
     void slow_down(actor *, int str, bool do_msg = true) override;
     void confuse(actor *, int strength) override;
-    bool drain_exp(actor *, bool quiet = false, int pow = 3) override;
-    bool rot(actor *, int amount, bool quiet = false, bool no_cleanup = false, bool bypass_resistance = false)
-        override;
+    bool drain_exp(const actor *, bool quiet = false, int pow = 3) override;
+    bool rot(actor *, int amount, bool quiet = false, bool no_cleanup = false,
+             bool bypass_resistance = false) override;
     void splash_with_acid(const actor* evildoer, int acid_strength = 1,
                           bool /*allow_corrosion*/ = true,
                           const char* hurt_msg = nullptr,
