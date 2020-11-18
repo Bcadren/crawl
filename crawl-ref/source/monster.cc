@@ -4902,7 +4902,7 @@ void monster::confuse(actor *atk, int strength)
 }
 
 // Called exactly once (By Starcursed Masses).
-void monster::paralyse(actor *atk, int strength, string /*cause*/)
+void monster::paralyse(const actor *atk, int strength, string /*cause*/)
 {
     add_ench(mon_enchant(ENCH_PARALYSIS, 1, atk, strength));
 }
