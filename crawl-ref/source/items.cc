@@ -1641,15 +1641,11 @@ void merge_item_stacks(const item_def &source, item_def &dest, int quant)
 
 static int _userdef_find_free_slot(const item_def &i)
 {
-#ifdef CLUA_BINDINGS
     int slot = -1;
     if (!clua.callfn("c_assign_invletter", "i>d", &i, &slot))
         return -1;
 
     return slot;
-#else
-    return -1;
-#endif
 }
 
 int find_free_slot(const item_def &i)
@@ -3028,7 +3024,6 @@ static bool _is_option_autopickup(const item_def &item, bool ignore_force)
                                                 ? "{gold}"
                                                 : _autopickup_item_name(item);
 
-#ifdef CLUA_BINDINGS
     maybe_bool res = clua.callmaybefn("ch_force_autopickup", "is",
                                       &item, iname.c_str());
     if (!clua.error.empty())
@@ -3042,7 +3037,6 @@ static bool _is_option_autopickup(const item_def &item, bool ignore_force)
 
     if (res == MB_FALSE)
         return false;
-#endif
 
     // Check for initial settings
     for (const pair<text_pattern, bool>& option : Options.force_autopickup)

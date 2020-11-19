@@ -1612,7 +1612,6 @@ void read_init_file(bool runscript)
     Options.read_option_line("center_on_scroll := centre_on_scroll"); // alias
 
     // Load Lua builtins.
-#ifdef CLUA_BINDINGS
     if (runscript)
     {
         for (const char *builtin : lua_builtins)
@@ -1626,10 +1625,6 @@ void read_init_file(bool runscript)
     // Load default options.
     for (const char *def_file : config_defaults)
         Options.include(datafile_path(def_file), false, runscript);
-#else
-    UNUSED(lua_builtins);
-    UNUSED(config_defaults);
-#endif
 
     // Load early binding extra options from the command line BEFORE init.txt.
     Options.filename     = "extra opts first";
@@ -1858,6 +1853,10 @@ void game_options::read_options(LineInput &il, bool runscript,
     dlua_chunk luacond(filename);
     dlua_chunk luacode(filename);
 
+#ifndef CLUA_BINDINGS
+    bool clua_error_printed = false;
+#endif
+
     while (!il.eof())
     {
         line_num++;
@@ -1959,6 +1958,12 @@ void game_options::read_options(LineInput &il, bool runscript,
                          luacode.orig_error().c_str());
                 }
                 luacode.clear();
+#else
+                if (!clua_error_printed)
+                {
+                    mprf(MSGCH_ERROR, "User lua is disabled in this build! `%s`", str.c_str());
+                    clua_error_printed = true;
+                }
 #endif
             }
 
@@ -1975,6 +1980,12 @@ void game_options::read_options(LineInput &il, bool runscript,
                     mprf(MSGCH_ERROR, "Lua error: %s",
                          luacode.orig_error().c_str());
                 }
+            }
+#else
+            if (!clua_error_printed)
+            {
+                mprf(MSGCH_ERROR, "User lua is disabled in this build! `%s`", str.c_str());
+                clua_error_printed = true;
             }
 #endif
             luacode.clear();
@@ -2001,15 +2012,22 @@ void game_options::read_options(LineInput &il, bool runscript,
         read_option_line(str, runscript);
     }
 
-#ifdef CLUA_BINDINGS
     if (runscript && !luacond.empty())
     {
+#ifdef CLUA_BINDINGS
         if (l_init)
             luacond.add(line, "]])");
         if (luacond.run(clua))
             mprf(MSGCH_ERROR, "Lua error: %s", luacond.orig_error().c_str());
-    }
+#else
+        if (!clua_error_printed)
+        {
+            mprf(MSGCH_ERROR, "User lua is disabled in this build! (file: %s)", filename.c_str());
+            clua_error_printed = true;
+        }
 #endif
+    }
+
 }
 
 void game_options::fixup_options()
@@ -2766,6 +2784,8 @@ void game_options::read_option_line(const string &str, bool runscript)
         clua.execfile(field.c_str(), false, false);
         if (!clua.error.empty())
             mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+#else
+        mprf(MSGCH_ERROR, "lua_file failed: clua not enabled on this build!");
 #endif
     }
     else if (key == "terp_file" && runscript)
@@ -3579,7 +3599,6 @@ void game_options::read_option_line(const string &str, bool runscript)
     // Catch-all else, copies option into map
     else if (runscript)
     {
-#ifdef CLUA_BINDINGS
         int setmode = 0;
         if (plus_equal)
             setmode = 1;
@@ -3590,12 +3609,9 @@ void game_options::read_option_line(const string &str, bool runscript)
 
         if (!clua.callbooleanfn(false, "c_process_lua_option", "ssd",
                         key.c_str(), orig_field.c_str(), setmode))
-#endif
         {
-#ifdef CLUA_BINDINGS
             if (!clua.error.empty())
                 mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
-#endif
             named_options[key] = orig_field;
         }
     }

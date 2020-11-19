@@ -2662,18 +2662,15 @@ static bool _want_target_monster(const monster *mon, targ_mode_type mode,
     die("Unknown targeting mode!");
 }
 
-#ifdef CLUA_BINDINGS
 static bool _tobool(maybe_bool mb)
 {
     ASSERT(mb != MB_MAYBE);
     return mb == MB_TRUE;
 }
-#endif
 
 static bool _find_monster(const coord_def& where, targ_mode_type mode,
                           bool need_path, int range, targeter *hitfunc)
 {
-#ifdef CLUA_BINDINGS
     {
         coord_def dp = grid2player(where);
         // We could pass more info here.
@@ -2682,7 +2679,6 @@ static bool _find_monster(const coord_def& where, targ_mode_type mode,
         if (x != MB_MAYBE)
             return _tobool(x);
     }
-#endif
 
     // Target the player for friendly and general spells.
     if ((mode == TARG_FRIEND || mode == TARG_ANY) && where == you.pos())
@@ -2715,7 +2711,6 @@ static bool _find_shadow_step_mons(const coord_def& where, targ_mode_type mode,
                                    bool need_path, int range,
                                    targeter *hitfunc)
 {
-#ifdef CLUA_BINDINGS
     {
         coord_def dp = grid2player(where);
         // We could pass more info here.
@@ -2724,7 +2719,6 @@ static bool _find_shadow_step_mons(const coord_def& where, targ_mode_type mode,
         if (x != MB_MAYBE)
             return _tobool(x);
     }
-#endif
 
     // Need a monster to attack; this checks that the monster is a valid target.
     if (!_find_monster(where, mode, need_path, range, hitfunc))
@@ -2743,7 +2737,6 @@ static bool _find_monster_expl(const coord_def& where, targ_mode_type mode,
 {
     ASSERT(hitfunc);
 
-#ifdef CLUA_BINDINGS
     {
         coord_def dp = grid2player(where);
         // We could pass more info here.
@@ -2752,7 +2745,6 @@ static bool _find_monster_expl(const coord_def& where, targ_mode_type mode,
         if (x != MB_MAYBE)
             return _tobool(x);
     }
-#endif
 
     if (!hitfunc->valid_aim(where))
         return false;
