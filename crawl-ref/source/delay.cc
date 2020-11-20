@@ -930,6 +930,7 @@ void MemoriseDelay::finish()
 #endif
     mpr("You finish memorising.");
     add_spell_to_memory(spell);
+    quiver::on_actions_changed();
 }
 
 void PasswallDelay::finish()
