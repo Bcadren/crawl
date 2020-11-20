@@ -8264,6 +8264,9 @@ string player::no_tele_reason(bool calc_unid, bool blinking) const
     if (duration[DUR_DIMENSION_ANCHOR])
         problems.emplace_back("locked down by a dimension anchor");
 
+    if (duration[DUR_LOCKED_DOWN])
+        problems.emplace_back("magically locked down");
+
     if (form == transformation::tree)
         problems.emplace_back("held in place by your roots");
 
@@ -9200,7 +9203,8 @@ bool player::can_bleed(bool allow_tran) const
 bool player::is_stationary() const
 {
     return (form == transformation::tree || you.attribute[ATTR_ROOTED]
-        || you.duration[DUR_LAVA_CAKE] || you.petrified(true));
+        || you.duration[DUR_LAVA_CAKE] || you.petrified(true))
+        || you.duration[DUR_LOCKED_DOWN];
 }
 
 bool player::malmutate(const string &reason)

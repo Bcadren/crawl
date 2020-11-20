@@ -188,5 +188,6 @@ enum duration_type
     DUR_STAFF,
     DUR_SWALLOWED,
     DUR_GRAVITATION,
+    DUR_LOCKED_DOWN,
     NUM_DURATIONS
 };
