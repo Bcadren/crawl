@@ -195,6 +195,15 @@ void dist::confusion_fuzz(int range)
     choseRay = false;
 }
 
+/**
+ * Does this dist object need `target` to be filled in somehow, e.g. with
+ * manual/interactive targeting?
+ */
+bool dist::needs_targeting() const
+{
+    return interactive || !(in_bounds(target) || find_target);
+}
+
 static int _targeting_cmd_to_compass(command_type command)
 {
     switch (command)
@@ -466,8 +475,8 @@ targeting_behaviour direction_chooser::stock_behaviour;
 void direction(dist &moves, const direction_chooser_args& args)
 {
     // TODO this might break pre-chosen delta targeting, if that ever happens
-    moves.interactive = moves.interactive
-                        || !(in_bounds(moves.target) || moves.find_target);
+    // (currently it looks like isTarget is always set to true)
+    moves.interactive = moves.needs_targeting();
 
     if (moves.interactive)
         direction_chooser(moves, args).choose_direction();

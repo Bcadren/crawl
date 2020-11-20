@@ -340,6 +340,7 @@ public:
     dist();
 
     bool isMe() const;
+    bool needs_targeting() const;
 
     // modify target as if the player is confused.
     void confusion_fuzz(int range = 6);

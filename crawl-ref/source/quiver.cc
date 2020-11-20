@@ -70,6 +70,32 @@ namespace quiver
         target = dist();
     };
 
+    /**
+     * Does this action meet preconditions for triggering? Checks configurable
+     * HP and MP thresholds, aimed at autofight commands.
+     * @return true if triggering should be prevented
+     */
+    bool action::autofight_check() const
+    {
+        // don't do these checks if the action will lead to interactive targeting
+        if (target.needs_targeting())
+            return false;
+        bool af_hp_check = false;
+        bool af_mp_check = false;
+        if (!clua.callfn("af_hp_is_low", ">b", &af_hp_check)
+            || uses_mp() && !clua.callfn("af_mp_is_low", ">b", &af_mp_check))
+        {
+            if (!clua.error.empty())
+                mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+            return true;
+        }
+        if (af_hp_check)
+            mpr("You are too injured to fight recklessly!");
+        else if (af_mp_check)
+            mpr("You are too depleted to draw on your mana recklessly!");
+        return af_hp_check || af_mp_check;
+    }
+
     formatted_string action::quiver_description(bool short_desc) const
     {
         return formatted_string::parse_string(
@@ -344,6 +370,11 @@ namespace quiver
             return !you.confused();
         }
 
+        bool uses_mp() const override
+        {
+            return is_pproj_active();
+        }
+
         void trigger(dist &t) override
         {
             target = t;
@@ -356,6 +387,8 @@ namespace quiver
                     fire_warn_if_impossible(); // for messaging (TODO refactor; message about inscriptions?)
                 return;
             }
+            if (autofight_check())
+                return;
 
             bolt beam;
             throw_it(beam, ammo_slot, &target);
@@ -561,7 +594,7 @@ namespace quiver
             return is_dynamic_targeted() || spell_has_targeter(spell);
         }
 
-        bool allow_autotarget() const override
+        bool allow_autofight() const override
         {
             return is_dynamic_targeted()
                                 && !_spell_autotarget_incompatible(spell);
@@ -603,6 +636,8 @@ namespace quiver
             // don't do the range check check if doing manual firing. (It's
             // a bit hacky to condition this on whether there's a fire context...)
             const bool do_range_check = !target.fire_context;
+            if (autofight_check())
+                return;
 
             cast_a_spell(do_range_check, spell, &target);
             if (target.find_target && !target.isValid && !target.fire_context)
@@ -789,7 +824,7 @@ namespace quiver
             }
         }
 
-        bool allow_autotarget() const override
+        bool allow_autofight() const override
         {
             return false;
         }
@@ -809,6 +844,8 @@ namespace quiver
                 check_ability_possible(ability, false);
                 return;
             }
+            if (autofight_check())
+                return;
 
             target = t;
             target.find_target = true;
@@ -910,6 +947,9 @@ namespace quiver
                 return;
             }
 
+            if (autofight_check())
+                return;
+
             // to apply smart targeting behavior for iceblast; should have no
             // impact on other wands
             target.find_target = true;
@@ -994,7 +1034,7 @@ namespace quiver
 
         // equals should work without override
 
-        bool allow_autotarget() const override
+        bool allow_autofight() const override
         {
             // all of these use the spell direction chooser
             return false;
@@ -1114,7 +1154,7 @@ namespace quiver
             return artefact_evoke_check(true);
         }
 
-        bool allow_autotarget() const override
+        bool allow_autofight() const override
         {
             // all of these use the spell direction chooser
             return false;
@@ -1143,6 +1183,9 @@ namespace quiver
                 return;
 
             if (!artefact_evoke_check(false))
+                return;
+
+            if (autofight_check())
                 return;
 
             target.find_target = true;
