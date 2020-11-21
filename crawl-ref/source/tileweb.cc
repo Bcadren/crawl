@@ -1103,9 +1103,9 @@ void TilesFramework::_send_player(bool force_full)
     _update_int(force_full, c.launcher_item,
                 you.launcher_action.is_empty()
                 ? (int8_t) -1
-                : (int8_t) you.launcher_action.get().get_item(), "launcher_item");
+                : (int8_t) you.launcher_action.get()->get_item(), "launcher_item");
     _update_int(force_full, c.quiver_item,
-                (int8_t) you.quiver_action.get().get_item(), "quiver_item");
+                (int8_t) you.quiver_action.get()->get_item(), "quiver_item");
 
     if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
     {
@@ -1123,12 +1123,12 @@ void TilesFramework::_send_player(bool force_full)
                     (uint8_t) get_form()->uc_colour, "unarmed_attack_colour");
     }
     _update_string(force_full, c.quiver_desc,
-                you.quiver_action.get().quiver_description().to_colour_string(),
+                you.quiver_action.get()->quiver_description().to_colour_string(),
                 "quiver_desc");
 
     _update_int(force_full, c.quiver_available,
-                    you.quiver_action.get().is_valid()
-                                && you.quiver_action.get().is_enabled(),
+                    you.quiver_action.get()->is_valid()
+                                && you.quiver_action.get()->is_enabled(),
                 "quiver_available");
     _update_int(force_full, c.hand_lost, (bool)you.get_mutation_level(MUT_MISSING_HAND),
                 "hand_lost");

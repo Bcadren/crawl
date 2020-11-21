@@ -85,6 +85,7 @@ static skill_type _equipped_skill()
 {
     const int weapon = you.equip[EQ_WEAPON0];
     const item_def * iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
+    const int missile = quiver::get_secondary_action()->get_item();
 
     if (iweap && is_weapon(*iweap))
         return item_attack_skill(*iweap);
@@ -96,7 +97,7 @@ static string _equipped_weapon_name()
 {
     const int weapon = you.equip[EQ_WEAPON0];
     const item_def * iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
-    const int missile = you.quiver_action.get().get_item();
+    const int missile = quiver::get_secondary_action()->get_item();
 
     if (iweap)
     {
@@ -107,8 +108,11 @@ static string _equipped_weapon_name()
         return "Wielding: " + item_buf;
     }
 
-    if (missile != -1)
+    if (missile != -1 && you.inv[missile].defined()
+                && you.inv[missile].base_type == OBJ_MISSILES)
+    {
         return "Quivering: " + you.inv[missile].name(DESC_PLAIN);
+    }
 
     return "Unarmed";
 }
@@ -365,7 +369,7 @@ static void _do_one_fsim_round(monster &mon, fight_data &fd, bool defend, int fo
 
     const int weapon = you.equip[EQ_WEAPON0];
     const item_def *iweap = weapon != -1 ? &you.inv[weapon] : nullptr;
-    const int missile = you.quiver_action.get().get_item();
+    const int missile = quiver::get_secondary_action()->get_item();
 
     mon.shield_blocks = 0;
     you.shield_blocks = 0;
