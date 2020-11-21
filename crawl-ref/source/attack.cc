@@ -409,7 +409,7 @@ int attack::calc_to_hit(bool random, bool player_aux)
 
         if (defender->backlit(false))
         {
-            mhit *= 1.6;
+            mhit *= 16;
             mhit /= 10;
         }
         else if (!attacker->nightvision()
