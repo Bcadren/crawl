@@ -7,6 +7,7 @@
 
 #include <set>
 
+#include "cleave-type.h"
 #include "equipment-type.h"
 #include "item-prop-enum.h"
 #include "reach-type.h"
@@ -16,7 +17,6 @@
 struct bolt;
 
 void init_properties();
-
 
 typedef uint32_t armflags_t;
 #define ard(flg, lev) (armflags_t)((flg) * ((lev) & 7))
@@ -179,6 +179,7 @@ launch_retval is_launched(const actor *actor, const item_def *launcher0,
 
 int  ammo_type_damage(int missile_type) PURE;
 
+cleave_type weapon_cleave(const item_def &item) PURE;
 reach_type weapon_reach(const item_def &item) PURE;
 
 // Macguffins

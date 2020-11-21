@@ -63,8 +63,6 @@ namespace quiver
         virtual bool uses_mp() const { return false; }
         virtual bool autofight_check() const;
 
-        virtual void find_target() const { };
-
         // main quiver color. In some cases used internally by
         // quiver_description, but also used in cases where for whatever reason
         // a full formatted_string can't be displayed
@@ -103,6 +101,7 @@ namespace quiver
     shared_ptr<action> find_action_from_launcher(const item_def *item);
 
     shared_ptr<action> slot_to_action(int slot, bool force=false);
+    shared_ptr<action> get_primary_action();
 
     // this is roughly a custom not_null wrapper on shared_ptr<action>
     struct action_cycler

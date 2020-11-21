@@ -1499,7 +1499,7 @@ bool evoke_check(int slot, bool quiet)
         return false;
     }
 
-    // TODO: move these cases out of evocation...
+    // TODO: are these reaching checks necessary any more?
     // is slot a wielded reaching weapon, or if no slot, is the player wielding
     // a reaching weapon?
     const bool wielded0 = you.weapon(0) && (slot != -1 && slot == you.equip[EQ_WEAPON0] 
@@ -1671,29 +1671,15 @@ bool evoke_item(int slot, dist *preselect)
         return false;
 
     case OBJ_WEAPONS:
+    {
         ASSERT(wielded);
+        dist targ_local;
+        if (!preselect)
+            preselect = &targ_local;
 
-        if (weapon_reach(item) > REACH_NONE)
-        {
-            if (_reaching_weapon_attack(item, preselect))
-                did_work = true;
-            else
-                return false;
-        }
-        else if (!you.launcher_action.is_empty()
-                                    && you.launcher_action.get().is_valid())
-        {
-            // better handling for no ammo?
-            dist tmp;
-            if (!preselect)
-                preselect = &tmp;
-            // weapon check is handled by the validity check above
-            you.launcher_action.get().trigger(*preselect);
-            return true;
-        }
-        else
-            unevokable = true;
-        break;
+        quiver::get_primary_action()->trigger(*preselect);
+        return you.turn_is_over;
+    }
 
     case OBJ_MISCELLANY:
         did_work = true; // easier to do it this way for misc items

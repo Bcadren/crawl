@@ -2355,6 +2355,17 @@ int ammo_type_damage(int missile_type)
     return Missile_prop[ Missile_index[missile_type] ].dam;
 }
 
+//
+// Cleaving functions:
+//
+cleave_type weapon_cleave(const item_def &item)
+{
+    if (item.is_type(OBJ_WEAPONS, WPN_SCYTHE))
+        return CLEAVE_TWO;
+    if (item_attack_skill(item) == SK_AXES_HAMMERS || item.is_type(OBJ_WEAPONS, WPN_CLEAVER))
+        return CLEAVE_ONE;
+    return CLEAVE_NONE;
+}
 
 //
 // Reaching functions:
