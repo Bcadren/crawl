@@ -389,7 +389,7 @@ explorer.catalog_names =    {vaults    = "   Vaults: ",
 explorer.dangerous_monsters = {
         "ancient lich",
         "orb of fire",
-        "greater mummy",
+        "royal mummy",
         "gwarchodwr",
         "Vetrifl",
         "rhuddgoch",

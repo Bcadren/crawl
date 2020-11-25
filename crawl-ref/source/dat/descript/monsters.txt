@@ -1351,11 +1351,6 @@ A levitating ball, covered in malignant eyes and humming with eldritch
 energies. Many adventurers have been ripped limb from limb by its dreadful
 eyeteeth.
 %%%%
-greater mummy
-
-An ancient pharaoh, embalmed and cursed to undeath, now capable of great and
-terrifying feats of magic.
-%%%%
 gwyrdd
 
 A bloated form covered in oozing sores and exhaling clouds of lethal poison.
@@ -2142,6 +2137,11 @@ the Royal Jelly
 
 A particularly rich and golden gelatinous creature. Smaller jellies swim and pulse
 just below @possessive@ surface, ready to burst forth at the slightest touch.
+%%%%
+royal mummy
+
+An ancient pharaoh, embalmed and cursed to undeath, now capable of great and
+terrifying feats of magic.
 %%%%
 taeringu
 

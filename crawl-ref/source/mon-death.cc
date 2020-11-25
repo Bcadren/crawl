@@ -1020,7 +1020,7 @@ int mummy_curse_power(monster_type type)
     {
         case MONS_GUARDIAN_MUMMY:
         case MONS_MUMMY_PRIEST:
-        case MONS_GREATER_MUMMY:
+        case MONS_ROYAL_MUMMY:
         case MONS_KHUFU:
             return mons_class_hit_dice(type);
         default:
