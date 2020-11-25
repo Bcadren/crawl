@@ -720,8 +720,8 @@ A mechanical contraption that shoots poisoned needles.
 %%%%
 A net trap
 
-A large concealed net hanging from the dungeon's ceiling, rigged to fall onto
-anyone who steps beneath it.
+A large concealed net laucher hanging from the dungeon's ceiling, enchanted to 
+launch infinite nets upon anyone who steps beneath it.
 %%%%
 A pressure plate
 

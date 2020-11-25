@@ -741,9 +741,7 @@ void trap_def::trigger(actor& triggerer)
             if (you_trigger)
             {
                 if (random2avg(2 * you.evasion(), 2) > 18 + env.absdepth0 / 2)
-                {
                     mpr("A net drops down and disappears into the ground!");
-                }
                 else
                 {
                     item_def item = generate_trap_item();
@@ -760,8 +758,6 @@ void trap_def::trigger(actor& triggerer)
                         _mark_net_trapping(you.pos());
                     }
                 }
-
-                trap_destroyed = true;
             }
             else if (m)
             {
@@ -815,9 +811,6 @@ void trap_def::trigger(actor& triggerer)
                         m->props[NEWLY_TRAPPED_KEY] = true;
                     }
                 }
-
-                if (triggered)
-                    trap_destroyed = true;
             }
             break;
 
