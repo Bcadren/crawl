@@ -1979,10 +1979,7 @@ namespace quiver
             if (r && r->is_valid())
                 set(r);
             else
-            {
-                dprf("cycle");
                 cycle();
-            }
         }
         set_needs_redraw();
     }
