@@ -70,6 +70,17 @@ namespace quiver
         }
     }
 
+    static maybe_bool _fireorder_inscription_ok(int slot, bool manual = false)
+    {
+        if (slot < 0 || slot >= ENDOFPACK || !you.inv[slot].defined())
+            return MB_MAYBE;
+        if (strstr(you.inv[slot].inscription.c_str(), manual ? "=F" : "=f"))
+            return MB_FALSE;
+        if (strstr(you.inv[slot].inscription.c_str(), manual ? "+F" : "+f"))
+            return MB_TRUE;
+        return MB_MAYBE;
+    }
+
     void action::reset()
     {
         target = dist();
@@ -280,7 +291,7 @@ namespace quiver
 
             // =f prevents item from being in fire order.
             if (!ignore_inscription_etc
-                && strstr(item.inscription.c_str(), manual ? "=F" : "=f"))
+                    && _fireorder_inscription_ok(i_inv, manual) != MB_FALSE)
             {
                 continue;
             }
@@ -591,7 +602,7 @@ namespace quiver
             return you.equip[EQ_WEAPON];
         };
 
-        vector<shared_ptr<action>> get_fire_order(bool allow_disabled) const override
+        vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true, bool=false) const override
         {
             if (allow_disabled || is_enabled())
                 return { make_shared<melee_action>() };
@@ -778,10 +789,11 @@ namespace quiver
             return find_action_from_launcher(you.weapon());
         }
 
-        vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true) const override
+        vector<shared_ptr<action>> get_fire_order(
+            bool allow_disabled=true, bool ignore_inscription=false) const override
         {
             vector<int> fire_order;
-            _get_item_fire_order(fire_order, false, you.weapon(), true);
+            _get_item_fire_order(fire_order, ignore_inscription, you.weapon(), true);
 
             vector<shared_ptr<action>> result;
 
@@ -790,6 +802,8 @@ namespace quiver
                 auto a = make_shared<ammo_action>(i);
                 if (a->is_valid() && (allow_disabled || a->is_enabled()))
                     result.push_back(move(a));
+                // TODO: allow arbitrary items with +f to get added here? I
+                // have had some trouble getting this to work
             }
             return result;
         }
@@ -1002,7 +1016,8 @@ namespace quiver
             return qdesc;
         }
 
-        vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true) const override
+        vector<shared_ptr<action>> get_fire_order(
+            bool allow_disabled=true, bool=false) const override
         {
             // goes by letter order
             vector<shared_ptr<action>> result;
@@ -1191,7 +1206,8 @@ namespace quiver
             return qdesc;
         }
 
-        vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true) const override
+        vector<shared_ptr<action>> get_fire_order(
+            bool allow_disabled=true, bool=false) const override
         {
             vector<talent> talents = your_talents(false, true);
             // goes by letter order
@@ -1234,6 +1250,9 @@ namespace quiver
         {
             return evoke_check(wand_slot, true);
         }
+
+        // n.b. implementing do_inscription_check for OPER_EVOKE is not needed
+        // for this class as long as it is checked in evoke_item.
 
         virtual bool is_valid() const override
         {
@@ -1303,7 +1322,8 @@ namespace quiver
             return wand_slot;
         }
 
-        virtual vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true) const override
+        virtual vector<shared_ptr<action>> get_fire_order(
+            bool allow_disabled=true, bool ignore_inscription=false) const override
         {
             // go by pack order
             vector<shared_ptr<action>> result;
@@ -1311,7 +1331,9 @@ namespace quiver
             {
                 auto w = make_shared<wand_action>(slot);
                 if (w->is_valid()
-                    && (allow_disabled || w->is_enabled()))
+                    && (allow_disabled || w->is_enabled())
+                    // for fire order, treat =f inscription as disabling
+                    && (ignore_inscription || _fireorder_inscription_ok(slot) != MB_FALSE))
                 {
                     result.push_back(move(w));
                 }
@@ -1399,7 +1421,8 @@ namespace quiver
             }
         }
 
-        vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true) const override
+        vector<shared_ptr<action>> get_fire_order(
+            bool allow_disabled=true, bool ignore_inscription=false) const override
         {
             // go by pack order
             vector<shared_ptr<action>> result;
@@ -1408,6 +1431,8 @@ namespace quiver
                 auto w = make_shared<misc_action>(slot);
                 if (w->is_valid()
                     && (allow_disabled || w->is_enabled())
+                    && (ignore_inscription || _fireorder_inscription_ok(slot) != MB_FALSE)
+                    // TODO: autoinscribe =f?
                     && you.inv[slot].sub_type != MISC_ZIGGURAT)
                 {
                     result.push_back(move(w));
@@ -1513,7 +1538,8 @@ namespace quiver
         }
 
 
-        vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true) const override
+        vector<shared_ptr<action>> get_fire_order(
+            bool allow_disabled=true, bool ignore_inscription=false) const override
         {
             // go by pack order
             vector<shared_ptr<action>> result;
@@ -1521,7 +1547,8 @@ namespace quiver
             {
                 auto w = make_shared<artefact_evoke_action>(slot);
                 if (w->is_valid()
-                    && (allow_disabled || w->is_enabled()))
+                    && (allow_disabled || w->is_enabled())
+                    && (ignore_inscription || _fireorder_inscription_ok(slot) != MB_FALSE))
                 {
                     result.push_back(move(w));
                 }
@@ -2301,13 +2328,13 @@ namespace quiver
         // TODO: icons in tiles, dividers or subtitles for each category?
         ActionSelectMenu menu(cur_quiver, allow_empty);
         vector<shared_ptr<action>> actions;
-        auto tmp = ammo_action(-1).get_fire_order();
+        auto tmp = ammo_action(-1).get_fire_order(true, true);
         actions.insert(actions.end(), tmp.begin(), tmp.end());
-        tmp = wand_action(-1).get_fire_order();
+        tmp = wand_action(-1).get_fire_order(true, true);
         actions.insert(actions.end(), tmp.begin(), tmp.end());
-        tmp = misc_action(-1).get_fire_order();
+        tmp = misc_action(-1).get_fire_order(true, true);
         actions.insert(actions.end(), tmp.begin(), tmp.end());
-        tmp = artefact_evoke_action(-1).get_fire_order();
+        tmp = artefact_evoke_action(-1).get_fire_order(true, true);
         actions.insert(actions.end(), tmp.begin(), tmp.end());
         tmp = spell_action(SPELL_NO_SPELL).get_fire_order();
         actions.insert(actions.end(), tmp.begin(), tmp.end());
@@ -2539,7 +2566,7 @@ static int _get_pack_slot(const item_def& item)
         if (inv_item.quantity && _items_similar(item, inv_item, true))
         {
             // =f prevents item from being in fire order.
-            if (strstr(inv_item.inscription.c_str(), "=f"))
+            if (quiver::_fireorder_inscription_ok(i, false) == MB_FALSE)
                 return -1;
 
             return i;
