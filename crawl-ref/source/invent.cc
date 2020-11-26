@@ -1121,7 +1121,7 @@ bool item_is_selected(const item_def &i, int selector)
 
     case OSEL_EVOKABLE:
         // assumes valid link...would break with evoking from floor?
-        return item_is_evokable(i, true) && evoke_check(i.link, true);
+        return item_is_evokable(i, true) && item_is_evokable(i, true, false);//evoke_check(i.link, true);
 
     case OSEL_ENCHANTABLE_ITEM:
         return is_enchantable_item(i);
