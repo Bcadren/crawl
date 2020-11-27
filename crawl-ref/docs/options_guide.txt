@@ -1038,9 +1038,18 @@ allow_self_target = (yes | no | prompt)
 =======
 =======
 always_use_static_targeters = false
+<<<<<<< HEAD
         If set to true, shows static targeters when casting via `z`. When false,
         they are visible only via `Z` and via the fire interface. Targeters are
         never shown when firing via AUTOFIRE and other autoattack commands.
+=======
+        A static targeter shows the possible area of effect for a spell that
+        does not have controllable targeting. If this option is set to true,
+        static targeters are shown when casting via `z` and `Z`. When false,
+        they are shown only via `Z` and via the fire interface. Targeters are
+        never shown when firing via AUTOFIRE (shift-tab, `p`) and other
+        autoattack commands.
+>>>>>>> 49005422be (Don't show static targeters for `Z`)
 
 >>>>>>> 0fdd853446 (Add static targeters for most untargeted spells)
 allow_self_target = prompt
