@@ -1022,7 +1022,7 @@ bool actor_cloud_immune(const actor &act, cloud_type type, bool mount)
                 return true;
             return false;
         case CLOUD_POISON:
-            if (act.res_poison(mount) > 0)
+            if (act.res_poison(mount) > 0 || act.is_unbreathing(mount))
                 return true;
             return false;
         case CLOUD_STEAM:
