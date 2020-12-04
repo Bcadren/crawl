@@ -1402,19 +1402,12 @@ bool direction_chooser::select(bool allow_out_of_range, bool endpoint)
             return false;
     }
 
+    // leap and shadow step never allow selecting from past the target point
     if ((restricts == DIR_LEAP
          || restricts == DIR_SHADOW_STEP
          || !allow_out_of_range)
         && !in_range(target()))
     {
-        // if find_target is set, some form of autotargeting is in play and we
-        // leave any messaging to the caller.
-        if (moves.interactive)
-        {
-            mprf(MSGCH_EXAMINE_FILTER, "%s",
-                                hitfunc ? hitfunc->why_not.c_str()
-                                        : "That is beyond the maximum range.");
-        }
         return false;
     }
     moves.isEndpoint = endpoint || (mons && _mon_exposed(mons));
