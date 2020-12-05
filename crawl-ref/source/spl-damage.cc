@@ -4838,34 +4838,18 @@ void foxfire_attack(const monster *foxfire, const actor *target)
 static void _hailstorm_cell(coord_def where, int pow, actor *agent, bool chaos)
 {
     bolt beam;
+    zappy(chaos ? ZAP_HAILSTORM_CHAOS : ZAP_HAILSTORM, pow, agent->is_monster(), beam);
     beam.thrower    = agent->is_player() ? KILL_YOU : KILL_MON;
     beam.source_id  = agent->mid;
     beam.attitude   = agent->temp_attitude();
-    beam.glyph      = dchar_glyph(DCHAR_FIRED_BURST);
 #ifdef USE_TILE
     beam.tile_beam  = -1;
 #endif
     beam.draw_delay = 10;
     beam.source     = where;
     beam.target     = where;
-    beam.hit        = 18 + pow / 6;
+    beam.hit_verb   = chaos ? "pelt" : "pelts";
     beam.origin_spell = SPELL_HAILSTORM;
-    if (chaos)
-    {
-        beam.real_flavour = beam.flavour = BEAM_CHAOTIC;
-        beam.colour = ETC_JEWEL;
-        beam.name = "chaos shards";
-        beam.hit_verb = "pelt";
-        beam.damage = calc_dice(3, 13 + (pow * 5) / 8);
-    }
-    else
-    {
-        beam.flavour = BEAM_ICY_SHARDS;
-        beam.colour = ETC_ICE;
-        beam.name = "hail";
-        beam.hit_verb = "pelts";
-        beam.damage = calc_dice(3, 10 + pow / 2);
-    }
 
     if (is_menacing(&you, SPELL_HAILSTORM))
         beam.damage.num++;

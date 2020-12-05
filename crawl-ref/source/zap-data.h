@@ -2518,4 +2518,38 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
     1
 },
 
+{
+    ZAP_HAILSTORM,
+    "hail",
+    200,
+    new calcdice_calculator<3, 10, 1, 2>,
+    new tohit_calculator<18, 1, 6>,
+    nullptr,
+    nullptr,
+    ETC_ICE,
+    false,
+    BEAM_ICE,
+    DCHAR_FIRED_BURST,
+    false,
+    false,
+    0
+},
+
+{
+    ZAP_HAILSTORM_CHAOS,
+    "chaos shards",
+    200,
+    new calcdice_calculator<3, 10, 5, 8>,
+    new tohit_calculator<18, 1, 6>,
+    nullptr,
+    nullptr,
+        ETC_JEWEL,
+    false,
+    BEAM_CHAOTIC,
+    DCHAR_FIRED_BURST,
+    false,
+    false,
+    0
+},
+
 };
