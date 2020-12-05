@@ -1514,7 +1514,7 @@ static int _shatter_mount_dice()
 static int _shatter_mon_dice(const monster *mon)
 {
     if (!mon)
-        return 0;
+        return 3;
 
     int retval = 0;
 
@@ -1534,17 +1534,24 @@ static int _shatter_mon_dice(const monster *mon)
     return max(retval, 1);
 }
 
+dice_def shatter_damage(int pow, actor *agent, monster *mon)
+{
+    dice_def retval = dice_def(_shatter_mon_dice(mon), 5 + pow / 3);
+
+    if (agent && is_menacing(agent, SPELL_SHATTER) && retval.num != 0)
+        retval.num++;
+
+    return retval;
+}
+
 static int _shatter_monsters(coord_def where, int pow, actor *agent, bool chaos)
 {
-    dice_def dam_dice(0, 5 + pow / 3); // Number of dice set below.
     monster* mon = monster_at(where);
 
     if (!mon || !mon->alive() || mon == agent)
         return 0;
 
-    dam_dice.num = _shatter_mon_dice(mon);
-    if (is_menacing(agent, SPELL_SHATTER) && dam_dice.num != 0)
-        dam_dice.num++;
+    const dice_def dam_dice = shatter_damage(pow, mon);
     int damage = mon->apply_ac(dam_dice.roll(), dam_dice.max(), ac_type::half);
 
     if (agent->is_player())

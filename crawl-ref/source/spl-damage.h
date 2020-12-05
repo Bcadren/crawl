@@ -35,6 +35,7 @@ spret cast_freeze(int pow, monster* mons, bool fail);
 spret cast_malign_offering(int pow, const dist &beam, bool fail);
 spret cast_airstrike(int pow, const dist &beam, bool fail);
 spret cast_shatter(int pow, bool fail);
+dice_def shatter_damage(int pow, actor *agent, monster *mons = nullptr);
 spret cast_irradiate(int powc, actor* who, bool fail);
 spret cast_heal_blast(int powc, actor* who, bool fail);
 dice_def irradiate_damage(int powc, actor* who, bool chaos = false);
