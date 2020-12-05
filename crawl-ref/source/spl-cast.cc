@@ -2934,16 +2934,21 @@ static dice_def _spell_damage(spell_type spell)
     const int power = _spell_power(spell);
     if (power < 0)
         return dice_def(0,0);
+
+    const bool chaos = determine_chaos(&you, spell, false);
+
     switch (spell)
     {
         case SPELL_FREEZE:
-            return freeze_damage(power, determine_chaos(&you, SPELL_FREEZE, false));
+            return freeze_damage(power, chaos);
         case SPELL_FULMINANT_PRISM:
             return prism_damage(prism_hd(power, false), true);
+        case SPELL_CONJURE_BALL_LIGHTNING:
+            return ball_lightning_damage(ball_lightning_hd(power, false), chaos);
         case SPELL_IOOD:
             return iood_damage(power, INFINITE_DISTANCE, false);
         case SPELL_IRRADIATE:
-            return irradiate_damage(power, &you, determine_chaos(&you, SPELL_IRRADIATE, false));
+            return irradiate_damage(power, &you, chaos);
         case SPELL_SHATTER:
             return shatter_damage(power, &you); //BCADNOTE: Doesn't include chaos.
         default:
@@ -2967,6 +2972,9 @@ string spell_damage_string(spell_type spell)
     {
         case SPELL_FOXFIRE:
             mult = "2x";
+            break;
+        case SPELL_CONJURE_BALL_LIGHTNING:
+            mult = "3x";
             break;
         case SPELL_STARBURST:
             mult = "8x";

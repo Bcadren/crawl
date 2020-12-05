@@ -66,9 +66,18 @@ void setup_spore_explosion(bolt & beam, const monster& origin)
     beam.ex_size = 2;
 }
 
+dice_def ball_lightning_damage(int hd, bool chaos)
+{
+    dice_def retval = dice_def(3, 5 + hd * 5 / 4);
+
+    if (chaos)
+        retval.size = div_rand_round(retval.size * 5, 4);
+
+    return retval;
+}
+
 static void _finish_ball_lightning_explosion(bolt & beam, const monster& origin)
 {
-    beam.damage = dice_def(3, 5 + origin.get_hit_dice() * 5 / 4);
     beam.origin_spell = SPELL_CONJURE_BALL_LIGHTNING;
     beam.ex_size = x_chance_in_y(origin.get_hit_dice(), 24) ? 3 : 2;
     if (origin.summoner)
@@ -81,6 +90,7 @@ static void _finish_ball_lightning_explosion(bolt & beam, const monster& origin)
 static void _setup_chaos_explosion(bolt & beam, const monster &origin)
 {
     _setup_base_explosion(beam, origin);
+    beam.damage = ball_lightning_damage(origin.get_hit_dice(), true);
     beam.flavour = BEAM_CHAOTIC_DEVASTATION;
     beam.name = "blast of pure entropy";
     beam.explode_noise_msg = "You hear a bemusing cacophonous burst!";
@@ -92,6 +102,7 @@ static void _setup_chaos_explosion(bolt & beam, const monster &origin)
 static void _setup_lightning_explosion(bolt & beam, const monster& origin)
 {
     _setup_base_explosion(beam, origin);
+    beam.damage = ball_lightning_damage(origin.get_hit_dice());
     beam.flavour = BEAM_ELECTRICITY;
     beam.name = "blast of lightning";
     beam.explode_noise_msg = "You hear a clap of thunder!";
