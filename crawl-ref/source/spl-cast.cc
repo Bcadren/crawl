@@ -2953,10 +2953,21 @@ string spell_damage_string(spell_type spell)
         return "";
     string mult = "";
     string suffix = "";
-    if (spell == SPELL_FOXFIRE)
-        mult = "2x";
-    if (spell == SPELL_IOOD)
-        suffix = "+10% x Dist";
+
+    switch (spell)
+    {
+        case SPELL_FOXFIRE:
+            mult = "2x";
+            break;
+        case SPELL_STARBURST:
+            mult = "8x";
+            break;
+        case SPELL_IOOD:
+            suffix = "+10% x Dist";
+            break;
+        default:
+            break;
+    }
     return make_stringf("%s%dd%d%s", mult.c_str(), 
             dam.num, dam.size, suffix.c_str());
 }
