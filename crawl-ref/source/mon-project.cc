@@ -312,13 +312,17 @@ static bool _boulder_hit(monster& mon, const coord_def &pos)
 
 dice_def iood_damage(int pow, int dist, bool random)
 {
+    bool for_display = (dist == INFINITE_DISTANCE);
+    if (for_display)
+        dist = 0;
+
     pow = pow * 10 + pow * dist;
     if (random)
         pow = div_rand_round(pow, 10);
     else
         pow = div_round_up(pow, 10);
     pow = stepdown_value(pow, 30, 30, 200, -1);
-    if (dist < 4)
+    if (dist < 4 && !for_display)
         pow = pow * (dist*2+3) / 10;
     return dice_def(9, pow / 4);
 }
