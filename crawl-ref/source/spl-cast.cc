@@ -2935,6 +2935,8 @@ static dice_def _spell_damage(spell_type spell)
         return dice_def(0,0);
     switch (spell)
     {
+        case SPELL_FREEZE:
+            return freeze_damage(power, determine_chaos(&you, SPELL_FREEZE, false));
         case SPELL_IOOD:
             return iood_damage(power, INFINITE_DISTANCE, false);
         case SPELL_IRRADIATE:

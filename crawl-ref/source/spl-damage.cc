@@ -1031,6 +1031,19 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     return spret::success;
 }
 
+dice_def freeze_damage(int pow, bool chaos)
+{
+    dice_def retval = dice_def(1, 3 + pow / 3);
+    
+    if (is_menacing(&you, SPELL_FREEZE))
+        retval.num++;
+
+    if (chaos)
+        retval.size = div_rand_round(retval.size * 5, 4);
+
+    return retval;
+}
+
 spret cast_freeze(int pow, monster* mons, bool fail)
 {
     pow = min(25, pow);
@@ -1088,18 +1101,7 @@ spret cast_freeze(int pow, monster* mons, bool fail)
         }
     }
 
-    int orig_hurted = 0;
-
-    if (you.staff() && staff_enhances_spell(you.staff(), SPELL_FREEZE)
-                    && get_staff_facet(*you.staff()) == SPSTF_MENACE)
-    {
-        orig_hurted = roll_dice(2, 3 + pow / 3);
-    }
-    else
-        orig_hurted = roll_dice(1, 3 + pow / 3);
-    if (chaos)
-        orig_hurted = div_rand_round(orig_hurted * 5, 4);
-
+    const int orig_hurted = freeze_damage(pow, chaos).roll();
     const int hurted = resist_adjust_damage(mons, beam.flavour, orig_hurted);
     const bool absorb = hurted < 0;
 
@@ -1116,6 +1118,9 @@ spret cast_freeze(int pow, monster* mons, bool fail)
 
     if (hurted > 0)
         _player_hurt_monster(*mons, hurted, beam.flavour, false);
+
+    if (hurted < 0)
+        mons->heal(abs(hurted), true);
 
     if (mons->alive())
         mons->expose_to_element(damtype, orig_hurted);
