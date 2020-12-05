@@ -73,6 +73,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_SEARING_RAY,            ZAP_SEARING_RAY_II },
     { SPELL_SEARING_RAY,            ZAP_SEARING_RAY_III },
     { SPELL_HAILSTORM,              ZAP_HAILSTORM },
+    { SPELL_HAILSTORM,              ZAP_HAILSTORM_CHAOS },
 
     // wands
     { SPELL_WAND_FLAME,             ZAP_WAND_FLAME },

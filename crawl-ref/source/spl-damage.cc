@@ -3008,7 +3008,6 @@ spret cast_cascade(const actor *agent, int pow, bool fail)
 
         beam_primary.set_agent(&you);
         beam_secondary.set_agent(&you);
-        beam_primary.origin_spell = beam_secondary.origin_spell = SPELL_ICICLE_CASCADE;
         beam_primary.use_target_as_pos = beam_secondary.use_target_as_pos = true;
         beam_primary.apply_beam_conducts();
         beam_secondary.in_explosion_phase = true;
@@ -4850,7 +4849,6 @@ static void _hailstorm_cell(coord_def where, int pow, actor *agent, bool chaos)
     beam.source     = where;
     beam.target     = where;
     beam.hit_verb   = chaos ? "pelt" : "pelts";
-    beam.origin_spell = SPELL_HAILSTORM;
 
     if (is_menacing(&you, SPELL_HAILSTORM))
         beam.damage.num++;
