@@ -100,12 +100,17 @@ static void _setup_lightning_explosion(bolt & beam, const monster& origin)
     _finish_ball_lightning_explosion(beam, origin);
 }
 
+dice_def prism_damage(int hd, bool fully_powered)
+{
+    const int dice = fully_powered ? 3 : 2;
+    return dice_def(dice, 6 + hd * 7 / 4);
+}
+
 static void _setup_prism_explosion(bolt& beam, const monster& origin)
 {
     _setup_base_explosion(beam, origin);
-    beam.damage = (origin.prism_charge == 2 ?
-        dice_def(3, 6 + origin.get_hit_dice() * 7 / 4)
-        : dice_def(2, 6 + origin.get_hit_dice() * 7 / 4));
+    beam.damage = prism_damage(origin.get_hit_dice(),
+                               origin.prism_charge == 2);
     if (origin.has_ench(ENCH_CHAOTIC_INFUSION))
     {
         beam.flavour = BEAM_CHAOTIC;
