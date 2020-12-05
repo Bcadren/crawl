@@ -69,6 +69,9 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_ENSNARE,                ZAP_ENSNARE },
     { SPELL_ICICLE_CASCADE,         ZAP_CASCADE },
     { SPELL_ICICLE_CASCADE,         ZAP_CASCADE_II },
+    { SPELL_SEARING_RAY,            ZAP_SEARING_RAY_I },
+    { SPELL_SEARING_RAY,            ZAP_SEARING_RAY_II },
+    { SPELL_SEARING_RAY,            ZAP_SEARING_RAY_III },
 
     // wands
     { SPELL_WAND_FLAME,             ZAP_WAND_FLAME },
