@@ -159,15 +159,6 @@ bool cast_smitey_damnation(int pow, bolt &beam)
     return true;
 }
 
-static bool _is_menacing(const actor * caster, spell_type spell)
-{
-    item_def * staff = caster->staff();
-    if (staff && get_staff_facet(*staff) == SPSTF_MENACE
-        && staff_enhances_spell(staff, spell))
-        return true;
-    return false;
-}
-
 string desc_chain_lightning_dam(int pow)
 {
     // Damage is 5d(9.2 + pow / 30), but if lots of targets are around
@@ -394,7 +385,7 @@ spret cast_chain_spell(spell_type spell_cast, int pow,
                 break;
         }
 
-        if (_is_menacing(caster, spell_cast))
+        if (is_menacing(caster, spell_cast))
             beam.damage.num += 2;
 
         // Be kinder to the caster.
@@ -992,7 +983,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
 
     // The practical maximum of this is about 25 (pow @ 100). - bwr
     int dam = 3 + random2avg(9, 2) + random2(pow) / 7;
-    if (_is_menacing(&you, SPELL_VAMPIRIC_DRAINING))
+    if (is_menacing(&you, SPELL_VAMPIRIC_DRAINING))
         dam = div_rand_round(3 * dam, 2);
 
     beam_type damtype = BEAM_NEG;
@@ -1416,7 +1407,7 @@ spret cast_airstrike(int pow, const dist &beam, bool fail)
     int dam = 8 + random2avg(2 + div_rand_round(pow, 7), 3);
     if (chaos)
         dam = div_rand_round(5 * dam, 4);
-    if (_is_menacing(&you, SPELL_AIRSTRIKE))
+    if (is_menacing(&you, SPELL_AIRSTRIKE))
         dam = div_rand_round(3 * dam, 2);
     const int dmg = resist_adjust_damage(mons, damtype, dam);
     const bool absorb = dmg < 0;
@@ -1552,7 +1543,7 @@ static int _shatter_monsters(coord_def where, int pow, actor *agent, bool chaos)
         return 0;
 
     dam_dice.num = _shatter_mon_dice(mon);
-    if (_is_menacing(agent, SPELL_SHATTER) && dam_dice.num != 0)
+    if (is_menacing(agent, SPELL_SHATTER) && dam_dice.num != 0)
         dam_dice.num++;
     int damage = mon->apply_ac(dam_dice.roll(), dam_dice.max(), ac_type::half);
 
@@ -1900,7 +1891,7 @@ static int _shatter_player(int pow, actor *wielder, bool devastator = false)
     dice_def dam_dice(_shatter_player_dice(), 5 + pow / 3);
     dice_def mount_dice(_shatter_mount_dice(), 5 + pow / 3);
 
-    if (!devastator && dam_dice.num > 0 && _is_menacing(wielder, SPELL_SHATTER))
+    if (!devastator && dam_dice.num > 0 && is_menacing(wielder, SPELL_SHATTER))
     {
         dam_dice.num++;
         mount_dice.num++;
@@ -2057,6 +2048,17 @@ void shillelagh(actor *wielder, coord_def where, int pow)
         _shatter_player(pow, wielder, true);
 }
 
+dice_def irradiate_damage(int pow, actor *agent, bool chaos)
+{
+    bool menace = is_menacing(agent, SPELL_IRRADIATE);
+    const int dice = menace ? 8 : 6;
+    if (menace)
+        pow = div_rand_round(4 * pow, 3);
+    const int max_dam = chaos ? 40 + div_rand_round(5 * pow, 8)
+                              : 30 + div_rand_round(pow, 2);
+    return calc_dice(dice, max_dam);
+}
+
 /**
  * Irradiate the given cell. (Per the spell.)
  *
@@ -2068,14 +2070,10 @@ static int _irradiate_cell(coord_def where, int pow, actor *agent)
 {
     actor *act = actor_at(where);
     if (!act || !act->alive())
-        return 0; // XXX: handle damaging the player for mons casts...?
+        return 0;
 
-    bool chaos = determine_chaos(agent, SPELL_IRRADIATE);
-    bool menace = _is_menacing(agent, SPELL_IRRADIATE);
-    const int dice = menace ? 8 : 6;
-    const int max_dam = chaos ? 40 + div_rand_round (5 * pow, 8) 
-                              : 30 + div_rand_round(pow, 2);
-    const dice_def dam_dice = calc_dice(dice, max_dam);
+    const bool chaos = determine_chaos(agent, SPELL_IRRADIATE);
+    const dice_def dam_dice = irradiate_damage(pow, agent, chaos);
     const int dam = dam_dice.roll();
     const int dam2 = dam_dice.roll();
     if (act->is_player())
@@ -2397,7 +2395,7 @@ static int _ignite_poison_monsters(coord_def where, beam_type damtype, int pow, 
     // how poisoned is the victim?
     const mon_enchant ench = mon->get_ench(ENCH_POISON);
     const int pois_str = ench.ench == ENCH_NONE ? 0 : ench.degree;
-    bool menacing = _is_menacing(agent, SPELL_IGNITE_POISON);
+    bool menacing = is_menacing(agent, SPELL_IGNITE_POISON);
     bool chaos = (damtype != BEAM_COLD);
 
     // poison currently does roughly 6 damage per degree (over its duration)
@@ -2870,7 +2868,7 @@ spret cast_dash(int pow, bool fail)
         beam.damage.size = div_rand_round(5 * beam.damage.size, 4);
     }
     
-    if (_is_menacing(&you, SPELL_UNSTABLE_FIERY_DASH))
+    if (is_menacing(&you, SPELL_UNSTABLE_FIERY_DASH))
         beam.damage.num++;
 
     int dash_range = 20 + random2avg(pow / 2, 3);
@@ -2989,7 +2987,7 @@ spret cast_cascade(const actor *agent, int pow, bool fail)
             }
         }
 
-        if (_is_menacing(&you, SPELL_ICICLE_CASCADE))
+        if (is_menacing(&you, SPELL_ICICLE_CASCADE))
         {
             beam_primary.damage.num++;
             beam_secondary.damage.num++;
@@ -3080,7 +3078,7 @@ static int _discharge_monsters(const coord_def &where, int pow,
                                     : 3 + random2(5 + pow / 10 
                                         + (random2(pow) / 10));
 
-    if (_is_menacing(&agent, SPELL_DISCHARGE))
+    if (is_menacing(&agent, SPELL_DISCHARGE))
         damage += random2(damage);
 
     bolt beam;
@@ -3304,7 +3302,7 @@ static bool _finish_LRD_setup(bolt &beam, const actor *caster)
         }
         beam.damage.size = div_rand_round(5 * beam.damage.size, 4);
     }
-    if (_is_menacing(caster, SPELL_LRD))
+    if (is_menacing(caster, SPELL_LRD))
         beam.damage.num++;
 
     beam.aux_source = beam.name;
@@ -4173,7 +4171,7 @@ void toxic_radiance_effect(actor* agent, int mult, bool on_cast, bool chaos)
         if (chaos)
             damtype = chaos_damage_type(agent->is_player());
 
-        bool menace = _is_menacing(agent, SPELL_OLGREBS_TOXIC_RADIANCE);
+        bool menace = is_menacing(agent, SPELL_OLGREBS_TOXIC_RADIANCE);
 
         int dam = roll_dice(menace ? 2 : 1, chaos ? 1 + pow/ 16 : 1 + pow / 20)
                                             * div_rand_round(mult, BASELINE_DELAY);
@@ -4470,7 +4468,7 @@ spret cast_glaciate(actor *caster, int pow, coord_def aim, bool fail)
 
             if (chaos)
                 beam.damage.size = div_rand_round(5 * beam.damage.size, 4);
-            if (_is_menacing(caster, SPELL_GLACIATE))
+            if (is_menacing(caster, SPELL_GLACIATE))
                 beam.damage.num += 2;
 
             beam.fake_flavour();
@@ -4734,7 +4732,7 @@ spret cast_starburst(int pow, bool fail, bool tracer, bool frostburst)
     beam.origin_spell = frostburst ? SPELL_NO_SPELL : SPELL_STARBURST;
     beam.draw_delay   = 5;
     zappy(frostburst ? ZAP_FROST_BURST : ZAP_BOLT_OF_FIRE, pow, false, beam);
-    if (!frostburst && _is_menacing(&you, SPELL_STARBURST))
+    if (!frostburst && is_menacing(&you, SPELL_STARBURST))
         beam.damage.num++;
 
     for (const coord_def & offset : offsets)
@@ -4811,7 +4809,7 @@ void foxfire_attack(const monster *foxfire, const actor *target)
     beam.source_id   = foxfire->summoner;
     beam.source_name = summoner->name(DESC_PLAIN, true);
     zappy(chaos ? ZAP_CHAOSFIRE : ZAP_FOXFIRE, foxfire->get_hit_dice(), !foxfire->friendly(), beam);
-    if (_is_menacing(&you, SPELL_FOXFIRE))
+    if (is_menacing(&you, SPELL_FOXFIRE))
         beam.damage.num++;
     beam.aux_source  = beam.name;
     beam.target      = target->pos();
@@ -4857,7 +4855,7 @@ static void _hailstorm_cell(coord_def where, int pow, actor *agent, bool chaos)
         beam.damage = calc_dice(3, 10 + pow / 2);
     }
 
-    if (_is_menacing(&you, SPELL_HAILSTORM))
+    if (is_menacing(&you, SPELL_HAILSTORM))
         beam.damage.num++;
 
     monster *mons = monster_at(where);
@@ -4988,7 +4986,7 @@ static void _imb_actor(actor * act, int pow, bool chaos)
     else
         beam.damage      = calc_dice(2, 6 + pow / 3);
 
-    if (_is_menacing(&you, SPELL_MUSE_OAMS_AIR_BLAST))
+    if (is_menacing(&you, SPELL_MUSE_OAMS_AIR_BLAST))
         beam.damage.num++;
 
     beam.affect_actor(act);

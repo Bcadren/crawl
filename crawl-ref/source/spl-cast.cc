@@ -530,6 +530,17 @@ static int _additive_power(spell_type spell)
     return 0;
 }
 
+bool is_menacing(const actor * caster, spell_type spell)
+{
+    item_def * staff = caster->staff();
+    if (staff && get_staff_facet(*staff) == SPSTF_MENACE
+        && staff_enhances_spell(staff, spell))
+    {
+        return true;
+    }
+    return false;
+}
+
 bool determine_chaos(const actor *agent, spell_type spell, bool random)
 {
     if (get_spell_disciplines(spell) & spschool::evocation)
@@ -2922,8 +2933,15 @@ static dice_def _spell_damage(spell_type spell)
     const int power = _spell_power(spell);
     if (power < 0)
         return dice_def(0,0);
-    if (spell == SPELL_IOOD)
-        return iood_damage(power, INFINITE_DISTANCE, false);
+    switch (spell)
+    {
+        case SPELL_IOOD:
+            return iood_damage(power, INFINITE_DISTANCE, false);
+        case SPELL_IRRADIATE:
+            return irradiate_damage(power, &you, determine_chaos(&you, SPELL_IRRADIATE, false));
+        default:
+            break;
+    }
     const zap_type zap = spell_to_zap(spell);
     if (zap == NUM_ZAPS)
         return dice_def(0,0);
