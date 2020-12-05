@@ -982,6 +982,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     }
 
     // The practical maximum of this is about 25 (pow @ 100). - bwr
+    // If you update this, also update spell_damage_string().
     int dam = 3 + random2avg(9, 2) + random2(pow) / 7;
     if (is_menacing(&you, SPELL_VAMPIRIC_DRAINING))
         dam = div_rand_round(3 * dam, 2);
