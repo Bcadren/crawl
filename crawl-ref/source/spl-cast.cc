@@ -2959,6 +2959,8 @@ static dice_def _spell_damage(spell_type spell)
             return irradiate_damage(power, &you, chaos);
         case SPELL_SHATTER:
             return shatter_damage(power, &you); //BCADNOTE: Doesn't include chaos.
+        case SPELL_BATTLESPHERE:
+            return battlesphere_damage(power);
         default:
             break;
     }

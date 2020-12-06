@@ -3124,6 +3124,21 @@ monster* find_battlesphere(const actor* agent)
         return nullptr;
 }
 
+static int _battlesphere_hd(int pow, bool random = true)
+{
+    return 1 + maybe_random_div(pow, 11, random);
+}
+
+static dice_def _battlesphere_damage(int hd)
+{
+    return dice_def(2, 5 + hd);
+}
+
+dice_def battlesphere_damage(int pow)
+{
+    return _battlesphere_damage(_battlesphere_hd(pow, false));
+}
+
 spret cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
 {
     fail_check();
@@ -3166,7 +3181,7 @@ spret cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
                                          : SAME_ATTITUDE(agent->as_monster()),
                       agent->pos(), agent->mindex());
         mg.set_summoned(agent, 0, SPELL_BATTLESPHERE, god);
-        mg.hd = 1 + div_rand_round(pow, 11);
+        mg.hd = _battlesphere_hd(pow);
         battlesphere = create_monster(mg);
 
         if (battlesphere)
@@ -3509,7 +3524,7 @@ bool fire_battlesphere(monster* mons)
         beam.name       = "crystal beam";
         beam.range      = LOS_RADIUS;
         beam.hit        = AUTOMATIC_HIT;
-        beam.damage     = dice_def(2, 5 + mons->get_hit_dice());
+        beam.damage     = _battlesphere_damage(mons->get_hit_dice());
         beam.glyph      = dchar_glyph(DCHAR_FIRED_ZAP);
         beam.colour     = BROWN;
         beam.flavour    = BEAM_CRYSTAL;
