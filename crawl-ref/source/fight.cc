@@ -992,7 +992,7 @@ int apply_chunked_AC(int dam, int ac)
 
 ///////////////////////////////////////////////////////////////////////////
 
-bool wielded_weapons_check()
+bool wielded_weapons_check(string attack_verb)
 {
     const item_def * weap0 = you.weapon(0);
     const item_def * weap1 = you.weapon(1);
@@ -1038,10 +1038,11 @@ bool wielded_weapons_check()
 
     string prompt;
     if (unarmed_warning)
-        prompt = "Really attack unarmed?";
+        prompt = make_stringf("Really %s unarmed?", attack_verb.c_str());
     else
     {
-        prompt = make_stringf("Really attack while wielding %s%s%s?",
+        prompt = make_stringf("Really %s while wielding %s%s%s?",
+            attack_verb.c_str(),
             warn0 ? weap0->name(DESC_YOUR).c_str() : "",
             warn0 && warn1 ? " and " : "",
             warn1 ? weap1->name(DESC_YOUR).c_str() : "");
