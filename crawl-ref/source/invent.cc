@@ -2281,7 +2281,7 @@ bool item_is_evokable(const item_def &item, bool reach,
 
         // XX code duplication with evoke_check
         if (weapon_reach(item) > REACH_NONE && item_type_known(item)
-                || you.weapon(0) && fires_ammo_type(*you.weapon(0)) != MI_NONE)
+                || you.weapon(0) && is_range_weapon(*you.weapon()))
         {
             if (!wielded)
             {

@@ -1512,7 +1512,7 @@ bool evoke_check(int slot, bool quiet)
     // BCADNOTE: Assumes ranged weapons are slot EQ_WEAPON0 only.
     // ammo checks are done below, this is the precondition for messaging
     // about ranged failures
-    const bool ranged = wielded0 && fires_ammo_type(*you.weapon()) != MI_NONE;
+    const bool ranged = wielded && is_range_weapon(*you.weapon());
 
     // BCADNOTE: A form that melds one weapon slot and not the other would need revise here.
     if ((reaching || ranged) && you.melded[EQ_WEAPON0])
@@ -1534,7 +1534,7 @@ bool evoke_check(int slot, bool quiet)
             canned_msg(MSG_TOO_CONFUSED);
         return false;
     }
-    if (ranged && (you.launcher_action.is_empty()
+    if (ranged && i && (you.launcher_action.is_empty()
                     || !you.launcher_action.get()->is_valid()))
     {
         if (!quiet)
