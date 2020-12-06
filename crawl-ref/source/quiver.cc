@@ -1532,6 +1532,7 @@ namespace quiver
                 check_ability_possible(ability, false);
                 return;
             }
+
             set_target(t);
             if (ability != ABIL_HOP) // find_target will fail for ABIL_HOP
                 target.find_target = true; // TODO: does this break lua targeting?
