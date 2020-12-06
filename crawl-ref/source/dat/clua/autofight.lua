@@ -337,7 +337,13 @@ local function get_target(no_move)
 end
 
 local function attack_fire(x,y)
-  crawl.do_targeted_command("CMD_FIRE", x, y, AUTOFIGHT_FIRE_STOP)
+  if AUTOFIGHT_FORCE_FIRE or not have_ranged() then
+    -- fire from quiver
+    crawl.do_targeted_command("CMD_FIRE", x, y, AUTOFIGHT_FIRE_STOP)
+  else
+    -- fire a wielded launcher
+    crawl.do_targeted_command("CMD_EVOKE_WIELDED", x, y, AUTOFIGHT_FIRE_STOP)
+  end
 end
 
 local function attack_reach(x,y)
