@@ -673,8 +673,7 @@ static const duration_def duration_data[] =
     { DUR_GRAVITATION,
       LIGHTBLUE, "Grav",
       "gravitation", "gravity",
-      "Monsters gravitate toward you.", D_DISPELLABLE,
-      {{ "Your gravitational anomaly collapses.", }}},
+      "Monsters gravitate toward you.", D_DISPELLABLE },
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

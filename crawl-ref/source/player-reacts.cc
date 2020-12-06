@@ -234,6 +234,16 @@ static void _decrement_petrification(int delay)
     }
 }
 
+static void _decrement_gravitation(int delay)
+{
+    if (!you.duration[DUR_GRAVITATION])
+        return;
+
+    attract_monsters();
+    if (_decrement_a_duration(DUR_GRAVITATION, delay))
+        mpr("You feel less attractive to monsters.");
+}
+
 static void _decrement_paralysis(int delay)
 {
     _decrement_a_duration(DUR_PARALYSIS_IMMUNITY, delay);
@@ -462,6 +472,7 @@ void player_reacts_to_monsters()
         detect_items(-1);
     }
 
+    _decrement_gravitation(you.time_taken);
     _decrement_paralysis(you.time_taken);
     _decrement_petrification(you.time_taken);
     if (_decrement_a_duration(DUR_SLEEP, you.time_taken))
@@ -875,9 +886,6 @@ static void _decrement_durations()
         ASSERT(you.duration[DUR_HEAVENLY_STORM]);
         wu_jian_heaven_tick();
     }
-
-    if (you.duration[DUR_GRAVITATION])
-        attract_monsters();
 
     // these should be after decr_ambrosia, transforms, liquefying, etc.
     for (int i = 0; i < NUM_DURATIONS; ++i)
