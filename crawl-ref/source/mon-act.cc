@@ -1580,7 +1580,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
         if (interference == DO_BLOCK_ATTACK)
         {
             simple_monster_message(*mons,
-                                " is stunned by your power and fails to attack.",
+                                " is stunned by your conviction and fails to attack.",
                                 MSGCH_GOD);
             destroy_item(m);
             return false;
@@ -2252,7 +2252,7 @@ void handle_monster_move(monster* mons, int tries)
                         if (interference == DO_BLOCK_ATTACK)
                         {
                             simple_monster_message(*mons,
-                                " is stunned by your power and fails to attack.",
+                                " is stunned by your conviction and fails to attack.",
                                 MSGCH_GOD);
                             mons->speed_increment -= non_move_energy;
                             return;
