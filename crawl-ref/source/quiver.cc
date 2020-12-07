@@ -30,9 +30,11 @@
 #include "tags.h"
 #include "target.h"
 #include "terrain.h"
+#include "tilepick.h"
 #include "throw.h"
 #include "transform.h"
 #include "traps.h"
+#include "rltiles/tiledef-icons.h"
 
 static int _get_pack_slot(const item_def&);
 static bool _item_matches(const item_def &item, fire_type types,
@@ -117,6 +119,25 @@ namespace quiver
         return formatted_string::parse_string(
                         short_desc ? "<darkgrey>Empty</darkgrey>"
                                    : "<darkgrey>Nothing quivered</darkgrey>");
+    }
+
+    vector<tile_def> action::get_tiles() const
+    {
+        // generic handling for items: this covers a bunch of subclasses
+        const int i = get_item();
+        if (i >= 0 && i < ENDOFPACK && you.inv[i].defined())
+        {
+            vector<tile_def> ret;
+            if (get_tiles_for_item(you.inv[i], ret, false))
+                return ret;
+        }
+
+        // valid empty action
+        if (is_valid())
+            return { TILEI_DISABLED };
+
+        // fallback in case a subclass fails to implement this
+        return { TILE_ERROR };
     }
 
     shared_ptr<action> action::find_next(int dir, bool allow_disabled, bool loop) const
@@ -1024,6 +1045,11 @@ namespace quiver
             return col;
         }
 
+        vector<tile_def> get_tiles() const override
+        {
+            return { tile_def(get_spell_tile(spell)) };
+        }
+
         formatted_string quiver_description(bool short_desc) const override
         {
             if (!is_valid())
@@ -1241,6 +1267,11 @@ namespace quiver
             qdesc.cprintf("%s", ability_name(ability));
 
             return qdesc;
+        }
+
+        vector<tile_def> get_tiles() const override
+        {
+            return { tile_def(tileidx_ability(ability)) };
         }
 
         vector<shared_ptr<action>> get_fire_order(
@@ -2439,6 +2470,10 @@ namespace quiver
             // TODO: is there a way to show formatting in menu items?
             me->colour = a->quiver_color();
             me->data = (void *) &a; // pointer to vector element - don't change the vector!
+#ifdef USE_TILE
+            for (auto t : a->get_tiles())
+                me->add_tile(t);
+#endif
             menu.add_entry(me);
             hotkey++;
         }
