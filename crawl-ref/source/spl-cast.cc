@@ -1824,7 +1824,7 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
     const int adj_pow = pow;
 #endif
     const int success = hex_success_chance(mr, adj_pow, 100);
-    descs.push_back(make_stringf("chance to defeat MR: %d%%", success));
+    descs.push_back(make_stringf("chance to affect: %d%%", success));
 
     return descs;
 }
