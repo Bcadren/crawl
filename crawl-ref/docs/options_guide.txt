@@ -1335,9 +1335,20 @@ autofight_hunger_stop_undead = false
           : end
 
 autofight_throw = false
+<<<<<<< HEAD
         If your quiver contains a throwable item, autofight will throw it
         at enemies out of melee range. Without this option, only a wielded
         launcher (a bow, crossbow, sling or blowgun) will be considered.
+=======
+        If your quiver contains contains a fireable action that does direct
+        damage to the enemy, regular CMD_AUTOFIGHT (i.e., tab on the default
+        binding) will trigger it at enemies out of melee range. Without this
+        option, only a wielded launcher (a bow, crossbow or sling) will be
+        triggered by CMD_AUTOFIGHT. If an action that does direct damage is
+        quivered but out of range, you will move towards the enemy. If an
+        action is quivered that does not do direct damage, CMD_AUTOFIGHT will
+        ignore it entirely.
+>>>>>>> 006ef2cfcc (Improve autofight_throw and CMD_AUTOFIGHT_NOMOVE)
 
 autofight_throw_nomove = true
         This works same as above, except only for ===hit_closest_nomove rather
