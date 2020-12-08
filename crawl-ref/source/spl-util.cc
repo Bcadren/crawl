@@ -1178,6 +1178,17 @@ int spell_power_cap(spell_type spell)
     }
 }
 
+static bool _veto(spell_type spell, int range)
+{
+    if (range <= 1
+        || spell == SPELL_HAILSTORM // uses a special system
+        || spell == SPELL_THUNDERBOLT) // lightning rod only
+    {
+        return true;
+    }
+    return false;
+}
+
 static int _base_spell_range(spell_type spell, const int pow, const int power_cap)
 {
     int minrange = _seekspell(spell)->min_range;
@@ -1204,7 +1215,7 @@ int mi_spell_range(spell_type spell, const monster_info * mon_owner)
     const int pow = mon_owner->spell_hd(spell);
     int range = _base_spell_range(spell, pow, 30);
 
-    if (range <= 1)
+    if (_veto(spell, range))
         return range;
 
     if (mon_owner->staff()
@@ -1232,7 +1243,7 @@ int mon_spell_range(spell_type spell, const monster * mon_owner)
     const int pow = mon_owner->spell_hd(spell);
     int range = _base_spell_range(spell, pow, 30);
 
-    if (range <= 1)
+    if (_veto(spell, range))
         return range;
 
     if (mon_owner->staff()
@@ -1257,14 +1268,13 @@ int spell_range(spell_type spell, int pow, bool allow_bonus)
     const int powercap = spell_power_cap(spell);
     int range = _base_spell_range(spell, pow, powercap);
 
-    if (range <= 1)
+    if (_veto(spell, range))
         return range;
 
     if (allow_bonus)
     {
         if (vehumet_supports_spell(spell)
-            && have_passive(passive_t::spells_range)
-            && spell != SPELL_THUNDERBOLT) // lightning rod only
+            && have_passive(passive_t::spells_range))
         {
             if (you.get_mutation_level(MUT_GODS_PITY) > 1)
                 range++;

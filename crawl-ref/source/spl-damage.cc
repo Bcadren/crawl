@@ -4888,8 +4888,9 @@ static void _hailstorm_cell(coord_def where, int pow, actor *agent, bool chaos)
 
 spret cast_hailstorm(int pow, bool fail, bool tracer)
 {
+    const int range = calc_spell_range(SPELL_HAILSTORM, pow);
     // used only for vulnerability check, not for the actual targeting
-    auto hitfunc = find_spell_targeter(SPELL_HAILSTORM, pow, 3);
+    auto hitfunc = find_spell_targeter(SPELL_HAILSTORM, pow, range);
     bool (*vulnerable) (const actor *) = [](const actor * act) -> bool
     {
       // actor guaranteed to be monster from usage,
@@ -4905,7 +4906,7 @@ spret cast_hailstorm(int pow, bool fail, bool tracer)
 
     if (tracer)
     {
-        for (radius_iterator ri(you.pos(), 3, C_SQUARE, LOS_NO_TRANS, true); ri; ++ri)
+        for (radius_iterator ri(you.pos(), range, C_SQUARE, LOS_NO_TRANS, true); ri; ++ri)
         {
             if (grid_distance(you.pos(), *ri) == 1 || !in_bounds(*ri))
                 continue;
@@ -4934,7 +4935,7 @@ spret cast_hailstorm(int pow, bool fail, bool tracer)
     else
         mpr("A cannonade of hail descends around you!");
 
-    for (radius_iterator ri(you.pos(), 3, C_SQUARE, LOS_NO_TRANS, true); ri; ++ri)
+    for (radius_iterator ri(you.pos(), range, C_SQUARE, LOS_NO_TRANS, true); ri; ++ri)
     {
         if (grid_distance(you.pos(), *ri) == 1 || !in_bounds(*ri))
             continue;
