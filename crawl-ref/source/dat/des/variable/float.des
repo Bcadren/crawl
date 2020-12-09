@@ -4994,6 +4994,7 @@ ENDMAP
 ##############################################################################
 # A traditional vault
 NAME:    minmay_two_paths
+TAGS:    transparent
 ORIENT:  float
 DEPTH:   D:6-, Depths, !Depths:$
 MAP
