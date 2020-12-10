@@ -2618,10 +2618,14 @@ static bool _mons_is_valid_target(const monster* mon, targ_mode_type mode,
     // Monsters that are no threat to you don't count as monsters.
     if (mode != TARG_EVOLVABLE_PLANTS
         && !mons_is_threatening(*mon)
-        && mon->type != MONS_TEST_STATUE)
+        && !mons_class_is_test(mon->type))
     {
         return false;
     }
+
+    // Don't target submerged monsters.
+    if (mode != TARG_HOSTILE_SUBMERGED && mon->submerged())
+        return false;
 
     // Don't usually target unseen monsters...
     if (!mon->visible_to(&you))
