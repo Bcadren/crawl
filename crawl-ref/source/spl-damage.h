@@ -58,6 +58,7 @@ void tornado_damage(actor *caster, int dur, bool is_vortex = false);
 void cancel_tornado(bool tloc = false);
 void tornado_move(const coord_def &pos);
 void cloud_strike(actor *caster, actor *foe, int damage);
+coord_def get_thunderbolt_last_aim(actor *caster);
 spret cast_thunderbolt(actor *caster, int pow, coord_def aim,
                             bool fail);
 void additional_flavoured_damage(actor *caster, actor *foe, int preres, 
