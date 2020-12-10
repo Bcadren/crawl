@@ -4946,10 +4946,11 @@ spret cast_hailstorm(int pow, bool fail, bool tracer)
     return spret::success;
 }
 
-static void _imb_actor(actor * act, int pow, bool chaos)
+// BCADDO: ZAPIFY.
+static void _imb_actor(actor * act, int pow, coord_def source, bool chaos)
 {
     bolt beam;
-    beam.source          = you.pos();
+    beam.source          = source;
     beam.thrower         = KILL_YOU;
     beam.source_id       = MID_PLAYER;
     beam.range           = LOS_RADIUS;
@@ -5002,6 +5003,7 @@ spret cast_imb(int pow, bool fail)
     int range = spell_range(SPELL_MUSE_OAMS_AIR_BLAST, pow);
     auto hitfunc = find_spell_targeter(SPELL_MUSE_OAMS_AIR_BLAST, pow, range);
     //targeter_radius hitfunc(&you, LOS_SOLID_SEE, range);
+
     bool (*vulnerable) (const actor *) = [](const actor * act) -> bool
     {
         return !(act->is_monster() && mons_is_conjured(act->as_monster()->type)) 
@@ -5018,8 +5020,10 @@ spret cast_imb(int pow, bool fail)
     mprf("A blast of %sair wooshes around you!", chaos ? "chaotic ": "");
 
     vector<actor *> act_list;
+    // knock back into dispersal could move the player, so save the current pos
+    coord_def source = you.pos();
 
-    for (actor_near_iterator ai(you.pos(), LOS_SOLID_SEE); ai; ++ai)
+    for (actor_near_iterator ai(source, LOS_SOLID_SEE); ai; ++ai)
     {
         if (ai->pos().distance_from(you.pos()) > range
             || cell_is_solid(ai->pos())
@@ -5032,11 +5036,12 @@ spret cast_imb(int pow, bool fail)
         act_list.push_back(*ai);
     }
 
-    dist_sorter sorter = {you.pos()};
+    dist_sorter sorter = { source };
     sort(act_list.begin(), act_list.end(), sorter);
 
     for (actor *act : act_list)
-        _imb_actor(act, pow, chaos);
+        if (cell_see_cell(source, act->pos(), LOS_SOLID_SEE)) // sanity check vs dispersal
+            _imb_actor(act, pow, source, chaos);
 
     return spret::success;
 }
