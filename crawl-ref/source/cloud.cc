@@ -1030,7 +1030,7 @@ bool actor_cloud_immune(const actor &act, cloud_type type, bool mount)
                 return true;
             return false;
         case CLOUD_MIASMA:
-            if (act.res_rotting(mount) > ROT_RESIST_NONE)
+            if (act.res_rotting(mount) > ROT_RESIST_NONE || act.is_unbreathing(mount))
                 return true;
             return false;
         case CLOUD_PETRIFY:
