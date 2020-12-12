@@ -4771,7 +4771,8 @@ static string _monster_spells_description(const monster_info& mi)
     formatted_string description;
     describe_spellset(monster_spellset(mi), nullptr, description, &mi);
     description.cprintf("\nTo read a description, press the key listed above. "
-        "(AdB) indicate damage dice, (x%%) indicates the chance to beat your MR, "
+        "(AdB) indicates damage (the sum of A B-sided dice), "
+        "(x%%) indicates the chance to beat your MR, "
         "and (y) indicates the spell range");
     description.cprintf(crawl_state.need_save
         ? "; shown in red if you are in range.\n"
