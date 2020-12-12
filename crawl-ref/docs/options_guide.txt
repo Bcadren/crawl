@@ -1030,36 +1030,26 @@ simple_targeting = false
         while avoiding the player. This applies to target selection when
         zapping as well as autotarget selection for quivered spells.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 allow_self_target = (yes | no | prompt)
         Allow targeting yourself with risky magic (e.g., the spell Bolt of Fire
         or a wand of paralysis.)
-=======
-=======
+
 always_use_static_targeters = false
-<<<<<<< HEAD
-        If set to true, shows static targeters when casting via `z`. When false,
-        they are visible only via `Z` and via the fire interface. Targeters are
-        never shown when firing via AUTOFIRE and other autoattack commands.
-=======
         A static targeter shows the possible area of effect for a spell that
         does not have controllable targeting. If this option is set to true,
         static targeters are shown when casting via `z` and `Z`. When false,
         they are shown only via `Z` and via the fire interface. Targeters are
         never shown when firing via AUTOFIRE (shift-tab, `p`) and other
         autoattack commands.
->>>>>>> 49005422be (Don't show static targeters for `Z`)
 
-<<<<<<< HEAD
->>>>>>> 0fdd853446 (Add static targeters for most untargeted spells)
-=======
-force_targeter = hailstorm, starburst, frozen ramparts, absolute zero, ignition
-        Force showing a targeter for the listed spells when casting normally
+force_targeter = hailstorm, starburst, ignition
+        Force showing a targeter for the listed spells when casting normally,
         even if the spell isn't targeted. This for practical purposes only has
         an effect on statically targeted spells, such as the ones in the
-        default value. It is overridden by `always_use_static_targeters = true`,
-        which amounts to listing every spell here.
+        default value; it is particularly useful for spells with an unusual
+        targeting pattern. If "all" appears in the options list, the rest of
+        the list (however constructed) will be ignored, and targeters will
+        be shown with every spell.
 
 >>>>>>> 2bc0b21477 (Add fine-grained rc control over static targeters)
 allow_self_target = prompt
@@ -1335,14 +1325,6 @@ autofight_hunger_stop_undead = false
           : end
 
 autofight_throw = false
-<<<<<<< HEAD
-<<<<<<< HEAD
-        If your quiver contains a throwable item, autofight will throw it
-        at enemies out of melee range. Without this option, only a wielded
-        launcher (a bow, crossbow, sling or blowgun) will be considered.
-=======
-=======
->>>>>>> 006ef2cfcc (Improve autofight_throw and CMD_AUTOFIGHT_NOMOVE)
         If your quiver contains contains a fireable action that does direct
         damage to the enemy, regular CMD_AUTOFIGHT (i.e., tab on the default
         binding) will trigger it at enemies out of melee range. Without this
@@ -1351,10 +1333,6 @@ autofight_throw = false
         quivered but out of range, you will move towards the enemy. If an
         action is quivered that does not do direct damage, CMD_AUTOFIGHT will
         ignore it entirely.
-<<<<<<< HEAD
->>>>>>> 006ef2cfcc (Improve autofight_throw and CMD_AUTOFIGHT_NOMOVE)
-=======
->>>>>>> 006ef2cfcc (Improve autofight_throw and CMD_AUTOFIGHT_NOMOVE)
 
 autofight_throw_nomove = true
         This works same as above, except only for ===hit_closest_nomove rather
@@ -1816,13 +1794,7 @@ fire_items_start = a
         Sets the first inventory item to consider when selecting
         missiles to fire. The default is a.
 
-<<<<<<< HEAD
-fire_order  = launcher, return
-fire_order += javelin / tomahawk / stone / rock / net
-fire_order += inscribed
-=======
-fire_order  = launcher, throwing, inscribed, spell, evokable, ability
->>>>>>> d376ed14c5 (Add a bit more control to fire_order)
+fire_order  = launcher, inscribed, spell, evokable, ability
         (Ordered list option)
         Controls the order of items when cycling the quiver. Types
         should be separated by commas and items that appear first get
@@ -1840,24 +1812,14 @@ fire_order  = launcher, throwing, inscribed, spell, evokable, ability
         can be separated with a "/" to indicate that inventory order should
         determine cycle order.
 
-<<<<<<< HEAD
-        'launcher' refers to firing the appropriate missile for the
-        wielded weapon (i.e. crossbow, bow, sling, blowgun). You'll almost
-        certainly want it first, as it'll be ignored when you're not
-        wielding a ranged weapon. 'return' refers to (identified)
-        weapons of returning.
-
         'inscribed' refers to any item with the "+f" inscription. See
         the "Inscriptions" section of Crawl's manual for more information
         about inscriptions.
 
-(See also pickup_thrown in 3-a.)
-=======
 fail_severity_to_quiver = 2
         Exclude spells with this miscast level or higher from quiver cycling
         and automatic quivering. -1 can be used to exclude spells entirely from
         automatic quivering.
->>>>>>> d376ed14c5 (Add a bit more control to fire_order)
 
 launcher_autoquiver = true
         If set to true, change the main quiver to launcher ammo on wielding
