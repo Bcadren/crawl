@@ -40,7 +40,7 @@ spret cast_shatter(int pow, bool fail);
 dice_def shatter_damage(int pow, actor *agent, monster *mons = nullptr);
 spret cast_irradiate(int powc, actor* who, bool fail);
 spret cast_heal_blast(int powc, actor* who, bool fail);
-dice_def irradiate_damage(int powc, actor* who, bool chaos = false);
+dice_def irradiate_damage(int powc, actor* who, bool chaos = false, bool random = true);
 bool ignite_poison_affects(const actor* act);
 spret cast_ignite_poison(actor *agent, int pow, bool fail,
                               bool tracer = false, bool olgreb = false);

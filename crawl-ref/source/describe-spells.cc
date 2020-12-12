@@ -478,7 +478,7 @@ static dice_def _spell_damage(spell_type spell, int hd)
     if (zap == NUM_ZAPS)
         return dice_def(0,0);
 
-    dice_def retval = zap_damage(zap, hd, true);
+    dice_def retval = zap_damage(zap, hd, true, false);
 
     switch (spell)
     {

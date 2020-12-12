@@ -291,7 +291,7 @@ int dice_def::max() const
     return num * size;
 }
 
-dice_def calc_dice(int num_dice, int max_damage)
+dice_def calc_dice(int num_dice, int max_damage, bool random)
 {
     dice_def ret(num_dice, 0);
 
@@ -305,8 +305,10 @@ dice_def calc_dice(int num_dice, int max_damage)
         ret.num  = max_damage;
         ret.size = 1;
     }
-    else
+    else if (random)
         ret.size = div_rand_round(max_damage, num_dice);
+    else
+        ret.size = max_damage / num_dice; // round down
 
     return ret;
 }
