@@ -3885,23 +3885,29 @@ static string _player_spell_stats(const spell_type spell)
     const string failure = failure_rate_to_string(raw_spell_fail(spell));
     description += make_stringf("        Fail: %s", failure.c_str());
 
-    description += "\n\nPower : ";
+    const string damage_string = spell_damage_string(spell);
+    const int acc = spell_acc(spell);
+    // TODO: generalize this pattern? It's very common in descriptions
+    const int padding = (acc != -1) ? 8 : damage_string.size() ? 6 : 5;
+    description += make_stringf("\n\n%*s: ", padding, "Power");
     description += spell_power_string(spell);
 
-    const string damage_string = spell_damage_string(spell);
     if (damage_string != "") {
-        description += "\nDamage : ";
+        description += make_stringf("\n%*s: ", padding, "Damage");
         description += damage_string;
     }
-    const int acc = spell_acc(spell);
     if (acc != -1)
-        description += make_stringf("\nAccuracy: %d", acc);
+    {
+        ostringstream acc_str;
+        description += make_stringf("\n%*s: %d", padding, "Accuracy",
+                                                    acc);
+    }
 
-    description += "\nRange : ";
+    description += make_stringf("\n%*s: ", padding, "Range");
     description += spell_range_string(spell);
-    description += "\nHunger: ";
+    description += make_stringf("\n%*s: ", padding, "Hunger");
     description += spell_hunger_string(spell);
-    description += "\nNoise : ";
+    description += make_stringf("\n%*s: ", padding, "Noise");
     description += spell_noise_string(spell);
     description += "\n";
     return description;
@@ -4812,10 +4818,10 @@ static void _add_energy_to_string(int speed, int energy, string what,
         slow.push_back(what + " " + _speed_description(act_speed) + " (" + to_string(act_speed) + ")");
 }
 
-static void _describe_monster_hd(const monster_info& mi, ostringstream &result)
+static void _describe_monster_hd (const monster_info& mi, ostringstream &result)
 {
     // BCADDO: Find a way to describe spell HD here again. Deprecating this since it's usually nonsense now.
-    result << "HD: " << mi.hd << "\n";
+    result << "    HD: " << mi.hd << "\n";
 }
 
 /**
@@ -4862,7 +4868,7 @@ static void _describe_monster_ac(const monster_info& mi, ostringstream &result)
         }
         msg += ")";
     }
-    result << "AC: " << mi.ac << msg << "\n";
+    result << "    AC: " << mi.ac << msg << "\n";
 }
 
 /**
@@ -4879,7 +4885,7 @@ static void _describe_monster_ev(const monster_info& mi, ostringstream &result)
     // BCADDO: This assumption is questionable. Add an actual MB_SWIMMING flag if feasible.
     if (mi.ev > mi.base_ev && mi.is(MB_SUBMERGED))
         msg = " (swimming)";
-    result << "EV: " << mi.ev << msg << "\n";
+    result << "    EV: " << mi.ev << msg << "\n";
 }
 
 static bool _incap(const monster_info& mi)
@@ -4917,7 +4923,7 @@ static void _describe_monster_mr(const monster_info& mi, ostringstream &result)
         result << "MR: ∞\n";
         return;
     }
-    result << "MR: " << mi.res_magic() << "\n";
+    result << "    MR: " << mi.res_magic() << "\n";
 }
 
 static void _describe_experience_value(const monster_info& mi, ostringstream &result)
