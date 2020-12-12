@@ -1172,8 +1172,9 @@ flayed_ghost MONS_FLAYED_GHOST
 hungry_ghost MONS_HUNGRY_GHOST
 %sdir mon/unique
 %sdir mon/nonliving
-insubstantial_wisp MONS_INSUBSTANTIAL_WISP
 will_o_the_wisp MONS_WILL_O_THE_WISP
+%rim 1
+insubstantial_wisp MONS_INSUBSTANTIAL_WISP
 
 ## Dwarves ('q')
 %sdir mon/humanoids
