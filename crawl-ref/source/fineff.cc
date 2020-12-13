@@ -452,8 +452,11 @@ void shock_serpent_discharge_fineff::fire()
         return;
 
     const int max_range = 3; // v0v
-    if (grid_distance(oppressor.pos(), position) > max_range)
+    if (grid_distance(oppressor.pos(), position) > max_range
+        || !cell_see_cell(position, oppressor.pos(), LOS_SOLID_SEE))
+    {
         return;
+    }
 
     const monster* serpent = defender() ? defender()->as_monster() : nullptr;
 
