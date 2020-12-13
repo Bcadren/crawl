@@ -304,7 +304,7 @@ public:
     virtual mon_holy_type holiness(bool temp = true, bool mt = false) const = 0;
     virtual bool undead_or_demonic() const = 0;
     virtual bool holy_wrath_susceptible(bool mt = false) const;
-    virtual bool is_holy(bool spells = true) const = 0;
+    virtual bool is_holy() const = 0;
     virtual bool is_nonliving(bool temp = true) const = 0;
     bool evil() const;
     virtual int  how_chaotic(bool check_spells_god = false) const = 0;

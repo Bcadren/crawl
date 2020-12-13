@@ -7697,7 +7697,7 @@ bool player::undead_or_demonic() const
     return undead_state() || species == SP_DEMONSPAWN || char_class == JOB_DEMONSPAWN;
 }
 
-bool player::is_holy(bool /*check_spells*/) const
+bool player::is_holy() const
 {
     return bool(holiness() & MH_HOLY);
 }
