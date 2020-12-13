@@ -65,7 +65,7 @@ static armour_type _useless_armour_type();
  * @param skill     The skill in question; e.g. SK_ARMOUR.
  * @param mult      A multiplier to the skill, for higher precision.
  * @return          A rounded value of that skill; e.g. _skill_rdiv(SK_ARMOUR)
- *                  for a value of 10.1 will return 11 90% of the time &
+ *                  for a value of 10.9 will return 11 90% of the time &
  *                  10 the remainder.
  */
 static int _skill_rdiv(skill_type skill, int mult = 1)
