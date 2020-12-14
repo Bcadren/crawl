@@ -358,7 +358,7 @@ static int _abyss_create_items(const map_bitmask &abyss_genlevel_mask,
             ++items_placed;
     }
 
-    for (const coord_def place : chosen_item_places)
+    for (const coord_def &place : chosen_item_places)
     {
         if (_abyss_square_accepts_items(abyss_genlevel_mask, place))
         {
@@ -2133,7 +2133,7 @@ static void _corrupt_level_features(const corrupt_env &cenv)
     for (rectangle_iterator ri(MAPGEN_BORDER); ri; ++ri)
     {
         int idistance = GXM + GYM;
-        for (const coord_def seed : corrupt_seeds)
+        for (const coord_def &seed : corrupt_seeds)
             idistance = min(idistance, (*ri - seed).rdist());
 
         const int ground_zero_radius = 2;
