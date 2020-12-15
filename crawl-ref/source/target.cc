@@ -1766,7 +1766,7 @@ targeter_multiposition::targeter_multiposition(const actor *a,
         add_position(c);
 }
 
-void targeter_multiposition::add_position(const coord_def &loc)
+void targeter_multiposition::add_position(const coord_def &loc, bool force)
 {
     if (cell_is_solid(loc)
         && (!can_affect_walls() || agent == &you && you_worship(GOD_FEDHAS)))
@@ -1777,6 +1777,9 @@ void targeter_multiposition::add_position(const coord_def &loc)
     actor *act = actor_at(loc);
     if (agent == &you && act == &you)
         return; // any exceptions to this?
+
+    if (!force && act && agent && !can_affect_unseen() && !agent->can_see(*act))
+        return;
 
     // Friendly creature, don't mark this square. This logic is only implemented
     // for players, because this class is currently only used for ui
@@ -1804,7 +1807,7 @@ targeter_multifireball::targeter_multifireball(const actor *a, vector<coord_def>
     {
         if (affected_positions.count(c)) // did the parent constructor like this pos?
             for (adjacent_iterator ai(c); ai; ++ai)
-                add_position(*ai);
+                add_position(*ai, true);
     }
 }
 
