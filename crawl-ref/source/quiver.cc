@@ -25,6 +25,7 @@
 #include "options.h"
 #include "player.h"
 #include "prompt.h"
+#include "religion.h"
 #include "sound.h"
 #include "stringutil.h"
 #include "tags.h"
@@ -1186,6 +1187,14 @@ namespace quiver
 
         bool is_valid() const override
         {
+            // special case usk abilities to ignore piety: they come and go so
+            // rapidly that they are effectively unquiverable otherwise.
+            // Should any other god powers get this treatment?
+            if (is_religious_ability(ability) && you_worship(GOD_USKAYAW))
+            {
+                auto *p = god_power_from_ability(ability);
+                return p && god_power_usable(*p, true, false);
+            }
             return player_has_ability(ability, true);
         }
 
@@ -1321,11 +1330,10 @@ namespace quiver
         vector<shared_ptr<action>> get_fire_order(
             bool allow_disabled=true, bool=false) const override
         {
-            vector<talent> talents = your_talents(false, true);
+            vector<talent> talents = your_talents(false, true, true);
             // goes by letter order
             vector<shared_ptr<action>> result;
 
-            // TODO: all sorts of random chaff that shouldn't be in fire order
             for (const auto &tal : talents)
             {
                 if (_pseudoability(tal.which))
@@ -2393,7 +2401,9 @@ namespace quiver
 
         bool _choose_from_abilities()
         {
-            vector<talent> talents = your_talents(false);
+            // currently doesn't show usk disabled abilities even though they
+            // are shown for Q, is this confusing?
+            vector<talent> talents = your_talents(false, true);
             // TODO: better handling for no abilities?
             int selected = choose_ability_menu(talents);
 
