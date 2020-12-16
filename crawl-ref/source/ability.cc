@@ -52,6 +52,7 @@
 #include "message.h"
 #include "mon-place.h"
 #include "mon-util.h"
+#include "movement.h"
 #include "mutation.h"
 #include "notes.h"
 #include "options.h"
@@ -2190,6 +2191,9 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         fail_check();
         if (you.can_do_shaft_ability(false))
         {
+            if (cancel_barbed_move())
+                return spret::abort;
+
             if (yesno("Are you sure you want to shaft yourself?", true, 'n'))
                 start_delay<ShaftSelfDelay>(1);
             else
