@@ -4136,14 +4136,15 @@ bool player_has_ability(ability_type abil, bool include_unusable)
             return false;
         // fallthrough
     case ABIL_DIG:
-        return you.get_mutation_level(MUT_BURROWING);
+        return you.get_mutation_level(MUT_BURROWING) &&
+            (form_keeps_mutations() || include_unusable);
     case ABIL_HOP:
         return you.get_mutation_level(MUT_FROG_LEGS, false) && 
             (form_keeps_mutations() && !you.mounted() || include_unusable);
     case ABIL_ROLLING_CHARGE:
         return you.get_mutation_level(MUT_ROLL);
     case ABIL_BREATHE_POISON:
-        return you.get_mutation_level(MUT_SPIT_POISON) == 2;
+        return you.get_mutation_level(MUT_SPIT_POISON) >= 2;
     case ABIL_SPIT_POISON:
         return you.get_mutation_level(MUT_SPIT_POISON) == 1;
     case ABIL_BREATHE_MAGMA:
