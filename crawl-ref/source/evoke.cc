@@ -433,6 +433,23 @@ int wand_mp_cost()
     return min(you.magic_points, you.get_mutation_level(MUT_MP_WANDS) * multiplier);
 }
 
+int wand_power(int wand)
+{
+    int scale = 25;
+    if (wand == WAND_CLOUDS || wand == WAND_HEAL_WOUNDS)
+        scale = 15;
+    else if (wand == WAND_ENSNARE)
+        scale = 10;
+
+    int power = you.skill(SK_EVOCATIONS, scale);
+
+    const int m = wand_mp_cost() ? 1 : 0;
+    power *= (m + 3);
+    power /= 30;
+
+    return power;
+}
+
 void zap_wand(int slot, dist *_target)
 {
     if (inv_count() < 1)
@@ -443,8 +460,6 @@ void zap_wand(int slot, dist *_target)
 
     if (!evoke_check(slot))
         return;
-
-    const int mp_cost = wand_mp_cost();
 
     int item_slot;
     if (slot != -1)
@@ -480,17 +495,8 @@ void zap_wand(int slot, dist *_target)
         return;
     }
 
-    int scale = 25;
-    if (wand.sub_type == WAND_CLOUDS || wand.sub_type == WAND_HEAL_WOUNDS)
-        scale = 15;
-    if (wand.sub_type == WAND_ENSNARE)
-        scale = 10;
-
-    int power = you.skill(SK_EVOCATIONS, scale);
-
-    const int m = mp_cost ? 1 : 0;
-    power *= (m + 3);
-    power /= 30;
+    const int mp_cost = wand_mp_cost();
+    const int power = wand_power(wand.sub_type);
 
     const spell_type spell =
         spell_in_wand(static_cast<wand_type>(wand.sub_type));

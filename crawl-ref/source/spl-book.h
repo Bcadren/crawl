@@ -39,6 +39,7 @@ bool learn_spell(spell_type spell, bool wizard = false, bool interactive = true)
 string desc_cannot_memorise_reason(spell_type spell);
 
 spell_type spell_in_wand(wand_type wand);
+wand_type wand_from_spell(spell_type spell);
 vector<spell_type> spellbook_template(book_type book);
 vector<spell_type> spells_in_book(const item_def &book);
 bool spell_found_in_book(const book_type book, const spell_type spell);

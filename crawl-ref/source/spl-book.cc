@@ -114,11 +114,18 @@ spell_type spell_in_wand(wand_type wand)
     die("Unknown wand: %d", wand);
 }
 
-bool is_wand_spell(spell_type spell)
+wand_type wand_from_spell(spell_type spell)
 {
     for (auto p : _wand_spells)
         if (spell == p.second)
-            return true;
+            return p.first;
+    return NUM_WANDS;
+}
+
+bool is_wand_spell(spell_type spell)
+{
+    if (wand_from_spell(spell) < NUM_WANDS)
+        return true;
     return false;
 }
 

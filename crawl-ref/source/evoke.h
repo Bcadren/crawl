@@ -18,6 +18,7 @@ bool evoke_check(int slot, bool quiet = false);
 bool evoke_item(int slot = -1, dist *target = nullptr);
 int num_evoker_elementals(int surge = 0);
 int wand_mp_cost();
+int wand_power(int wand);
 void zap_wand(int slot = -1, dist *target=nullptr);
 
 void shadow_lantern_effect();
