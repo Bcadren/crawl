@@ -8466,7 +8466,6 @@ bool player::nightvision() const
     return have_passive(passive_t::nightvision);
 }
 
-// BCADNOTE: Fixed the function; still think it's unused though.
 reach_type player::reach_range() const
 {
     reach_type retval = REACH_NONE;
