@@ -3417,7 +3417,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
             actions.push_back(CMD_QUAFF);
         break;
     default:
-        ;
+        break;
     }
 
     if (clua.callbooleanfn(false, "ch_item_wieldable", "i", &item))
@@ -3430,7 +3430,10 @@ static vector<command_type> _allowed_actions(const item_def& item)
         actions.push_back(CMD_EJECT);
 
     if (item_is_evokable(item))
+    {
+        actions.push_back(CMD_QUIVER_ITEM);
         actions.push_back(CMD_EVOKE);
+    }
 
     actions.push_back(CMD_DROP);
 
