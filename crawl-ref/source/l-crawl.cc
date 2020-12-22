@@ -1604,7 +1604,6 @@ LUAFN(_crawl_redraw_stats)
 
     you.wield_change         = true;
     you.redraw_title         = true;
-    you.redraw_quiver        = true;
     you.redraw_hit_points    = true;
     you.redraw_magic_points  = true;
     you.redraw_stats.init(true);
@@ -1613,6 +1612,7 @@ LUAFN(_crawl_redraw_stats)
     you.redraw_evasion       = true;
     you.redraw_status_lights = true;
     you.redraw_resists       = true;
+    quiver::set_needs_redraw();
 
     print_stats();
     update_screen();

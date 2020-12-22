@@ -1776,7 +1776,7 @@ bool unwield_item(bool handedness, bool showMsgs)
     unequip_item(slot, showMsgs);
 
     you.wield_change     = true;
-    you.redraw_quiver    = true;
+    quiver::set_needs_redraw();
 
     return true;
 }
