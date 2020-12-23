@@ -1771,6 +1771,20 @@ int hex_success_chance(const int mr, int powc, int scale, bool round_up)
     return (scale * _triangular_number(201 - target) + adjust) / denom;
 }
 
+static string _mon_threat_string(const CrawlStoreValue &mon_store)
+{
+    monster dummy;
+    dummy.type = static_cast<monster_type>(mon_store.get_int());
+    define_monster(dummy);
+
+    int col;
+    string desc;
+    monster_info(&dummy).to_string(1, desc, col, true, nullptr, false);
+    const string col_name = colour_to_str(col);
+
+    return "<" + col_name + ">" + article_a(desc) + "</" + col_name + ">";
+}
+
 // Include success chance in targeter for spells checking monster MR.
 vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
                                    targeter* hitfunc)
@@ -1802,16 +1816,9 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
         const CrawlVector &set = mi.props[POLY_SET_KEY].get_vector();
         if (set.size() <= 0)
             return vector<string>{"not susceptible"};
-        string target_names = "will become ";
-        // XXX: use comma_separated_line here?
-        for (int i = 0; i < set.size(); i++)
-        {
-            const monster_type mc = (monster_type)set[i].get_int();
-            if (i != 0)
-                target_names += (i == set.size() - 1) ? ", or " : ", ";
-            target_names += mons_type_name(mc, DESC_A);
-        }
-        descs.push_back(target_names);
+        descs.push_back("will become "
+                        + comma_separated_fn(set.begin(), set.end(),
+                                             _mon_threat_string, ", or "));
     }
 
 #if TAG_MAJOR_VERSION == 34
