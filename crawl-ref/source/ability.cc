@@ -2191,7 +2191,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         fail_check();
         if (you.can_do_shaft_ability(false))
         {
-            if (cancel_barbed_move())
+            if (cancel_harmful_move())
                 return spret::abort;
 
             if (yesno("Are you sure you want to shaft yourself?", true, 'n'))

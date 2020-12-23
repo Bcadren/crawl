@@ -273,7 +273,7 @@ static bool _find_cblink_target(coord_def &target, bool safe_cancel,
             continue;
         }
 
-        if (!check_moveto(beam.target, verb))
+        if (!check_moveto(beam.target, verb, false))
         {
             continue;
             // try again (messages handled by check_moveto)
@@ -328,7 +328,7 @@ void wizard_blink()
         return wizard_blink();
     }
 
-    if (!check_moveto(beam.target, "blink"))
+    if (!check_moveto(beam.target, "blink", false))
     {
         return wizard_blink();
         // try again (messages handled by check_moveto)
@@ -624,9 +624,6 @@ int rolling_charge_range()
 spret rolling_charge(bool fail, dist *target)
 {
     const coord_def initial_pos = you.pos();
-
-    if (cancel_barbed_move())
-        return spret::abort;
 
     vector<coord_def> target_path;
     targeter_charge tgt(&you, rolling_charge_range());

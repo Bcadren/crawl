@@ -56,6 +56,7 @@
 #include "mon-death.h"
 #include "mon-place.h"
 #include "mount.h"
+#include "movement.h"
 #include "mutation.h"
 #include "nearby-danger.h"
 #include "notes.h"
@@ -388,9 +389,20 @@ bool player::drowning()
         && !you.can_swim() && !you.airborne() && !you.can_water_walk());
 }
 
-bool check_moveto(const coord_def& p, const string &move_verb, const string &msg)
+/**
+ * Confirm that the player really does want to go to the indicated place.
+ * May give many prompts, or no prompts if the move is safe.
+ *
+ * @param p          The location the player wants to go to
+ * @param move_verb  The method of locomotion the player is using
+ * @param physically Whether the player is considered to be "walking" for the
+ *                   purposes of barbs causing damage and ice spells expiring
+ * @return If true, continue with the move, otherwise cancel it
+ */
+bool check_moveto(const coord_def& p, const string &move_verb, bool physically)
 {
-    return check_moveto_terrain(p, move_verb, msg)
+    return !(physically && cancel_harmful_move(move_verb == "rampage"))
+           && check_moveto_terrain(p, move_verb, "")
            && check_moveto_cloud(p, move_verb)
            && check_moveto_trap(p, move_verb)
            && check_moveto_exclusion(p, move_verb);

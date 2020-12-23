@@ -144,7 +144,7 @@ static void _entered_malign_portal(actor* act)
               "", "entering a malign gateway");
 }
 
-bool cancel_barbed_move(bool rampaging)
+static bool _cancel_barbed_move(bool rampaging)
 {
     if ((!you.mounted() && you.duration[DUR_BARBS]) || you.duration[DUR_MOUNT_BARBS] && !you.props.exists(BARBS_MOVE_KEY))
     {
@@ -199,6 +199,11 @@ void apply_barbs_damage(bool rampaging)
                 you.duration[DUR_MOUNT_BARBS] += you.time_taken;
         }
     }
+}
+
+bool cancel_harmful_move(bool rampaging)
+{
+    return _cancel_barbed_move(rampaging);
 }
 
 void remove_water_hold()
@@ -721,8 +726,11 @@ static spret _rampage_forward(coord_def move)
         return spret::fail;
     }
 
-    // Abort if the player answers no to a dangerous terrain/trap/cloud/
-    // exclusion prompt and weapon check prompts;
+    // Abort if the player answers no to
+    // * barbs damaging move prompt
+    // * breaking ice spells prompt
+    // * dangerous terrain/trap/cloud/exclusion prompt
+    // * weapon check prompts;
     // messaging for this is handled by check_moveto().
     if (!check_moveto(beam.target, "rampage")
         || attacking && !wielded_weapons_check("rampage")
@@ -732,10 +740,6 @@ static spret _rampage_forward(coord_def move)
         you.turn_is_over = false;
         return spret::abort;
     }
-
-    // Abort if the player answers no to a DUR_BARBS damaging move prompt.
-    if (cancel_barbed_move(true))
-        return spret::abort;
 
     // We've passed the validity checks, go ahead and rampage.
 
@@ -853,7 +857,7 @@ void move_player_action(coord_def move)
         if (cancel_confused_move(false))
             return;
 
-        if (cancel_barbed_move())
+        if (cancel_harmful_move())
             return;
 
         if (!one_chance_in(3))
@@ -1101,7 +1105,9 @@ void move_player_action(coord_def move)
         // so the player will never enter `targ`. Therefore, we don't want to
         // check exclusions at `targ`.
 
-        // Prompt already handled by rampage
+        // If confused, we've already been prompted (in case of stumbling into
+        // a monster and attacking instead).
+        // If rampaging we've already been prompted.
         if (!you.confused() && !can_wall_jump 
                && !rampaged && !check_moveto(targ, walkverb))
         {
@@ -1109,12 +1115,6 @@ void move_player_action(coord_def move)
             you.turn_is_over = false;
             return;
         }
-
-        // If confused, we've already been prompted (in case of stumbling into
-        // a monster and attacking instead).
-        // If rampaging we've already been prompted.
-        if (!you.confused() && !rampaged && cancel_barbed_move())
-            return;
 
         if (!you.attempt_escape()) // false means constricted and did not escape
             return;
