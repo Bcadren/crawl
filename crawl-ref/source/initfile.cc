@@ -651,8 +651,18 @@ static fire_type _str_to_fire_types(const string &str)
         return FIRE_NET;
     else if (str == "return" || str == "returning")
         return FIRE_RETURNING;
+    else if (str == "throwing")
+        return FIRE_THROWING;
+    else if (str == "ammo")
+        return FIRE_AMMO;
     else if (str == "inscribed")
         return FIRE_INSCRIBED;
+    else if (str == "spell")
+        return FIRE_SPELL;
+    else if (str == "evokable" || str == "evocable")
+        return FIRE_EVOKABLE;
+    else if (str == "ability")
+        return FIRE_ABILITY;
 
     return FIRE_NONE;
 }
@@ -1107,9 +1117,7 @@ void game_options::reset_options()
     fire_items_start       = 0;           // start at slot 'a'
 
     // Clear fire_order and set up the defaults.
-    set_fire_order("launcher, return, "
-                   "javelin / tomahawk / stone / rock / net, "
-                   "inscribed",
+    set_fire_order("launcher, throwing, inscribed, spell, evokable, ability",
                    false, false);
 
     // TODO: what else?
