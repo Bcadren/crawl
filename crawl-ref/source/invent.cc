@@ -540,6 +540,9 @@ string no_selectables_message(int item_selector)
         return "All of your items are already fragile.";
     case OSEL_UNCURSED_WORN_RINGS:
         return "You aren't wearing any uncursed rings.";
+    case OSEL_QUIVER_ACTION:
+    case OSEL_QUIVER_ACTION_FORCE:
+        return "You don't have any quiverable items.";
     }
 
     return "You aren't carrying any such object.";
@@ -1173,6 +1176,11 @@ bool item_is_selected(const item_def &i, int selector)
     case OSEL_UNCURSED_WIELDED_WEAPONS:
             return !i.cursed() && item_is_equipped(i)
             && (itype == OBJ_WEAPONS || itype == OBJ_STAVES || itype == OBJ_SHIELDS);
+
+    case OSEL_QUIVER_ACTION:
+        return in_inventory(i) && quiver::slot_to_action(i.link)->is_valid();
+    case OSEL_QUIVER_ACTION_FORCE:
+        return in_inventory(i) && quiver::slot_to_action(i.link, true)->is_valid();
 
     default:
         return false;
@@ -1947,15 +1955,8 @@ int prompt_invent_item(const char *prompt,
     const bool auto_list = !(flags & invprompt_flag::manual_list);
     const bool allow_easy_quit = !(flags & invprompt_flag::escape_only);
 
-    if (!any_items_of_type(type_expect)
-        && type_expect == OSEL_THROWABLE
-        && (oper == OPER_FIRE || oper == OPER_QUIVER)
-        && mtype == menu_type::invlist)
-    {
-        type_expect = OSEL_ANY;
-    }
-
-    if (!any_items_of_type(type_expect) && type_expect != OSEL_WIELD)
+    if (!any_items_of_type(type_expect) && type_expect != OSEL_WIELD
+        && type_expect != OSEL_QUIVER_ACTION)
     {
         mprf(MSGCH_PROMPT, "%s",
              no_selectables_message(type_expect).c_str());

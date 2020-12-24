@@ -48,6 +48,8 @@ enum object_selector
 #endif
     OSEL_UNCURSED_WORN_RINGS     = -19,
     OSEL_UNCURSED_WIELDED_WEAPONS = -20,
+    OSEL_QUIVER_ACTION           = -21,
+    OSEL_QUIVER_ACTION_FORCE     = -22,
 };
 
 /// Behaviour flags for prompt_invent_item().

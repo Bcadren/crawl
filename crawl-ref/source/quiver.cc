@@ -2211,8 +2211,9 @@ namespace quiver
         {
             if (you.equip[i] == slot)
             {
-                mpr("You can't toss equipped items.");
-                return make_shared<ammo_action>(-1);
+                auto a = make_shared<ammo_action>(-1);
+                a->error = "You can't toss equipped items.";
+                return a;
             }
         }
 
@@ -2346,7 +2347,12 @@ namespace quiver
               cur_quiver(_quiver), allow_empty(_allow_empty),
               any_spells(you.spell_no),
               any_abilities(your_talents(true, true).size() > 0),
-              any_items(inv_count() > 0)
+              // regular species can force-quiver any (non-equipped) item, but
+              // felids have a more limited selection, so we need to directly
+              // calculate it.
+              any_items(you.species == SP_FELID
+                ? any_items_of_type(OSEL_QUIVER_ACTION_FORCE)
+                : inv_count() > 0)
         {
             set_tag("actions");
             action_cycle = Menu::CYCLE_TOGGLE;
@@ -2379,9 +2385,9 @@ namespace quiver
         bool _choose_from_inv()
         {
             int slot = prompt_invent_item(allow_empty
-                                            ? "Quiver which item? (- for none)"
-                                            : "Quiver which item?",
-                                          menu_type::invlist, OSEL_ANY,
+                                            ? "Quiver which item? (- for none, */% to toggle full inventory)"
+                                            : "Quiver which item? (*/% to toggle full inventory)",
+                                          menu_type::invlist, OSEL_QUIVER_ACTION,
                                           OPER_QUIVER, invprompt_flag::hide_known, '-');
 
             if (prompt_failed(slot))
@@ -2427,7 +2433,7 @@ namespace quiver
                 mprf("Clearing quiver.");
                 return false;
             }
-            else if (key == '*' && any_items)
+            else if ((key == '*' || key == '%') && any_items)
                 return _choose_from_inv();
             else if (key == '&' && any_spells)
             {
@@ -2456,11 +2462,11 @@ namespace quiver
             if (allow_empty)
                 extra_cmds.push_back("<w>-</w>: none");
             if (any_items)
-                extra_cmds.push_back("<w>*</w>: full inventory");
+                extra_cmds.push_back("<w>*</w>: inventory");
             if (any_spells)
                 extra_cmds.push_back("<w>&</w>: spells");
             if (any_abilities)
-                extra_cmds.push_back(", <w>^</w>: abilities");
+                extra_cmds.push_back("<w>^</w>: abilities");
             if (extra_cmds.size())
                 s += "(" + join_strings(extra_cmds.begin(), extra_cmds.end(), ", ") + ")";
             return formatted_string::parse_string(s);
@@ -2591,7 +2597,9 @@ namespace quiver
         menu.set_title(new MenuEntry("", MEL_TITLE));
 
         menu_letter hotkey;
-        // What to do if everything is disabled?
+        if (actions.size() == 0)
+            menu.set_more(formatted_string::parse_string("<lightred>No regular actions available to quiver.</lightred>"));
+
         for (const auto &a : actions)
         {
             if (!a || !a->is_valid())
