@@ -501,17 +501,21 @@ bool ranged_attack::handle_phase_hit()
 
             if (using_weapon() || launch_type == launch_retval::THROWN)
             {
-                if (using_weapon()
-                    && apply_damage_brand(projectile->name(DESC_THE).c_str()))
+                if (!defender->is_player() || !you.pending_revival)
                 {
-                    return false;
+                    if (using_weapon()
+                        && apply_damage_brand(projectile->name(DESC_THE).c_str()))
+                    {
+                        return false;
+                    }
+
+                    if (apply_missile_brand())
+                        return false;
                 }
 
-                if (apply_missile_brand())
-                    return false;
-
+                // BCADDO: Revise?
                 // Crude Hard code; but running low on time.
-                if (projectile->is_type(OBJ_MISSILES, MI_PIE) && defender->is_monster())
+                if (projectile->is_type(OBJ_MISSILES, MI_PIE) && defender->is_monster() && defender->alive())
                 {
                     monster* mon = defender->as_monster();
                     const int bonus = attacker->is_monster() ? attacker->get_hit_dice() / 2
