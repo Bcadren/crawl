@@ -5201,7 +5201,7 @@ MAP
 ENDMAP
 
 NAME:   kennysheep_underground_church
-TAGS:   no_pool_fixup misc_elf_vault
+TAGS:   no_pool_fixup misc_elf_vault transparent
 DEPTH:  Depths, Elf, Zot
 : if not you.in_branch("Zot") then
 MONS:   deep elf high priest, deep elf mage
@@ -5216,6 +5216,7 @@ MARKER: F = lua:fog_machine { cloud_type = "flame", pow_min = 100, \
                               walk_dist = 0, excl_rad = -1 }
 KPROP:  wF = no_tele_into
 SUBST:  F = w
+KMASK:  w = opaque
 MAP
  xxxxxxxxxxx
  xwwwwwwwwwx
