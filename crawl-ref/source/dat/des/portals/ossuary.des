@@ -267,7 +267,7 @@ MAP
 ENDMAP
 
 NAME: nicolae_ossuary_entry_false_entrances
-TAGS: extra uniq_miniossuary
+TAGS: extra uniq_miniossuary transparent
 NSUBST: O = 1:} / 1:| / *:d
 SHUFFLE: AB/AB/AB/BA
 SUBST: . = 3.ppp
