@@ -2968,6 +2968,8 @@ static dice_def _spell_damage(spell_type spell, bool evoked)
             return shatter_damage(power, &you); //BCADNOTE: Doesn't include chaos.
         case SPELL_BATTLESPHERE:
             return battlesphere_damage(power);
+        case SPELL_LRD:
+            return display_fragmentation_damage(power);
         default:
             break;
     }
@@ -3023,6 +3025,13 @@ string spell_damage_string(spell_type spell, bool evoked)
             const dice_def tertiary = zap_damage(ZAP_SEARING_RAY_III, power, false);
             suffix = make_stringf(", %dd%d, %dd%d", 
                 secondary.num, secondary.size, tertiary.num, tertiary.size);
+            break;
+        }
+        case SPELL_LRD:
+        case SPELL_SHATTER:
+        {
+            // BCADDO: Improve.
+            suffix = "+ *";
             break;
         }
         default:
