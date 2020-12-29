@@ -2498,8 +2498,8 @@ A quick and very territorial raptor. @Subjective@ @verb:have@ a penchant for col
 %%%%
 tarantella
 
-A small but greatly-feared spider whose bite causes victims to break into a
-frenzied dance.
+A small but greatly-feared spider whose enchanted bite causes victims to break
+into a frenzied dance.
 %%%%
 tengu
 
