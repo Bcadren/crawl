@@ -2075,7 +2075,7 @@ bool attack::apply_damage_brand(const char *what)
         }
 
         if (!x_chance_in_y(melee_confuse_chance(defender->get_hit_dice()), 100)
-            || defender->as_monster()->check_clarity())
+            || defender->as_monster()->clarity())
         {
             break;
         }

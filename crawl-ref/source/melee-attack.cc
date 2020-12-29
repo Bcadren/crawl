@@ -4245,8 +4245,8 @@ void melee_attack::mons_do_eyeball_confusion()
         {
             mprf("The eyeballs on your membranes gaze upon %s.",
                  mon->name(DESC_THE).c_str());
-
-            if (!mon->check_clarity() && you.has_mutation(MUT_GOLDEN_EYEBALLS))
+            
+            if (!mon->clarity() && you.has_mutation(MUT_GOLDEN_EYEBALLS))
             {
                 mon->add_ench(mon_enchant(ENCH_CONFUSION, 0, &you,
                                           30 + random2(100)));

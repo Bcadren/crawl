@@ -1039,7 +1039,7 @@ bool zin_affect(monster * mon, zin_eff effect, int degree, recite_type prayertyp
         break;
 
     case zin_eff::confuse:
-        if (!mon->check_clarity()
+        if (!mon->clarity()
             && mon->add_ench(mon_enchant(ENCH_CONFUSION, degree, &you,
             (degree + random2(spellpower)) * BASELINE_DELAY)))
         {
@@ -1298,8 +1298,6 @@ bool zin_recite_to_single_monster(const coord_def& where)
     zin_eff effect = effect_for_prayer_type(prayertype, check, degree, mon);
 
     affected = zin_affect(mon, effect, degree, prayertype, power);
-
-    // And the actual effects...
 
     // Recite time, to prevent monsters from being recited against
     // more than once in a given recite instance.

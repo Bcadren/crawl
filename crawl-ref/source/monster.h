@@ -573,8 +573,6 @@ public:
     void struggle_against_net();
     int usable_tentacles(bool /*allow_tran*/ = true) const override;
 
-    bool check_clarity() const;
-
     bool is_child_tentacle() const;
     bool is_child_tentacle_of(const monster* mons) const;
     bool is_child_monster() const;
