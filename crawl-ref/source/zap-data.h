@@ -85,7 +85,7 @@ static const zap_info zap_data[] =
     LIGHTGREEN,
     false,
     BEAM_POISON,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -102,7 +102,7 @@ static const zap_info zap_data[] =
     LIGHTGREEN,
     false,
     BEAM_POISON,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -119,7 +119,7 @@ static const zap_info zap_data[] =
     YELLOW,
     false,
     BEAM_DEVASTATION,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -136,7 +136,7 @@ static const zap_info zap_data[] =
     CYAN,
     false,
     BEAM_FRAG,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -153,7 +153,7 @@ static const zap_info zap_data[] =
     BROWN,
     false,
     BEAM_FRAG,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_MISSILE,
     true,
     false,
     0
@@ -170,7 +170,7 @@ static const zap_info zap_data[] =
     BROWN,
     false,
     BEAM_MMISSILE,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_MISSILE,
     false,
     false,
     0
@@ -221,7 +221,7 @@ static const zap_info zap_data[] =
     LIGHTRED,
     false,
     BEAM_HELLFIRE,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     false,
     true,
     0
@@ -238,7 +238,7 @@ static const zap_info zap_data[] =
     DARKGREY,
     false,
     BEAM_MIASMA,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -255,7 +255,7 @@ static const zap_info zap_data[] =
     ETC_HOLY,
     false,
     BEAM_HOLY,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -272,7 +272,7 @@ static const zap_info zap_data[] =
     WHITE,
     false,
     BEAM_PETRIFYING_CLOUD,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -289,7 +289,7 @@ static const zap_info zap_data[] =
     WHITE,
     false,
     BEAM_ICE,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     false,
     false,
     0
@@ -357,7 +357,7 @@ static const zap_info zap_data[] =
     ETC_RANDOM,
     false,
     BEAM_CHAOS,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -374,7 +374,7 @@ static const zap_info zap_data[] =
     WHITE,
     false,
     BEAM_COLD,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -391,7 +391,7 @@ static const zap_info zap_data[] =
     RED,
     false,
     BEAM_FIRE,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -408,7 +408,7 @@ static const zap_info zap_data[] =
     RED,
     false,
     BEAM_FIRE,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -442,7 +442,7 @@ static const zap_info zap_data[] =
     RED,
     false,
     BEAM_FIRE,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     true,
     false,
     0
@@ -1731,7 +1731,7 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
     YELLOW,
     false,
     BEAM_ACID,
-    NUM_DCHAR_TYPES,
+    DCHAR_FIRED_ZAP,
     false,
     false,
     6
