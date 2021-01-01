@@ -40,10 +40,10 @@ bool is_penetrating_attack(const actor& attacker, const item_def* weapon,
                            const item_def& projectile);
 bool fire_warn_if_impossible(bool silent, item_def *weapon);
 bool is_pproj_active();
-void untargeted_fire(shared_ptr<quiver::action> a);
-void throw_item_no_quiver(dist *target=nullptr);
+void untargeted_fire(quiver::action &a);
+void throw_item_no_quiver(dist *target = nullptr);
 
-bool throw_it(bolt &pbolt, int throw_2, item_def *launcher, dist *target = nullptr);
+void throw_it(quiver::action &a);
 
 bool thrown_object_destroyed(item_def *item);
 
