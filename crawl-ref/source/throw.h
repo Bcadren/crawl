@@ -42,7 +42,7 @@ bool is_penetrating_attack(const actor& attacker, const item_def* weapon,
 bool fire_warn_if_impossible(bool silent, item_def *weapon);
 bool is_pproj_active();
 void untargeted_fire(quiver::action &a);
-void throw_item_no_quiver(dist *target = nullptr);
+void throw_item_no_quiver();
 
 void throw_it(quiver::action &a);
 
