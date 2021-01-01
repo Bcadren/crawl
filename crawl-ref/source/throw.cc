@@ -869,7 +869,6 @@ void throw_it(quiver::action &a)
     pbolt.hit = teleport ? random2(you.attribute[ATTR_PORTAL_PROJECTILE] / 4)
                          : 0;
 
-    bool hit = false;
     if (teleport)
     {
         // Violating encapsulation somewhat...oh well.
@@ -891,8 +890,6 @@ void throw_it(quiver::action &a)
         // Dropping item copy, since the launched item might be different.
         pbolt.drop_item = !did_return;
         pbolt.fire();
-
-        hit = !pbolt.hit_verb.empty();
     }
 
     if (bow_brand == SPWPN_CHAOS || ammo_brand == SPMSL_CHAOS)
