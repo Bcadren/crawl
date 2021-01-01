@@ -1657,12 +1657,16 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, TORNADO_RADIUS);
     case SPELL_SHATTER:
         return make_unique<targeter_shatter>(&you); // special version that affects walls
-    case SPELL_INTOXICATE: // for these, we just mark the monsters
     case SPELL_CAUSE_FEAR:
-    case SPELL_DRAIN_LIFE: // pseudo-spell. TODO: ignore undead for this one
-        return make_unique<targeter_multiposition>(&you, _simple_find_all_actors(&you), false);
+        return make_unique<targeter_fear>(_simple_find_all_actors(&you));
+    case SPELL_INTOXICATE: // for these, we just mark the monsters
+        return make_unique<targeter_intoxicate>(_simple_find_all_actors(&you));
+    case SPELL_ENGLACIATION:
+        return make_unique<targeter_englaciate>(_simple_find_all_actors(&you));
+    case SPELL_DRAIN_LIFE:
+        return make_unique<targeter_drain_life>(_simple_find_all_actors(&you));
     case SPELL_DISCORD:
-        return make_unique<targeter_multiposition>(&you, _simple_find_all_actors(&you), true, AFF_MAYBE);
+        return make_unique<targeter_discord>(_simple_find_all_actors(&you));
     case SPELL_ICICLE_CASCADE:
         return make_unique<targeter_multifireball>(&you, get_ignition_blast_sources(&you));
 
@@ -1742,6 +1746,13 @@ bool spell_has_targeter(spell_type spell)
 static int _triangular_number(int n)
 {
     return n * (n+1) / 2;
+}
+
+// _tetrahedral_number: returns the nth tetrahedral number.
+// This is the number of triples of nonnegative integers with sum < n.
+static int _tetrahedral_number(int n)
+{
+    return n * (n+1) * (n+2) / 6;
 }
 
 /**
@@ -1954,7 +1965,6 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 
         // Add success chance to targeted spells checking monster MR
         const bool mr_check = testbits(flags, spflag::MR_check)
-                              && testbits(flags, spflag::dir_or_target)
                               && !testbits(flags, spflag::helpful);
         // Add pacification chance for Healing Wand.
         const bool healing = testbits(flags, spflag::not_evil);
@@ -1962,9 +1972,11 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         if (mr_check)
         {
             const zap_type zap = spell_to_zap(spell);
-            const int eff_pow = zap == NUM_ZAPS ? powc
-                                                : zap_ench_power(zap, powc,
-                                                                 false);
+            const int eff_pow = zap != NUM_ZAPS ? zap_ench_power(zap, powc,
+                                                                 false)
+                                                :
+                  testbits(flags, spflag::area) ? ( powc * 3 ) / 2
+                                                : powc;
             additional_desc = bind(desc_success_chance, placeholders::_1,
                                    eff_pow, evoked_item, hitfunc.get());
         }
@@ -2671,14 +2683,6 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     }
 
     return spret::none;
-}
-
-// _tetrahedral_number: returns the nth tetrahedral number.
-// This is the number of triples of nonnegative integers with sum < n.
-// Called only by get_true_fail_rate.
-static int _tetrahedral_number(int n)
-{
-    return n * (n+1) * (n+2) / 6;
 }
 
 // get_true_fail_rate: Takes the raw failure to-beat number
