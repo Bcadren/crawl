@@ -619,6 +619,9 @@ void throw_it(quiver::action &a)
         direction_chooser_args args;
         args.behaviour = &beh;
         args.mode = TARG_HOSTILE;
+        // Makes no sense to aim in a cardinal direction while teleporting
+        // projectiles.
+        args.allow_shift_dir = !teleport;
         direction(a.target, args);
     }
     if (!a.target.isValid || a.target.isCancel)
