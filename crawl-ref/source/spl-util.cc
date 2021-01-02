@@ -1485,7 +1485,7 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     }
 
     if (!prevent && temp && spell_no_hostile_in_range(spell))
-        return "you can't see any targets that would be affected.";
+        return "you can't see any hostile targets that would be affected.";
 
     if (spell_is_kiku_ritual(spell) && !you_worship(GOD_KIKUBAAQUDGHA))
         return "you cannot complete the ritual without Kikubaaqudgha.";
