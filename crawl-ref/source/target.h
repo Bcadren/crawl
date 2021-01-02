@@ -422,6 +422,12 @@ private:
     vector<targeter_starburst_beam> beams;
 };
 
+class targeter_ignite_poison : public targeter_multiposition
+{
+public:
+    targeter_ignite_poison(actor *a);
+};
+
 class targeter_multimonster : public targeter
 {
 public:

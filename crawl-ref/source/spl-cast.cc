@@ -1655,6 +1655,8 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, TORNADO_RADIUS);
     case SPELL_SHATTER:
         return make_unique<targeter_shatter>(&you); // special version that affects walls
+    case SPELL_IGNITE_POISON: // many cases
+        return make_unique<targeter_ignite_poison>(&you);
     case SPELL_CAUSE_FEAR: // for these, we just mark the eligible monsters
         return make_unique<targeter_fear>();
     case SPELL_DRAIN_LIFE:

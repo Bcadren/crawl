@@ -1845,6 +1845,14 @@ aff_type targeter_starburst::is_affected(coord_def loc)
     return AFF_NO;
 }
 
+targeter_ignite_poison::targeter_ignite_poison(actor *a)
+    : targeter_multiposition(a, { })
+{
+    for (radius_iterator ri(a->pos(), LOS_SOLID_SEE); ri; ++ri)
+        if (ignite_poison_affects_cell(*ri, a))
+            affected_positions.insert(*ri);
+}
+
 targeter_multimonster::targeter_multimonster(const actor *a)
     : targeter()
 {
