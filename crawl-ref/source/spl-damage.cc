@@ -2291,6 +2291,10 @@ static int _ignite_poison_bog(coord_def where, beam_type damtype, int pow, actor
         return agent && agent->is_player() ? sgn(value) : value;
     }
 
+    // Tone down bog clouds
+    if (!one_chance_in(3))
+        return false;
+
     cloud_type cloud = CLOUD_FIRE;
 
     switch (damtype)
@@ -2302,7 +2306,7 @@ static int _ignite_poison_bog(coord_def where, beam_type damtype, int pow, actor
     default:      /*cloud = CLOUD_FIRE;*/ break;
     }
 
-    int dur = 30 + random2(20 + pow);
+    int dur = 3 + random2(2 + pow/10);
 
     if (damtype == BEAM_DEVASTATION)
         dur = random2(5);
@@ -2674,10 +2678,10 @@ static bool _olgreb_check(actor * agent)
  */
 bool ignite_poison_affects_cell(const coord_def where, actor* agent)
 {
-    return _ignite_poison_clouds(where, -1, agent)
-         + _ignite_poison_monsters(where, -1, agent)
-         + _ignite_poison_player(where, -1, agent)
-         + _ignite_poison_bog(where, -1, agent) != 0;
+    return _ignite_poison_clouds(where, BEAM_FIRE, -1, agent)
+         + _ignite_poison_monsters(where, BEAM_FIRE, -1, agent)
+         + _ignite_poison_player(where, BEAM_FIRE, -1, agent)
+         + _ignite_poison_bog(where, BEAM_FIRE, -1, agent) != 0;
 }
 
 /**
