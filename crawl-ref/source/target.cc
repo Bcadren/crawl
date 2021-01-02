@@ -1759,89 +1759,36 @@ aff_type targeter_monster_sequence::is_affected(coord_def loc)
 
 targeter_multiposition::targeter_multiposition(const actor *a,
             vector<coord_def> seeds, bool _hit_friends, aff_type _positive)
-    : targeter(), hit_friends(_hit_friends), positive(_positive)
+    : targeter(), positive(_positive)
 {
     agent = a;
     for (auto &c : seeds)
-        add_position(c);
+        affected_positions.insert(c);
 }
 
-void targeter_multiposition::add_position(const coord_def &loc, bool force)
+targeter_multiposition::targeter_multiposition(const actor *a,
+            vector<monster *> seeds, aff_type _positive)
+    : targeter(), positive(_positive)
 {
-    if (cell_is_solid(loc)
-        && (!can_affect_walls() || agent == &you && you_worship(GOD_FEDHAS)))
-    {
-        return;
-    }
+    agent = a;
+    for (monster *m : seeds)
+        if (m)
+            affected_positions.insert(m->pos());
+}
 
-    actor *act = actor_at(loc);
-    if (agent == &you && act == &you)
-        return; // any exceptions to this?
-
-    if (!force && act && agent && !can_affect_unseen() && !agent->can_see(*act))
-        return;
-
-    // Friendly creature, don't mark this square. This logic is only implemented
-    // for players, because this class is currently only used for ui
-    if (!hit_friends && act
-        && (act == agent
-            || (agent == &you && act->is_monster() // not yet implemented for monster agents
-                && act->as_monster()->wont_attack())))
-    {
-        return;
-    }
-
-    affected_positions.insert(loc);
+// sigh, necessary to allow empty initializer lists with the above two
+// constructors
+targeter_multiposition::targeter_multiposition(const actor *a,
+            initializer_list<coord_def> seeds, aff_type _positive)
+    : targeter_multiposition(a, vector<coord_def>(seeds.begin(), seeds.end()),
+         _positive)
+{
 }
 
 aff_type targeter_multiposition::is_affected(coord_def loc)
 {
     // is this better with maybe or yes?
     return affected_positions.count(loc) > 0 ? positive : AFF_NO;
-}
-
-targeter_drain_life::targeter_drain_life(vector<coord_def> seeds)
-    : targeter_multiposition(&you, { }, true, AFF_YES)
-{
-    // add_position calls a virtual method, explicitly use the derived
-    // behavior
-    for (auto &c : seeds)
-        add_position(c);
-}
-
-bool targeter_drain_life::affects_monster(const monster_info& mon)
-{
-    return get_resist(mon.resists(), MR_RES_NEG) < 3
-           && !mons_atts_aligned(agent->temp_attitude(), mon.attitude);
-}
-
-targeter_discord::targeter_discord(vector<coord_def> seeds)
-    : targeter_multiposition(&you, { }, true, AFF_YES)
-{
-    // add_position calls a virtual method, explicitly use the derived
-    // behavior
-    for (auto &c : seeds)
-        add_position(c);
-}
-
-bool targeter_discord::affects_monster(const monster_info& mon)
-{
-    return mon.willpower() != WILL_INVULN && mon.can_go_frenzy;
-}
-
-targeter_fear::targeter_fear(vector<coord_def> seeds)
-    : targeter_multiposition(&you, { }, true, AFF_YES)
-{
-    // add_position calls a virtual method, explicitly use the derived
-    // behavior
-    for (auto &c : seeds)
-        add_position(c);
-}
-
-bool targeter_fear::affects_monster(const monster_info& mon)
-{
-    return mon.willpower() != WILL_INVULN
-           && !mons_atts_aligned(agent->temp_attitude(), mon.attitude);
 }
 
 targeter_multifireball::targeter_multifireball(const actor *a, vector<coord_def> seeds)
@@ -1852,6 +1799,14 @@ targeter_multifireball::targeter_multifireball(const actor *a, vector<coord_def>
         if (affected_positions.count(c)) // did the parent constructor like this pos?
             for (adjacent_iterator ai(c); ai; ++ai)
                 add_position(*ai, true);
+    }
+
+    for (auto &c : bursts)
+    {
+        actor * act = actor_at(c);
+        if (act && mons_aligned(agent, act))
+            continue;
+        affected_positions.insert(c);
     }
 }
 
@@ -1888,3 +1843,61 @@ aff_type targeter_starburst::is_affected(coord_def loc)
             return r;
     return AFF_NO;
 }
+
+targeter_multimonster::targeter_multimonster(const actor *a)
+    : targeter()
+{
+    agent = a;
+}
+
+aff_type targeter_multimonster::is_affected(coord_def loc)
+{
+    if ((cell_is_solid(loc) && !can_affect_walls())
+        || !cell_see_cell(agent->pos(), loc, LOS_NO_TRANS))
+    {
+        return AFF_NO;
+    }
+
+    //if (agent && act && !agent->can_see(*act))
+    //    return AFF_NO;
+
+    // Any special checks from our inheritors
+    const monster_info *mon = env.map_knowledge(loc).monsterinfo();
+    if (!mon || !affects_monster(*mon))
+        return AFF_NO;
+
+    return AFF_YES;
+}
+
+targeter_drain_life::targeter_drain_life()
+    : targeter_multimonster(&you)
+{
+}
+
+bool targeter_drain_life::affects_monster(const monster_info& mon)
+{
+    return get_resist(mon.resists(), MR_RES_NEG) < 3
+           && !mons_atts_aligned(agent->temp_attitude(), mon.attitude);
+}
+
+targeter_discord::targeter_discord()
+    : targeter_multimonster(&you)
+{
+}
+
+bool targeter_discord::affects_monster(const monster_info& mon)
+{
+    return mon.willpower() != WILL_INVULN && mon.can_go_frenzy;
+}
+
+targeter_fear::targeter_fear()
+    : targeter_multimonster(&you)
+{
+}
+
+bool targeter_fear::affects_monster(const monster_info& mon)
+{
+    return mon.willpower() != WILL_INVULN
+           && !mons_atts_aligned(agent->temp_attitude(), mon.attitude);
+}
+

@@ -1491,10 +1491,8 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     return false;
 }
 
-// this is a crude approximation intended for UI-oriented targeters. Some day
-// it might be nice if the targeter code were actually unified with how
-// enemies are chosen for these various spells...
-// note that this is substantially filtered when used by targeter_multiposition
+// this is a crude approximation used for the convenience UI targeter of
+// Dragon's call
 static vector<coord_def> _simple_find_all_actors(actor *a)
 {
     vector<coord_def> result;
@@ -1657,16 +1655,16 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, TORNADO_RADIUS);
     case SPELL_SHATTER:
         return make_unique<targeter_shatter>(&you); // special version that affects walls
-    case SPELL_CAUSE_FEAR:
-        return make_unique<targeter_fear>(_simple_find_all_actors(&you));
-    case SPELL_INTOXICATE: // for these, we just mark the monsters
-        return make_unique<targeter_intoxicate>(_simple_find_all_actors(&you));
+    case SPELL_CAUSE_FEAR: // for these, we just mark the eligible monsters
+        return make_unique<targeter_fear>();
+    case SPELL_INTOXICATE:
+        return make_unique<targeter_intoxicate>();
     case SPELL_ENGLACIATION:
-        return make_unique<targeter_englaciate>(_simple_find_all_actors(&you));
+        return make_unique<targeter_englaciate>();
     case SPELL_DRAIN_LIFE:
-        return make_unique<targeter_drain_life>(_simple_find_all_actors(&you));
+        return make_unique<targeter_drain_life>();
     case SPELL_DISCORD:
-        return make_unique<targeter_discord>(_simple_find_all_actors(&you));
+        return make_unique<targeter_discord>();
     case SPELL_ICICLE_CASCADE:
         return make_unique<targeter_multifireball>(&you, get_ignition_blast_sources(&you));
 
