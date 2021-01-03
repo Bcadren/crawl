@@ -1542,7 +1542,7 @@ namespace quiver
 
             // TODO: does non-targeted case come up?
             if (target.isCancel && !target.interactive && is_targeted())
-                mprf("No targets found!");
+                mprf("No targets found! target %d,%d", t.target.x, t.target.y);
 
             t = target; // copy back, in case they are different
         }
