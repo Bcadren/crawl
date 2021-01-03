@@ -16,6 +16,7 @@ spret controlled_blink(bool fail, bool safe_cancel = true, int power = 200);
 void wizard_blink();
 
 spret frog_hop(bool fail, bool spider = false);
+bool rolling_charge_possible(bool quiet, bool ignore_safe_monsters);
 spret rolling_charge(bool fail, dist *target = nullptr);
 int rolling_charge_range();
 
