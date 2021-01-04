@@ -1546,16 +1546,7 @@ namespace quiver
 
         string quiver_verb() const override
         {
-            ASSERT(is_valid());
-            switch (you.inv[wand_slot].sub_type)
-            {
-            case MISC_HORN_OF_GERYON:
-                return "Blow";
-            case MISC_BOX_OF_BEASTS:
-                return "Open";
-            default:
-                return "Evoke";
-            }
+            return "Evoke";
         }
 
         bool is_targeted() const override
