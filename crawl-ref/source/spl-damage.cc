@@ -1573,6 +1573,8 @@ static int _shatter_player_dice()
         retval -= 2;
     if (you.mounted())
         retval--;
+    if (you.get_mutation_level(MUT_SLIME) >= 3)
+        retval -= 2;
 
     return max(1, retval);
 }

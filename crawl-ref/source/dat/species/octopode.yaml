@@ -49,12 +49,13 @@ species_flags:
 mutations:
   1:
     MUT_CAMOUFLAGE: 1
-    MUT_GELATINOUS_BODY: 1
 fake_mutations:
   - long: You cannot wear most types of armour.
     short: almost no armour
   - long: You are very stealthy in the water. (Stealth+)
     short: stealthy swim
+  - long: Your gelatinous body helps endure attacks. (AC+1 EV+1)
+    short: gelatinous body
 recommended_jobs:
   - JOB_TRANSMUTER
   - JOB_WIZARD

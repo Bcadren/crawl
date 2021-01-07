@@ -2381,21 +2381,21 @@ static void tag_read_you(reader &th)
     ASSERT_RANGE(you.experience_level, 1, 28);
     ASSERT(you.religion < NUM_GODS);
     ASSERT_RANGE(crawl_state.type, GAME_TYPE_UNSPECIFIED + 1, NUM_GAME_TYPE);
-    you.last_mid          = unmarshallInt(th);
-    you.piety             = unmarshallUByte(th);
+    you.last_mid = unmarshallInt(th);
+    you.piety = unmarshallUByte(th);
     ASSERT(you.piety <= MAX_PIETY);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_ROTTING)
         unmarshallUByte(th);
 #endif
-    you.pet_target        = unmarshallShort(th);
+    you.pet_target = unmarshallShort(th);
 
-    you.max_level         = unmarshallByte(th);
-    you.where_are_you     = static_cast<branch_type>(unmarshallUByte(th));
+    you.max_level = unmarshallByte(th);
+    you.where_are_you = static_cast<branch_type>(unmarshallUByte(th));
     ASSERT(you.where_are_you < NUM_BRANCHES);
-    you.depth             = unmarshallByte(th);
+    you.depth = unmarshallByte(th);
     ASSERT(you.depth > 0);
-    you.chapter           = static_cast<game_chapter>(unmarshallUByte(th));
+    you.chapter = static_cast<game_chapter>(unmarshallUByte(th));
     ASSERT(you.chapter < NUM_CHAPTERS);
 
 #if TAG_MAJOR_VERSION == 34
@@ -2411,10 +2411,10 @@ static void tag_read_you(reader &th)
     if (th.getMinorVersion() < TAG_MINOR_CALC_UNRAND_REACTS)
         unmarshallShort(th);
 #endif
-    you.berserk_penalty   = unmarshallByte(th);
+    you.berserk_penalty = unmarshallByte(th);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() >= TAG_MINOR_GARGOYLE_DR
-      && th.getMinorVersion() < TAG_MINOR_RM_GARGOYLE_DR)
+        && th.getMinorVersion() < TAG_MINOR_RM_GARGOYLE_DR)
     {
         unmarshallInt(th); // Slough an integer.
     }
@@ -2428,26 +2428,26 @@ static void tag_read_you(reader &th)
 
     you.abyss_speed = unmarshallInt(th);
 
-    you.disease         = unmarshallInt(th);
-    you.hp              = unmarshallShort(th);
-    you.hunger          = unmarshallShort(th);
-    you.fishtail        = unmarshallBoolean(th);
-    you.form            = unmarshall_int_as<transformation>(th);
+    you.disease = unmarshallInt(th);
+    you.hp = unmarshallShort(th);
+    you.hunger = unmarshallShort(th);
+    you.fishtail = unmarshallBoolean(th);
+    you.form = unmarshall_int_as<transformation>(th);
     ASSERT_RANGE(static_cast<int>(you.form), 0, NUM_TRANSFORMS);
     ASSERT(you.form != transformation::none || !you.transform_uncancellable);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() >= TAG_MINOR_MOUNTS)
     {
-        you.mount           = unmarshall_int_as<mount_type>(th);
-        you.mount_hp_max    = unmarshallInt(th);
-        you.mount_hp        = unmarshallInt(th);
+        you.mount = unmarshall_int_as<mount_type>(th);
+        you.mount_hp_max = unmarshallInt(th);
+        you.mount_hp = unmarshallInt(th);
     }
     if (th.getMinorVersion() >= TAG_MINOR_MOUNT_REGEN)
-        you.mount_hp_regen  = unmarshallInt(th);
+        you.mount_hp_regen = unmarshallInt(th);
     if (th.getMinorVersion() >= TAG_MINOR_MOUNT_ENERGY)
     {
-        you.mount_energy    = unmarshallInt(th);
-        you.mount_heads     = unmarshallInt(th);
+        you.mount_energy = unmarshallInt(th);
+        you.mount_heads = unmarshallInt(th);
     }
 #endif
     EAT_CANARY;
@@ -2481,8 +2481,8 @@ static void tag_read_you(reader &th)
     for (int i = count; i < NUM_EQUIP; ++i)
         you.melded.set(i, false);
 
-    you.magic_points              = unmarshallUByte(th);
-    you.max_magic_points          = unmarshallByte(th);
+    you.magic_points = unmarshallUByte(th);
+    you.max_magic_points = unmarshallByte(th);
 
     for (int i = 0; i < NUM_STATS; ++i)
         you.base_stats[i] = unmarshallByte(th);
@@ -2499,7 +2499,7 @@ static void tag_read_you(reader &th)
         // Give base stat points.
         species_stat_init(you.species);
 
-        const set<stat_type> all_stats = {STAT_STR, STAT_INT, STAT_DEX};
+        const set<stat_type> all_stats = { STAT_STR, STAT_INT, STAT_DEX };
         int num_points = you.experience_level / 3;
         for (int i = 0; i < num_points; ++i)
             modify_stat(*random_iterator(all_stats), 1, false);
@@ -2530,23 +2530,23 @@ static void tag_read_you(reader &th)
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_INT_REGEN)
     {
-        you.hit_points_regeneration   = unmarshallByte(th);
+        you.hit_points_regeneration = unmarshallByte(th);
         you.magic_points_regeneration = unmarshallByte(th);
         unmarshallShort(th);
     }
     else
     {
 #endif
-    you.hit_points_regeneration   = unmarshallInt(th);
-    you.magic_points_regeneration = unmarshallInt(th);
+        you.hit_points_regeneration = unmarshallInt(th);
+        you.magic_points_regeneration = unmarshallInt(th);
 #if TAG_MAJOR_VERSION == 34
     }
 #endif
 
-    you.experience                = unmarshallInt(th);
+    you.experience = unmarshallInt(th);
     you.total_experience = unmarshallInt(th);
-    you.gold                      = unmarshallInt(th);
-    you.exp_available             = unmarshallInt(th);
+    you.gold = unmarshallInt(th);
+    you.exp_available = unmarshallInt(th);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_XP_SCALING)
     {
@@ -2556,18 +2556,18 @@ static void tag_read_you(reader &th)
     if (th.getMinorVersion() < TAG_MINOR_NO_ZOTDEF)
         unmarshallInt(th);
 #endif
-    you.zigs_completed            = unmarshallInt(th);
-    you.zig_max                   = unmarshallByte(th);
+    you.zigs_completed = unmarshallInt(th);
+    you.zig_max = unmarshallByte(th);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_TRACK_BANISHER)
         you.banished_by = "";
     else
 #endif
-        you.banished_by           = unmarshallString(th);
+        you.banished_by = unmarshallString(th);
 
-    you.hp_max_adj_temp           = unmarshallShort(th);
-    you.hp_max_adj_perm           = unmarshallShort(th);
-    you.mp_max_adj                = unmarshallShort(th);
+    you.hp_max_adj_temp = unmarshallShort(th);
+    you.hp_max_adj_perm = unmarshallShort(th);
+    you.mp_max_adj = unmarshallShort(th);
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_REMOVE_BASE_MP)
     {
@@ -2593,12 +2593,12 @@ static void tag_read_you(reader &th)
     if (th.getMinorVersion() >= TAG_MINOR_GOLDIFY_BOOKS)
     {
 #endif
-    unmarshallFixedBitVector<NUM_SPELLS>(th, you.spell_library);
-    unmarshallFixedBitVector<NUM_SPELLS>(th, you.hidden_spells);
+        unmarshallFixedBitVector<NUM_SPELLS>(th, you.spell_library);
+        unmarshallFixedBitVector<NUM_SPELLS>(th, you.hidden_spells);
 
 #if TAG_MAJOR_VERSION == 34
-    _fixup_library_spells(you.spell_library);
-    _fixup_library_spells(you.hidden_spells);
+        _fixup_library_spells(you.spell_library);
+        _fixup_library_spells(you.hidden_spells);
     }
 #endif
     // how many spells?
@@ -2746,11 +2746,11 @@ static void tag_read_you(reader &th)
     ASSERT(count <= NUM_SKILLS);
     for (int j = 0; j < count; ++j)
     {
-        you.skills[j]          = unmarshallUByte(th);
+        you.skills[j] = unmarshallUByte(th);
         ASSERT(you.skills[j] <= 27 || you.wizard);
 
-        you.train[j]    = (training_status)unmarshallByte(th);
-        you.train_alt[j]    = (training_status)unmarshallByte(th);
+        you.train[j] = (training_status)unmarshallByte(th);
+        you.train_alt[j] = (training_status)unmarshallByte(th);
 #if TAG_MAJOR_VERSION == 34
         // Gnolls always train all skills.
         if (th.getMinorVersion() < TAG_MINOR_GNOLLS_REDUX
@@ -2760,9 +2760,9 @@ static void tag_read_you(reader &th)
         }
 #endif
         you.training[j] = unmarshallInt(th);
-        you.skill_points[j]    = unmarshallInt(th);
+        you.skill_points[j] = unmarshallInt(th);
         you.ct_skill_points[j] = unmarshallInt(th);
-        you.skill_order[j]     = unmarshallByte(th);
+        you.skill_order[j] = unmarshallByte(th);
 #if TAG_MAJOR_VERSION == 34
         if (th.getMinorVersion() >= TAG_MINOR_TRAINING_TARGETS)
         {
@@ -2855,7 +2855,7 @@ static void tag_read_you(reader &th)
     {
         you.attribute[ATTR_DIVINE_REGENERATION] = 0;
         you.duration[DUR_TROGS_HAND] = max(you.duration[DUR_TROGS_HAND],
-                                           you.duration[DUR_REGENERATION]);
+            you.duration[DUR_REGENERATION]);
         you.duration[DUR_REGENERATION] = 0;
     }
     if (you.attribute[ATTR_SEARING_RAY] > 3)
@@ -2894,13 +2894,13 @@ static void tag_read_you(reader &th)
     if (th.getMinorVersion() >= TAG_MINOR_EVENT_TIMERS)
     {
 #endif
-    timer_count = unmarshallByte(th);
-    ASSERT(timer_count <= NUM_TIMERS);
-    for (int j = 0; j < timer_count; ++j)
-    {
-        you.last_timer_effect[j] = unmarshallInt(th);
-        you.next_timer_effect[j] = unmarshallInt(th);
-    }
+        timer_count = unmarshallByte(th);
+        ASSERT(timer_count <= NUM_TIMERS);
+        for (int j = 0; j < timer_count; ++j)
+        {
+            you.last_timer_effect[j] = unmarshallInt(th);
+            you.next_timer_effect[j] = unmarshallInt(th);
+        }
 #if TAG_MAJOR_VERSION == 34
     }
     else
@@ -2914,22 +2914,22 @@ static void tag_read_you(reader &th)
     ASSERT_RANGE(count, 0, NUM_MUTATIONS + 1);
     for (int j = 0; j < count; ++j)
     {
-        you.mutation[j]         = unmarshallUByte(th);
-        you.innate_mutation[j]  = unmarshallUByte(th);
+        you.mutation[j] = unmarshallUByte(th);
+        you.innate_mutation[j] = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
         if (th.getMinorVersion() >= TAG_MINOR_TEMP_MUTATIONS
             && th.getMinorVersion() != TAG_MINOR_0_11)
         {
 #endif
-        you.temp_mutation[j]    = unmarshallUByte(th);
+            you.temp_mutation[j] = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
         }
         if (th.getMinorVersion() < TAG_MINOR_RU_SACRIFICES)
-            you.sacrifices[j]   = 0;
+            you.sacrifices[j] = 0;
         else
         {
 #endif
-        you.sacrifices[j]       = unmarshallUByte(th);
+            you.sacrifices[j] = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
         }
 
@@ -3014,12 +3014,28 @@ static void tag_read_you(reader &th)
         you.mutation[MUT_SPIT_POISON] = 0;
 
     if (th.getMinorVersion() < TAG_MINOR_MOUNT_ENERGY)
-    { 
+    {
         if (you.char_class != JOB_MUMMY && you.species != SP_LIGNIFITE)
         {
             you.mutation[MUT_NECRO_ENHANCER] = you.innate_mutation[MUT_NECRO_ENHANCER] = 0;
             you.mutation[MUT_HEAT_VULNERABILITY] = you.innate_mutation[MUT_HEAT_VULNERABILITY] = 0;
         }
+    }
+
+    if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK)
+    {
+        bool slimy;
+        for (int i = 0; i < NUM_MUTATIONS; ++i)
+        {
+            if (is_slime_mutation(static_cast<mutation_type>(i))
+                && you.has_mutation(static_cast<mutation_type>(i)))
+            {
+                slimy = true;
+                you.mutation[i] = 0;
+            }
+        }
+        if (slimy)
+            mprf(MSGCH_ERROR, "Resetting old Jiyva Mutations. . .");
     }
 #endif
 

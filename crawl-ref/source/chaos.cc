@@ -268,7 +268,7 @@ void chaotic_debuff(actor* act, int dur, actor * attacker)
         act->banish(attacker);
         break;
     case CD_BARBS:
-        if (player && !you.get_mutation_level(MUT_INSUBSTANTIAL))
+        if (player && !you.get_mutation_level(MUT_INSUBSTANTIAL) && !(you.get_mutation_level(MUT_SLIME) >= 3))
         {
             mprf(MSGCH_WARN, "The chaotic magic splinters into barbs that impale your flesh.");
             you.increase_duration(DUR_BARBS, dur);
@@ -387,7 +387,7 @@ void chaotic_debuff(actor* act, int dur, actor * attacker)
             act->as_monster()->drain_exp(attacker, false, div_rand_round(dur, 8));
         break;
     case CD_STICKY:
-        if (player && !you.get_mutation_level(MUT_INSUBSTANTIAL))
+        if (player && !you.res_sticky_flame())
         {
             mprf(MSGCH_WARN, "The chaos reforms as liquid flames that stick to you!");
             you.increase_duration(DUR_LIQUID_FLAMES, dur);

@@ -341,7 +341,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         // by other changes in body material or speed.
         switch (mut)
         {
-        case MUT_GELATINOUS_BODY:
+        case MUT_SLIME:
         case MUT_TOUGH_SKIN:
         case MUT_SHAGGY_FUR:
         case MUT_FAST:
