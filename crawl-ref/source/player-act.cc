@@ -960,6 +960,8 @@ bool player::is_web_immune() const
         return true;
     else if (you.get_mutation_level(MUT_INSUBSTANTIAL) == 1)
         return true;
+    else if (you.get_mutation_level(MUT_SLIME) >= 3)
+        return true;
     else
         return false;
 }

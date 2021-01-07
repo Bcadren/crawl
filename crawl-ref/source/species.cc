@@ -69,6 +69,17 @@ species_type str_to_species(const string &species)
 */
 string display_sp_name()
 {
+    if (you.get_mutation_level(MUT_SLIME) >= 3)
+    {
+        if (you.undead_state())
+        {
+            if (you.is_insubstantial())
+                return "Ectoplasm";
+            return "Death Ooze";
+        }
+        return "Slime";
+    }
+
     string name = species_name(you.species);
 
     switch (you.char_class)
