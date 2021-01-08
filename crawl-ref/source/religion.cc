@@ -156,13 +156,10 @@ const vector<god_power> god_powers[NUM_GODS] =
 
     // Okawaru
     { { 1, ABIL_OKAWARU_HEROISM, "gain great but temporary skills" },
-      { 3, "Okawaru will now gift you ammunition as you gain piety.",
-           "Okawaru will no longer gift you ammunition.",
-           "Okawaru will gift you ammunition as you gain piety." },
-      { 5, ABIL_OKAWARU_FINESSE, "speed up your combat" },
-      { 5, "Okawaru will now gift you equipment as you gain piety.",
+      { 1, "Okawaru will now gift you equipment as you gain piety.",
            "Okawaru will no longer gift you equipment.",
            "Okawaru will gift you equipment as you gain piety." },
+      { 5, ABIL_OKAWARU_FINESSE, "speed up your combat" },
     },
 
     // Makhleb
@@ -197,12 +194,12 @@ const vector<god_power> god_powers[NUM_GODS] =
     // Trog
     {
       { 1, ABIL_TROG_BERSERK, "go berserk at will" },
+      { 1, "Trog will now gift you melee weapons as you gain piety.",
+           "Trog will no longer gift you weapons.",
+           "Trog will gift you melee weapons as you gain piety." },
       { 2, ABIL_TROG_REGEN_MR,
            "call upon Trog for regeneration and magic resistance" },
       { 4, ABIL_TROG_BROTHERS_IN_ARMS, "call in reinforcements" },
-      { 5, "Trog will now gift you melee weapons as you gain piety.",
-           "Trog will no longer gift you weapons.",
-           "Trog will gift you melee weapons as you gain piety." },
     },
 
     // Nemelex
