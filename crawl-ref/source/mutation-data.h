@@ -1991,7 +1991,7 @@ static const mutation_category_def category_mut_data[] =
   { RANDOM_XOM_MUTATION, "xom"},
   { RANDOM_GOOD_MUTATION, "good"},
   { RANDOM_BAD_MUTATION, "bad"},
-  { RANDOM_SLIME_MUTATION, "slime"},
+  { RANDOM_SLIME_MUTATION, "jiyva"},
   { RANDOM_NON_SLIME_MUTATION, "nonslime"},
   { RANDOM_CORRUPT_MUTATION, "corrupt"},
   { RANDOM_QAZLAL_MUTATION, "qazlal"},
