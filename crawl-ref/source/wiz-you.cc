@@ -486,7 +486,7 @@ bool wizard_add_mutation()
         mpr("Ignoring mut resistance to apply mutation.");
 
     msgwin_get_line("Which mutation (name, 'good', 'bad', 'any', "
-                    "'xom', 'slime', 'qazlal')? ",
+                    "'xom', 'jiyva', 'qazlal')? ",
                     specs, sizeof(specs));
 
     if (specs[0] == '\0')
