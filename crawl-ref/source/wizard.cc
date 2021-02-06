@@ -17,7 +17,6 @@
 #include "dgn-shoals.h" // wizard_mod_tide
 #include "files.h" // save_game
 #include "god-companions.h" // wizard_list_companions
-#include "god-passive.h" // jiyva_eat_offlevel_items
 #include "hiscores.h"
 #include "items.h"
 #include "luaterp.h" // debug_terp_lua
@@ -104,10 +103,7 @@ static void _do_wizard_command(int wiz_command)
     case CONTROL('I'): debug_item_statistics(); break;
 
     // case 'j': break;
-    case 'J':
-        mpr("Running Jiyva off-level sacrifice.");
-        jiyva_eat_offlevel_items();
-        break;
+    // case 'J': break;
     // case CONTROL('J'): break;
 
     case 'k': wizard_set_xl(true); break;
