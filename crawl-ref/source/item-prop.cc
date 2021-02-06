@@ -3030,27 +3030,15 @@ bool gives_resistance(const item_def &item)
 
 bool item_is_jelly_edible(const item_def &item)
 {
-    if (item_is_stationary_net(item))
-        return false;
-
-    // Don't eat artefacts or the horn of Geryon.
-    if (is_artefact(item) || item_is_horn_of_geryon(item))
-        return false;
-
-    // Don't eat zigfigs. (They're artefact-like, and Jiyvaites shouldn't worry
-    // about losing them.)
-    if (item.base_type == OBJ_MISCELLANY && item.sub_type == MISC_ZIGGURAT)
-        return false;
-
     // Don't eat mimics.
     if (item.flags & ISFLAG_MIMIC)
         return false;
 
-    // Don't eat special game items.
-    if (item_is_orb(item) || item.base_type == OBJ_RUNES)
-        return false;
+    // Only eat corpses now.
+    if (item.base_type == OBJ_CORPSES)
+        return true;
 
-    return true;
+    return false;
 }
 
 equipment_type get_item_slot(const item_def& item)
