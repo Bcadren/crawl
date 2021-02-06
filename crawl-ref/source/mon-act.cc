@@ -2874,22 +2874,10 @@ static bool _monster_eat_item(monster* mons)
 
         int quant = si->quantity;
 
-        if (si->base_type != OBJ_GOLD)
-        {
-            quant = min(quant, max_eat - eaten);
+        quant = min(quant, max_eat - eaten);
 
-            hps_changed += quant * 3;
-            eaten += quant;
-        }
-        else
-        {
-            // Shouldn't be much trouble to digest a huge pile of gold!
-            if (quant > 500)
-                quant = 500 + roll_dice(2, (quant - 500) / 2);
-
-            hps_changed += quant / 10 + 1;
-            eaten++;
-        }
+        hps_changed += quant * 8;
+        eaten += quant;
 
         if (eaten && !shown_msg && player_can_hear(mons->pos()))
         {
@@ -2897,9 +2885,6 @@ static bool _monster_eat_item(monster* mons)
                  you.see_cell(mons->pos()) ? "" : " distant");
             shown_msg = true;
         }
-
-        if (you_worship(GOD_JIYVA))
-            jiyva_slurp_item_stack(*si, quant);
 
         if (quant >= si->quantity)
             item_was_destroyed(*si);

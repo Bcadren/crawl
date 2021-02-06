@@ -379,9 +379,6 @@ static void _jiyva_effects(int /*time_delta*/)
     {
         jiyva_stat_action();
     }
-
-    if (have_passive(passive_t::jelly_eating) && one_chance_in(25))
-        jiyva_eat_offlevel_items();
 }
 
 static void _evolve(int /*time_delta*/)
