@@ -191,17 +191,8 @@ enum class passive_t
     /// Jiyva protects you from corrosion
     resist_corrosion,
 
-    /// Items consumed by your fellow slimes restores your mana reserve
-    slime_mp,
-
-    /// Items consumed by your fellow slimes restores your health
-    slime_hp,
-
     /// Jiyva summons jellies to protect you
     jellies_army,
-
-    /// Jiyva allows jellies to eats off-level and seen items.
-    jelly_eating,
 
     /// Jiyva adjusts your stats as needed.
     fluid_stats,
