@@ -147,6 +147,7 @@ public:
 
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;
+    FixedVector<int8_t, NUM_STATS> jiyva_stat_targets;
 
     int hunger;
     int disease;

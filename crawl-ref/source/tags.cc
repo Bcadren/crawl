@@ -1430,6 +1430,8 @@ static void tag_construct_you(writer &th)
         marshallByte(th, you.base_stats[i]);
     for (int i = 0; i < NUM_STATS; ++i)
         marshallByte(th, you.stat_loss[i]);
+    for (int i = 0; i < NUM_STATS; ++i)
+        marshallByte(th, you.jiyva_stat_targets[i]);
 
     CANARY;
 
@@ -2515,6 +2517,13 @@ static void tag_read_you(reader &th)
         you.stat_loss[i] = unmarshallByte(th);
 
 #if TAG_MAJOR_VERSION == 34
+    for (int i = 0; i < NUM_STATS; ++i)
+    {
+        if (th.getMinorVersion() >= TAG_MINOR_JIYVA_REWORK)
+            you.jiyva_stat_targets = unmarshallByte(th);
+        else
+            you.jiyva_stat_targets = 0;
+    }
     if (th.getMinorVersion() < TAG_MINOR_STAT_ZERO_DURATION)
     {
         for (int i = 0; i < NUM_STATS; ++i)
