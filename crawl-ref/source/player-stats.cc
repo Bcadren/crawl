@@ -208,6 +208,13 @@ bool attribute_increase()
     }
 }
 
+enum jivya_stat_target_type
+{
+    JSTAT_LOW = 0,
+    JSTAT_AVG,
+    JSTAT_MAX,
+};
+
 /*
  * Have Jiyva increase a player stat by one and decrease a different stat by
  * one.
@@ -222,53 +229,58 @@ void jiyva_stat_action()
     int cur_stat[NUM_STATS];
     int stat_total = 0;
     int target_stat[NUM_STATS];
+    
     for (int x = 0; x < NUM_STATS; ++x)
     {
         cur_stat[x] = you.stat(static_cast<stat_type>(x), false);
         stat_total += cur_stat[x];
     }
 
-    int evp = you.unadjusted_body_armour_penalty();
-    target_stat[STAT_STR] = max(9, evp);
-    target_stat[STAT_INT] = 9;
-    target_stat[STAT_DEX] = 9;
-    int remaining = stat_total - 18 - target_stat[0];
+    int remaining = stat_total;
 
-    // Divide up the remaining stat points between Int and either Str or Dex,
-    // based on skills.
-    if (remaining > 0)
+    for (int x = 0; x < NUM_STATS; ++x)
     {
-        int magic_weights = 0;
-        int other_weights = 0;
-        for (skill_type sk = SK_FIRST_SKILL; sk < NUM_SKILLS; ++sk)
-        {
-            int weight = you.skills[sk];
-
-            if (sk >= SK_SPELLCASTING && sk < SK_INVOCATIONS)
-                magic_weights += weight;
-            else
-                other_weights += weight;
-        }
-        // We give pure Int weighting if the player is sufficiently
-        // focused on magic skills.
-        other_weights = max(other_weights - magic_weights / 2, 0);
-
-        // Now scale appropriately and apply the Int weighting
-        magic_weights = div_rand_round(remaining * magic_weights,
-                                       magic_weights + other_weights);
-        other_weights = remaining - magic_weights;
-        target_stat[STAT_INT] += magic_weights;
-
-        // Heavy armour weights towards Str, Dodging skill towards Dex.
-        int str_weight = 10 * evp;
-        int dex_weight = 10 + you.skill(SK_DODGING, 10);
-
-        // Now apply the Str and Dex weighting.
-        const int str_adj = div_rand_round(other_weights * str_weight,
-                                           str_weight + dex_weight);
-        target_stat[STAT_STR] += str_adj;
-        target_stat[STAT_DEX] += (other_weights - str_adj);
+        if (you.jiyva_stat_targets[x] == JSTAT_LOW)
+            target_stat[x] = 5;
+        else if (you.jiyva_stat_targets[x] == JSTAT_AVG)
+            target_stat[x] = stat_total / 5;
+        else
+            target_stat[x] = stat_total / 3;
+        remaining -= target_stat[x];
     }
+
+    if (you.jiyva_stat_targets[STAT_STR] == you.jiyva_stat_targets[STAT_INT] &&
+        you.jiyva_stat_targets[STAT_INT] == you.jiyva_stat_targets[STAT_DEX])
+    {
+        for (int x = 0; x < NUM_STATS; ++x)
+            target_stat[x] = stat_total / 3;
+        remaining = 0;
+    }
+
+    int loops = 0;
+
+    while (remaining > 0)
+    {
+        int x = loops % 3;
+        if (you.jiyva_stat_targets[x] == JSTAT_AVG)
+        {
+            target_stat[x]++;
+            remaining--;
+        }
+        else if (you.jiyva_stat_targets[x] == JSTAT_MAX)
+        {
+            int y = min(remaining, 3);
+            target_stat[x] += y;
+            remaining -= y;
+        }
+        loops++;
+
+        if (loops > 300)
+            remaining = -10;
+    }
+
+    mprf("Stat Total: %d, Stat Targets: STR: %d, INT: %d, DEX: %d", stat_total, target_stat[STAT_STR], target_stat[STAT_INT], target_stat[STAT_DEX]);
+
     // Add a little fuzz to the target.
     for (int x = 0; x < NUM_STATS; ++x)
         target_stat[x] += random2(5) - 2;
