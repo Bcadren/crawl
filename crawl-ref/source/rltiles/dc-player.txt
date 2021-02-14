@@ -1577,6 +1577,7 @@ ninja_black MASK_NINJA_BLACK
 drake_mount_front  DRAKE
 spider_mount_front SPIDER
 hydra_mount_front  HYDRA
+slime_mount_front  SLIME
 %end_ctg
 
 ## Back
@@ -1584,8 +1585,8 @@ hydra_mount_front  HYDRA
 drake_mount_back  DRAKE
 spider_mount_back SPIDER
 hydra_mount_back  HYDRA
+slime_mount_back  SLIME
 %end_ctg
-
 
 # draconian wings and heads, need same order as draconians
 %parts_ctg DRCWING
