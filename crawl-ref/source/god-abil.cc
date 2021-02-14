@@ -1847,6 +1847,65 @@ bool beogh_resurrect()
     return true;
 }
 
+bool jiyva_check_dissolve()
+{
+    for (radius_iterator rad(you.pos(), LOS_NO_TRANS, true); rad;
+        ++rad)
+    {
+        for (stack_iterator stack_it(*rad); stack_it; ++stack_it)
+        {
+            if (stack_it->defined() && !is_artefact(*stack_it))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool jiyva_dissolution()
+{
+    mprf(MSGCH_GOD, "You call upon Jiyva %s to melt useless items into sacred ooze!", you.jiyva_second_name.c_str());
+
+    int placed_ooze = 0;
+
+    for (radius_iterator rad(you.pos(), LOS_NO_TRANS, true); rad;
+        ++rad)
+    {
+        bool place_ooze = false;
+        for (stack_iterator stack_it(*rad); stack_it; ++stack_it)
+        {
+            if (stack_it->defined() && !is_artefact(*stack_it))
+            {
+                place_ooze = true;
+                placed_ooze++;
+                item_was_destroyed(*stack_it);
+                destroy_item(stack_it->index());
+            }
+        }
+
+        if (place_ooze)
+        {
+            dungeon_feature_type feat = grd(*rad);
+            int dur = 13 + random2(you.skill(SK_INVOCATIONS));
+            if (feat_has_solid_floor(feat) && !feat_is_critical(feat) || feat == DNGN_DEEP_WATER)
+                temp_change_terrain(*rad, feat == DNGN_DEEP_WATER ? DNGN_DEEP_SLIMY_WATER : DNGN_SLIMY_WATER, dur * 10);
+        }
+    }
+    
+    if (placed_ooze > 0)
+    {
+        mprf(MSGCH_GOD, "%s item%s dissolve%s into slime.", placed_ooze == 1 ? "An" : 
+                                                            placed_ooze < 6  ? "A few" : 
+                                                            placed_ooze < 16 ? "Some" 
+                                                                             : "A lot of", 
+                                                            placed_ooze == 1 ? ""  : "s", 
+                                                            placed_ooze == 1 ? "s" : "");
+    }
+
+    return (placed_ooze > 0); // Should always be true; but just in case.
+}
+
 bool jiyva_remove_bad_mutation()
 {
     if (!you.how_mutated())
