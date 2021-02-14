@@ -506,10 +506,10 @@ static const ability_def Ability_List[] =
       0, 0, 0, 25, {fail_basis::invo}, abflag::none },
 
     // Jiyva
-    { ABIL_JIYVA_CALL_JELLY, "Request Jelly",
-      2, 0, 0, 2, {fail_basis::invo}, abflag::none },
+    { ABIL_JIYVA_DISSOLUTION, "Dissolution",
+      4, 0, 100, 2, {fail_basis::invo}, abflag::none },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
-      4, 0, 0, 12, {fail_basis::invo, 90, 0, 2}, abflag::none },
+      6, 0, 200, 12, {fail_basis::invo, 90, 0, 2}, abflag::none },
     { ABIL_JIYVA_CURE_BAD_MUTATION, "Cure Bad Mutation",
       0, 0, 0, 20, {fail_basis::invo}, abflag::none },
 
@@ -1664,6 +1664,15 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
         }
         return true;
     }
+
+    case ABIL_JIYVA_DISSOLUTION:
+        if (!jiyva_check_dissolve())
+        {
+            if (!quiet)
+                mpr("No dissolvable items are in range.");
+            return false;
+        }
+        return true;
 
     case ABIL_SPIT_POISON:
     case ABIL_BREATHE_DART:
@@ -3295,16 +3304,10 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         }
         break;
 
-    case ABIL_JIYVA_CALL_JELLY:
+    case ABIL_JIYVA_DISSOLUTION:
     {
         fail_check();
-        mgen_data mg(MONS_JELLY, BEH_STRICT_NEUTRAL, you.pos(),
-                     MHITNOT, MG_NONE, GOD_JIYVA);
-
-        mg.non_actor_summoner = "Jiyva";
-
-        if (!create_monster(mg))
-            return spret::abort;
+        jiyva_dissolution();
         break;
     }
 
