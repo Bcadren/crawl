@@ -1872,24 +1872,40 @@ bool jiyva_dissolution()
     for (radius_iterator rad(you.pos(), LOS_NO_TRANS, true); rad;
         ++rad)
     {
-        bool place_ooze = false;
         for (stack_iterator stack_it(*rad); stack_it; ++stack_it)
         {
             if (stack_it->defined() && !is_artefact(*stack_it))
             {
-                place_ooze = true;
                 placed_ooze++;
                 item_was_destroyed(*stack_it);
                 destroy_item(stack_it->index());
-            }
-        }
 
-        if (place_ooze)
-        {
-            dungeon_feature_type feat = grd(*rad);
-            int dur = 13 + random2(you.skill(SK_INVOCATIONS));
-            if (feat_has_solid_floor(feat) && !feat_is_critical(feat) || feat == DNGN_DEEP_WATER)
-                temp_change_terrain(*rad, feat == DNGN_DEEP_WATER ? DNGN_DEEP_SLIMY_WATER : DNGN_SLIMY_WATER, dur * 10);
+                for (int x = 3 + random2(you.skill(SK_INVOCATIONS) / 3); x > 0; x--)
+                {
+                    dungeon_feature_type feat = grd(*rad);
+                    int dur = 13 + random2(you.skill(SK_INVOCATIONS));
+                    coord_def target = *rad;
+                    if ((feat == DNGN_SLIMY_WATER && !one_chance_in(4)) || feat == DNGN_DEEP_SLIMY_WATER || feat_is_critical(feat))
+                    {
+                        for (adjacent_iterator ai(*rad); ai; ++ai)
+                        {
+                            feat = grd(*ai);
+                            int y = 1;
+                            if ((feat_has_solid_floor(feat) || feat == DNGN_DEEP_WATER || feat_is_wall(feat)) && !feat_is_critical(feat) && one_chance_in(y++))
+                                target = *ai;
+                        }
+                    }
+                    feat = grd(target);
+
+                    if (feat_is_critical(feat))
+                        break; // Failed to find a non-critical target; unlikely but could happen.
+
+                    bool deep = (feat == DNGN_DEEP_WATER || feat == DNGN_SLIMY_WATER);
+                    bool wall = (feat_is_wall(feat));
+
+                    temp_change_terrain(target, deep ? DNGN_DEEP_SLIMY_WATER : wall ? DNGN_SLIMY_WALL : DNGN_SLIMY_WATER, dur * 10, TERRAIN_CHANGE_SLIME);
+                }
+            }
         }
     }
     
