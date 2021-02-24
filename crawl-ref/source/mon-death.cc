@@ -530,6 +530,11 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
                    && mons_gives_xp(mons, you)
                    && !force;
 
+    bool slimify = have_passive(passive_t::slime_feed)
+                   && mons_gives_xp(mons, you)
+                   && (mons_genus(mons.type) != MONS_JELLY)
+                   && !force;
+
     // The game can attempt to place a corpse for an out-of-bounds monster
     // if a shifter turns into a ballistomycete spore and explodes. In this
     // case we place no corpse since the explosion means anything left
@@ -567,6 +572,13 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
     {
         int i = items(false, OBJ_WEAPONS, WPN_CLUB, 1, SPWPN_NORMAL);
         corpse = mitm[i];
+    }
+    else if (slimify)
+    {
+        destroy_item(corpse);
+        int x = max_corpse_chunks(mons.type) / 3;
+        slimify_position(1 + x + random2(x), mons.pos());
+        lessen_hunger(1 + random2(x), false, you_max_hunger());
     }
     // Don't attempt to place corpses within walls, either.
     else if (feat_is_solid(grd(mons.pos())) && !force)

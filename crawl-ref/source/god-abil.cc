@@ -1863,6 +1863,48 @@ bool jiyva_check_dissolve()
     return false;
 }
 
+void slimify_position(int iterations, coord_def pos, bool boost_slime_rate)
+{
+    for (int x = iterations; x > 0; x--)
+    {
+        dungeon_feature_type feat = grd(pos);
+        int dur = 13 + random2(you.skill(SK_INVOCATIONS));
+        coord_def target = pos;
+        if ((feat == DNGN_SLIMY_WATER && !one_chance_in(4)) || feat == DNGN_DEEP_SLIMY_WATER || feat_is_critical(feat))
+        {
+            int y = 1;
+            for (adjacent_iterator ai(pos); ai; ++ai)
+            {
+                feat = grd(*ai);
+                if ((feat_has_solid_floor(feat) || feat == DNGN_DEEP_WATER || feat_is_wall(feat)) && !feat_is_critical(feat) && one_chance_in(y++))
+                    target = *ai;
+            }
+        }
+        feat = grd(target);
+
+        if (feat_is_critical(feat))
+            break; // Failed to find a non-critical target; unlikely but could happen.
+
+        bool deep = (feat == DNGN_DEEP_WATER || feat == DNGN_SLIMY_WATER);
+        bool wall = (feat_is_wall(feat));
+
+        temp_change_terrain(target, deep ? DNGN_DEEP_SLIMY_WATER : wall ? DNGN_SLIMY_WALL : DNGN_SLIMY_WATER, dur * 10, TERRAIN_CHANGE_SLIME);
+    }
+
+    if (boost_slime_rate)
+    {
+        iterations *= 2;
+        iterations += random2(you.skill(SK_INVOCATIONS));
+    }
+
+    if (!actor_at(pos) && x_chance_in_y(iterations, 200))
+    {
+        monster * slime = create_monster(mgen_data(x_chance_in_y(you.experience_level, 45) ? MONS_SLIME_CREATURE : MONS_JELLY, BEH_GOOD_NEUTRAL, pos, MHITNOT));
+        if (slime)
+            slime->move_to_pos(pos);
+    }
+}
+
 bool jiyva_dissolution()
 {
     mprf(MSGCH_GOD, "You call upon Jiyva %s to melt useless items into sacred ooze!", you.jiyva_second_name.c_str());
@@ -1880,31 +1922,8 @@ bool jiyva_dissolution()
                 item_was_destroyed(*stack_it);
                 destroy_item(stack_it->index());
 
-                for (int x = 3 + random2(you.skill(SK_INVOCATIONS) / 3); x > 0; x--)
-                {
-                    dungeon_feature_type feat = grd(*rad);
-                    int dur = 13 + random2(you.skill(SK_INVOCATIONS));
-                    coord_def target = *rad;
-                    if ((feat == DNGN_SLIMY_WATER && !one_chance_in(4)) || feat == DNGN_DEEP_SLIMY_WATER || feat_is_critical(feat))
-                    {
-                        for (adjacent_iterator ai(*rad); ai; ++ai)
-                        {
-                            feat = grd(*ai);
-                            int y = 1;
-                            if ((feat_has_solid_floor(feat) || feat == DNGN_DEEP_WATER || feat_is_wall(feat)) && !feat_is_critical(feat) && one_chance_in(y++))
-                                target = *ai;
-                        }
-                    }
-                    feat = grd(target);
-
-                    if (feat_is_critical(feat))
-                        break; // Failed to find a non-critical target; unlikely but could happen.
-
-                    bool deep = (feat == DNGN_DEEP_WATER || feat == DNGN_SLIMY_WATER);
-                    bool wall = (feat_is_wall(feat));
-
-                    temp_change_terrain(target, deep ? DNGN_DEEP_SLIMY_WATER : wall ? DNGN_SLIMY_WALL : DNGN_SLIMY_WATER, dur * 10, TERRAIN_CHANGE_SLIME);
-                }
+                coord_def cord = *rad;
+                slimify_position(1 + random2(div_rand_round(you.skill(SK_INVOCATIONS), 9)), cord, true);
             }
         }
     }
