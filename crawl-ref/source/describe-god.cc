@@ -941,7 +941,8 @@ static formatted_string _describe_god_powers(god_type which_god)
             desc.textcolour(god_colour(which_god));
         else
             desc.textcolour(DARKGREY);
-        desc.cprintf("You gain nutrition when your fellow slimes consume corpses.\n");
+        desc.cprintf("Slain enemies are immediately consumed in Jiyva %s's sacred slime, granting you nutrition.\n",
+            you.jiyva_second_name.c_str());
         break;
 
     case GOD_FEDHAS:
