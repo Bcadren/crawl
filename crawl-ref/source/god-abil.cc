@@ -1901,7 +1901,11 @@ void slimify_position(int iterations, coord_def pos, bool boost_slime_rate)
     {
         monster * slime = create_monster(mgen_data(x_chance_in_y(you.experience_level, 45) ? MONS_SLIME_CREATURE : MONS_JELLY, BEH_GOOD_NEUTRAL, pos, MHITNOT));
         if (slime)
+        {
             slime->move_to_pos(pos);
+            if (boost_slime_rate)
+                slime->add_ench(ENCH_CHARM);
+        }
     }
 }
 
