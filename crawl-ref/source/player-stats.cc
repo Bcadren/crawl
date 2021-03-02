@@ -215,21 +215,11 @@ enum jivya_stat_target_type
     JSTAT_MAX,
 };
 
-/*
- * Have Jiyva increase a player stat by one and decrease a different stat by
- * one.
- *
- * This considers armour evp and skills to determine which stats to change. A
- * target stat vector is created based on these factors, which is then fuzzed,
- * and then a shuffle of the player's stat points that doesn't increase the l^2
- * distance to the target vector is chosen.
-*/
-void jiyva_stat_action()
+void calc_jiyva_stat_targets(int * target_stat)
 {
     int cur_stat[NUM_STATS];
     int stat_total = 0;
-    int target_stat[NUM_STATS];
-    
+
     for (int x = 0; x < NUM_STATS; ++x)
     {
         cur_stat[x] = you.stat(static_cast<stat_type>(x), false);
@@ -241,7 +231,7 @@ void jiyva_stat_action()
     for (int x = 0; x < NUM_STATS; ++x)
     {
         if (you.jiyva_stat_targets[x] == JSTAT_LOW)
-            target_stat[x] = 5;
+            target_stat[x] = 3;
         else if (you.jiyva_stat_targets[x] == JSTAT_AVG)
             target_stat[x] = stat_total / 5;
         else
@@ -278,9 +268,30 @@ void jiyva_stat_action()
         if (loops > 300)
             remaining = -10;
     }
+}
 
-    mprf("Stat Total: %d, Stat Targets: STR: %d, INT: %d, DEX: %d", stat_total, target_stat[STAT_STR], target_stat[STAT_INT], target_stat[STAT_DEX]);
+/*
+ * Have Jiyva increase a player stat by one and decrease a different stat by
+ * one.
+ *
+ * This considers armour evp and skills to determine which stats to change. A
+ * target stat vector is created based on these factors, which is then fuzzed,
+ * and then a shuffle of the player's stat points that doesn't increase the l^2
+ * distance to the target vector is chosen.
+*/
+void jiyva_stat_action()
+{
+    int target_stat[NUM_STATS];
+    int cur_stat[NUM_STATS];
+    int stat_total = 0;
 
+    for (int x = 0; x < NUM_STATS; ++x)
+    {
+        cur_stat[x] = you.stat(static_cast<stat_type>(x), false);
+        stat_total += cur_stat[x];
+    }
+
+    calc_jiyva_stat_targets(target_stat);
     // Add a little fuzz to the target.
     for (int x = 0; x < NUM_STATS; ++x)
         target_stat[x] += random2(5) - 2;
@@ -509,7 +520,7 @@ static int _stat_modifier(stat_type stat, bool innate_only)
     }
 }
 
-static string _stat_name(stat_type stat)
+string stat_name(stat_type stat)
 {
     switch (stat)
     {
@@ -545,7 +556,7 @@ bool lose_stat(stat_type which_stat, int stat_loss, bool force)
         if (you.duration[DUR_DIVINE_STAMINA] > 0)
         {
             mprf("Your divine stamina protects you from %s loss.",
-                 _stat_name(which_stat).c_str());
+                 stat_name(which_stat).c_str());
             return false;
         }
     }
@@ -603,7 +614,7 @@ bool restore_stat(stat_type which_stat, int stat_gain,
     {
         mprf(recovery ? MSGCH_RECOVERY : MSGCH_PLAIN,
              "You feel your %s returning.",
-             _stat_name(which_stat).c_str());
+             stat_name(which_stat).c_str());
     }
 
     if (stat_gain == 0 || stat_gain > you.stat_loss[which_stat])
