@@ -241,7 +241,8 @@ const vector<god_power> god_powers[NUM_GODS] =
     },
 
     // Jiyva
-    { { 1, ABIL_JIYVA_DISSOLUTION, "dissolve all non-artefacts you see into corrosive ooze" },
+    { { 0, ABIL_JIYVA_SET_TARGETS, "tell Jiyva how you'd like your stats distributed" },
+      { 1, ABIL_JIYVA_DISSOLUTION, "dissolve all non-artefacts you see into corrosive ooze" },
       { 3, "Jiyva will now mutate your body and modify your attributes as you gain piety.",
            "Jiyva will no longer mutate your body and modify your attributes.",
            "Jiyva will mutate your body and modify your attributes as you gain piety." },

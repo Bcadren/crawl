@@ -507,7 +507,9 @@ static const ability_def Ability_List[] =
 
     // Jiyva
     { ABIL_JIYVA_DISSOLUTION, "Dissolution",
-      4, 0, 100, 2, {fail_basis::invo}, abflag::none },
+      4, 0, 100, 2, {fail_basis::invo, 40, 4, 25}, abflag::none },
+    { ABIL_JIYVA_SET_TARGETS, "Set Stat Targets",
+      0, 0, 0, 4, {fail_basis::invo}, abflag::instant },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
       6, 0, 200, 12, {fail_basis::invo, 90, 0, 2}, abflag::none },
     { ABIL_JIYVA_CURE_BAD_MUTATION, "Cure Bad Mutation",
@@ -3308,6 +3310,12 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
     {
         fail_check();
         jiyva_dissolution();
+        break;
+    }
+
+    case ABIL_JIYVA_SET_TARGETS:
+    {
+        jiyva_set_targets();
         break;
     }
 

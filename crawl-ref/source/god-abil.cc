@@ -1909,6 +1909,54 @@ void slimify_position(int iterations, coord_def pos, bool boost_slime_rate)
     }
 }
 
+bool jiyva_set_targets()
+{
+    for (int stat = 0; stat < NUM_STATS; stat++)
+    {
+        while (true)
+        {
+            if (crawl_state.seen_hups)
+                return false;
+
+            clear_messages();
+            mprf(MSGCH_PROMPT, "How would you like your %s?", stat_name((stat_type)stat).c_str());
+            mpr_nojoin(MSGCH_PLAIN, "  [a] - Low");
+            mpr_nojoin(MSGCH_PLAIN, "  [b] - Average");
+            mpr_nojoin(MSGCH_PLAIN, "  [c] - High");
+            mprf(MSGCH_PROMPT, " ");
+
+            int keyin = toalower(get_ch()) - 'a';
+            if (keyin < 0 || keyin > 3)
+                continue;
+
+            you.jiyva_stat_targets[stat] = keyin;
+
+            break;
+        }
+    }
+
+    int target_stats[NUM_STATS];
+    calc_jiyva_stat_targets(target_stats);
+
+    clear_messages();
+    mprf(MSGCH_PROMPT, "Approximate stat targets based on inputs:");
+
+    for (int i = 0; i < NUM_STATS; i++)
+    {
+        int x = target_stats[i];
+        mprf_nojoin(MSGCH_PLAIN, "%d%s   %s", x, x < 10 ? "  " : x < 100 ? " " : "", stat_name((stat_type)i).c_str());
+    }
+
+    if (yesno("Confirm these targets?", true, 1))
+    {
+        clear_messages();
+        mprf(MSGCH_GOD, "Jiyva %s accepts your preferences!", you.jiyva_second_name.c_str());
+        return true;
+    }
+
+    return jiyva_set_targets(); // Yes loop.
+}
+
 bool jiyva_dissolution()
 {
     mprf(MSGCH_GOD, "You call upon Jiyva %s to melt useless items into sacred ooze!", you.jiyva_second_name.c_str());

@@ -21,7 +21,10 @@ void modify_stat(stat_type which_stat, int amount, bool suppress_msg);
 void notify_stat_change(stat_type which_stat, int amount, bool suppress_msg);
 void notify_stat_change();
 
+void calc_jiyva_stat_targets(int * target_stat);
 void jiyva_stat_action();
+
+string stat_name(stat_type stat);
 
 int stat_loss_roll();
 bool lose_stat(stat_type which_stat, int stat_loss, bool force = false);
