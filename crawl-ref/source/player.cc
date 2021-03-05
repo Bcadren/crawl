@@ -5823,7 +5823,7 @@ player::player()
 
     stat_loss.init(0);
     base_stats.init(0);
-    jiyva_stat_targets.init(0);
+    jiyva_stat_targets.init(JSTAT_UNSET);
 
     hunger          = HUNGER_DEFAULT;
     hunger_state    = HS_SATIATED;

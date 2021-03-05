@@ -1919,11 +1919,13 @@ bool jiyva_set_targets()
                 return false;
 
             clear_messages();
-            mprf(MSGCH_PROMPT, "How would you like your %s?", stat_name((stat_type)stat).c_str());
+            if (stat == 0)
+                mprf(MSGCH_GOD, "You beseech Jiyva %s to mold your form to suit your methods.", you.jiyva_second_name.c_str());
+            mprf(MSGCH_GOD, "Jiyva %s's viscid voice percolates through your skull.", you.jiyva_second_name.c_str());
+            mprf(MSGCH_PROMPT, "In what way should I shape your %s, my child?", stat_name((stat_type)stat).c_str());
             mpr_nojoin(MSGCH_PLAIN, "  [a] - Low");
             mpr_nojoin(MSGCH_PLAIN, "  [b] - Average");
-            mpr_nojoin(MSGCH_PLAIN, "  [c] - High");
-            mprf(MSGCH_PROMPT, " ");
+            mpr_nojoin(MSGCH_PROMPT, "<lightgrey>  [c] - High</lightgrey>");
 
             int keyin = toalower(get_ch()) - 'a';
             if (keyin < 0 || keyin > 3)
@@ -1944,13 +1946,13 @@ bool jiyva_set_targets()
     for (int i = 0; i < NUM_STATS; i++)
     {
         int x = target_stats[i];
-        mprf_nojoin(MSGCH_PLAIN, "%d%s   %s", x, x < 10 ? "  " : x < 100 ? " " : "", stat_name((stat_type)i).c_str());
+        mprf_nojoin(MSGCH_PLAIN, "%d%s   %s", x, x < 10 ? "  " : x < 100 ? " " : "", uppercase_first(stat_name((stat_type)i)).c_str());
     }
 
     if (yesno("Confirm these targets?", true, 1))
     {
         clear_messages();
-        mprf(MSGCH_GOD, "Jiyva %s accepts your preferences!", you.jiyva_second_name.c_str());
+        mprf(MSGCH_GOD, "Jiyva %s will slowly mold your form to your will!", you.jiyva_second_name.c_str());
         return true;
     }
 

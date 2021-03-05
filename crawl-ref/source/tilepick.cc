@@ -3854,6 +3854,7 @@ tileidx_t tileidx_ability(const ability_type ability)
     case ABIL_BEOGH_RESURRECTION:
         return TILEG_ABILITY_BEOGH_RESURRECTION;
     // Jiyva
+    case ABIL_JIYVA_SET_TARGETS_FREE:
     case ABIL_JIYVA_SET_TARGETS:
         return TILEG_ABILITY_JIYVA_SET_STAT_TARGETS;
     case ABIL_JIYVA_DISSOLUTION:
