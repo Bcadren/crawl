@@ -253,7 +253,10 @@ bool cancel_confused_move(bool stationary)
 
         if (dangerous != DNGN_FLOOR)
         {
-            prompt += (dangerous == DNGN_LAVA ? "lava" : "deep water");
+            prompt += (            dangerous == DNGN_LAVA ? "lava" :
+                            dangerous == DNGN_SLIMY_WATER ? "caustic ooze" :
+                       dangerous == DNGN_DEEP_SLIMY_WATER ? "deep caustic ooze"
+                                                          : "deep water");
             prompt += flight ? " while you are losing your buoyancy"
                              : " while your transformation is expiring";
         }

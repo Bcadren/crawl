@@ -250,15 +250,16 @@ static bool _check_moveto_dangerous(const coord_def& p, const string& msg, const
 
     if (feat_is_water(env.grid(p)))
     {
-        if (species_likes_water(you.species))
+        if (species_likes_water(you.species) && (env.grid(p) != DNGN_SLIMY_WATER))
         {
             if (you.mounted())
                 mpr("Your mount can't swim.");
             else
                 mpr("You can't swim in your current form.");
         }
-        prompt = make_stringf("Do you really want to %s into deep %s?",
-            move_verb.c_str(), env.grid(p) == DNGN_DEEP_SLIMY_WATER ? "slime" : "water");
+        prompt = make_stringf("Do you really want to %s into %s%s?",
+            move_verb.c_str(), env.grid(p) == DNGN_SLIMY_WATER ? "" : "deep ",
+            env.grid(p) == DNGN_DEEP_WATER ? "water" : "slime");
     }
 
     else
@@ -324,7 +325,8 @@ bool check_moveto_terrain(const coord_def& p, const string &move_verb,
             prompt += " over ";
 
         prompt += env.grid(p) == DNGN_DEEP_WATER       ? "deep water" :
-                  env.grid(p) == DNGN_DEEP_SLIMY_WATER ? "deep slime"
+                  env.grid(p) == DNGN_DEEP_SLIMY_WATER ? "deep slime" :
+                  env.grid(p) == DNGN_SLIMY_WATER      ? "slime"
                                                        : "lava";
 
         prompt += need_expiration_warning(DUR_FLIGHT, p)
@@ -634,7 +636,7 @@ bool is_feat_dangerous(dungeon_feature_type grid, bool permanently,
     }
     if (grid == DNGN_LAVA)
         return true;
-    if (grid == DNGN_SLIMY_WATER || grid == DNGN_DEEP_SLIMY_WATER && !you_worship(GOD_JIYVA))
+    if ((grid == DNGN_SLIMY_WATER || grid == DNGN_DEEP_SLIMY_WATER) && !you_worship(GOD_JIYVA))
         return true;
     if (grid == DNGN_DEEP_WATER || grid == DNGN_DEEP_SLIMY_WATER)
         return (!player_likes_water(permanently) || !permanently && you.mounted() && !you.can_swim());
