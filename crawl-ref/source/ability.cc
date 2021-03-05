@@ -508,6 +508,8 @@ static const ability_def Ability_List[] =
     // Jiyva
     { ABIL_JIYVA_DISSOLUTION, "Dissolution",
       4, 0, 100, 2, {fail_basis::invo, 40, 4, 25}, abflag::none },
+    { ABIL_JIYVA_SET_TARGETS_FREE, "Set Stat Targets",
+      0, 0, 0, 0, {fail_basis::invo}, abflag::instant },
     { ABIL_JIYVA_SET_TARGETS, "Set Stat Targets",
       0, 0, 0, 4, {fail_basis::invo}, abflag::instant },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
@@ -986,23 +988,25 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_EVOKE_BLINK:
         if (you.species == SP_FORMICID)
             return ABIL_NON_ABILITY;
-        else
-            return ability;
+        return ability;
+
+    case ABIL_JIYVA_SET_TARGETS:
+        if (you.jiyva_stat_targets[0] = JSTAT_UNSET)
+            return ABIL_JIYVA_SET_TARGETS_FREE; // first time's free.
+        return ability;
 
     case ABIL_LUGONU_ABYSS_EXIT:
     case ABIL_LUGONU_ABYSS_ENTER:
         if (brdepth[BRANCH_ABYSS] == -1)
             return ABIL_NON_ABILITY;
-        else
-            return ability;
+        return ability;
 
     case ABIL_TSO_BLESS_WEAPON:
     case ABIL_KIKU_BLESS_WEAPON:
     case ABIL_LUGONU_BLESS_WEAPON:
         if (you.species == SP_FELID || you.species == SP_FAIRY)
             return ABIL_NON_ABILITY;
-        else
-            return ability;
+        return ability;
 
     case ABIL_ELYVILON_HEAL_OTHER:
     case ABIL_TSO_SUMMON_DIVINE_WARRIOR:
@@ -1013,8 +1017,7 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_QAZLAL_ELEMENTAL_FORCE:
         if (you.get_mutation_level(MUT_NO_LOVE))
             return ABIL_NON_ABILITY;
-        else
-            return ability;
+        return ability;
 
     case ABIL_SIF_MUNA_DIVINE_ENERGY:
         if (you.attribute[ATTR_DIVINE_ENERGY])
@@ -1024,8 +1027,7 @@ ability_type fixup_ability(ability_type ability)
     case ABIL_ASHENZARI_TRANSFER_KNOWLEDGE:
         if (you.species == SP_GNOLL)
             return ABIL_NON_ABILITY;
-        else
-            return ability;
+        return ability;
 
     // Can only make the choices once.
     case ABIL_BAHAMUT_PROTECTION:
@@ -3313,6 +3315,7 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         break;
     }
 
+    case ABIL_JIYVA_SET_TARGETS_FREE:
     case ABIL_JIYVA_SET_TARGETS:
     {
         jiyva_set_targets();

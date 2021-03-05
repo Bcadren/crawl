@@ -208,13 +208,6 @@ bool attribute_increase()
     }
 }
 
-enum jivya_stat_target_type
-{
-    JSTAT_LOW = 0,
-    JSTAT_AVG,
-    JSTAT_MAX,
-};
-
 void calc_jiyva_stat_targets(int * target_stat)
 {
     int cur_stat[NUM_STATS];

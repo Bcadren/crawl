@@ -2522,7 +2522,7 @@ static void tag_read_you(reader &th)
         if (th.getMinorVersion() >= TAG_MINOR_JIYVA_REWORK)
             you.jiyva_stat_targets = unmarshallByte(th);
         else
-            you.jiyva_stat_targets = 0;
+            you.jiyva_stat_targets = JSTAT_UNSET;
     }
     if (th.getMinorVersion() < TAG_MINOR_STAT_ZERO_DURATION)
     {
