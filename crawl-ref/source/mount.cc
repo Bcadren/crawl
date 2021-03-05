@@ -48,6 +48,7 @@ spret gain_mount(mount_type mount, int pow, bool fail)
     case mount_type::drake:
         mount_hp = 28 + random2(10);
         break;
+    case mount_type::slime:
     case mount_type::hydra:
         mount_hp = 60 + random2(12);
         break;
@@ -296,6 +297,8 @@ monster_type mount_mons()
         return MONS_HYDRA;
     case mount_type::spider:
         return MONS_JUMPING_SPIDER;
+    case mount_type::slime:
+        return MONS_SLIME_CREATURE;
     default:
         break;
     }
@@ -412,6 +415,7 @@ int mount_hd()
     case mount_type::spider:
         return div_rand_round(calc_spell_power(SPELL_SUMMON_SPIDER_MOUNT, true), 10);
     case mount_type::drake:
+    case mount_type::slime:
         return (2 + div_rand_round(you.skill(SK_INVOCATIONS) * 2, 3));
     default:
         break;
@@ -442,6 +446,9 @@ int mount_ac()
 
     switch (you.mount)
     {
+    case mount_type::slime:
+        ac = 1;
+        break;
     case mount_type::hydra:
         ac = 3;
         break;

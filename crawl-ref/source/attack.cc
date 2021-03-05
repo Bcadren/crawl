@@ -1372,6 +1372,8 @@ int attack::calc_base_unarmed_damage()
         switch (you.mount)
         {
         default:
+        case mount_type::slime:
+            return 30;
         case mount_type::hydra:
             return 18;
         case mount_type::drake:
@@ -1448,6 +1450,7 @@ int attack::calc_damage()
         switch (you.mount)
         {
         case mount_type::drake:
+        case mount_type::slime:
             potential_damage *= 2500 + random2(you.skill(SK_INVOCATIONS, 100) + 1);
             break;
         case mount_type::spider:

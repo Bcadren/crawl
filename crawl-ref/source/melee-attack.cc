@@ -1985,6 +1985,18 @@ void melee_attack::set_attack_verb(int damage)
                 attack_verb = "mauls";
             break;
 
+        case mount_type::slime:
+            if (damage < HIT_WEAK)
+                attack_verb = "slaps";
+            else if (damage < HIT_MED)
+                attack_verb = "smacks";
+            else if (damage < HIT_STRONG)
+                attack_verb = "engulfs";
+            else
+                attack_verb = "consumes";
+            break;
+            
+
         case mount_type::spider:
             attack_verb = "stings";
             break;

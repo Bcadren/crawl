@@ -2290,6 +2290,8 @@ int player_movement_speed()
             mv = 6;
         else if (you.mount == mount_type::spider)
             mv = 8;
+        else if (you.mount == mount_type::slime)
+            mv = 12;
 
         if (you.duration[DUR_MOUNT_SLOW])
             mv *= 1.5;
@@ -7142,7 +7144,15 @@ int player::res_acid(bool calc_unid, bool mt) const
 {
     if (mt)
     {
-
+        switch (you.mount)
+        {
+        case mount_type::slime:
+            return 3;
+        case mount_type::spider:
+            return -1;
+        default:
+            return 0;
+        }
     }
     return player_res_acid(calc_unid);
 }
@@ -7234,6 +7244,7 @@ int player::res_poison(bool temp, bool mt) const
 
         switch (you.mount)
         {
+        case mount_type::slime:
         case mount_type::hydra:
             rp++;
             break;
@@ -9523,6 +9534,9 @@ string player::mount_name(bool terse) const
 
     case mount_type::spider:
         return "jumping spider";
+
+    case mount_type::slime:
+        return "slime creature";
 
     default:
         return "buggy mount";

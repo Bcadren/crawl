@@ -1308,6 +1308,8 @@ static string _describe_action_subtype(caction_type type, int compound_subtype)
             return "Hydra";
         case mount_type::spider:
             return "Spider";
+        case mount_type::slime:
+            return "Slime";
         default:
             mprf(MSGCH_ERROR, "Unhandled mount type tanking hit.");
             return "???";

@@ -218,6 +218,8 @@ brand_type player::damage_brand(int which_attack)
             return SPWPN_NORMAL;
         case mount_type::drake:
             return SPWPN_FREEZING;
+        case mount_type::slime:
+            return SPWPN_ACID;
         case mount_type::spider:
         {
             if (you.duration[DUR_ENSNARE])
