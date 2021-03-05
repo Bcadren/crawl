@@ -444,6 +444,9 @@ void player_reacts_to_monsters()
     if (you.duration[DUR_FIRE_SHIELD] > 0)
         manage_fire_shield();
 
+    if (you.mounted() && you.mount == mount_type::slime)
+        jiyva_passive_slime();
+
     check_monster_detect();
 
     if (have_passive(passive_t::detect_items) || you.has_mutation(MUT_JELLY_GROWTH)

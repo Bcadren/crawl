@@ -635,6 +635,13 @@ void move_player_action(coord_def move)
         }
     }
 
+    if (you.mounted() && (you.mount == mount_type::slime) 
+        && (feat_is_diggable(grd(targ), true) || feat_is_tree(grd(targ))))
+    {
+        targ_pass = true;
+        you.digging = true;
+    }
+
     // You can swap places with a friendly or good neutral monster if
     // you're not confused, or even with hostiles if both of you are inside
     // a sanctuary.
@@ -756,12 +763,21 @@ void move_player_action(coord_def move)
 
         if (you.digging)
         {
-            mprf("You dig through %s.", feature_description_at(targ, false,
-                 DESC_THE, false).c_str());
+            if (you.mount == mount_type::slime)
+            {
+                mprf("Your slimy mount dissolves %s.", feature_description_at(targ, false,
+                    DESC_THE, false).c_str());
+                you.digging = false; // Toggled back off to prevent mandibles messages.
+            }
+            else
+            {
+                mprf("You dig through %s.", feature_description_at(targ, false,
+                    DESC_THE, false).c_str());
+                make_hungry(50, true);
+            }
+            additional_time_taken += BASELINE_DELAY / 5;
             destroy_wall(targ);
             noisy(6, you.pos());
-            make_hungry(50, true);
-            additional_time_taken += BASELINE_DELAY / 5;
         }
 
         if (swap)
@@ -796,7 +812,6 @@ void move_player_action(coord_def move)
             targ_monst->apply_location_effects(targ);
         else
         {
-
             if (you.duration[DUR_NOXIOUS_BOG])
             {
                 if (cell_is_solid(old_pos))
