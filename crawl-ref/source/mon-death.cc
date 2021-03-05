@@ -578,7 +578,8 @@ item_def* place_monster_corpse(const monster& mons, bool silent, bool force)
         destroy_item(corpse);
         int x = max_corpse_chunks(mons.type) / 3;
         slimify_position(1 + x + random2(x), mons.pos());
-        lessen_hunger(1 + random2(x), false, you_max_hunger());
+        if (!you_foodless())
+            lessen_hunger(1 + random2(x), false);
     }
     // Don't attempt to place corpses within walls, either.
     else if (feat_is_solid(grd(mons.pos())) && !force)
