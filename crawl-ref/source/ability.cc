@@ -512,10 +512,10 @@ static const ability_def Ability_List[] =
       0, 0, 0, 0, {fail_basis::invo}, abflag::instant },
     { ABIL_JIYVA_SET_TARGETS, "Set Stat Targets",
       0, 0, 0, 4, {fail_basis::invo}, abflag::instant },
+    { ABIL_JIYVA_SLIME_MOUNT, "Oozing Slime Mount",
+      8, 0, 500, 8, { fail_basis::invo, 90, 6, 10 }, abflag::none },
     { ABIL_JIYVA_SLIMIFY, "Slimify",
       6, 0, 200, 12, {fail_basis::invo, 90, 0, 2}, abflag::none },
-    { ABIL_JIYVA_CURE_BAD_MUTATION, "Cure Bad Mutation",
-      0, 0, 0, 20, {fail_basis::invo}, abflag::none },
 
     // Fedhas
     { ABIL_FEDHAS_FUNGAL_BLOOM, "Fungal Bloom",
@@ -3353,10 +3353,8 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         break;
     }
 
-    case ABIL_JIYVA_CURE_BAD_MUTATION:
-        fail_check();
-        jiyva_remove_bad_mutation();
-        break;
+    case ABIL_JIYVA_SLIME_MOUNT:
+        return gain_mount(mount_type::slime, 0, fail);
 
     case ABIL_CHEIBRIADOS_TIME_STEP:
         fail_check();

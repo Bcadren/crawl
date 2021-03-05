@@ -525,6 +525,9 @@ void fill_doll_equipment(dolls_data &result)
             case mount_type::hydra:
                 result.parts[TILEP_PART_MOUNT_FRONT] = TILEP_MOUNT_FRONT_HYDRA;
                 break;
+            case mount_type::slime:
+                result.parts[TILEP_PART_MOUNT_FRONT] = TILEP_MOUNT_FRONT_SLIME;
+                break;
             default:
                 result.parts[TILEP_PART_MOUNT_BACK] = 0;
                 break;
@@ -547,6 +550,9 @@ void fill_doll_equipment(dolls_data &result)
                 break;
             case mount_type::hydra:
                 result.parts[TILEP_PART_MOUNT_BACK] = TILEP_MOUNT_BACK_HYDRA;
+                break;
+            case mount_type::slime:
+                result.parts[TILEP_PART_MOUNT_BACK] = TILEP_MOUNT_BACK_SLIME;
                 break;
             default:
                 result.parts[TILEP_PART_MOUNT_BACK] = 0;

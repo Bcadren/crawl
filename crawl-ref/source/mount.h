@@ -9,7 +9,8 @@ enum class mount_type
     none,
     drake,
     spider,
-    hydra
+    hydra,
+    slime
 };
 
 void damage_mount(int amount);

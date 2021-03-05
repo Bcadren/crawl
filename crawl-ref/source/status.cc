@@ -236,9 +236,14 @@ bool fill_status_info(int status, status_info& inf)
             inf.light_text = "drake";
             break;
         case mount_type::hydra:
-            inf.light_colour = LIGHTGREEN;
+            inf.light_colour = GREEN;
             inf.short_text = "hydra mount";
             inf.light_text = "hydra";
+            break;
+        case mount_type::slime:
+            inf.light_colour = LIGHTGREEN;
+            inf.short_text = "slime mount";
+            inf.light_text = "slime";
             break;
         case mount_type::spider:
             inf.light_colour = BROWN;
