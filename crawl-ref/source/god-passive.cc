@@ -2025,3 +2025,50 @@ void uskayaw_bonds_audience()
     else // Reset the timer because we didn't actually execute.
         you.props[USKAYAW_BOND_TIMER] = 0;
 }
+
+static void _slimify_feat(coord_def pos)
+{
+    dungeon_feature_type feat = grd(pos);
+
+    if (feat_is_critical(feat))
+        return;
+
+    dungeon_feature_type new_feat = DNGN_FLOOR;
+
+    if (feat == DNGN_SLIMY_WATER || feat == DNGN_DEEP_SLIMY_WATER || feat == DNGN_DEEP_WATER)
+        new_feat = DNGN_DEEP_SLIMY_WATER;
+    else if (feat_has_solid_floor(feat))
+        new_feat = DNGN_SLIMY_WATER;
+    else if (feat_is_tree(feat))
+        new_feat = DNGN_SLIMESHROOM;
+    else if (feat_is_diggable(feat, true)
+        || feat == DNGN_SILVER_WALL && one_chance_in(10)
+        || feat == DNGN_METAL_WALL && one_chance_in(5)
+        || feat == DNGN_STONE_WALL && one_chance_in(3))
+    {
+        new_feat = DNGN_SLIMY_WALL;
+    }
+    else if ((feat == DNGN_SLIMY_WALL || feat_is_door(feat)) && one_chance_in(3))
+    {
+        destroy_wall(pos);
+        new_feat = DNGN_SLIMY_WATER;
+    }
+
+    if (new_feat == DNGN_FLOOR)
+        return;
+
+    const int turns = 10 + random2avg(you.skill(SK_INVOCATIONS), 2);
+
+    temp_change_terrain(pos, new_feat, turns * BASELINE_DELAY, TERRAIN_CHANGE_SLIME, you.as_monster());
+}
+
+void jiyva_passive_slime()
+{
+    _slimify_feat(you.pos());
+
+    for (adjacent_iterator ai(you.pos()); ai; ++ai)
+    {
+        if (one_chance_in(4))
+            _slimify_feat(*ai);
+    }
+}

@@ -10,6 +10,7 @@
 #include <cstring>
 
 #include "env.h"
+#include "god-passive.h"
 #include "message.h"
 #include "mpr.h"
 #include "output.h"
@@ -42,6 +43,7 @@ spret gain_mount(mount_type mount, int pow, bool fail)
     int mount_hp = 0;
     bool were_flying = you.airborne();
     bool already_mount = you.mounted();
+    bool slime = (!already_mount || (you.mount != mount_type::slime)) && mount == mount_type::slime;
 
     switch (mount)
     {
@@ -134,6 +136,9 @@ spret gain_mount(mount_type mount, int pow, bool fail)
         you.redraw_hit_points = true;
         redraw_screen();
     }
+
+    if (slime)
+        jiyva_passive_slime();
 
     return spret::success;
 }

@@ -2291,7 +2291,7 @@ int player_movement_speed()
         else if (you.mount == mount_type::spider)
             mv = 8;
         else if (you.mount == mount_type::slime)
-            mv = 12;
+            mv = 16;
 
         if (you.duration[DUR_MOUNT_SLOW])
             mv *= 1.5;

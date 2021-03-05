@@ -482,8 +482,12 @@ bool feat_is_endless(dungeon_feature_type feat)
 bool feat_is_diggable(dungeon_feature_type feat, bool formacid)
 {
     if (formacid)
+    {
+        if (you_worship(GOD_JIYVA) && feat == DNGN_SLIMY_WALL)
+            return true;
         return feat == DNGN_GRATE || feat == DNGN_GRANITE_STATUE || feat == DNGN_ROCK_WALL
             || feat == DNGN_CLEAR_ROCK_WALL;
+    }
     return feat_is_solid(feat) && !feat_is_permarock(feat) && !feat_is_tree(feat) 
         && !feat_is_door(feat) && !feat_is_endless(feat) 
         && (!feat_is_metal(feat) || feat == DNGN_GRATE);
@@ -2387,6 +2391,11 @@ static bool _revert_terrain_to_floor(coord_def pos)
             if (tmarker->change_type == TERRAIN_CHANGE_DOOR_SEAL
                 || tmarker->change_type == TERRAIN_CHANGE_FORESTED)
             {
+                env.markers.remove(tmarker);
+            }
+            else if (tmarker->change_type == TERRAIN_CHANGE_SLIME)
+            {
+                newfeat = _destroyed_feat_type(tmarker->old_feature);
                 env.markers.remove(tmarker);
             }
             else
