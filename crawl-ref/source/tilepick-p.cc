@@ -1244,6 +1244,8 @@ tileidx_t tilep_species_to_base_tile(int sp, int drac_colour)
             return TILEP_BASE_DEMIGOD;
         if (you.char_class == JOB_DEMONSPAWN)
             return TILEP_BASE_DEMONSPAWN;
+        if (you.get_mutation_level(MUT_SLIME) >= 3)
+            return TILEP_BASE_JIYVITE;
     }
     switch (sp)
     {

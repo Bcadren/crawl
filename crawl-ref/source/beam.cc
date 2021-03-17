@@ -4539,6 +4539,8 @@ void impale_player_with_barbs(bool mt)
     {
         if (you.get_mutation_level(MUT_INSUBSTANTIAL) == 1)
             mpr("The barbed spikes sting slightly as they fall through your immaterial body.");
+        else if (you.get_mutation_level(MUT_SLIME) >= 3)
+            mpr("The barbed spikes fail to stick to your viscuous form.");
         else
         {
             mpr("The barbed spikes become lodged in your body.");

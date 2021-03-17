@@ -1134,20 +1134,20 @@ static const mutation_def mut_data[] =
 },
 
 // Jiyva only mutations
-{ MUT_GELATINOUS_BODY, 0, 3, mutflag::good | mutflag::jiyva, true,
-  "gelatinous body",
+{ MUT_SLIME, 0, 3, mutflag::good | mutflag::jiyva, true,
+  "slime",
 
-  {"Your rubbery body absorbs attacks. (AC +1, EV +1)",
-   "Your pliable body absorbs attacks. (AC +2, EV +2)",
-   "Your gelatinous body deflects attacks. (AC +3, EV +3)"},
+  {"Your slimy body is resistant to acid. (rCorr)",
+   "Your oozing form is resistant to acid and regenerates health quickly. (rCorr, Regen)",
+   "Your gelatinous form is immune to acid, constriction and sticky flames. You regenerate health and magic quickly. (rCorr+, Slime, Regen, MPRegen)"},
 
-  {"Your body becomes stretchy.",
-   "Your body becomes more malleable.",
-   "Your body becomes viscous."},
+  {"You feel more slimy.",
+   "You feel very pliable.",
+   "You melts completely into viscous ooze."},
 
-  {"Your body returns to its normal consistency.",
-   "Your body becomes less malleable.",
-   "Your body becomes less viscous."},
+  {"You resolidify.",
+   "Your body stops oozing.",
+   "Your body becomes less slimy."},
 },
 
 { MUT_EYEBALLS, 0, 3, mutflag::good | mutflag::jiyva, true,

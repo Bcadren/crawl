@@ -1270,6 +1270,9 @@ static int _player_bonus_regen()
     // Fast heal mutation.
     rr += you.get_mutation_level(MUT_REGENERATION) * REGEN_PIP;
 
+    if (you.get_mutation_level(MUT_SLIME) >= 2)
+        rr += REGEN_PIP;
+
     // Powered By Death mutation, boosts regen by variable strength
     // if the duration of the effect is still active.
     if (you.duration[DUR_POWERED_BY_DEATH])
@@ -1334,16 +1337,19 @@ int player_regen()
 
 int player_mp_regen()
 {
+    if (you.duration[DUR_BRAINLESS])
+        return 0;
+
     int regen_amount = 10 + you.max_magic_points;
 
     if (you.get_mutation_level(MUT_MANA_REGENERATION))
         regen_amount *= 2;
 
-    if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
+    if (you.get_mutation_level(MUT_SLIME))
         regen_amount += 25;
 
-    if (you.duration[DUR_BRAINLESS])
-        return 0;
+    if (you.props[MANA_REGEN_AMULET_ACTIVE].get_int() == 1)
+        regen_amount += 25;
 
     return regen_amount;
 }
@@ -1762,19 +1768,25 @@ bool player::res_corr(bool calc_unid, bool items, bool mt) const
     }
 
     // draconian scales:
-    if (you.get_mutation_level(MUT_DRACONIAN_DEFENSE, true))
+    if (get_mutation_level(MUT_DRACONIAN_DEFENSE, true))
     {
-        if (you.drac_colour == DR_SCINTILLATING && one_chance_in(3) && calc_unid)
+        if (drac_colour == DR_SCINTILLATING && one_chance_in(3) && calc_unid)
             return true;
-        if (you.drac_colour == DR_LIME)
+        if (drac_colour == DR_LIME)
             return true;
     }
+
+    if (get_mutation_level(MUT_SLIME, true))
+        return true;
 
     return actor::res_corr(calc_unid, items);
 }
 
 int player_res_acid(bool calc_unid, bool items)
 {
+    if (you.mutation[MUT_SLIME] > 2)
+        return 3;
+
     return you.res_corr(calc_unid, items) ? 1 : 0;
 }
 
@@ -2012,6 +2024,9 @@ int player_res_sticky_flame(bool calc_unid, bool temp, bool items)
     }
 
     if (you.get_mutation_level(MUT_INSUBSTANTIAL) == 1)
+        rsf++;
+
+    if (you.get_mutation_level(MUT_SLIME) >= 3)
         rsf++;
 
     if (get_form()->res_sticky_flame())
@@ -2522,9 +2537,11 @@ static int _player_evasion_bonuses()
 
     evbonus += you.scan_artefacts(ARTP_EVASION);
 
-    // mutations
-    evbonus += you.get_mutation_level(MUT_GELATINOUS_BODY);
+    // Octopode small bonus
+    if (you.species == SP_OCTOPODE)
+        evbonus++;
 
+    // mutations
     if (you.get_mutation_level(MUT_DISTORTION_FIELD))
         evbonus += you.get_mutation_level(MUT_DISTORTION_FIELD) + 1;
 
@@ -6727,9 +6744,9 @@ int player::racial_ac(bool temp) const
                       + 100 * max(0, experience_level - 7) * 2 / 5;
         }
         else if (species == SP_LIGNIFITE)
-        {
             sAC = max(0, (experience_level - 12) * 100);
-        }
+        else if (species == SP_OCTOPODE)
+            sAC = 1;
     }
 
     return jAC + sAC;
@@ -6799,8 +6816,7 @@ const vector<int> ONE_TWO_THREE  = {1,2,3};
 const vector<int> TWO_THREE_FOUR = {2,3,4};
 
 vector<mutation_ac_changes> all_mutation_ac_changes = {
-     mutation_ac_changes(MUT_GELATINOUS_BODY,        mutation_activity_type::PARTIAL, ONE_TWO_THREE)
-    ,mutation_ac_changes(MUT_TOUGH_SKIN,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
+     mutation_ac_changes(MUT_TOUGH_SKIN,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
     ,mutation_ac_changes(MUT_SHAGGY_FUR,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
     ,mutation_ac_changes(MUT_PHYSICAL_VULNERABILITY, mutation_activity_type::PARTIAL, {-5,-10,-15})
     // Scale mutations are more easily disabled (forms etc.). This appears to be for flavour reasons.
@@ -7113,7 +7129,7 @@ bool player::is_insubstantial() const
 {
     if (form == transformation::wisp)
         return true;
-    if (you.get_mutation_level(MUT_INSUBSTANTIAL) == 1)
+    if (get_mutation_level(MUT_INSUBSTANTIAL) == 1)
         return true;
     else
         return false;
@@ -7341,6 +7357,9 @@ int player::res_constrict(bool mt) const
         return 0;
 
     if (is_insubstantial())
+        return 3;
+
+    if (get_mutation_level(MUT_SLIME) >= 3)
         return 3;
 
     if (get_mutation_level(MUT_SPINY))
@@ -7706,6 +7725,9 @@ bool player::rot(actor */*who*/, int amount, bool quiet, bool /*no_cleanup*/)
 
 bool player::corrode_equipment(const char* corrosion_source, int degree, bool mt)
 {
+    if (res_acid(true, mt) >= 3)
+        return false;
+
     // rCorr protects against 50% of corrosion.
     if (res_corr(true, true, mt))
     {

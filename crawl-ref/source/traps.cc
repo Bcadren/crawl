@@ -777,7 +777,9 @@ void trap_def::trigger(actor& triggerer)
                     // too spammy for spiders, and expected
                 }
                 else if (you.is_insubstantial())
-                    mprf("You pass through a web.");
+                    mpr("You pass through a web.");
+                else if (you.get_mutation_level(MUT_SLIME) >= 3)
+                    mpr("You ooze through a web.");
                 break;
             }
 
