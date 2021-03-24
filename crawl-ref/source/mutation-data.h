@@ -1153,9 +1153,9 @@ static const mutation_def mut_data[] =
 { MUT_EYEBALLS, 0, 3, mutflag::good | mutflag::jiyva, true,
   "eyeballs",
 
-  {"Your body has grown golden eyes which may confuse attackers. (Acc +3)",
-   "Your body has grown many golden eyes which may confuse attackers. (Acc +5)",
-   "Your body is covered in golden eyes which may confuse attackers. (Acc +7, +Vis)"},
+  {"Your body has grown golden eyes which may confuse attackers. (+Vis)",
+   "Your body has grown many golden eyes which increase your resistance against hostile enchantments and may confuse attackers. (+Vis, MR+)",
+   "Your body is covered in golden eyes which increase your resistance against hostile enchantments and may confuse attackers. (++Vis, MR++)"},
 
   {"Eyeballs grow over part of your body.",
    "Eyeballs cover a large portion of your body.",

@@ -4069,9 +4069,10 @@ void melee_attack::mons_do_eyeball_confusion()
     if (you.has_mutation(MUT_EYEBALLS)
         && attacker->alive()
         && adjacent(you.pos(), attacker->as_monster()->pos())
-        && x_chance_in_y(you.get_mutation_level(MUT_EYEBALLS), 20))
+        && x_chance_in_y(3 + you.skill(SK_INVOCATIONS), 90))
     {
-        const int ench_pow = you.get_mutation_level(MUT_EYEBALLS) * 30;
+        const int ench_pow = you.get_mutation_level(MUT_EYEBALLS) * (you.skill(SK_INVOCATIONS) + 3) * 2;
+
         monster* mon = attacker->as_monster();
 
         if (mon->check_res_magic(ench_pow) <= 0)
