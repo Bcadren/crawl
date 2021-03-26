@@ -6699,8 +6699,7 @@ int player::base_ac_from(const item_def &armour, int scale) const
     // The deformed don't fit into body armour very well.
     // (This includes nagas and centaurs.)
     if (get_armour_slot(armour) == EQ_BODY_ARMOUR
-            && (get_mutation_level(MUT_DEFORMED)
-                || get_mutation_level(MUT_PSEUDOPODS)))
+            && get_mutation_level(MUT_DEFORMED))
     {
         return AC - base / 2;
     }
@@ -8135,14 +8134,9 @@ int player::usable_tentacles(bool allow_tran) const
     return max(0, free_tentacles);
 }
 
-int player::has_pseudopods(bool allow_tran) const
-{
-    return get_mutation_level(MUT_PSEUDOPODS, allow_tran);
-}
-
 int player::has_usable_pseudopods(bool allow_tran) const
 {
-    return has_pseudopods(allow_tran);
+    return get_mutation_level(MUT_PSEUDOPODS, allow_tran);
 }
 
 int player::has_tentacles(bool allow_tran) const

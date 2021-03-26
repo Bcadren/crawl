@@ -1551,6 +1551,11 @@ static void tag_construct_you(writer &th)
         marshallShort(th, you.demonic_traits[j].mutation);
     }
 
+    marshallByte(th, you.jiyva_mut_set.size());
+    for (int j = 0; j < int(you.jiyva_mut_set.size()); ++j)
+        marshallShort(th, you.jiyva_mut_set[j].mutation);
+    marshallShort(th, you.pseudopod_brand);
+
     if (species_is_draconian(you.species))
     {
         marshallBoolean(th, you.major_first);
@@ -3012,7 +3017,7 @@ static void tag_read_you(reader &th)
 
     if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK)
     {
-        bool slimy;
+        bool slimy = false;
         for (int i = 0; i < NUM_MUTATIONS; ++i)
         {
             if (is_slime_mutation(static_cast<mutation_type>(i))
@@ -3274,6 +3279,23 @@ static void tag_read_you(reader &th)
 #endif
         ASSERT_RANGE(dt.mutation, 0, NUM_MUTATIONS);
         you.demonic_traits.push_back(dt);
+    }
+
+    if (th.getMinorVersion() >= TAG_MINOR_JIYVA_REWORK)
+    {
+        count = unmarshallUByte(th);
+        you.jiyva_mut_set.clear();
+        for (int j = 0; j < count; ++j)
+        {
+            mutation_type mut = static_cast<mutation_type>(unmarshallShort(th));
+            you.jiyva_mut_set.push_back(mut);
+        }
+        you.pseudopod_brand = static_cast<brand_type>(unmarshallShort(th));
+    }
+    else
+    {
+        you.pseudopod_brand = SPWPN_NORMAL;
+        jiyva_setup();
     }
 
     if (species_is_draconian(you.species))

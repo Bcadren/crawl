@@ -2527,7 +2527,45 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     {
         level = min(level, 2);
     }
-    if (mut == MUT_ICEMAIL)
+    else if (mut == MUT_PSEUDOPODS)
+    {
+        string brand = "Buggy";
+        string effect = "";
+        switch (you.pseudopod_brand)
+        {
+        case SPWPN_MOLTEN:
+            brand = "Scorching";
+            effect = "dousing the target in sticky flames.";
+            break;
+        case SPWPN_ACID:
+            brand = "Corrosive";
+            break;
+        case SPWPN_ELECTROCUTION:
+            brand = "Electrifying";
+            effect = "malmutating the target.";
+            break;
+        case SPWPN_VENOM:
+            brand = "Noxious";
+            effect = "slowing targets, who aren't immune to poison.";
+            break;
+        case SPWPN_VAMPIRISM:
+            brand = "Vampiric";
+            if (!you_foodless(false))
+                effect = "feeding you.";
+            break;
+        default:
+            break;
+        }
+        ostringstream ostr;
+        // Assumes no species has a unique message for this.
+        ostr << brand.c_str() << mdef.have[0];
+        if (effect.length())
+            ostr << ", sometimes " << effect.c_str();
+        else
+            ostr << ".";
+        result = ostr.str();
+    }
+    else if (mut == MUT_ICEMAIL)
     {
         ostringstream ostr;
         if (msg.mutation == MUT_NON_MUTATION)

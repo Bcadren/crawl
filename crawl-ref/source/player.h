@@ -289,6 +289,10 @@ public:
 
     vector<demon_trait> demonic_traits;
 
+    // Jiyva Rework Variables
+    vector<mutation_type> jiyva_mut_set;
+    brand_type pseudopod_brand;
+
     // Draconian Rework Variables
     bool major_first;
     skill_type major_skill;
@@ -642,7 +646,6 @@ public:
     int       has_tail(bool allow_tran = true) const;
     int       has_usable_tail(bool allow_tran = true) const;
     bool      has_usable_offhand() const;
-    int       has_pseudopods(bool allow_tran = true) const;
     int       has_usable_pseudopods(bool allow_tran = true) const;
     int       has_tentacles(bool allow_tran = true) const;
     int       usable_tentacles(bool allow_tran = true) const override;

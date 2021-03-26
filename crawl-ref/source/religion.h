@@ -52,6 +52,7 @@ void dec_penance(god_type god, int val);
 
 void excommunication(bool voluntary = false, god_type new_god = GOD_NO_GOD);
 
+void jiyva_setup();
 bool gain_piety(int pgn, int denominator = 1, bool should_scale_piety = true);
 void dock_piety(int pietyloss, int penance);
 void god_speaks(god_type god, const char *mesg);

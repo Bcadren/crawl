@@ -1482,11 +1482,11 @@ class AuxPseudopods: public AuxAttackType
 {
 public:
     AuxPseudopods()
-    : AuxAttackType(4, "bludgeon") { };
+    : AuxAttackType(12, "engulf") { };
 
-    int get_damage() const override
+    int get_brand() const override
     {
-        return damage * you.has_usable_pseudopods();
+        return you.pseudopod_brand;
     }
 };
 
@@ -1766,11 +1766,32 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
             if (damage_brand == SPWPN_VENOM && coinflip())
                 poison_monster(defender->as_monster(), &you);
 
-            // Normal vampiric biting attack, not if already got stabbing special.
-            if (damage_brand == SPWPN_VAMPIRISM && you.species == SP_VAMPIRE
-                && (!stab_attempt || stab_bonus <= 0))
+            if (atk == UNAT_PSEUDOPODS)
             {
-                _player_vampire_draws_blood(defender->as_monster(), damage_done);
+                switch (damage_brand)
+                {
+                case SPWPN_VENOM:
+                {
+                    int rP = defender->res_poison();
+                    if (one_chance_in(3 + rP) && rP < 3)
+                        drain_defender_speed();
+                    break;
+                }
+                case SPWPN_ELECTROCUTION:
+                    if (one_chance_in(3))
+                        defender->malmutate("mutagenic pseudopod");
+                    break;
+                case SPWPN_MOLTEN:
+                    if (one_chance_in(3))
+                        napalm_monster(defender->as_monster(), attacker);
+                    break;
+                case SPWPN_VAMPIRISM:
+                    if (one_chance_in(3))
+                        lessen_hunger(damage_done, false);
+                    break;
+                default:
+                    break;
+                }
             }
 
             if (damage_brand == SPWPN_ANTIMAGIC && you.has_mutation(MUT_ANTIMAGIC_BITE)

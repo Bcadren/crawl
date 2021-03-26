@@ -535,6 +535,8 @@ static void _setup_generic(const newgame_def& ng,
 
     roll_demonspawn_mutations();
 
+    you.pseudopod_brand = SPWPN_NORMAL;
+
     draconian_setup();
 
     _give_starting_food();

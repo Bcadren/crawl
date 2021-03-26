@@ -3666,9 +3666,21 @@ static void _join_hepliaklqana()
                                     mg.mname.c_str()).c_str());
 }
 
+void jiyva_setup()
+{
+    if (you.pseudopod_brand != SPWPN_NORMAL)
+        return;
+
+    you.pseudopod_brand = random_choose(SPWPN_ACID, SPWPN_MOLTEN, SPWPN_VAMPIRISM, SPWPN_VENOM, SPWPN_ELECTROCUTION);
+
+    // BCADDO: Mutation set setup here!.
+}
+
 /// Setup when joining the gelatinous groupies of Jiyva.
 static void _join_jiyva()
 {
+    jiyva_setup();
+
     // Complimentary jelly upon joining.
     if (_has_jelly())
         return;
