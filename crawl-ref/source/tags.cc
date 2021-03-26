@@ -1553,7 +1553,7 @@ static void tag_construct_you(writer &th)
 
     marshallByte(th, you.jiyva_mut_set.size());
     for (int j = 0; j < int(you.jiyva_mut_set.size()); ++j)
-        marshallShort(th, you.jiyva_mut_set[j].mutation);
+        marshallShort(th, you.jiyva_mut_set[j]);
     marshallShort(th, you.pseudopod_brand);
 
     if (species_is_draconian(you.species))

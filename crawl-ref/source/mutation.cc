@@ -21,6 +21,7 @@
 #include "delay.h"
 #include "english.h"
 #include "env.h"
+#include "food.h"
 #include "god-abil.h"
 #include "god-passive.h"
 #include "hints.h"
