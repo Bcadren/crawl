@@ -1150,16 +1150,16 @@ static const mutation_def mut_data[] =
    "Your body becomes less slimy."},
 },
 
-{ MUT_EYEBALLS, 0, 3, mutflag::good | mutflag::jiyva, true,
-  "eyeballs",
+{ MUT_GOLDEN_EYEBALLS, 0, 3, mutflag::good | mutflag::jiyva, true,
+  "golden eyeballs",
 
   {"Your body has grown golden eyes which may confuse attackers. (+Vis)",
    "Your body has grown many golden eyes which increase your resistance against hostile enchantments and may confuse attackers. (+Vis, MR+)",
    "Your body is covered in golden eyes which increase your resistance against hostile enchantments and may confuse attackers. (++Vis, MR++)"},
 
-  {"Eyeballs grow over part of your body.",
-   "Eyeballs cover a large portion of your body.",
-   "Eyeballs cover you completely."},
+  {"Golden eyeballs grow over part of your body.",
+   "Golden eyeballs cover a large portion of your body.",
+   "Golden eyeballs cover you completely."},
 
   {"The eyeballs on your body disappear.",
    "The eyeballs on your body recede somewhat.",

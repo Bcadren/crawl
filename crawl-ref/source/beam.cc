@@ -505,8 +505,8 @@ void zappy(zap_type z_type, int power, bool is_monster, bolt &pbolt)
         pbolt.hit = (*hit_calc)(power);
         if (pbolt.hit != AUTOMATIC_HIT && !is_monster)
         {
-            pbolt.hit *= (20 + you.vision());
-            pbolt.hit /= 20;
+            pbolt.hit *= (10 + you.vision());
+            pbolt.hit /= 10;
             pbolt.hit = max(0, pbolt.hit);
         }
     }

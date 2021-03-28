@@ -278,9 +278,9 @@ int attack::calc_to_hit(bool random, bool player_aux)
             mhit *= 0.85;
 
         // mutation
-        if (you.get_mutation_level(MUT_EYEBALLS))
+        if (you.get_mutation_level(MUT_GOLDEN_EYEBALLS))
         {
-            mhit *= (20 + you.get_mutation_level(MUT_EYEBALLS));
+            mhit *= (20 + you.get_mutation_level(MUT_GOLDEN_EYEBALLS));
             mhit /= 20;
         }
 

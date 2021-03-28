@@ -7420,7 +7420,7 @@ int player_res_magic(bool calc_unid, bool temp)
     // Mutations
     rm += MR_PIP * you.get_mutation_level(MUT_MAGIC_RESISTANCE);
     rm -= MR_PIP * you.get_mutation_level(MUT_MAGICAL_VULNERABILITY);
-    if (you.get_mutation_level(MUT_EYEBALLS))
+    if (you.get_mutation_level(MUT_GOLDEN_EYEBALLS))
         rm += MR_PIP * (you.get_mutation_level(MUT_MAGICAL_VULNERABILITY) - 1);
 
     // transformations
@@ -8237,7 +8237,7 @@ int player::innate_vision() const
     if (get_mutation_level(MUT_ANTENNAE) == 3)
         x++;
 
-    if (get_mutation_level(MUT_EYEBALLS))
+    if (get_mutation_level(MUT_GOLDEN_EYEBALLS))
         x++;
 
     if (have_passive(passive_t::sinv))
@@ -8245,7 +8245,7 @@ int player::innate_vision() const
 
     x = min(1, x);
 
-    if (get_mutation_level(MUT_EYEBALLS) == 3)
+    if (get_mutation_level(MUT_GOLDEN_EYEBALLS) == 3)
         x++;
 
     if (has_mutation(MUT_IMPAIRED_VISION))

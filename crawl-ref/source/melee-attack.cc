@@ -4087,12 +4087,12 @@ void melee_attack::do_passive_freeze()
 
 void melee_attack::mons_do_eyeball_confusion()
 {
-    if (you.has_mutation(MUT_EYEBALLS)
+    if (you.has_mutation(MUT_GOLDEN_EYEBALLS)
         && attacker->alive()
         && adjacent(you.pos(), attacker->as_monster()->pos())
         && x_chance_in_y(3 + you.skill(SK_INVOCATIONS), 90))
     {
-        const int ench_pow = you.get_mutation_level(MUT_EYEBALLS) * (you.skill(SK_INVOCATIONS) + 3) * 2;
+        const int ench_pow = you.get_mutation_level(MUT_GOLDEN_EYEBALLS) * (you.skill(SK_INVOCATIONS) + 3) * 2;
 
         monster* mon = attacker->as_monster();
 
