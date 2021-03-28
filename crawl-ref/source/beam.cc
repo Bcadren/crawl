@@ -6998,7 +6998,7 @@ struct explosion_sfx
 
 // A map from origin_spells to special explosion info for each.
 const map<spell_type, explosion_sfx> spell_explosions = {
-    { SPELL_HURL_DAMNATION, {
+    { SPELL_HURL_HELLFIRE, {
         "The hellfire blast explodes!",
         "an accursed explosion",
     } },

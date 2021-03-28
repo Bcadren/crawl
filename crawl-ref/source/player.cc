@@ -3846,9 +3846,7 @@ int player_stealth()
     stealth += (STEALTH_PIP / 2)
                 * you.get_mutation_level(MUT_THIN_SKELETAL_STRUCTURE);
     stealth += STEALTH_PIP * you.get_mutation_level(MUT_CAMOUFLAGE);
-    const int how_transparent = you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
-    if (how_transparent)
-        stealth += 15 * (how_transparent);
+    stealth += STEALTH_PIP * you.get_mutation_level(MUT_TRANSLUCENT_SKIN);
 
     // draconian scales:
     if (you.get_mutation_level(MUT_DRACONIAN_DEFENSE, true) && you.drac_colour == DR_BLACK)

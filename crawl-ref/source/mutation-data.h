@@ -665,7 +665,7 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_HURL_DAMNATION, 0, 1, mutflag::good, false,
+{ MUT_HURL_HELLFIRE, 0, 1, mutflag::good, false,
   "hellfire blast",
 
   {"You can hurl blasts of hellfire.", "", ""},
@@ -1169,9 +1169,10 @@ static const mutation_def mut_data[] =
 { MUT_TRANSLUCENT_SKIN, 0, 3, mutflag::good | mutflag::jiyva, true,
   "translucent skin",
 
-  {"Your translucent skin slightly reduces your foes' accuracy. (Stealth)",
-   "Your translucent skin reduces your foes' accuracy. (Stealth)",
-   "Your transparent skin significantly reduces your foes' accuracy. (Stealth)"},
+  {"Your translucent skin slightly reduces your foes' accuracy. (Stealth+)",
+   "Your translucent skin reduces your foes' accuracy. (Stealth++)",
+   "Your transparent skin significantly reduces your foes' accuracy. (Stealth+++)\n"
+   "You may expend some of your HP to become completely invisible, without magical contamination. (+Inv)"},
 
   {"Your skin becomes partially translucent.",
    "Your skin becomes more translucent.",

@@ -2990,7 +2990,7 @@ bool battlesphere_can_mirror(spell_type spell)
         || spell == SPELL_FIRE_STORM
         || spell == SPELL_VAMPIRIC_DRAINING
         || spell == SPELL_POISON_ARROW
-        || spell == SPELL_HURL_DAMNATION
+        || spell == SPELL_HURL_HELLFIRE
         || spell == SPELL_IRON_SHOT
         || spell == SPELL_STONE_ARROW
         || spell == SPELL_SHOCK

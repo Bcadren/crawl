@@ -38,7 +38,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     // Wizard mode only.
     { SPELL_PORKALATOR,             ZAP_PORKALATOR },
     // Should only be available from Staff of Dispater
-    { SPELL_HURL_DAMNATION,         ZAP_DAMNATION },
+    { SPELL_HURL_HELLFIRE,         ZAP_DAMNATION },
     { SPELL_MAGIC_CANDLE,           ZAP_MAGIC_CANDLE },
     { SPELL_ENSLAVEMENT,            ZAP_ENSLAVEMENT },
     { SPELL_BANISHMENT,             ZAP_BANISHMENT },

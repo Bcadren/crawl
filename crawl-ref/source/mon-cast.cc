@@ -1293,7 +1293,7 @@ static spell_type _legendary_destruction_spell()
     return random_choose_weighted(25, SPELL_FIREBALL,
                                   20, SPELL_ORB_OF_ELECTRICITY,
                                   15, SPELL_GHOSTLY_FIREBALL,
-                                  10, SPELL_HURL_DAMNATION);
+                                  10, SPELL_HURL_HELLFIRE);
 }
 
 // TODO: documentme
@@ -1555,7 +1555,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.pierce   = true;
         break;
 
-    case SPELL_HURL_DAMNATION:           // fiend's hellfire
+    case SPELL_HURL_HELLFIRE:           // fiend's hellfire
         beam.name         = "hellfire blast";
         beam.aux_source   = "hellfire";
         beam.colour       = LIGHTRED;

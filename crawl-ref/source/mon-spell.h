@@ -218,7 +218,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_CORROSIVE_BOLT, 18, MON_SPELL_WIZARD },
        { SPELL_BANISHMENT, 11, MON_SPELL_WIZARD },
        { SPELL_HASTE, 22, MON_SPELL_WIZARD },
-       { SPELL_HURL_DAMNATION, 11, MON_SPELL_WIZARD },
+       { SPELL_HURL_HELLFIRE, 11, MON_SPELL_WIZARD },
       }
     },
 
@@ -656,7 +656,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_FIRE, 13, MON_SPELL_WIZARD },
        { SPELL_BOLT_OF_MAGMA, 13, MON_SPELL_WIZARD },
        { SPELL_FIREBALL, 13, MON_SPELL_WIZARD },
-       { SPELL_HURL_DAMNATION, 13, MON_SPELL_WIZARD },
+       { SPELL_HURL_HELLFIRE, 13, MON_SPELL_WIZARD },
        { SPELL_CALL_DOWN_DAMNATION, 13, MON_SPELL_WIZARD },
       }
     },
@@ -1588,7 +1588,7 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_BRIMSTONE_FIEND,
       {
-       { SPELL_HURL_DAMNATION, 34, MON_SPELL_MAGICAL },
+       { SPELL_HURL_HELLFIRE, 34, MON_SPELL_MAGICAL },
        { SPELL_SYMBOL_OF_TORMENT, 17, MON_SPELL_MAGICAL },
       }
     },
@@ -1611,7 +1611,7 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_HELL_SENTINEL,
       {
-       { SPELL_HURL_DAMNATION, 28, MON_SPELL_MAGICAL },
+       { SPELL_HURL_HELLFIRE, 28, MON_SPELL_MAGICAL },
        { SPELL_IRON_SHOT, 14, MON_SPELL_MAGICAL },
       }
     },
@@ -2024,7 +2024,7 @@ static const mon_spellbook mspell_list[] =
        { SPELL_BOLT_OF_FIRE, 13, MON_SPELL_MAGICAL },
        { SPELL_STICKY_FLAME_RANGE, 13, MON_SPELL_MAGICAL },
        { SPELL_FIREBALL, 13, MON_SPELL_MAGICAL },
-       { SPELL_HURL_DAMNATION, 13, MON_SPELL_MAGICAL },
+       { SPELL_HURL_HELLFIRE, 13, MON_SPELL_MAGICAL },
        { SPELL_CALL_DOWN_DAMNATION, 13, MON_SPELL_MAGICAL },
       }
     },
@@ -2197,7 +2197,7 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_HELLBINDER,
       {
-       { SPELL_HURL_DAMNATION, 14, MON_SPELL_WIZARD },
+       { SPELL_HURL_HELLFIRE, 14, MON_SPELL_WIZARD },
        { SPELL_SUMMON_GREATER_DEMON, 24, MON_SPELL_WIZARD },
        { SPELL_SUMMON_DEMON, 14, MON_SPELL_WIZARD },
        { SPELL_HASTE, 14, MON_SPELL_WIZARD },
@@ -2253,7 +2253,7 @@ static const mon_spellbook mspell_list[] =
     {  MST_ASMODEUS,
       {
        { SPELL_BOLT_OF_FIRE, 22, MON_SPELL_MAGICAL },
-       { SPELL_HURL_DAMNATION, 22, MON_SPELL_MAGICAL },
+       { SPELL_HURL_HELLFIRE, 22, MON_SPELL_MAGICAL },
        { SPELL_FIRE_SUMMON, 22, MON_SPELL_MAGICAL },
       }
     },
@@ -2280,7 +2280,7 @@ static const mon_spellbook mspell_list[] =
       {
        { SPELL_IRON_SHOT, 13, MON_SPELL_MAGICAL },
        { SPELL_LEHUDIBS_CRYSTAL_SPEAR, 13, MON_SPELL_MAGICAL },
-       { SPELL_HURL_DAMNATION, 13, MON_SPELL_MAGICAL },
+       { SPELL_HURL_HELLFIRE, 13, MON_SPELL_MAGICAL },
        { SPELL_SUMMON_GREATER_DEMON, 26, MON_SPELL_MAGICAL },
       }
     },

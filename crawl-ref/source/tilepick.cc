@@ -3698,7 +3698,7 @@ tileidx_t tileidx_ability(const ability_type ability)
 
     // Species-specific abilities.
     // Demonspawn-only
-    case ABIL_DAMNATION:
+    case ABIL_HELLFIRE:
         return TILEG_ABILITY_HURL_DAMNATION;
     // Tengu, Draconians
     case ABIL_FLY:
@@ -3722,6 +3722,7 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_EVOKE_BERSERK;
     case ABIL_EVOKE_BLINK:
         return TILEG_ABILITY_BLINK;
+    case ABIL_TURN_INVISIBLE:
     case ABIL_EVOKE_TURN_INVISIBLE:
         return TILEG_ABILITY_EVOKE_INVISIBILITY;
     case ABIL_EVOKE_TURN_VISIBLE:

@@ -149,7 +149,7 @@ static const int conflict[][3] =
     { MUT_FANGS,               MUT_BEAK,                   -1},
     { MUT_ANTENNAE,            MUT_HORNS,                  -1}, // currently overridden by physiology_mutation_conflict
     { MUT_HOOVES,              MUT_TALONS,                 -1}, // currently overridden by physiology_mutation_conflict
-    { MUT_TRANSLUCENT_SKIN,    MUT_CAMOUFLAGE,             -1},
+    { MUT_TRANSLUCENT_SKIN,    MUT_CAMOUFLAGE,             -1}, // BCADDO: Special case for Jiyvite Octopode.
     { MUT_MUTATION_RESISTANCE, MUT_EVOLUTION,              -1},
     { MUT_ANTIMAGIC_BITE,      MUT_ACIDIC_BITE,            -1},
     { MUT_HEAT_RESISTANCE,     MUT_HEAT_VULNERABILITY,     -1},
@@ -2764,7 +2764,7 @@ static const facet_def _demon_facets[] =
     { 2, { MUT_MANA_SHIELD, MUT_MANA_REGENERATION, MUT_MANA_LINK },
       { -33, 0, 0 } },
     // Tier 3 facets
-    { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_DAMNATION },
+    { 3, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_HURL_HELLFIRE },
       { 50, 50, 50 } },
     { 3, { MUT_COLD_RESISTANCE, MUT_FREEZING_CLOUD_IMMUNITY, MUT_PASSIVE_FREEZE },
       { 50, 50, 50 } },

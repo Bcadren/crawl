@@ -324,8 +324,11 @@ static const ability_def Ability_List[] =
     { ABIL_STOP_FLYING, "Stop Flying", 0, 0, 0, 0, {}, abflag::starve_ok },
     { ABIL_PLANT_ROOTS, "Plant Roots", 3, 0, 100, 0,{ fail_basis::xl, 42, 3 }, abflag::none },
     { ABIL_DEROOT, "Unearth Roots", 0, 0, 0, 0,{}, abflag::starve_ok },
-    { ABIL_DAMNATION, "Hellfire Blast",
-        0, 150, 200, 0, {fail_basis::xl, 50, 1}, abflag::none },
+    { ABIL_HELLFIRE, "Hurl Hellfire",
+      0, 150, 200, 0, {fail_basis::xl, 50, 1}, abflag::none },
+
+    { ABIL_TURN_INVISIBLE, "Turn Invisible",
+      0, 200, 100, 0, {fail_basis::xl, 50, 2}, abflag::none },
 
     { ABIL_CANCEL_PPROJ, "Cancel Portal Projectile",
       0, 0, 0, 0, {}, abflag::instant | abflag::starve_ok },
@@ -2606,15 +2609,25 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         break;
 
     // DEMONIC POWERS:
-    case ABIL_DAMNATION:
+    case ABIL_HELLFIRE:
         fail_check();
-        if (your_spells(SPELL_HURL_DAMNATION,
+        if (your_spells(SPELL_HURL_HELLFIRE,
                         you.experience_level * 10,
                         false) == spret::abort)
         {
             return spret::abort;
         }
         break;
+
+    // Jiyva powers:
+    case ABIL_TURN_INVISIBLE:
+        if (!invis_allowed())
+            return spret::abort;
+        fail_check();
+        you.props[INVIS_CONTAMLESS_KEY].get_bool() = true;
+        potionlike_effect(POT_INVISIBILITY, 20 + you.experience_level + you.skill(SK_INVOCATIONS));
+        break;
+
 
     case ABIL_EVOKE_TURN_INVISIBLE:     // cloaks, randarts
         if (!invis_allowed())
@@ -3995,8 +4008,11 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
         _add_talent(talents, ABIL_STOP_FLYING, check_confused);
 
     // Mutations
-    if (you.get_mutation_level(MUT_HURL_DAMNATION))
-        _add_talent(talents, ABIL_DAMNATION, check_confused);
+    if (you.get_mutation_level(MUT_HURL_HELLFIRE))
+        _add_talent(talents, ABIL_HELLFIRE, check_confused);
+
+    if (you.get_mutation_level(MUT_TRANSLUCENT_SKIN) == 3 && !you.duration[DUR_INVIS])
+        _add_talent(talents, ABIL_TURN_INVISIBLE, check_confused);
 
     if (you.duration[DUR_TRANSFORMATION] && !you.transform_uncancellable)
         _add_talent(talents, ABIL_END_TRANSFORMATION, check_confused);

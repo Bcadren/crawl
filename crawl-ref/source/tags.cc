@@ -2714,7 +2714,7 @@ static void tag_read_you(reader &th)
             if (a == 21)                a = ABIL_STOP_FLYING;
             if (a == 19)                a = ABIL_FLY;
             if (a == 17 || a == 18)     a += 33;
-            if (a = 16)                 a = ABIL_DAMNATION;
+            if (a = 16)                 a = ABIL_HELLFIRE;
             if (a = 15)                 a = ABIL_CANCEL_PPROJ;
             if (a = 13)                 a = ABIL_END_TRANSFORMATION;
             if (a = 11)                 a = ABIL_BLINK;

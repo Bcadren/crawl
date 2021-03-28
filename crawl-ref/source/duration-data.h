@@ -21,6 +21,8 @@ static void _end_invis()
     else
         mprf(MSGCH_DURATION, "You flicker back into view.");
     you.attribute[ATTR_INVIS_UNCANCELLABLE] = 0;
+    if (you.props.exists(INVIS_CONTAMLESS_KEY))
+        you.props[INVIS_CONTAMLESS_KEY].get_bool() = false;
 }
 
 static void _end_mount_corrosion()

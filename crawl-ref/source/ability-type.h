@@ -50,7 +50,7 @@ enum ability_type
     ABIL_HOP = 90,
 
     // Demonspawn-only
-    ABIL_DAMNATION = 100,
+    ABIL_HELLFIRE = 100,
 
     // Naga
     ABIL_SPIT_POISON = 110,
@@ -68,7 +68,10 @@ enum ability_type
     ABIL_END_UPRISING,
     ABIL_DISMOUNT,
 
-    ABIL_MAX_INTRINSIC = ABIL_DISMOUNT,
+    // Jiyva Mutations
+    ABIL_TURN_INVISIBLE = 250,
+
+    ABIL_MAX_INTRINSIC = ABIL_TURN_INVISIBLE,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 500,

@@ -2661,7 +2661,7 @@ static int _exper_value(const monster_type mc, const int hd, int maxhp, const in
             case SPELL_SMITING:
             case SPELL_SUMMON_EYEBALLS:
             case SPELL_CALL_DOWN_DAMNATION:
-            case SPELL_HURL_DAMNATION:
+            case SPELL_HURL_HELLFIRE:
             case SPELL_SYMBOL_OF_TORMENT:
             case SPELL_GLACIATE:
             case SPELL_FIRE_STORM:
@@ -6562,7 +6562,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
         else if (species_is_draconian(you.species)) // SCORCHER! 
         {
             _add_ancestor_spell(ancestor.spells, HD >= 17 ?
-                SPELL_HURL_DAMNATION :
+                SPELL_HURL_HELLFIRE :
                 SPELL_FIREBALL);
             _add_ancestor_spell(ancestor.spells, HD >= 13 ?
                 SPELL_BOLT_OF_FIRE :

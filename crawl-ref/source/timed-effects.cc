@@ -221,6 +221,7 @@ static void _handle_magic_contamination()
 {
     int added_contamination = 0;
     int dissipation = 25;
+    bool no_contam = you.props.exists(INVIS_CONTAMLESS_KEY) && you.props[INVIS_CONTAMLESS_KEY].get_bool();
 
     // Scale has been increased by a factor of 1000, but the effect now happens
     // every turn instead of every 20 turns, so everything has been multiplied
@@ -228,7 +229,7 @@ static void _handle_magic_contamination()
 
     //Increase contamination each turn while invisible
     //And cancel out dissipation
-    if (you.duration[DUR_INVIS])
+    if (you.duration[DUR_INVIS] && !no_contam)
         added_contamination += INVIS_CONTAM_PER_TURN + dissipation;
 
     // The Orb halves dissipation (well a bit more, I had to round it),

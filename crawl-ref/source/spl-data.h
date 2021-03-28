@@ -1789,7 +1789,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_HURL_DAMNATION, "Hellfire Blast", "",
+    SPELL_HURL_HELLFIRE, "Hellfire Blast", "",
     spschool::fire | spschool::evocation,
     spflag::dir_or_target | spflag::unholy | spflag::monster
         | spflag::needs_tracer,
