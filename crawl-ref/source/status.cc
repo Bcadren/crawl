@@ -970,9 +970,9 @@ static void _describe_glow(status_info& inf)
         "slightly ",
         "",
         "heavily ",
-        "very heavily ",
-        "very very heavily ", // this is silly but no one will ever see it
-        "impossibly ",        // (likewise)
+        "thoroughly ",
+        "massively ",
+        "impossibly ",
     };
     ASSERT(signed_cont >= 0);
 

@@ -1272,6 +1272,9 @@ static int _player_bonus_regen()
     // Fast heal mutation.
     rr += you.get_mutation_level(MUT_REGENERATION) * REGEN_PIP;
 
+    if (you.get_mutation_level(MUT_RADIOSYNTHESIS) >= 2)
+        rr += div_rand_round(you.magic_contamination * REGEN_PIP, 1000);
+
     if (you.get_mutation_level(MUT_SLIME) >= 2)
         rr += REGEN_PIP;
 
@@ -4798,7 +4801,12 @@ void contaminate_player(int change, bool controlled, bool msg)
     if (change > 0 && player_equip_unrand(UNRAND_ETHERIC_CAGE))
         change *= 2;
 
-    you.magic_contamination = max(0, min(250000,
+    int min_contam = 0;
+
+    if (you.get_mutation_level(MUT_RADIOSYNTHESIS) == 3)
+        min_contam = 5000;
+
+    you.magic_contamination = max(min_contam, min(250000,
                                          you.magic_contamination + change));
 
     new_level = get_contamination_level();

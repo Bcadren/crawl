@@ -1190,15 +1190,19 @@ static const mutation_def mut_data[] =
   {"Your pseudopods retract into your body.", "", ""},
 },
 
-#if TAG_MAJOR_VERSION == 34
-{ MUT_FOOD_JELLY, 0, 1, mutflag::good, false,
-  "spawn jellies when eating",
+{ MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,
+  "radiosynthesis",
 
-  {"You occasionally spawn a jelly by eating.", "", ""},
-  {"You feel more connected to the slimes.", "", ""},
-  {"Your connection to the slimes vanishes.", "", ""},
+  {"You don't mutate from contamination; you become a little more contaminated while casting spells.", 
+   "You regenerate faster while glowing and aren't malmutated by magical radiation; you become more contaminated while casting spells.", 
+   "You always glow, regenerate faster the more magical radiation you absorb and cannot be malmutated by radiation; you become much more contaminated while casting spells."},
+  {"You feel connected to magical radiation.", 
+   "You begin to regenerate faster while glowing.", 
+   "You feel like bathing in mutagenic glow."},
+  {"Your connection to the glow disappears completely.",
+   "Your connection to magical radiation recedes.",
+   "Your connection to magical radiation recedes."},
 },
-#endif
 
 { MUT_ACIDIC_BITE, 0, 1, mutflag::good | mutflag::jiyva, true,
   "acidic bite",

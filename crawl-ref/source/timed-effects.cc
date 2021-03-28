@@ -220,26 +220,28 @@ static void _hell_effects(int /*time_delta*/)
 static void _handle_magic_contamination()
 {
     int added_contamination = 0;
+    int dissipation = 25;
 
     // Scale has been increased by a factor of 1000, but the effect now happens
     // every turn instead of every 20 turns, so everything has been multiplied
     // by 50 and scaled to you.time_taken.
 
     //Increase contamination each turn while invisible
+    //And cancel out dissipation
     if (you.duration[DUR_INVIS])
-        added_contamination += INVIS_CONTAM_PER_TURN;
-    //If not invisible, normal dissipation
-    else
-        added_contamination -= 25;
+        added_contamination += INVIS_CONTAM_PER_TURN + dissipation;
 
     // The Orb halves dissipation (well a bit more, I had to round it),
     // but won't cause glow on its own -- otherwise it'd spam the player
     // with messages about contamination oscillating near zero.
-    if (you.magic_contamination && player_has_orb())
-        added_contamination += 13;
+    if (player_has_orb())
+        dissipation = div_rand_round(dissipation, 2);
+
+    if (you.get_mutation_level(MUT_RADIOSYNTHESIS))
+        dissipation = div_rand_round(dissipation, 2);
 
     // Scaling to turn length
-    added_contamination = div_rand_round(added_contamination * you.time_taken,
+    added_contamination = div_rand_round((added_contamination - dissipation) * you.time_taken,
                                          BASELINE_DELAY);
 
     contaminate_player(added_contamination, false);
@@ -248,13 +250,18 @@ static void _handle_magic_contamination()
 // Bad effects from magic contamination.
 static void _magic_contamination_effects()
 {
-    mprf(MSGCH_WARN, "Your body shudders with the violent release "
-                     "of wild energies!");
-
     const int contam = you.magic_contamination;
+    const bool can_mutate = !you.get_mutation_level(MUT_RADIOSYNTHESIS);
+    const bool boom = contam > 10000 && coinflip();
+
+    if (can_mutate || boom)
+    {
+        mprf(MSGCH_WARN, "Your body shudders with the violent release "
+                         "of wild energies!");
+    }
 
     // For particularly violent releases, make a little boom.
-    if (contam > 10000 && coinflip())
+    if (boom)
     {
         bolt beam;
 
@@ -274,16 +281,25 @@ static void _magic_contamination_effects()
         beam.explode();
     }
 
-    const mutation_permanence_class mutclass = MUTCLASS_NORMAL;
+    if (can_mutate)
+    {
+        if (one_chance_in(3))
+        {
+            const int x = 2 + random2(3);
+            for (int i = 0; i < x; i++)
+                temp_mutate(RANDOM_BAD_MUTATION, "mutagenic glow");
+        }
 
-    // We want to warp the player, not do good stuff!
-    mutate(one_chance_in(5) ? RANDOM_MUTATION : RANDOM_BAD_MUTATION,
-           "mutagenic glow", true, coinflip(), false, false, mutclass);
+        // We want to warp the player, not do good stuff!
+        mutate(one_chance_in(5) ? RANDOM_MUTATION : RANDOM_BAD_MUTATION,
+            "mutagenic glow", true, coinflip());
+    }
 
     // we're meaner now, what with explosions and whatnot, but
     // we dial down the contamination a little faster if its actually
     // mutating you.  -- GDL
-    contaminate_player(-(random2(contam / 4) + 1000));
+    if (can_mutate || boom)
+        contaminate_player(-(random2(contam / 4) + 1000));
 }
 // Checks if the player should be hit with magic contaimination effects,
 // then actually does it if they should be.

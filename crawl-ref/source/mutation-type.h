@@ -128,9 +128,7 @@ enum mutation_type
     MUT_UNBREATHING_FORM, // Special version for SS since they keep their unbreathing between forms, while Grey Draconians don't.
     MUT_ACIDIC_BITE,
     MUT_EYEBALLS,
-#if TAG_MAJOR_VERSION == 34
-    MUT_FOOD_JELLY,
-#endif
+    MUT_RADIOSYNTHESIS,
     MUT_SLIME,
     MUT_PSEUDOPODS,
     MUT_TRANSLUCENT_SKIN,

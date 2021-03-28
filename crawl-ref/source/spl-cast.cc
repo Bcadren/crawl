@@ -1105,6 +1105,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     practise_casting(spell, cast_result == spret::success);
     if (cast_result == spret::success)
     {
+        contaminate_player(spell_difficulty(spell) * 350 * you.get_mutation_level(MUT_RADIOSYNTHESIS));
         did_god_conduct(DID_SPELL_CASTING, 1 + random2(5));
         count_action(CACT_CAST, spell);
     }
