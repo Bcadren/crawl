@@ -52,7 +52,7 @@ static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS)
 // more core body slots (Lear's Hauberk)
 static const int EQF_LEAR = EQF_STATUE | SLOTF(EQ_HELMET);
 // everything you can (W)ear
-static const int EQF_WEAR = EQF_LEAR | SLOTF(EQ_CLOAK) | SLOTF(EQ_WEAPON1);
+static const int EQF_WEAR = EQF_LEAR | SLOTF(EQ_CLOAK);
 // everything but jewellery
 static const int EQF_PHYSICAL = EQF_HANDS | EQF_WEAR;
 // all rings (except for the macabre finger amulet's)
@@ -60,7 +60,8 @@ static const int EQF_RINGS = SLOTF(EQ_LEFT_RING) | SLOTF(EQ_RIGHT_RING)
                              | SLOTF(EQ_RING_ONE) | SLOTF(EQ_RING_TWO)
                              | SLOTF(EQ_RING_THREE) | SLOTF(EQ_RING_FOUR)
                              | SLOTF(EQ_RING_FIVE) | SLOTF(EQ_RING_SIX)
-                             | SLOTF(EQ_RING_SEVEN) | SLOTF(EQ_RING_EIGHT);
+                             | SLOTF(EQ_RING_SEVEN) | SLOTF(EQ_RING_EIGHT)
+                             | SLOTF(EQ_RING_LEFT_TENDRIL) | SLOTF(EQ_RING_RIGHT_TENDRIL);
 // amulet & pal
 static const int EQF_AMULETS = SLOTF(EQ_AMULET) | SLOTF(EQ_RING_AMULET);
 // everything

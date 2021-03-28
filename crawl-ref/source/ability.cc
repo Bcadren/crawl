@@ -2628,7 +2628,6 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         potionlike_effect(POT_INVISIBILITY, 20 + you.experience_level + you.skill(SK_INVOCATIONS));
         break;
 
-
     case ABIL_EVOKE_TURN_INVISIBLE:     // cloaks, randarts
         if (!invis_allowed())
             return spret::abort;

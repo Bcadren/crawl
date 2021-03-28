@@ -566,7 +566,8 @@ static const equipment_type e_order[] =
     EQ_GLOVES, EQ_BOOTS, EQ_AMULET, EQ_LEFT_RING, EQ_RIGHT_RING,
     EQ_FAIRY_JEWEL, EQ_RING_ONE, EQ_RING_TWO, EQ_RING_THREE, 
     EQ_RING_FOUR, EQ_RING_FIVE, EQ_RING_SIX, EQ_RING_SEVEN, 
-    EQ_RING_EIGHT, EQ_RING_AMULET,
+    EQ_RING_EIGHT, EQ_RING_LEFT_TENDRIL, EQ_RING_RIGHT_TENDRIL, 
+    EQ_RING_AMULET,
 };
 
 static void _print_stats_equip(int x, int y)
@@ -938,7 +939,9 @@ static int _wpn_name_colour(int hand)
 static void _print_stats_wp(int hand, int y)
 {
     string text;
-    if (you.weapon(hand))
+    if (hand == 1 && you.get_mutation_level(MUT_MISSING_HAND))
+        text = "(unavailable)";
+    else if (you.weapon(hand))
     {
         item_def wpn = *you.weapon(hand); // copy
 
@@ -1870,7 +1873,8 @@ static const char *s_equip_slot_names[] =
     "UNUSED", "Armour", "Left Ring", "Right Ring", "Amulet",
     "First Ring", "Second Ring", "Third Ring", "Fourth Ring", 
     "Fifth Ring", "Sixth Ring", "Seventh Ring", 
-    "Eighth Ring", "Jewelry", "Amulet Ring"
+    "Eighth Ring", "Left Tendril Ring", "Right Tendril Ring", 
+    "Jewelry", "Amulet Ring"
 };
 
 const char *equip_slot_to_name(int equip)
@@ -1995,6 +1999,15 @@ static void _print_overview_screen_equip(column_composer& cols,
 
         if (you.species != SP_OCTOPODE
             && eqslot >= EQ_RING_ONE && eqslot <= EQ_RING_EIGHT)
+        {
+            continue;
+        }
+
+        if (you.get_mutation_level(MUT_MISSING_HAND) && eqslot == EQ_WEAPON1)
+            continue;
+
+        if (!you.get_mutation_level(MUT_TENDRILS) &&
+            (eqslot == EQ_RING_LEFT_TENDRIL || eqslot == EQ_RING_RIGHT_TENDRIL))
         {
             continue;
         }

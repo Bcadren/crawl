@@ -1735,6 +1735,11 @@ static vector<equipment_type> _current_ring_types()
             ret.push_back(EQ_LEFT_RING);
         ret.push_back(EQ_RIGHT_RING);
     }
+    if (you.get_mutation_level(MUT_TENDRILS))
+    {
+        ret.push_back(EQ_RING_LEFT_TENDRIL);
+        ret.push_back(EQ_RING_RIGHT_TENDRIL);
+    }
     if (player_equip_unrand(UNRAND_FINGER_AMULET))
         ret.push_back(EQ_RING_AMULET);
     return ret;
@@ -1752,18 +1757,20 @@ static char _ring_slot_key(equipment_type slot)
 {
     switch (slot)
     {
-    case EQ_LEFT_RING:      return '<';
-    case EQ_RIGHT_RING:     return '>';
-    case EQ_FAIRY_JEWEL:    return '.';
-    case EQ_RING_AMULET:    return '^';
-    case EQ_RING_ONE:       return '1';
-    case EQ_RING_TWO:       return '2';
-    case EQ_RING_THREE:     return '3';
-    case EQ_RING_FOUR:      return '4';
-    case EQ_RING_FIVE:      return '5';
-    case EQ_RING_SIX:       return '6';
-    case EQ_RING_SEVEN:     return '7';
-    case EQ_RING_EIGHT:     return '8';
+    case EQ_LEFT_RING:              return '<';
+    case EQ_RIGHT_RING:             return '>';
+    case EQ_FAIRY_JEWEL:            return '.';
+    case EQ_RING_AMULET:            return '^';
+    case EQ_RING_ONE:               return '1';
+    case EQ_RING_TWO:               return '2';
+    case EQ_RING_THREE:             return '3';
+    case EQ_RING_FOUR:              return '4';
+    case EQ_RING_FIVE:              return '5';
+    case EQ_RING_SIX:               return '6';
+    case EQ_RING_SEVEN:             return '7';
+    case EQ_RING_EIGHT:             return '8';
+    case EQ_RING_LEFT_TENDRIL:      return '(';
+    case EQ_RING_RIGHT_TENDRIL:     return ')';
     default:
         die("Invalid ring slot");
     }

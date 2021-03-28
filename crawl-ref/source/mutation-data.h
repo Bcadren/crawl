@@ -1191,6 +1191,14 @@ static const mutation_def mut_data[] =
   {"Your pseudopods retract into your body.", "", ""},
 },
 
+{ MUT_TENDRILS, 0, 1, mutflag::good | mutflag::jiyva, true,
+  "tendrils",
+
+  {"A pair of whip-like tendrils extend from your body. You may wear an extra ring on each.", "", ""},
+  {"Tendrils emerge from you body.", "", ""},
+  {"Your tendrils retract into your body.", "", ""},
+},
+
 { MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,
   "radiosynthesis",
 
@@ -1526,14 +1534,6 @@ static const mutation_def mut_data[] =
    ""},
 
   {"", "", ""},
-},
-
-{ MUT_TENDRILS, 0, 1, mutflag::good | mutflag::jiyva, true,
-  "tendrils",
-
-  {"You are covered in slimy tendrils that may disarm your opponents.", "", ""},
-  {"Thin, slimy tendrils emerge from your body.", "", ""},
-  {"Your tendrils retract into your body.", "", ""},
 },
 
 { MUT_JELLY_GROWTH, 0, 1, mutflag::good | mutflag::jiyva, true,

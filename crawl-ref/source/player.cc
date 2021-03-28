@@ -800,6 +800,10 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
     case EQ_RING_SEVEN:
         return you.species == SP_OCTOPODE ? MB_TRUE : MB_FALSE;
 
+    case EQ_RING_LEFT_TENDRIL:
+    case EQ_RING_RIGHT_TENDRIL:
+        return you.get_mutation_level(MUT_TENDRILS) ? MB_TRUE : MB_FALSE;
+
     case EQ_WEAPON0:
     case EQ_WEAPON1:
     case EQ_STAFF:

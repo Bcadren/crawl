@@ -145,6 +145,11 @@ static void _assert_valid_slot(equipment_type eq, equipment_type slot)
             r1 = EQ_RING_ONE, r2 = EQ_RING_EIGHT;
         if (slot >= r1 && slot <= r2)
             return;
+        if (you.get_mutation_level(MUT_TENDRILS) &&
+            (slot == EQ_RING_LEFT_TENDRIL || slot == EQ_RING_RIGHT_TENDRIL))
+        {
+            return;
+        }
         if (const item_def* amu = you.slot_item(EQ_AMULET, true))
             if (is_unrandom_artefact(*amu, UNRAND_FINGER_AMULET) && slot == EQ_RING_AMULET)
                 return;

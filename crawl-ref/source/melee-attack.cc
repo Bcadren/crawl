@@ -1524,6 +1524,20 @@ public:
     int get_damage() const { return damage + div_rand_round(you.experience_level, 3); }
 };
 
+class AuxTendril1 : public AuxAttackType
+{
+public:
+    AuxTendril1()
+        : AuxAttackType(8, "lash") { };
+};
+
+class AuxTendril2 : public AuxAttackType
+{
+public:
+    AuxTendril2()
+        : AuxAttackType(8, "flog") { };
+};
+
 static const AuxConstrict   AUX_CONSTRICT = AuxConstrict();
 static const AuxStaff       AUX_STAFF = AuxStaff();
 static const AuxStaffSlap   AUX_STAFFSLAP = AuxStaffSlap();
@@ -1538,6 +1552,8 @@ static const AuxTentacles   AUX_TENTACLES = AuxTentacles();
 static const AuxTentacles2  AUX_TENTACLES2 = AuxTentacles2();
 static const AuxTentacles3  AUX_TENTACLES3 = AuxTentacles3();
 static const AuxTentacles4  AUX_TENTACLES4 = AuxTentacles4();
+static const AuxTendril1    AUX_TENDRIL1 = AuxTendril1();
+static const AuxTendril2    AUX_TENDRIL2 = AuxTendril2();
 
 static const AuxAttackType* const aux_attack_types[] =
 {
@@ -1554,7 +1570,9 @@ static const AuxAttackType* const aux_attack_types[] =
     &AUX_TENTACLES,
     &AUX_TENTACLES2,
     &AUX_TENTACLES3,
-    &AUX_TENTACLES4
+    &AUX_TENTACLES4,
+    &AUX_TENDRIL1,
+    &AUX_TENDRIL2,
 };
 
 
@@ -4117,6 +4135,7 @@ void melee_attack::mons_do_tendril_disarm()
     const int adj_mon_hd = mon->is_fighter() ? mon->get_hit_dice() * 3 / 2
                                              : mon->get_hit_dice();
 
+    /* BCADDO: Cytoplasmic Trap replaces this.
     if (you.get_mutation_level(MUT_TENDRILS)
         && one_chance_in(5)
         && (random2(you.dex()) > adj_mon_hd
@@ -4130,6 +4149,7 @@ void melee_attack::mons_do_tendril_disarm()
                  mons_wpn->name(DESC_PLAIN).c_str());
         }
     }
+    */
 }
 
 void melee_attack::do_spines()
@@ -4505,6 +4525,10 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
 
     case UNAT_PSEUDOPODS:
         return you.has_usable_pseudopods() && !one_chance_in(3);
+
+    case UNAT_TENDRIL1:
+    case UNAT_TENDRIL2:
+        return you.get_mutation_level(MUT_TENDRILS) && coinflip();
 
     case UNAT_TENTACLES:
         return x_chance_in_y(you.usable_tentacles(), 6);

@@ -560,6 +560,12 @@ void ash_check_bondage(bool msg)
         {
             continue;
         }
+        else if (!you.get_mutation_level(MUT_TENDRILS)
+            && i == EQ_RING_LEFT_TENDRIL || i == EQ_RING_RIGHT_TENDRIL)
+        {
+            // Impossible to have this mutation while !Jiyva, but future proofing!
+            continue;
+        }
         else
             s = ET_JEWELS;
 

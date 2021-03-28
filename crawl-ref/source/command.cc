@@ -319,20 +319,22 @@ void list_jewellery()
         int       colour       = MSGCOL_BLACK;
 
         const char *slot =
-                 (i == EQ_LEFT_RING)   ? "Left ring" :
-                 (i == EQ_RIGHT_RING)  ? "Right ring" :
-                 (i == EQ_AMULET)      ? "Amulet" :
-                 (i == EQ_RING_ONE)    ? "1st ring" :
-                 (i == EQ_RING_TWO)    ? "2nd ring" :
-                 (i == EQ_RING_THREE)  ? "3rd ring" :
-                 (i == EQ_RING_FOUR)   ? "4th ring" :
-                 (i == EQ_RING_FIVE)   ? "5th ring" :
-                 (i == EQ_RING_SIX)    ? "6th ring" :
-                 (i == EQ_RING_SEVEN)  ? "7th ring" :
-                 (i == EQ_RING_EIGHT)  ? "8th ring" :
-                 (i == EQ_FAIRY_JEWEL) ? "Around core" :
-                 (i == EQ_RING_AMULET) ? "Amulet ring"
-                                       : "unknown";
+                 (i == EQ_LEFT_RING)           ? "Left ring" :
+                 (i == EQ_RIGHT_RING)          ? "Right ring" :
+                 (i == EQ_AMULET)              ? "Amulet" :
+                 (i == EQ_RING_ONE)            ? "1st ring" :
+                 (i == EQ_RING_TWO)            ? "2nd ring" :
+                 (i == EQ_RING_THREE)          ? "3rd ring" :
+                 (i == EQ_RING_FOUR)           ? "4th ring" :
+                 (i == EQ_RING_FIVE)           ? "5th ring" :
+                 (i == EQ_RING_SIX)            ? "6th ring" :
+                 (i == EQ_RING_SEVEN)          ? "7th ring" :
+                 (i == EQ_RING_EIGHT)          ? "8th ring" :
+                 (i == EQ_RING_LEFT_TENDRIL)   ? "left tendril" :
+                 (i == EQ_RING_RIGHT_TENDRIL)  ? "right tendril" :
+                 (i == EQ_FAIRY_JEWEL)         ? "Around core" :
+                 (i == EQ_RING_AMULET)         ? "Amulet ring"
+                                               : "unknown";
 
         string item;
         if (you_can_wear(i, true) == MB_FALSE)
