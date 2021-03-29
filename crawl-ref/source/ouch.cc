@@ -23,7 +23,9 @@
 #include "artefact.h"
 #include "beam.h"
 #include "chardump.h"
+#include "cloud.h"
 #include "colour.h"
+#include "coordit.h"
 #include "delay.h"
 #include "dgn-event.h"
 #include "end.h"
@@ -61,6 +63,7 @@
 #include "state.h"
 #include "stringutil.h"
 #include "teleport.h"
+#include "terrain.h"
 #include "transform.h"
 #include "traps.h"
 #include "tutorial.h"
@@ -827,6 +830,19 @@ static void _tiamat_retribution(int dam, bool fiery)
     }
 }
 
+static void _boil_protoplasm(int dam, bool fiery)
+{
+    if (!fiery || you.get_mutation_level(MUT_PROTOPLASM) < 3)
+        return;
+
+    if (x_chance_in_y(dam * 6, you.hp_max))
+    {
+        mpr("Your protoplasm boils!");
+        for (adjacent_iterator ai(you.pos(), false); ai; ++ai)
+            if (!cell_is_solid(*ai) && !cloud_at(*ai))
+                place_cloud(CLOUD_STEAM, *ai, you.experience_level / 3 + random2(dam), &you, 2);
+    }
+}
 
 static void _maybe_fog(int dam)
 {
@@ -1170,6 +1186,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             _maybe_fog(dam);
             _powered_by_pain(dam);
             _tiamat_retribution(dam, fiery);
+            _boil_protoplasm(dam, fiery);
             if (sanguine_armour_valid())
                 activate_sanguine_armour();
             if (death_type != KILLED_BY_POISON)

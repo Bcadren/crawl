@@ -1600,6 +1600,7 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
     rf -= you.get_mutation_level(MUT_HEAT_VULNERABILITY, temp);
     rf -= you.get_mutation_level(MUT_TEMPERATURE_SENSITIVITY, temp);
     rf += you.get_mutation_level(MUT_MOLTEN_SCALES, temp) == 3 ? 1 : 0;
+    rf += you.get_mutation_level(MUT_PROTOPLASM, temp) >= 2 ? 1 : 0;
 
     // draconian scales:
     if (you.get_mutation_level(MUT_DRACONIAN_DEFENSE, temp))
@@ -1715,6 +1716,7 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
     rc -= you.get_mutation_level(MUT_TEMPERATURE_SENSITIVITY, temp);
     rc += you.get_mutation_level(MUT_ICY_BLUE_SCALES, temp) == 3 ? 1 : 0;
     rc += you.get_mutation_level(MUT_SHAGGY_FUR, temp) == 3 ? 1 : 0;
+    rc += you.get_mutation_level(MUT_PROTOPLASM, temp) ? 1 : 0;
 
     // draconian scales:
     if (you.get_mutation_level(MUT_DRACONIAN_DEFENSE, temp))

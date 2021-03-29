@@ -1138,17 +1138,38 @@ static const mutation_def mut_data[] =
   "slime",
 
   {"Your slimy body is resistant to acid. (rCorr)",
-   "Your oozing form is resistant to acid and regenerates health quickly. (rCorr, Regen)",
-   "Your gelatinous form is immune to acid, constriction and sticky flames. You regenerate health and magic quickly. (rCorr+, Slime, Regen, MPRegen)"},
+   "Your oozing form is resistant to acid. (rCorr)\n"
+   "You regenerate health quickly. (Regen)",
+   "Your gelatinous form is immune to acid, constriction and sticky flames. (rCorr+, Slime)\n"
+   "You regenerate health and magic quickly. (Regen, MPRegen)"},
 
   {"You feel more slimy.",
    "You feel very pliable.",
-   "You melts completely into viscous ooze."},
+   "Your body melts completely into viscous ooze."},
 
   {"You resolidify.",
    "Your body stops oozing.",
    "Your body becomes less slimy."},
 },
+
+{ MUT_PROTOPLASM, 0, 3, mutflag::good | mutflag::jiyva, true,
+  "watery protoplasm",
+
+  {"Your watery protoplasm protects you from the cold. (rC+)",
+   "Your watery protoplasm protects you from extremes of temperature. (rF+, rC+)",
+   "Your watery protoplasm protects you from extremes of temperature. (rF+, rC+)\n"
+   "When hit by a fiery attack, your protoplasm may erupt scalding steam."},
+
+  {"A vacuole full of water envelops your skin.",
+   "Your protoplasm gets thicker and waterier.",
+   "Your protoplasm oozes water."},
+
+  {"Your protoplasm dries out and turns into skin.",
+   "Your protoplasm feels drier.",
+   "Your protoplasm feels drier."},
+},
+
+// "You breathe through your skin. (rCloud, rDrown)"
 
 { MUT_GOLDEN_EYEBALLS, 0, 3, mutflag::good | mutflag::jiyva, true,
   "golden eyeballs",
