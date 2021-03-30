@@ -2971,6 +2971,7 @@ void get_item_desc(const item_def &item, describe_info &inf)
 
 static vector<command_type> _allowed_actions(const item_def& item)
 {
+    const bool cyto = (item_equip_slot(item) == EQ_CYTOPLASM);
     vector<command_type> actions;
     actions.push_back(CMD_ADJUST_INVENTORY);
     if ((item_equip_slot(item) == EQ_WEAPON0 || item_equip_slot(item) == EQ_WEAPON1) && !item.soul_bound())
@@ -2995,7 +2996,10 @@ static vector<command_type> _allowed_actions(const item_def& item)
         if (_could_set_training_target(item, false))
             actions.push_back(CMD_SET_SKILL_TARGET);
         if (item_is_equipped(item))
-            actions.push_back(CMD_REMOVE_ARMOUR);
+        {
+            if (!cyto)
+                actions.push_back(CMD_REMOVE_ARMOUR);
+        }
         else
             actions.push_back(CMD_WEAR_ARMOUR);
         break;
@@ -3009,12 +3013,15 @@ static vector<command_type> _allowed_actions(const item_def& item)
         break;
     case OBJ_JEWELLERY:
         if (item_is_equipped(item))
-            actions.push_back(CMD_REMOVE_JEWELLERY);
+        {
+            if (!cyto)
+                actions.push_back(CMD_REMOVE_JEWELLERY);
+        }
         else
             actions.push_back(CMD_WEAR_JEWELLERY);
         break;
     case OBJ_POTIONS:
-        if (!you_foodless()) // mummies and lich form forbidden
+        if (you.undead_state() && you.undead_state() != US_GHOST)
             actions.push_back(CMD_QUAFF);
         break;
     default:
@@ -3024,6 +3031,12 @@ static vector<command_type> _allowed_actions(const item_def& item)
     if (clua.callbooleanfn(false, "ch_item_wieldable", "i", &item))
         actions.push_back(CMD_WIELD_WEAPON);
 #endif
+
+    if (item_is_subsumable(item) && !item_is_equipped(item))
+        actions.push_back(CMD_SUBSUME);
+
+    if (cyto)
+        actions.push_back(CMD_EJECT);
 
     if (item_is_evokable(item))
         actions.push_back(CMD_EVOKE);
@@ -3055,6 +3068,8 @@ static string _actions_desc(const vector<command_type>& actions, const item_def&
         { CMD_INSCRIBE_ITEM, "(i)nscribe" },
         { CMD_ADJUST_INVENTORY, "(=)adjust" },
         { CMD_SET_SKILL_TARGET, "(s)kill" },
+        { CMD_SUBSUME, "su(b)sume" },
+        { CMD_EJECT, "e(j)ect" },
     };
     return comma_separated_fn(begin(actions), end(actions),
                                 [] (command_type cmd)
@@ -3087,6 +3102,8 @@ static command_type _get_action(int key, vector<command_type> actions)
         { CMD_INSCRIBE_ITEM,    'i' },
         { CMD_ADJUST_INVENTORY, '=' },
         { CMD_SET_SKILL_TARGET, 's' },
+        { CMD_SUBSUME,          'b' },
+        { CMD_EJECT,            'j' },
     };
 
     key = tolower_safe(key);
@@ -3136,6 +3153,8 @@ static bool _do_action(item_def &item, const vector<command_type>& actions, int 
     case CMD_INSCRIBE_ITEM:    inscribe_item(item);                 break;
     case CMD_ADJUST_INVENTORY: adjust_item(slot);                   break;
     case CMD_SET_SKILL_TARGET: target_item(item);                   break;
+    case CMD_SUBSUME:          subsume_item(slot);                  break;
+    case CMD_EJECT:            eject_item();                        break;
     case CMD_EVOKE:
 #ifndef USE_TILE_LOCAL
         redraw_console_sidebar();

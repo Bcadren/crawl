@@ -2049,6 +2049,15 @@ static bool _delete_single_mutation_level(mutation_type mutat,
         lose_permafly_source();
         break;
 
+    case MUT_TENDRILS:
+        remove_one_equip(EQ_RING_LEFT_TENDRIL, false, true);
+        remove_one_equip(EQ_RING_RIGHT_TENDRIL, false, true);
+        ash_check_bondage();
+        break;
+
+    case MUT_CYTOPLASMIC_SUSPENSION:
+        remove_one_equip(EQ_CYTOPLASM, false, true);
+        //fallthrough
     case MUT_HORNS:
     case MUT_ANTENNAE:
     case MUT_BEAK:

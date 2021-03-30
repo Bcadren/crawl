@@ -1032,6 +1032,7 @@ const char* item_slot_name(equipment_type type)
     case EQ_GLOVES:      return "gloves";
     case EQ_BOOTS:       return "boots";
     case EQ_BODY_ARMOUR: return "body";
+    case EQ_CYTOPLASM:    return "cytoplasm";
     default:             return "";
     }
 }
@@ -2079,6 +2080,30 @@ bool prompt_failed(int retval)
     crawl_state.cancel_cmd_repeat();
 
     return true;
+}
+
+bool item_is_subsumable(const item_def &item)
+{
+    if (!you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+        return false;
+
+    // The lantern needs to be wielded to be used.
+    if (item.is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS))
+        return true;
+
+    switch (item.base_type)
+    {
+    case OBJ_ARMOURS:
+    case OBJ_JEWELLERY:
+    case OBJ_SHIELDS:
+    case OBJ_STAVES:
+    case OBJ_WEAPONS:
+        return true;
+    default:
+        break;
+    }
+
+    return false;
 }
 
 // Most items are wieldable, but this function check for items that needs to be

@@ -2481,6 +2481,56 @@ static bool _puton_item(int item_slot, bool prompt_slot,
     return true;
 }
 
+bool subsume_item(int slot)
+{
+    if (!you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+    {
+        mpr("You can't subsume anything.");
+        return false;
+    }
+
+    if (inv_count() < 1)
+    {
+        canned_msg(MSG_NOTHING_CARRIED);
+        return false;
+    }
+
+    if (you.berserk())
+    {
+        canned_msg(MSG_TOO_BERSERK);
+        return false;
+    }
+
+    equip_item(EQ_CYTOPLASM, slot);
+
+    return true;
+}
+
+bool eject_item()
+{
+    if (!you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+    {
+        mpr("You don't have a cytoplasmic pocket to eject from.");
+        return false;
+    }
+
+    if (you.equip[EQ_CYTOPLASM] == -1)
+    {
+        mpr("Nothing to eject.");
+        return false;
+    }
+
+    if (you.berserk())
+    {
+        canned_msg(MSG_TOO_BERSERK);
+        return false;
+    }
+
+    unequip_item(EQ_CYTOPLASM);
+
+    return true;
+}
+
 // Put on a ring or amulet. (If slot is -1, first prompt for which item to put on)
 bool puton_ring(int slot, bool allow_prompt, bool check_for_inscriptions)
 {

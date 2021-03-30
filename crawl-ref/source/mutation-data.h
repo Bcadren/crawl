@@ -1212,12 +1212,20 @@ static const mutation_def mut_data[] =
   {"Your pseudopods retract into your body.", "", ""},
 },
 
-{ MUT_TENDRILS, 0, 1, mutflag::good | mutflag::jiyva, true,
+{ MUT_TENDRILS, 0, 1, mutflag::good | mutflag::jiyva, false,
   "tendrils",
 
   {"A pair of whip-like tendrils extend from your body. You may wear an extra ring on each.", "", ""},
   {"Tendrils emerge from you body.", "", ""},
   {"Your tendrils retract into your body.", "", ""},
+},
+
+{ MUT_CYTOPLASMIC_SUSPENSION, 0, 1, mutflag::good | mutflag::jiyva, false, 
+  "cytoplasmic subsumption",
+
+  {"You may subsume any weapon, armour, or jewellery into your cytoplasm to benefit from its magical properties.", "", ""},
+  {"A cavity forms in the center of your cytoplasm, in which you can subsume an item.", "", ""},
+  {"Your cytoplasm can no longer hold an extra item.", "", ""},
 },
 
 { MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,

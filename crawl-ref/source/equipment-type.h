@@ -28,14 +28,15 @@ enum equipment_type
     EQ_RING_SIX,
     EQ_RING_SEVEN,
     EQ_RING_EIGHT,
-    // Tendrils
-    EQ_RING_LEFT_TENDRIL,
-    EQ_RING_RIGHT_TENDRIL,
     // Fairy specific slot.
     EQ_FAIRY_JEWEL,
     // Finger amulet provides an extra ring slot
     EQ_RING_AMULET,
-    EQ_LAST_JEWELLERY = EQ_RING_AMULET,
+    // Tendrils
+    EQ_RING_LEFT_TENDRIL,
+    EQ_RING_RIGHT_TENDRIL,
+    EQ_LAST_JEWELLERY = EQ_RING_RIGHT_TENDRIL,
+    EQ_CYTOPLASM, // Weird case.
     NUM_EQUIP,
 
     EQ_MIN_ARMOUR = EQ_CLOAK,

@@ -278,6 +278,9 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
                 case EQ_BODY_ARMOUR:
                     buff << " (worn)";
                     break;
+                case EQ_CYTOPLASM:
+                    buff << " (subsumed)";
+                    break;
                 case EQ_LEFT_RING:
                 case EQ_RIGHT_RING:
                 case EQ_RING_ONE:
@@ -314,9 +317,6 @@ string item_def::name(description_level_type descrip, bool terse, bool ident,
                     break;
                 case EQ_FAIRY_JEWEL:
                     buff << " (around core)";
-                    break;
-                case EQ_OLD_SHIELD:
-                    buff << " (OLD SHIELD; USELESS)";
                     break;
                 default:
                     die("Item in an invalid slot");

@@ -721,6 +721,8 @@ static bool _cmd_is_repeatable(command_type cmd, bool is_again = false)
     case CMD_MEMORISE_SPELL:
     case CMD_EXPLORE:
     case CMD_INTERLEVEL_TRAVEL:
+    case CMD_SUBSUME:
+    case CMD_EJECT:
         mpr("You can't repeat multi-turn commands.");
         return false;
 
@@ -1794,6 +1796,8 @@ void process_command(command_type cmd)
     case CMD_READ:                 read();                   break;
     case CMD_REMOVE_ARMOUR:        _do_remove_armour();      break;
     case CMD_REMOVE_JEWELLERY:     remove_ring();            break;
+    case CMD_SUBSUME:              subsume_item();           break;
+    case CMD_EJECT:                eject_item();             break;
     case CMD_SHOUT:                issue_orders();           break;
     case CMD_THROW_ITEM_NO_QUIVER: throw_item_no_quiver();   break;
     case CMD_WEAPON_SWAP:          wield_weapon(true);       break;

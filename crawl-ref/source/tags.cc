@@ -3956,13 +3956,18 @@ static void tag_read_you_items(reader &th)
             continue;
         }
 
-        // If wearing anything in the no-longer existant shield slot; unwear.
-        if (item && i == EQ_OLD_SHIELD)
+#if TAG_MAJOR_VERSION == 34
+        if (th.getMinorVersion() < TAG_MINOR_GOLDIFY_MANUALS)
         {
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-            continue;
+            // If wearing anything in the no-longer existant shield slot; unwear.
+            if (item && i == EQ_OLD_SHIELD)
+            {
+                you.equip[i] = -1;
+                you.melded.set(i, false);
+                continue;
+            }
         }
+#endif
 
         if (item && i != EQ_AMULET && i != EQ_FAIRY_JEWEL && item->is_type(OBJ_JEWELLERY, AMU_CHAOS))
         {
