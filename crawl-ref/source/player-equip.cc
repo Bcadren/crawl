@@ -134,6 +134,8 @@ static void _equip_use_warning(const item_def& item);
 
 static void _assert_valid_slot(equipment_type eq, equipment_type slot)
 {
+    if (slot == EQ_CYTOPLASM)
+        return;
     if (eq == slot)
         return;
     if (eq == EQ_RINGS) // all other slots are unique
@@ -172,13 +174,28 @@ void equip_effect(equipment_type slot, int item_slot, bool unmeld, bool msg)
 
     const interrupt_block block_unmeld_interrupts(unmeld);
 
-    if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR 
-        || (item.base_type == OBJ_SHIELDS && !is_hybrid(item.sub_type)))
+    switch (item.base_type)
+    {
+    case OBJ_ARMOURS:
         _equip_armour_effect(item, unmeld, slot);
-    else if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
+        break;
+    case OBJ_SHIELDS:
+        if (!is_hybrid(item.sub_type))
+            _equip_armour_effect(item, unmeld, slot);
+        else
+            _equip_weapon_effect(item, msg, unmeld, slot);
+        break;
+    case OBJ_MISCELLANY: // Lantern of shadows
+    case OBJ_WEAPONS:
+    case OBJ_STAVES:
         _equip_weapon_effect(item, msg, unmeld, slot);
-    else if (slot >= EQ_FIRST_JEWELLERY && slot <= EQ_LAST_JEWELLERY)
+        break;
+    case OBJ_JEWELLERY:
         _equip_jewellery_effect(item, unmeld, slot);
+        break;
+    default: // No other item classes are currently wieldable.
+        break;
+    }
 }
 
 void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
@@ -190,13 +207,28 @@ void unequip_effect(equipment_type slot, int item_slot, bool meld, bool msg)
 
     const interrupt_block block_meld_interrupts(meld);
 
-    if (slot >= EQ_CLOAK && slot <= EQ_BODY_ARMOUR 
-        || (item.base_type == OBJ_SHIELDS && !is_hybrid(item.sub_type)))
+    switch (item.base_type)
+    {
+    case OBJ_ARMOURS:
         _unequip_armour_effect(item, meld, slot);
-    else if (slot == EQ_WEAPON0 || slot == EQ_WEAPON1)
-        _unequip_weapon_effect(item, msg, meld,slot);
-    else if (slot >= EQ_FIRST_JEWELLERY && slot <= EQ_LAST_JEWELLERY)
+        break;
+    case OBJ_SHIELDS:
+        if (!is_hybrid(item.sub_type))
+            _unequip_armour_effect(item, meld, slot);
+        else
+            _unequip_weapon_effect(item, msg, meld, slot);
+        break;
+    case OBJ_MISCELLANY: // Lantern of shadows
+    case OBJ_WEAPONS:
+    case OBJ_STAVES:
+        _unequip_weapon_effect(item, msg, meld, slot);
+        break;
+    case OBJ_JEWELLERY:
         _unequip_jewellery_effect(item, msg, meld, slot);
+        break;
+    default: // No other item classes are currently wieldable.
+        break;
+    }
 }
 
 ///////////////////////////////////////////////////////////
