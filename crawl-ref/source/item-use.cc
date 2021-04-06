@@ -2501,7 +2501,36 @@ bool subsume_item(int slot)
         return false;
     }
 
-    equip_item(EQ_CYTOPLASM, slot);
+    const int equipn =
+        (slot == -1) ? prompt_invent_item("Subsume which item?",
+            menu_type::invlist,
+            OSEL_SUBSUMABLE,
+            OPER_WEAR,
+            invprompt_flag::no_warning
+            | invprompt_flag::hide_known)
+        : slot;
+
+    if (prompt_failed(equipn))
+        return false;
+
+    const item_def item = you.inv[equipn];
+
+    if (item_is_equipped(item))
+    {
+        mpr("You're already using that!");
+        return false;
+    }
+
+    if (!item_is_subsumable(item))
+    {
+        mpr("You can't subsume that!");
+        return false;
+    }
+
+    if (you.equip[EQ_CYTOPLASM] != -1)
+        unequip_item(EQ_CYTOPLASM);
+
+    equip_item(EQ_CYTOPLASM, equipn);
 
     return true;
 }
@@ -3683,7 +3712,7 @@ string cannot_read_item_reason(const item_def &item)
             return "";
 
         case SCR_CURSE_ARMOUR:
-            return _no_items_reason(OSEL_UNCURSED_WORN_ARMOUR);
+            return "Removed item can't be used.";
 
         case SCR_CURSE_JEWELLERY:
             return _no_items_reason(OSEL_UNCURSED_WORN_JEWELLERY);

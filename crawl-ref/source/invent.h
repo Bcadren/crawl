@@ -31,8 +31,8 @@ enum object_selector
     OSEL_EVOKABLE                =  -9,
     OSEL_WORN_ARMOUR             = -10,
     OSEL_CURSED_WORN             = -11,
+    OSEL_SUBSUMABLE              = -12,
 #if TAG_MAJOR_VERSION == 34
-    OSEL_UNCURSED_WORN_ARMOUR    = -12,
     OSEL_UNCURSED_WORN_JEWELLERY = -13,
 #endif
     OSEL_BLESSABLE_ITEM          = -14,

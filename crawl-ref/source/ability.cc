@@ -4028,7 +4028,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
         _add_talent(talents, ABIL_SUBSUME, check_confused);
 
-    if (you.equip[EQ_CYTOPLASM])
+    if (you.equip[EQ_CYTOPLASM] != -1)
         _add_talent(talents, ABIL_EJECT, check_confused);
 
     if (you.duration[DUR_TRANSFORMATION] && !you.transform_uncancellable)
