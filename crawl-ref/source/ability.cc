@@ -329,6 +329,8 @@ static const ability_def Ability_List[] =
 
     { ABIL_TURN_INVISIBLE, "Turn Invisible",
       0, 200, 100, 0, {fail_basis::xl, 50, 2}, abflag::none },
+    { ABIL_SUBSUME, "Subsume Item", 0, 0, 0, 0,{}, abflag::starve_ok },
+    { ABIL_EJECT, "Eject Item", 0, 0, 0, 0,{}, abflag::starve_ok },
 
     { ABIL_CANCEL_PPROJ, "Cancel Portal Projectile",
       0, 0, 0, 0, {}, abflag::instant | abflag::starve_ok },
@@ -2628,6 +2630,16 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         potionlike_effect(POT_INVISIBILITY, 20 + you.experience_level + you.skill(SK_INVOCATIONS));
         break;
 
+    case ABIL_SUBSUME:
+        if (subsume_item())
+            return spret::success;
+        return spret::abort;
+
+    case ABIL_EJECT:
+        if (eject_item())
+            return spret::success;
+        return spret::abort;
+
     case ABIL_EVOKE_TURN_INVISIBLE:     // cloaks, randarts
         if (!invis_allowed())
             return spret::abort;
@@ -4012,6 +4024,12 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     if (you.get_mutation_level(MUT_TRANSLUCENT_SKIN) == 3 && !you.duration[DUR_INVIS])
         _add_talent(talents, ABIL_TURN_INVISIBLE, check_confused);
+
+    if (you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+        _add_talent(talents, ABIL_SUBSUME, check_confused);
+
+    if (you.equip[EQ_CYTOPLASM])
+        _add_talent(talents, ABIL_EJECT, check_confused);
 
     if (you.duration[DUR_TRANSFORMATION] && !you.transform_uncancellable)
         _add_talent(talents, ABIL_END_TRANSFORMATION, check_confused);

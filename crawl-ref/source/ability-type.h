@@ -70,8 +70,10 @@ enum ability_type
 
     // Jiyva Mutations
     ABIL_TURN_INVISIBLE = 250,
+    ABIL_SUBSUME,
+    ABIL_EJECT,
 
-    ABIL_MAX_INTRINSIC = ABIL_TURN_INVISIBLE,
+    ABIL_MAX_INTRINSIC = ABIL_EJECT,
 
     // Evoking items.
     ABIL_EVOKE_BERSERK = 500,
