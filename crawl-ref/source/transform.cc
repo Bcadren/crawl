@@ -129,9 +129,15 @@ bool Form::slot_available(int slot) const
         return !all_blocked(EQF_WEAR);
     if (slot == EQ_RINGS)
         return !all_blocked(EQF_RINGS);
+    if (slot == EQ_CYTOPLASM)
+        return true;
 
     if (slot == EQ_STAFF)
+    {
+        if (you.slot_item(EQ_CYTOPLASM)->base_type == OBJ_STAVES)
+            return true;
         slot = EQ_WEAPON0;
+    }
     return !(blocked_slots & SLOTF(slot));
 }
 

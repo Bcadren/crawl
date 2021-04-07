@@ -506,12 +506,9 @@ int calc_spell_power(spell_type spell, bool apply_intel, bool fail_rate_check,
 
 static int _additive_power(spell_type spell)
 {
-    item_def * staff;
-    if (you.weapon(0) && you.weapon(0)->base_type == OBJ_STAVES)
-        staff = you.weapon(0);
-    else if (you.weapon(1) && you.weapon(1)->base_type == OBJ_STAVES)
-        staff = you.weapon(1);
-    else
+    item_def * staff = you.staff();
+
+    if (!staff)
         return 0;
 
     if (staff_enhances_spell(staff, spell))
@@ -706,9 +703,7 @@ static int _spell_enhancement(spell_type spell)
     const spschools_type typeflags = get_spell_disciplines(spell);
     int enhanced = 0;
 
-    if (you.weapon(0) && you.weapon(0)->base_type == OBJ_STAVES && staff_enhances_spell(you.weapon(0), spell))
-        enhanced++;
-    else if (you.weapon(1) && you.weapon(1)->base_type == OBJ_STAVES && staff_enhances_spell(you.weapon(1), spell))
+    if (you.staff() && staff_enhances_spell(you.staff(), spell))
         enhanced++;
 
     if (typeflags & spschool::hexes)

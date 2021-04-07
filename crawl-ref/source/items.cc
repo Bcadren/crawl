@@ -2561,6 +2561,12 @@ bool drop_item(int item_dropped, int quant_drop)
 {
     item_def &item = you.inv[item_dropped];
 
+    if (item.soul_bound())
+    {
+        mprf("%s is bound to your soul!", item.name(DESC_THE).c_str());
+        return false;
+    }
+
     if (quant_drop < 0 || quant_drop > item.quantity)
         quant_drop = item.quantity;
 
@@ -2593,13 +2599,6 @@ bool drop_item(int item_dropped, int quant_drop)
         return false;
     }
 
-    if ((item_dropped == you.equip[EQ_WEAPON0] || item_dropped == you.equip[EQ_WEAPON1])
-        && item.soul_bound())
-    {
-        mprf("%s is bound to your soul!", item.name(DESC_THE).c_str());
-        return false;
-    }
-
     for (int i = EQ_MIN_ARMOUR; i <= EQ_MAX_ARMOUR; i++)
     {
         if (item_dropped == you.equip[i] && you.equip[i] != -1)
@@ -2626,13 +2625,8 @@ bool drop_item(int item_dropped, int quant_drop)
     //
     // Unwield needs to be done before copy in order to clear things
     // like temporary brands. -- bwr
-    if ((item_dropped == you.equip[EQ_WEAPON0])  && quant_drop >= item.quantity)
+    if ((item_dropped == you.equip[EQ_WEAPON0]) && quant_drop >= item.quantity)
     {
-        if (you.weapon(0)->soul_bound())
-        {
-            mprf("%s is bound to your soul!", you.weapon(0)->name(DESC_THE).c_str());
-            return false;
-        }
         if (!unwield_item(true, true))
             return false;
         // May have been destroyed by removal. Returning true because we took
@@ -2643,12 +2637,17 @@ bool drop_item(int item_dropped, int quant_drop)
 
     if ((item_dropped == you.equip[EQ_WEAPON1]) && quant_drop >= item.quantity)
     {
-        if (you.weapon(1)->soul_bound())
-        {
-            mprf("%s is bound to your soul!", you.weapon(1)->name(DESC_THE).c_str());
-            return false;
-        }
         if (!unwield_item(false, true))
+            return false;
+        // May have been destroyed by removal. Returning true because we took
+        // time to swap away.
+        else if (!item.defined())
+            return true;
+    }
+
+    if (item_dropped == you.equip[EQ_CYTOPLASM] && quant_drop >= item.quantity)
+    {
+        if (!eject_item())
             return false;
         // May have been destroyed by removal. Returning true because we took
         // time to swap away.

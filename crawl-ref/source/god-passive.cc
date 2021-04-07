@@ -532,6 +532,11 @@ void ash_check_bondage(bool msg)
             s = ET_LEFT;
         else if (i <= EQ_MAX_ARMOUR)
             s = ET_ARMOUR;
+        else if (!you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION)
+            && i == EQ_CYTOPLASM)
+        {
+            continue;
+        }
         // Missing hands mean fewer rings
         else if (you.species != SP_OCTOPODE && i == EQ_LEFT_RING
             && you.get_mutation_level(MUT_MISSING_HAND))

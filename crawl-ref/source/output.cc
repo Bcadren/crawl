@@ -563,11 +563,11 @@ static int _count_digits(int val)
 static const equipment_type e_order[] =
 {
     EQ_WEAPON0, EQ_WEAPON1, EQ_BODY_ARMOUR, EQ_HELMET, EQ_CLOAK,
-    EQ_GLOVES, EQ_BOOTS, EQ_AMULET, EQ_LEFT_RING, EQ_RIGHT_RING,
-    EQ_FAIRY_JEWEL, EQ_RING_ONE, EQ_RING_TWO, EQ_RING_THREE, 
-    EQ_RING_FOUR, EQ_RING_FIVE, EQ_RING_SIX, EQ_RING_SEVEN, 
-    EQ_RING_EIGHT, EQ_RING_LEFT_TENDRIL, EQ_RING_RIGHT_TENDRIL, 
-    EQ_RING_AMULET,
+    EQ_GLOVES, EQ_BOOTS, EQ_CYTOPLASM, EQ_AMULET, EQ_LEFT_RING, 
+    EQ_RIGHT_RING, EQ_FAIRY_JEWEL, EQ_RING_ONE, EQ_RING_TWO, 
+    EQ_RING_THREE, EQ_RING_FOUR, EQ_RING_FIVE, EQ_RING_SIX, 
+    EQ_RING_SEVEN, EQ_RING_EIGHT, EQ_RING_LEFT_TENDRIL, 
+    EQ_RING_RIGHT_TENDRIL, EQ_RING_AMULET,
 };
 
 static void _print_stats_equip(int x, int y)
@@ -2015,6 +2015,9 @@ static void _print_overview_screen_equip(column_composer& cols,
         if (eqslot == EQ_RING_AMULET && !you_can_wear(eqslot))
             continue;
 
+        if (eqslot == EQ_CYTOPLASM && !you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+            continue;
+
         const string slot_name_lwr = lowercase_string(equip_slot_to_name(eqslot));
 
         string str;
@@ -2060,6 +2063,8 @@ static void _print_overview_screen_equip(column_composer& cols,
             const bool plural = !you.get_mutation_level(MUT_MISSING_HAND);
             str = string("  - Blade Hand") + (plural ? "s" : "");
         }
+        else if (eqslot == EQ_CYTOPLASM)
+            str = "<darkgrey>(nothing subsumed)</darkgrey>";
         else if (eqslot == EQ_BOOTS
                  && (you.species == SP_NAGA || you.species == SP_CENTAUR
                      || you.char_class == JOB_NAGA || you.char_class == JOB_CENTAUR))

@@ -832,6 +832,9 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
         return MB_FALSE;
         break;
 
+    case EQ_CYTOPLASM:
+        return you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION) ? MB_TRUE : MB_FALSE;
+
     default:
         break;
     }
@@ -978,6 +981,12 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
         {
             ret++;
         }
+        if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+            && item->is_type(OBJ_STAVES, sub_type)
+            && (calc_unid || item_type_known(*item)))
+        {
+            ret++;
+        }
         break;
 
     case EQ_AMULET:
@@ -985,13 +994,13 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
             && item->sub_type == sub_type
             && (calc_unid || item_type_known(*item)))
         {
-            ret += 1;
+            ret++;
         }
         if ((item = slot_item(static_cast<equipment_type>(EQ_FAIRY_JEWEL)))
             && item->sub_type == sub_type
             && (calc_unid || item_type_known(*item)))
         {
-            ret += 1;
+            ret++;
         }
         break;
 
@@ -1006,7 +1015,7 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
                 && (calc_unid
                     || item_type_known(*item)))
             {
-                ret += 1;
+                ret++;
             }
         }
         break;
@@ -1086,6 +1095,15 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
         {
             ret++;
         }
+
+        if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+            && (item->base_type == OBJ_STAVES)
+            && get_armour_ego_type(*item) == special
+            && (calc_unid || item_type_known(*item)))
+        {
+            ret++;
+        }
+
         break;
 
     case EQ_ALL_ARMOUR:
@@ -6772,6 +6790,11 @@ item_def * player::staff() const
 {
     if (you.duration[DUR_STAFF])
         return nullptr;
+
+    item_def * item = you.slot_item(static_cast<equipment_type>(EQ_CYTOPLASM));
+    if (item && item->base_type == OBJ_STAVES)
+        return item;
+
     if (weapon(0) && weapon(0)->base_type == OBJ_STAVES)
         return weapon(0);
     else if (weapon(1) && weapon(1)->base_type == OBJ_STAVES)

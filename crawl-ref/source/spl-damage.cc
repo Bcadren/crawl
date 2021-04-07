@@ -955,7 +955,9 @@ spret cast_freeze(int pow, monster* mons, bool fail)
 
     if (you.staff() && staff_enhances_spell(you.staff(), SPELL_FREEZE)
                     && get_staff_facet(*you.staff()) == SPSTF_MENACE)
+    {
         orig_hurted = roll_dice(2, 3 + pow / 3);
+    }
     else
         orig_hurted = roll_dice(1, 3 + pow / 3);
     if (chaos)
