@@ -192,6 +192,22 @@ bool ArmourOnDelay::try_interrupt()
     return false;
 }
 
+bool SubsumptionDelay::try_interrupt()
+{
+    if (duration > 1 && !was_prompted)
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Keep subsuming?", false, 0, false))
+        {
+            mprf("You stop subsuming %s.", item.name(DESC_YOUR).c_str());
+            return true;
+        }
+        else
+            was_prompted = true;
+    }
+    return false;
+}
+
 bool ArmourOffDelay::try_interrupt()
 {
     if (duration > 1 && !was_prompted)
@@ -200,6 +216,22 @@ bool ArmourOffDelay::try_interrupt()
             && !yesno("Keep disrobing?", false, 0, false))
         {
             mpr("You stop removing your armour.");
+            return true;
+        }
+        else
+            was_prompted = true;
+    }
+    return false;
+}
+
+bool EjectionDelay::try_interrupt()
+{
+    if (duration > 1 && !was_prompted)
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Keep ejecting?", false, 0, false))
+        {
+            mprf("You stop ejecting %s.", item.name(DESC_YOUR).c_str());
             return true;
         }
         else
@@ -487,9 +519,19 @@ void ArmourOnDelay::start()
     mprf(MSGCH_MULTITURN_ACTION, "You start putting on your armour.");
 }
 
+void SubsumptionDelay::start()
+{
+    mprf(MSGCH_MULTITURN_ACTION, "You start subsuming %s.", item.name(DESC_YOUR).c_str());
+}
+
 void ArmourOffDelay::start()
 {
     mprf(MSGCH_MULTITURN_ACTION, "You start removing your armour.");
+}
+
+void EjectionDelay::start()
+{
+    mprf(MSGCH_MULTITURN_ACTION, "You start ejecting %s.", item.name(DESC_THE).c_str());
 }
 
 void MemoriseDelay::start()
@@ -815,9 +857,21 @@ void ArmourOnDelay::finish()
     check_item_hint(armour, old_talents);
 }
 
+void SubsumptionDelay::finish()
+{
+    mprf("You finish subsuming %s.", item.name(DESC_YOUR).c_str());
+
+    equip_item(EQ_CYTOPLASM, item.link);
+}
+
 bool ArmourOffDelay::invalidated()
 {
     return !armour.defined();
+}
+
+bool EjectionDelay::invalidated()
+{
+    return !item.defined();
 }
 
 void ArmourOffDelay::finish()
@@ -830,6 +884,12 @@ void ArmourOffDelay::finish()
 #endif
     mprf("You finish taking off %s.", armour.name(DESC_YOUR).c_str());
     unequip_item(slot);
+}
+
+void EjectionDelay::finish()
+{
+    mprf("You finish ejecting %s.", item.name(DESC_YOUR).c_str());
+    unequip_item(EQ_CYTOPLASM);
 }
 
 void MemoriseDelay::finish()

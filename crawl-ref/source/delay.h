@@ -259,6 +259,32 @@ public:
     }
 };
 
+class SubsumptionDelay : public Delay
+{
+    item_def& item;
+    bool was_prompted = false;
+
+    void start() override;
+
+    void tick() override
+    {
+        mprf(MSGCH_MULTITURN_ACTION, "You continue subsuming %s.", item.name(DESC_YOUR).c_str());
+    }
+
+    void finish() override;
+public:
+    SubsumptionDelay(int dur, item_def& it) :
+        Delay(dur), item(it)
+    { }
+
+    bool try_interrupt() override;
+
+    const char* name() const override
+    {
+        return "subsume";
+    }
+};
+
 class ArmourOffDelay : public Delay
 {
     item_def& armour;
@@ -285,6 +311,34 @@ public:
     const char* name() const override
     {
         return "armour_on";
+    }
+};
+
+class EjectionDelay : public Delay
+{
+    item_def& item;
+    bool was_prompted = false;
+
+    void start() override;
+
+    void tick() override
+    {
+        mprf(MSGCH_MULTITURN_ACTION, "You continue ejecting %s from your cytoplasm.", item.name(DESC_THE).c_str());
+    }
+
+    bool invalidated() override;
+
+    void finish() override;
+public:
+    EjectionDelay(int dur, item_def& it) :
+        Delay(dur), item(it)
+    { }
+
+    bool try_interrupt() override;
+
+    const char* name() const override
+    {
+        return "eject";
     }
 };
 
