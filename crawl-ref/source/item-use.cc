@@ -823,6 +823,16 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
         }
     }
 
+    if (new_wpn.base_type == OBJ_STAVES && you.slot_item(EQ_CYTOPLASM) && you.slot_item(EQ_CYTOPLASM)->base_type == OBJ_STAVES)
+    {
+        if (!yesno("You can only attune to one staff at a time. Eject your current staff?", true, 'n'))
+        {
+            canned_msg(MSG_OK);
+            return false;
+        }
+        eject_item();
+    }
+
     if (you.hands_reqd(new_wpn) == HANDS_TWO)
     {
         if (you.weapon(0))
@@ -903,7 +913,6 @@ bool wield_weapon(bool auto_wield, int slot, bool show_weff_messages,
     else if (new_wpn.base_type == OBJ_STAVES && you.weapon(1) && you.weapon(1)->base_type == OBJ_STAVES)
     {
         if (you.weapon(1)->soul_bound())
-
         {
             mpr("You can't unwield your magical staff to draw a new one.");
             return false;
@@ -2545,16 +2554,53 @@ bool subsume_item(int slot)
 
     item_def &item = you.inv[equipn];
 
-    if (item_is_equipped(item))
-    {
-        mpr("You're already using that!");
-        return false;
-    }
-
     if (!item_is_subsumable(item))
     {
         mpr("You can't subsume that!");
         return false;
+    }
+
+    if (item_is_equipped(item))
+    {
+        switch (item.base_type)
+        {
+        case OBJ_ARMOURS: // Removing armour is slow so prompt...
+            if (!yesno("You have to take that off in order to subsume it. Continue?", true, 'n'))
+            {
+                canned_msg(MSG_OK);
+                return false;
+            }
+            takeoff_armour(item.link);
+            break;
+        case OBJ_JEWELLERY: // Rest are fast so no prompt.
+            remove_ring(item.link);
+            break;
+        case OBJ_SHIELDS:
+        case OBJ_STAVES:
+        case OBJ_WEAPONS:
+        case OBJ_MISCELLANY: // Lantern of Shadows.
+            unwield_item(item.link == you.equip[EQ_WEAPON0]);
+            break;
+        default:
+            mprf(MSGCH_ERROR, "Unhandled item type.");
+            return false;
+        }
+    }
+
+    if (item.base_type == OBJ_STAVES)
+    {
+        const bool hand0 = you.weapon(0) && you.weapon(0)->base_type == OBJ_STAVES;
+        const bool hand1 = you.weapon(1) && you.weapon(1)->base_type == OBJ_STAVES;
+
+        if (hand0 || hand1)
+        {
+            if (!yesno("You can only attune one staff at a time, unwield your current one?", true, 'n'))
+            {
+                canned_msg(MSG_OK);
+                return false;
+            }
+            unwield_item(hand0);
+        }
     }
 
     if (you.equip[EQ_CYTOPLASM] != -1)

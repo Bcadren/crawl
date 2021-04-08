@@ -1601,6 +1601,28 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
         // randart weapons:
         rf += you.scan_artefacts(ARTP_FIRE, calc_unid);
 
+        // amulet of chaos
+        if (calc_unid && you.wearing(EQ_AMULET, AMU_CHAOS) && one_chance_in(3))
+            rf++;
+
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside)
+        {
+            if (get_armour_ego_type(*inside) == SPARM_FIRE_RESISTANCE || get_armour_ego_type(*inside) == SPARM_RESISTANCE
+                || inside->is_type(OBJ_JEWELLERY, RING_FIRE) || get_weapon_brand(*inside) == SPWPN_MOLTEN)
+            {
+                rf++;
+            }
+            else if (inside->is_type(OBJ_JEWELLERY, RING_ICE))
+                rf--;
+            else if (inside->is_type(OBJ_JEWELLERY, AMU_CHAOS) && one_chance_in(3))
+                rf++;
+
+            if (inside->base_type == OBJ_ARMOURS)
+                rf += armour_type_prop(inside->sub_type, ARMF_RES_FIRE);
+        }
+
         // dragonskin cloak: 0.5 to draconic resistances
         if (calc_unid && player_equip_unrand(UNRAND_DRAGONSKIN)
             && coinflip())
@@ -1653,6 +1675,10 @@ int player_res_steam(bool calc_unid, bool temp, bool items)
         const item_def *body_armour = you.slot_item(EQ_BODY_ARMOUR);
         if (body_armour)
             res += armour_type_prop(body_armour->sub_type, ARMF_RES_STEAM) * 2;
+
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+        if (inside && inside->base_type == OBJ_ARMOURS)
+            res += armour_type_prop(inside->sub_type, ARMF_RES_STEAM) * 2;
     }
 
     res += rf * 2;
@@ -2579,6 +2605,10 @@ static int _player_evasion_bonuses()
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 5;
+
+    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+    if (inside && inside->is_type(OBJ_JEWELLERY, RING_EVASION))
+        evbonus += 5;
 
     // If you have an active amulet of the acrobat and just moved or waited, get massive
     // EV bonus.
@@ -6942,6 +6972,20 @@ int player::base_ac(int scale) const
     if (you.weapon(1) && (you.weapon(1)->base_type == OBJ_SHIELDS && is_hybrid(you.weapon(1)->sub_type)
         || you.weapon(1)->base_type == OBJ_WEAPONS) && get_weapon_brand(*you.weapon(1)) == SPWPN_PROTECTION)
         AC += 300;
+
+    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+    if (inside)
+    {
+        if (inside->base_type == OBJ_ARMOURS)
+            AC += inside->plus * 100;
+        else if (inside->is_type(OBJ_JEWELLERY, RING_PROTECTION))
+            AC += 500;
+        if (get_weapon_brand(*inside) == SPWPN_PROTECTION || get_weapon_brand(*inside) == SPWPN_VORPAL
+            || get_armour_ego_type(*inside) == SPARM_PROTECTION)
+        {
+            AC += 300;
+        }
+    }
 
     AC += scan_artefacts(ARTP_AC) * 100;
 

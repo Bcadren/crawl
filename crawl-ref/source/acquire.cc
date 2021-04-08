@@ -1107,7 +1107,7 @@ static void _adjust_brand(item_def &item, bool divine, int agent)
         if (agent == GOD_XOM && item.base_type == OBJ_WEAPONS && one_chance_in(4))
             set_item_ego_type(item, SPWPN_CHAOS);
         // BCADNOTE: Other gods adjusting brand would be neat but other gods need to give items
-        // that can be branded and have brand preferances for that to happen.
+        // that can be branded and have brand preferences for that to happen.
         return;
     }
 

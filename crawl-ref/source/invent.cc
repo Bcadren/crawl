@@ -2087,7 +2087,7 @@ bool item_is_subsumable(const item_def &item)
     if (!you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
         return false;
 
-    if (item_is_equipped(item))
+    if (item.link == you.equip[EQ_CYTOPLASM])
         return false;
 
     // The lantern needs to be wielded to be used.
