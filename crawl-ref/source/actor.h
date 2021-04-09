@@ -116,7 +116,7 @@ public:
     virtual item_def *slot_item(equipment_type eq,
                                 bool include_melded=false) const = 0;
     virtual int wearing(equipment_type slot, int sub_type,
-                        bool calc_unid = true) const = 0;
+                        bool calc_unid = true, bool count_jiyva = true) const = 0;
     virtual int wearing_ego(equipment_type slot, int sub_type,
                             bool calc_unid = true) const = 0;
     virtual int scan_artefacts(artefact_prop_type which_property,

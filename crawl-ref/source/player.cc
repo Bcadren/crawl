@@ -951,7 +951,7 @@ bool berserk_check_wielded_weapon()
 
 // Looks in equipment "slot" to see if there is an equipped "sub_type".
 // Returns number of matches (in the case of rings, both are checked)
-int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
+int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool count_jiyva) const
 {
     int ret = 0;
 
@@ -1002,6 +1002,12 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
         {
             ret++;
         }
+        if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+            && item->is_type(OBJ_JEWELLERY, sub_type)
+            && (calc_unid || item_type_known(*item)))
+        {
+            ret++;
+        }
         break;
 
     case EQ_RINGS:
@@ -1017,6 +1023,13 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
             {
                 ret++;
             }
+
+            if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+                && item->is_type(OBJ_JEWELLERY, sub_type)
+                && (calc_unid || item_type_known(*item)))
+            {
+                ret++;
+            }
         }
         break;
 
@@ -1025,9 +1038,22 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
         die("EQ_ALL_ARMOUR is not a proper slot");
         break;
 
+    case EQ_BODY_ARMOUR:
+    case EQ_BOOTS:
+    case EQ_CLOAK:
+    case EQ_GLOVES:
+    case EQ_HELMET:
+        if (count_jiyva && (item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+            && item->is_type(OBJ_ARMOURS, sub_type)
+            && (calc_unid || item_type_known(*item)))
+        {
+            ret++;
+        }
+        // fallthrough
     default:
         if (! (slot >= EQ_FIRST_EQUIP && slot < NUM_EQUIP))
             die("invalid slot");
+
         if ((item = slot_item(slot))
             && item->sub_type == sub_type
             && (calc_unid || item_type_known(*item)))
@@ -1047,8 +1073,21 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid) const
 int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 {
     int ret = 0;
-
     const item_def* item;
+
+    if ((slot > EQ_MIN_ARMOUR && slot < EQ_MAX_ARMOUR) || slot == EQ_ALL_ARMOUR)
+    {
+        // Weird Jiyva Slots work regardless of which armour's ego you're after.
+
+        if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+            && (item->base_type == OBJ_ARMOURS)
+            && get_armour_ego_type(*item) == special
+            && (calc_unid || item_type_known(*item)))
+        {
+            ret++;
+        }
+    }
+
     switch (slot)
     {
     case EQ_WEAPON0:
@@ -1079,7 +1118,6 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
         break;
 
     case EQ_STAFF:
-
         if (weapon(0)
             && (weapon(0)->base_type == OBJ_STAVES)
             && (calc_unid || item_type_known(*weapon(0)))
@@ -1098,12 +1136,11 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
 
         if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
             && (item->base_type == OBJ_STAVES)
-            && get_armour_ego_type(*item) == special
+            && get_staff_facet(*item) == special
             && (calc_unid || item_type_known(*item)))
         {
             ret++;
         }
-
         break;
 
     case EQ_ALL_ARMOUR:
@@ -1127,6 +1164,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     default:
         if (slot < EQ_MIN_ARMOUR || slot > EQ_MAX_ARMOUR)
             die("invalid slot: %d", slot);
+
         // Check a specific armour slot for an ego type:
         if ((item = slot_item(static_cast<equipment_type>(slot)))
             && get_armour_ego_type(*item) == special
@@ -1150,6 +1188,13 @@ bool player_equip_unrand(int unrand_index)
                                            entry->sub_type);
 
     item_def* item;
+
+    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+    // This may lead to some weirdness like hellfire shots from any ranged weapon
+    // when Hellfire (Crossbow) is subsumed; but this is interesting and fine.
+    if (inside && is_unrandom_artefact(*inside, unrand_index))
+        return true;
 
     switch (slot)
     {
@@ -1605,18 +1650,12 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
         if (calc_unid && you.wearing(EQ_AMULET, AMU_CHAOS) && one_chance_in(3))
             rf++;
 
+        // Subsumption effects not handled elsewhere.
         const item_def * inside = you.slot_item(EQ_CYTOPLASM);
 
         if (inside)
         {
-            if (get_armour_ego_type(*inside) == SPARM_FIRE_RESISTANCE || get_armour_ego_type(*inside) == SPARM_RESISTANCE
-                || inside->is_type(OBJ_JEWELLERY, RING_FIRE) || get_weapon_brand(*inside) == SPWPN_MOLTEN)
-            {
-                rf++;
-            }
-            else if (inside->is_type(OBJ_JEWELLERY, RING_ICE))
-                rf--;
-            else if (inside->is_type(OBJ_JEWELLERY, AMU_CHAOS) && one_chance_in(3))
+            if (get_weapon_brand(*inside) == SPWPN_MOLTEN)
                 rf++;
 
             if (inside->base_type == OBJ_ARMOURS)
@@ -1749,6 +1788,18 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
         if (calc_unid && you.wearing(EQ_AMULET, AMU_CHAOS) && one_chance_in(3))
             rc++;
 
+        // Subsumption
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+        
+        if (inside)
+        {
+            if (get_weapon_brand(*inside) == SPWPN_FREEZING)
+                rc++;
+
+            if (inside->base_type == OBJ_ARMOURS)
+                rc += armour_type_prop(inside->sub_type, ARMF_RES_COLD);
+        }
+
         // dragonskin cloak: 0.5 to draconic resistances
         if (calc_unid && player_equip_unrand(UNRAND_DRAGONSKIN) && coinflip())
             rc++;
@@ -1803,15 +1854,24 @@ bool player::res_corr(bool calc_unid, bool items, bool mt) const
     if (you.duration[DUR_RESISTANCE])
         return true;
 
-    if (calc_unid && items)
+    if (items)
     {
-        // amulet of chaos
-        if (you.wearing(EQ_AMULET, AMU_CHAOS) && one_chance_in(3))
+        // Subsumption
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside && get_weapon_brand(*inside) == SPWPN_ACID)
             return true;
 
-        // dragonskin cloak: 0.5 to draconic resistances
-        if (player_equip_unrand(UNRAND_DRAGONSKIN) && coinflip())
-            return true;
+        if (calc_unid)
+        {
+            // amulet of chaos
+            if (you.wearing(EQ_AMULET, AMU_CHAOS) && one_chance_in(3))
+                return true;
+
+            // dragonskin cloak: 0.5 to draconic resistances
+            if (player_equip_unrand(UNRAND_DRAGONSKIN) && coinflip())
+                return true;
+        }
     }
 
     // BCADDO: This mainline TODO:
@@ -1880,6 +1940,18 @@ int player_res_electricity(bool calc_unid, bool temp, bool items)
 
         // randart weapons:
         re += you.scan_artefacts(ARTP_ELECTRICITY, calc_unid);
+
+        // Subsumption
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside)
+        {
+            if (get_weapon_brand(*inside) == SPWPN_ELECTROCUTION)
+                re++;
+
+            if (inside->base_type == OBJ_ARMOURS)
+                re += armour_type_prop(inside->sub_type, ARMF_RES_ELEC);
+        }
 
         if (calc_unid)
         {
@@ -1969,17 +2041,8 @@ bool player_kiku_res_torment()
 // If temp is set to false, temporary sources or resistance won't be counted.
 int player_res_poison(bool calc_unid, bool temp, bool items)
 {
-    switch (you.undead_state(temp))
-    {
-        case US_ALIVE:
-            break;
-        case US_HUNGRY_DEAD: //ghouls
-        case US_UNDEAD: // mummies & lichform
-        case US_GHOST: // spectres
-        case US_SEMI_UNDEAD:
-            return 3;
-            break;
-    }
+    if (you.undead_state())
+        return 3;
 
     if (you.is_nonliving(temp)
         || temp && get_form()->res_pois() == 3
@@ -2008,6 +2071,18 @@ int player_res_poison(bool calc_unid, bool temp, bool items)
 
         // rPois+ artefacts
         rp += you.scan_artefacts(ARTP_POISON, calc_unid);
+
+        // Subsumption
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside)
+        {
+            if (get_weapon_brand(*inside) == SPWPN_VENOM)
+                rp++;
+            
+            if (inside->base_type == OBJ_ARMOURS)
+                rp += armour_type_prop(inside->sub_type, ARMF_RES_POISON);
+        }
 
         if (calc_unid)
         {
@@ -2234,6 +2309,19 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
         const item_def *body_armour = you.slot_item(EQ_BODY_ARMOUR);
         if (body_armour)
             pl += armour_type_prop(body_armour->sub_type, ARMF_RES_NEG);
+
+        const item_def *inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside)
+        {
+            if (get_weapon_brand(*inside) == SPWPN_VAMPIRISM || get_weapon_brand(*inside) == SPWPN_PAIN
+                || get_weapon_brand(*inside) == SPWPN_DRAINING)
+            {
+                pl++;
+            }
+            if (inside->base_type == OBJ_ARMOURS)
+                pl += armour_type_prop(inside->sub_type, ARMF_RES_NEG);
+        }
 
         // randart wpns
         pl += you.scan_artefacts(ARTP_NEGATIVE_ENERGY, calc_unid);
@@ -2605,10 +2693,6 @@ static int _player_evasion_bonuses()
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 5;
-
-    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
-    if (inside && inside->is_type(OBJ_JEWELLERY, RING_EVASION))
-        evbonus += 5;
 
     // If you have an active amulet of the acrobat and just moved or waited, get massive
     // EV bonus.
@@ -3858,8 +3942,9 @@ int player_stealth()
     if (you.confused())
         stealth /= 3;
 
-    const item_def *arm = you.slot_item(EQ_BODY_ARMOUR, false);
-    const item_def *boots = you.slot_item(EQ_BOOTS, false);
+    const item_def *arm = you.slot_item(EQ_BODY_ARMOUR);
+    const item_def *boots = you.slot_item(EQ_BOOTS);
+    const item_def *inside = you.slot_item(EQ_CYTOPLASM);
 
     if (arm)
     {
@@ -3871,6 +3956,15 @@ int player_stealth()
 
         const int pips = armour_type_prop(arm->sub_type, ARMF_STEALTH);
         stealth += pips * STEALTH_PIP;
+    }
+
+    if (inside && inside->base_type == OBJ_ARMOURS)
+    {
+        const int pips = armour_type_prop(inside->sub_type, ARMF_STEALTH);
+        stealth += pips * STEALTH_PIP;
+
+        if (get_armour_ego_type(*inside) == SPARM_STEALTH)
+            stealth += STEALTH_PIP;
     }
 
     stealth += STEALTH_PIP * you.scan_artefacts(ARTP_STEALTH);
@@ -4344,6 +4438,11 @@ int slaying_bonus(bool ranged, bool weapon)
         && !ranged && weapon)
         ret += 2;
 
+    const item_def *inside = you.slot_item(EQ_CYTOPLASM);
+
+    if (inside && inside->base_type == OBJ_WEAPONS)
+        ret += inside->plus;
+
     ret += 3 * augmentation_amount();
 
     if (you.duration[DUR_SONG_OF_SLAYING])
@@ -4744,13 +4843,18 @@ int get_real_mp(bool include_items)
     {
         enp +=  9 * you.wearing(EQ_RINGS, RING_MAGICAL_POWER);
         enp +=      you.scan_artefacts(ARTP_MAGICAL_POWER);
+
+        if (you.wearing_ego(EQ_WEAPON0, SPWPN_ANTIMAGIC) && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
+            enp /= 3;
+
+        if (you.wearing_ego(EQ_WEAPON1, SPWPN_ANTIMAGIC) && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
+            enp /= 3;
+
+        const item_def *inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside && get_weapon_brand(*inside) == SPWPN_ANTIMAGIC && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
+            enp /= 3;
     }
-
-    if (include_items && you.wearing_ego(EQ_WEAPON0, SPWPN_ANTIMAGIC) && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
-        enp /= 3;
-
-    if (include_items && you.wearing_ego(EQ_WEAPON1, SPWPN_ANTIMAGIC) && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
-        enp /= 3;
 
     if (you.species == SP_FAIRY)
         enp = max(3, enp/5);
@@ -8081,7 +8185,7 @@ int player::has_claws(bool allow_tran) const
             return 0;
     }
 
-    if (you.wearing(EQ_GLOVES, ARM_CLAW))
+    if (you.wearing(EQ_GLOVES, ARM_CLAW, true, false))
         return 1;
 
     return get_mutation_level(MUT_CLAWS, allow_tran);
@@ -8089,7 +8193,7 @@ int player::has_claws(bool allow_tran) const
 
 bool player::has_usable_claws(bool allow_tran) const
 {
-    if (you.wearing(EQ_GLOVES, ARM_CLAW))
+    if (you.wearing(EQ_GLOVES, ARM_CLAW, true, false))
         return true;
     return !slot_item(EQ_GLOVES) && has_claws(allow_tran);
 }
@@ -8119,7 +8223,7 @@ bool player::has_usable_hooves(bool allow_tran) const
 {
     return has_hooves(allow_tran)
            && (!slot_item(EQ_BOOTS)
-               || wearing(EQ_BOOTS, ARM_CENTAUR_BARDING, true));
+               || wearing(EQ_BOOTS, ARM_CENTAUR_BARDING, true, false));
 }
 
 int player::has_fangs(bool allow_tran) const

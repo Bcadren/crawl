@@ -248,7 +248,7 @@ brand_type player::damage_brand(int which_attack)
     if (duration[DUR_CONFUSING_TOUCH])
         return SPWPN_CONFUSE;
 
-    if (you.wearing(EQ_GLOVES, ARM_CLAW) && !melded[EQ_GLOVES])
+    if (you.wearing(EQ_GLOVES, ARM_CLAW, true, false) && !melded[EQ_GLOVES])
         return get_weapon_brand(inv[equip[EQ_GLOVES]]);
 
     if (you.form == transformation::scorpion)

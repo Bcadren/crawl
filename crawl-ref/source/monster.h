@@ -280,7 +280,7 @@ public:
                              bool rescale = true) const override;
     int         has_claws(bool allow_tran = true) const override;
 
-    int wearing(equipment_type slot, int type, bool calc_unid = true) const
+    int wearing(equipment_type slot, int type, bool calc_unid = true, bool /*count_jiyva*/ = true) const
         override;
     int wearing_ego(equipment_type slot, int type, bool calc_unid = true) const
         override;

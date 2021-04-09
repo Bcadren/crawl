@@ -670,7 +670,7 @@ public:
 
     int       how_mutated(bool innate=false, bool levels=false, bool temp=true, bool ds=false) const;
 
-    int wearing(equipment_type slot, int sub_type, bool calc_unid = true) const
+    int wearing(equipment_type slot, int sub_type, bool calc_unid = true, bool count_jiyva = true) const
         override;
     int wearing_ego(equipment_type slot, int type, bool calc_unid = true) const
         override;

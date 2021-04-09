@@ -466,7 +466,7 @@ bool mons_class_flag(monster_type mc, monclass_flags_t bits)
     return me && (me->bitfields & bits);
 }
 
-int monster::wearing(equipment_type slot, int sub_type, bool calc_unid) const
+int monster::wearing(equipment_type slot, int sub_type, bool calc_unid, bool /*count_jiyva*/) const
 {
     int ret = 0;
     const item_def *item = 0;
