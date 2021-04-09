@@ -856,7 +856,6 @@ public:
     int stat_maxhp() const override  { return hp_max; }
     int stealth() const override     { return player_stealth(); }
 
-    bool shielded() const override;
     int shield_bonus(bool random = true) const override;
     int shield_block_penalty() const override;
     int shield_bypass_ability(int tohit) const override;
@@ -1044,7 +1043,7 @@ int player_res_poison(bool calc_unid = true, bool temp = true,
                       bool items = true);
 int player_res_magic(bool calc_unid = true, bool temp = true);
 
-int player_shield_class();
+int player_shield_class(bool temp = true);
 int player_displayed_shield_class();
 bool player_omnireflects();
 

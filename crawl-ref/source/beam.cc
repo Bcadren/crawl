@@ -3916,7 +3916,6 @@ bool bolt::misses_player()
     const int SH = player_shield_class();
     if ((player_omnireflects() && is_omnireflectable()
          || is_blockable())
-        && you.shielded()
         && !aimed_at_feet
         && SH > 0)
     {

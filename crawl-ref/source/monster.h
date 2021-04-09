@@ -516,8 +516,6 @@ public:
     int stat_maxhp() const override { return max_hit_points; }
     int stealth() const override { return 0; }
 
-
-    bool    shielded() const override;
     int     shield_bonus(bool random = true) const override;
     int     shield_block_penalty() const override;
     void    shield_block_succeeded(actor *foe) override;

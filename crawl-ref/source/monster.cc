@@ -3069,16 +3069,6 @@ bool monster::pacified() const
     return attitude == ATT_NEUTRAL && testbits(flags, MF_PACIFIED);
 }
 
-/**
- * Returns whether the monster currently has any kind of shield.
- */
-bool monster::shielded() const
-{
-    return shield()
-           || has_ench(ENCH_CONDENSATION_SHIELD)
-           || wearing(EQ_AMULET, AMU_REFLECTION) > 0;
-}
-
 int monster::shield_bonus(bool random) const
 {
     if (incapacitated() && random)

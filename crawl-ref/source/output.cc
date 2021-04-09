@@ -499,8 +499,7 @@ static bool _boosted_ev()
 
 static bool _boosted_sh()
 {
-    return you.duration[DUR_DIVINE_SHIELD]
-           || qazlal_sh_boost() > 0;
+    return player_shield_class(true) > player_shield_class();
 }
 
 #ifdef DGL_SIMPLE_MESSAGING
@@ -879,7 +878,7 @@ static void _print_stats_ac(int x, int y)
 
     // SH:
     text_col = HUD_VALUE_COLOUR;
-    if (you.incapacitated() && you.shielded())
+    if (player_shield_class(true) <= player_shield_class())
         text_col = RED;
     else if (_boosted_sh())
         text_col = LIGHTBLUE;

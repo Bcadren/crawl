@@ -2890,12 +2890,34 @@ int player_staff_shielding()
  * Exactly twice the value displayed to players, for legacy reasons.
  * @return      The player's current SH value.
  */
-int player_shield_class()
+int player_shield_class(bool temp)
 {
     int shield = 0;
 
-    if (you.incapacitated())
-        return 0;
+    // mutations
+    // +4, +6, +8 (displayed values)
+    shield += (you.get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
+        ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
+        : 0);
+
+    shield += you.branch_SH(true) * 200;
+    shield += you.wearing(EQ_AMULET, AMU_REFLECTION) * 1000;
+    shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
+
+    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+    if (inside && inside->base_type == OBJ_SHIELDS && !is_hybrid(inside->sub_type))
+        shield += inside->plus * 200;
+
+    if (temp)
+    {
+        shield += qazlal_sh_boost() * 100;
+        shield += player_staff_shielding() * 200;
+        shield += tso_sh_boost() * 100;
+
+        if (you.incapacitated())
+            return (shield + 50) / 100;
+    }
 
     if (you.shield())
     {
@@ -2932,19 +2954,6 @@ int player_shield_class()
 
         shield += stat;
     }
-
-    // mutations
-    // +4, +6, +8 (displayed values)
-    shield += (you.get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
-               ? you.get_mutation_level(MUT_LARGE_BONE_PLATES) * 400 + 400
-               : 0);
-
-    shield += you.branch_SH(true) * 200;
-    shield += qazlal_sh_boost() * 100;
-    shield += player_staff_shielding() * 200;
-    shield += tso_sh_boost() * 100;
-    shield += you.wearing(EQ_AMULET, AMU_REFLECTION) * 1000;
-    shield += you.scan_artefacts(ARTP_SHIELDING) * 200;
 
     return (shield + 50) / 100;
 }
@@ -4440,8 +4449,11 @@ int slaying_bonus(bool ranged, bool weapon)
 
     const item_def *inside = you.slot_item(EQ_CYTOPLASM);
 
-    if (inside && inside->base_type == OBJ_WEAPONS)
+    if (inside && (inside->base_type == OBJ_WEAPONS 
+                || inside->base_type == OBJ_SHIELDS && is_hybrid(inside->sub_type)))
+    {
         ret += inside->plus;
+    }
 
     ret += 3 * augmentation_amount();
 
@@ -6592,22 +6604,6 @@ bool player::liquefied_ground() const
 int player::shield_block_penalty() const
 {
     return 5 * shield_blocks * shield_blocks;
-}
-
-/**
- * Returns whether the player currently has any kind of shield.
- *
- * XXX: why does this function exist?
- */
-bool player::shielded() const
-{
-    return shield()
-           || duration[DUR_DIVINE_SHIELD]
-           || get_mutation_level(MUT_LARGE_BONE_PLATES) > 0
-           || qazlal_sh_boost() > 0
-           || you.wearing(EQ_AMULET, AMU_REFLECTION) > 0
-           || you.scan_artefacts(ARTP_SHIELDING)
-           || you.branch_SH(true) > 0;
 }
 
 // BCADDO: Turn this into the displayed shield value for player precise knowledge?
