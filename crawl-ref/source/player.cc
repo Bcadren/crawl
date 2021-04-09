@@ -957,9 +957,15 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
 
     const item_def* item;
 
+    // Count subsumed chaos weapons as chaos amulets.
+    if (slot == EQ_AMULET && sub_type == AMU_CHAOS &&
+        (item = slot_item(EQ_CYTOPLASM)) && get_weapon_brand(*item) == SPWPN_CHAOS)
+    {
+        ret++;
+    }
+
     switch (slot)
     {
-    
     case EQ_WEAPON0:
     case EQ_WEAPON1:
         // BCADNOTE: This function CAN'T be used for weapon slot because it'd be checking for multiple
@@ -981,7 +987,7 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
         {
             ret++;
         }
-        if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+        if ((item = slot_item(EQ_CYTOPLASM))
             && item->is_type(OBJ_STAVES, sub_type)
             && (calc_unid || item_type_known(*item)))
         {
@@ -1080,7 +1086,8 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
         // Weird Jiyva Slots work regardless of which armour's ego you're after.
 
         if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
-            && (item->base_type == OBJ_ARMOURS)
+            && (item->base_type == OBJ_ARMOURS 
+                || item->base_type == OBJ_SHIELDS && is_hybrid(item->sub_type))
             && get_armour_ego_type(*item) == special
             && (calc_unid || item_type_known(*item)))
         {
@@ -1655,8 +1662,11 @@ int player_res_fire(bool calc_unid, bool temp, bool items)
 
         if (inside)
         {
-            if (get_weapon_brand(*inside) == SPWPN_MOLTEN)
+            if (get_weapon_brand(*inside) == SPWPN_MOLTEN
+                || get_weapon_brand(*inside) == SPWPN_DRAGON_SLAYING)
+            {
                 rf++;
+            }
 
             if (inside->base_type == OBJ_ARMOURS)
                 rf += armour_type_prop(inside->sub_type, ARMF_RES_FIRE);
@@ -2315,7 +2325,7 @@ int player_prot_life(bool calc_unid, bool temp, bool items)
         if (inside)
         {
             if (get_weapon_brand(*inside) == SPWPN_VAMPIRISM || get_weapon_brand(*inside) == SPWPN_PAIN
-                || get_weapon_brand(*inside) == SPWPN_DRAINING)
+                || get_weapon_brand(*inside) == SPWPN_DRAINING || get_weapon_brand(*inside) == SPWPN_HOLY_WRATH)
             {
                 pl++;
             }
@@ -2693,6 +2703,11 @@ static int _player_evasion_bonuses()
     // transformation penalties/bonuses not covered by size alone:
     if (you.get_mutation_level(MUT_SLOW_REFLEXES))
         evbonus -= you.get_mutation_level(MUT_SLOW_REFLEXES) * 5;
+
+    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+    if (inside && get_weapon_brand(*inside) == SPWPN_SPEED)
+        evbonus += 15;
 
     // If you have an active amulet of the acrobat and just moved or waited, get massive
     // EV bonus.
@@ -7567,7 +7582,6 @@ int player::res_magic(bool /*calc_unid*/) const
 
 int player_res_magic(bool calc_unid, bool temp)
 {
-
     if (temp && you.form == transformation::shadow)
         return MAG_IMMUNE;
 
@@ -7581,6 +7595,16 @@ int player_res_magic(bool calc_unid, bool temp)
     if (body_armour)
         rm += armour_type_prop(body_armour->sub_type, ARMF_RES_MAGIC) * MR_PIP;
 
+    // Subsumption effects not handled elsewhere.
+    const item_def *inside = you.slot_item(EQ_CYTOPLASM);
+    if (inside)
+    {
+        if (get_weapon_brand(*inside) == SPWPN_ANTIMAGIC)
+            rm += MR_PIP * 3;
+        if (inside->base_type == OBJ_ARMOURS)
+            rm += armour_type_prop(inside->sub_type, ARMF_RES_MAGIC) * MR_PIP;
+    }
+
     // ego armours
     rm += MR_PIP * you.wearing_ego(EQ_ALL_ARMOUR, SPARM_MAGIC_RESISTANCE,
                                    calc_unid);
@@ -7592,11 +7616,7 @@ int player_res_magic(bool calc_unid, bool temp)
     rm += MR_PIP * you.get_mutation_level(MUT_MAGIC_RESISTANCE);
     rm -= MR_PIP * you.get_mutation_level(MUT_MAGICAL_VULNERABILITY);
     if (you.get_mutation_level(MUT_GOLDEN_EYEBALLS))
-        rm += MR_PIP * (you.get_mutation_level(MUT_MAGICAL_VULNERABILITY) - 1);
-
-    // transformations
-    if (you.form == transformation::lich && temp)
-        rm += MR_PIP;
+        rm += MR_PIP * (you.get_mutation_level(MUT_GOLDEN_EYEBALLS) - 1);
 
     // draconian scales:
     if (you.get_mutation_level(MUT_DRACONIAN_DEFENSE, temp))
@@ -7607,13 +7627,20 @@ int player_res_magic(bool calc_unid, bool temp)
             rm += MR_PIP * 2;
     }
 
-    // Trog's Hand
-    if (you.duration[DUR_TROGS_HAND] && temp)
-        rm += MR_PIP * div_round_up(you.piety, 45);
+    if (temp)
+    {
+        // transformations
+        if (you.form == transformation::lich)
+            rm += MR_PIP;
 
-    // Enchantment effect
-    if (you.duration[DUR_LOWERED_MR] && temp)
-        rm /= 2;
+        // Trog's Hand
+        if (you.duration[DUR_TROGS_HAND])
+            rm += MR_PIP * div_round_up(you.piety, 45);
+
+        // Enchantment effect
+        if (you.duration[DUR_LOWERED_MR])
+            rm /= 2;
+    }
 
     if (rm < 0)
         rm = 0;

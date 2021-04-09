@@ -302,6 +302,13 @@ bool actor::extra_harm(bool calc_unid, bool items) const
 
 bool actor::rmut_from_item(bool calc_unid) const
 {
+    if (is_player())
+    {
+        const item_def * inside = slot_item(EQ_CYTOPLASM);
+        if (inside && get_weapon_brand(*inside) == SPWPN_SILVER)
+            return true;
+    }
+
     return scan_artefacts(ARTP_RMUT, calc_unid);
 }
 

@@ -54,9 +54,16 @@ static bool _fire_validate_item(int selected, string& err);
 
 // BCADNOTE: Preserving unused attacker parameter in case of future self-enchantment
 // for force penetration; etc.
-bool is_penetrating_attack(const actor& /*attacker*/, const item_def* weapon,
+bool is_penetrating_attack(const actor& attacker, const item_def* weapon,
                            const item_def& projectile)
 {
+    if (attacker.is_player())
+    {
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+        if (get_weapon_brand(*inside) == SPWPN_PENETRATION || is_unrandom_artefact(*inside, UNRAND_STORM_BOW))
+            return true;
+    }
+
     return projectile.base_type == OBJ_MISSILES
             && (get_ammo_brand(projectile) == SPMSL_PENETRATION || projectile.sub_type == MI_BOLT)
            || weapon && projectile.base_type == OBJ_MISSILES && ammo_type_damage(projectile.sub_type) == 0

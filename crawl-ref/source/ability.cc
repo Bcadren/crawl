@@ -4066,8 +4066,10 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
     if (you.duration[DUR_PORTAL_PROJECTILE])
         _add_talent(talents, ABIL_CANCEL_PPROJ, check_confused);
 
+    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
     // Evocations from items.
-    if (you.scan_artefacts(ARTP_BLINK)
+    if ((you.scan_artefacts(ARTP_BLINK) || (inside && get_weapon_brand(*inside) == SPWPN_DISTORTION))
         && !you.get_mutation_level(MUT_NO_ARTIFICE))
     {
         _add_talent(talents, ABIL_EVOKE_BLINK, check_confused);

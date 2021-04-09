@@ -1092,6 +1092,17 @@ int attack::inflict_damage(int dam, beam_type flavour, bool clean)
 {
     if (flavour == NUM_BEAMS)
         flavour = special_damage_flavour;
+
+    if (attacker->is_player())
+    {
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+        if (inside && get_weapon_brand(*inside) == SPWPN_REAPING)
+        {
+            defender->props["reaping_damage"].get_int() += dam;
+            defender->props["reaper"].get_int() = attacker->mid;
+        }
+    }
+
     // Auxes temporarily clear damage_brand so we don't need to check
     if (damage_brand == SPWPN_REAPING
         || damage_brand == SPWPN_CHAOS && one_chance_in(100))
