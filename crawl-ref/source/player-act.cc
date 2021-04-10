@@ -454,7 +454,7 @@ item_def *player::weapon(int which_attack) const
 // Give hands required to wield weapon.
 hands_reqd_type player::hands_reqd(const item_def &item, bool base) const
 {
-    if (species == SP_FORMICID || species == SP_OCTOPODE)
+    if (species == SP_FORMICID || species == SP_OCTOPODE || you.get_mutation_level(MUT_ARM_MORPH))
         return HANDS_ONE;
     else
         return actor::hands_reqd(item, base);
@@ -517,7 +517,7 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
 
     const size_type bsize = body_size(PSIZE_TORSO, ignore_transform);
     // Small species wielding large weapons...
-    if (!is_weapon_wieldable(item, bsize))
+    if (!is_weapon_wieldable(item, bsize) && !you.get_mutation_level(MUT_ARM_MORPH))
     {
         if (!quiet)
         {

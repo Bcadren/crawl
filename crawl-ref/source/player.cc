@@ -2640,7 +2640,8 @@ static int _player_evasion_size_factor(bool base = false)
 int player_shield_racial_factor()
 {
     return max(1, 5 + (you.species == SP_FORMICID ? -2 // Same as trolls/centaurs/etc.
-                                                  : _player_evasion_size_factor(true)));
+                                                  : _player_evasion_size_factor(true))
+                    - 2 * you.get_mutation_level(MUT_ARM_MORPH));
 }
 
 

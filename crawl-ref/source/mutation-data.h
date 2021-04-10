@@ -1228,6 +1228,14 @@ static const mutation_def mut_data[] =
   {"Your cytoplasm can no longer hold an extra item.", "", ""},
 },
 
+{ MUT_ARM_MORPH, 0, 1, mutflag::good | mutflag::jiyva, true, 
+  "morphing arms",
+
+  {"Your arms can morph in size from ridiculously small and thin to oversized and top-heavy.\n You may wield any weapon or shield, one-handed; including those normally too large or small for you.", "", ""},
+  {"Your arms become more pliable.", "", ""},
+  {"Your arms return to their normal size.", "", ""},
+},
+
 { MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,
   "radiosynthesis",
 
