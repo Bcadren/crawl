@@ -128,18 +128,12 @@ M filtered_vector_select(vector<pair<M, int>> weights, function<bool(M)> filter)
  */
 static equipment_type _acquirement_armour_slot(bool divine)
 {
-    if (you.species == SP_NAGA || you.species == SP_CENTAUR
-        || you.char_class == JOB_CENTAUR
-        || you.char_class == JOB_NAGA)
-    {
-        const armour_type bard = (you.species == SP_NAGA
-            || you.char_class == JOB_NAGA) ? ARM_NAGA_BARDING
-                                           : ARM_CENTAUR_BARDING;
-        if (one_chance_in(you.seen_armour[bard] ? 4 : 2))
-            return EQ_BOOTS;
-    }
+    const armour_type bard = (you.species == SP_NAGA
+         || you.char_class == JOB_NAGA) ? ARM_NAGA_BARDING
+                                        : ARM_CENTAUR_BARDING;
 
     vector<pair<equipment_type, int>> weights = {
+        { EQ_BARDING,       you.seen_armour[bard] ? 4 : 2 },
         { EQ_BODY_ARMOUR,   divine ? 5 : 1 },
         { EQ_CLOAK,         1 },
         { EQ_HELMET,        1 },
@@ -179,11 +173,13 @@ static armour_type _acquirement_armour_for_slot(equipment_type slot_type,
                 return ARM_CLAW;
             return ARM_GLOVES;
         case EQ_BOOTS:
+            return ARM_BOOTS;
+        case EQ_BARDING:
             if (you.species == SP_CENTAUR || you.char_class == JOB_CENTAUR)
                 return ARM_CENTAUR_BARDING;
             else if (you.species == SP_NAGA || you.char_class == JOB_NAGA)
                 return ARM_NAGA_BARDING;
-            return ARM_BOOTS;
+            return random_choose(ARM_CENTAUR_BARDING, ARM_NAGA_BARDING);
         case EQ_HELMET:
             if (you_can_wear(EQ_HELMET) == MB_TRUE)
             {
@@ -345,10 +341,8 @@ static armour_type _useless_armour_type()
         { EQ_HELMET, 1 }, { EQ_GLOVES, 1 }, { EQ_BOOTS, 1 },
     };
 
-    // everyone has some kind of boot-slot item they can't wear, regardless
-    // of what you_can_wear() claims
     for (auto &weight : weights)
-        if (you_can_wear(weight.first) == MB_TRUE && weight.first != EQ_BOOTS)
+        if (you_can_wear(weight.first) == MB_TRUE)
             weight.second = 0;
 
     const equipment_type* slot_ptr = random_choose_weighted(weights);
@@ -359,8 +353,11 @@ static armour_type _useless_armour_type()
         case EQ_BOOTS:
             // Boots-wearers get bardings, bardings-wearers get the wrong
             // barding, everyone else gets boots.
-            if (you_can_wear(EQ_BOOTS) == MB_TRUE)
+            if (you_can_wear(EQ_BOOTS) == MB_TRUE && !you.get_mutation_level(MUT_GELATINOUS_TAIL))
                 return random_choose(ARM_CENTAUR_BARDING, ARM_NAGA_BARDING);
+            else if (you.get_mutation_level(MUT_GELATINOUS_TAIL))
+                return ARM_ANIMAL_SKIN;
+
             if (you.species == SP_NAGA || you.char_class == JOB_NAGA)
                 return ARM_CENTAUR_BARDING;
             if (you.species == SP_CENTAUR || you.char_class == JOB_CENTAUR)
@@ -402,7 +399,7 @@ static armour_type _pick_unseen_armour()
     // This affects only the "unfilled slot" special-case, not regular
     // acquirement which can always produce (wearable) shields.
     static const equipment_type armour_slots[] =
-        {  EQ_CLOAK, EQ_HELMET, EQ_GLOVES, EQ_BOOTS  };
+        {  EQ_CLOAK, EQ_HELMET, EQ_GLOVES, EQ_BOOTS, EQ_BARDING  };
 
     armour_type picked = NUM_ARMOURS;
     int count = 0;

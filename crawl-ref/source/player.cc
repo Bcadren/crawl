@@ -828,10 +828,6 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
     case EQ_RING_AMULET:
         return player_equip_unrand(UNRAND_FINGER_AMULET) ? MB_TRUE : MB_FALSE;
 
-    case EQ_OLD_SHIELD:
-        return MB_FALSE;
-        break;
-
     case EQ_CYTOPLASM:
         return you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION) ? MB_TRUE : MB_FALSE;
 
@@ -856,12 +852,14 @@ maybe_bool you_can_wear(equipment_type eq, bool temp)
         dummy.sub_type = ARM_GLOVES;
         break;
 
-    case EQ_BOOTS: // And bardings
+    case EQ_BOOTS:
         dummy.sub_type = ARM_BOOTS;
-        if (you.species == SP_NAGA || you.char_class == JOB_NAGA)
-            alternate.sub_type = ARM_NAGA_BARDING;
+        break;
+
+    case EQ_BARDING:
+        dummy.sub_type = ARM_NAGA_BARDING;
         if (you.species == SP_CENTAUR || you.char_class == JOB_CENTAUR)
-            alternate.sub_type = ARM_CENTAUR_BARDING;
+            dummy.sub_type = ARM_CENTAUR_BARDING;
         break;
 
     case EQ_BODY_ARMOUR:
@@ -996,19 +994,19 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
         break;
 
     case EQ_AMULET:
-        if ((item = slot_item(static_cast<equipment_type>(EQ_AMULET)))
+        if ((item = slot_item(EQ_AMULET))
             && item->sub_type == sub_type
             && (calc_unid || item_type_known(*item)))
         {
             ret++;
         }
-        if ((item = slot_item(static_cast<equipment_type>(EQ_FAIRY_JEWEL)))
+        if ((item = slot_item(EQ_FAIRY_JEWEL))
             && item->sub_type == sub_type
             && (calc_unid || item_type_known(*item)))
         {
             ret++;
         }
-        if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+        if ((item = slot_item(EQ_CYTOPLASM))
             && item->is_type(OBJ_JEWELLERY, sub_type)
             && (calc_unid || item_type_known(*item)))
         {
@@ -1024,13 +1022,12 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
 
             if ((item = slot_item(static_cast<equipment_type>(slots)))
                 && item->sub_type == sub_type
-                && (calc_unid
-                    || item_type_known(*item)))
+                && (calc_unid || item_type_known(*item)))
             {
                 ret++;
             }
 
-            if ((item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+            if ((item = slot_item(EQ_CYTOPLASM))
                 && item->is_type(OBJ_JEWELLERY, sub_type)
                 && (calc_unid || item_type_known(*item)))
             {
@@ -1044,12 +1041,22 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
         die("EQ_ALL_ARMOUR is not a proper slot");
         break;
 
-    case EQ_BODY_ARMOUR:
+
     case EQ_BOOTS:
+        // Boots and Bardings share a lot for legacy purposes.
+        if ((item = slot_item(EQ_BARDING))
+            && item->sub_type == sub_type
+            && (calc_unid || item_type_known(*item)))
+        {
+            ret++;
+        }
+        // fallthrough
+    case EQ_BARDING:
+    case EQ_BODY_ARMOUR:
     case EQ_CLOAK:
     case EQ_GLOVES:
     case EQ_HELMET:
-        if (count_jiyva && (item = slot_item(static_cast<equipment_type>(EQ_CYTOPLASM)))
+        if (count_jiyva && (item = slot_item(EQ_CYTOPLASM))
             && item->is_type(OBJ_ARMOURS, sub_type)
             && (calc_unid || item_type_known(*item)))
         {
@@ -3967,8 +3974,9 @@ int player_stealth()
     if (you.confused())
         stealth /= 3;
 
-    const item_def *arm = you.slot_item(EQ_BODY_ARMOUR);
-    const item_def *boots = you.slot_item(EQ_BOOTS);
+    const item_def *arm    = you.slot_item(EQ_BODY_ARMOUR);
+    const item_def *boots  = you.slot_item(EQ_BOOTS);
+    const item_def *bard   = you.slot_item(EQ_BARDING);
     const item_def *inside = you.slot_item(EQ_CYTOPLASM);
 
     if (arm)
@@ -4035,19 +4043,31 @@ int player_stealth()
             else if (!you.can_swim() && !you.extra_balanced())
                 stealth /= 2;       // splashy-splashy
         }
-        else if (boots && get_armour_ego_type(*boots) == SPARM_STEALTH)
+
+        if (!you.in_liquid())
         {
-            stealth += STEALTH_PIP;
-            stealth *= 5;
-            stealth /= 4;
-        }
-        else if (you.has_usable_hooves())
-            stealth -= 5 + 5 * you.get_mutation_level(MUT_HOOVES);
-        else if (you.species == SP_FELID
-                 && (you.form == transformation::none
-                     || you.form == transformation::appendage))
-        {
-            stealth += 20;  // paws
+            if (boots && get_armour_ego_type(*boots) == SPARM_STEALTH)
+            {
+                stealth += STEALTH_PIP;
+                stealth *= 5;
+                stealth /= 4;
+            }
+
+            if (bard && get_armour_ego_type(*bard) == SPARM_STEALTH)
+            {
+                stealth += STEALTH_PIP;
+                stealth *= 5;
+                stealth /= 4;
+            }
+
+            if (you.has_usable_hooves())
+                stealth -= 5 + 5 * you.get_mutation_level(MUT_HOOVES);
+            else if (you.species == SP_FELID
+                     && (you.form == transformation::none
+                         || you.form == transformation::appendage))
+            {
+                stealth += 20;  // paws
+            }
         }
     }
 
@@ -8245,9 +8265,7 @@ int player::has_hooves(bool allow_tran) const
 
 bool player::has_usable_hooves(bool allow_tran) const
 {
-    return has_hooves(allow_tran)
-           && (!slot_item(EQ_BOOTS)
-               || wearing(EQ_BOOTS, ARM_CENTAUR_BARDING, true, false));
+    return has_hooves(allow_tran) && !slot_item(EQ_BOOTS);
 }
 
 int player::has_fangs(bool allow_tran) const

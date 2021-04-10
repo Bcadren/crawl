@@ -47,7 +47,7 @@ static const int EQF_NONE = 0;
 static const int EQF_HANDS = SLOTF(EQ_WEAPON0) | SLOTF(EQ_WEAPON1)
                              | SLOTF(EQ_GLOVES);
 // core body slots (statue form)
-static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS)
+static const int EQF_STATUE = SLOTF(EQ_GLOVES) | SLOTF(EQ_BOOTS) | SLOTF(EQ_BARDING)
                               | SLOTF(EQ_BODY_ARMOUR);
 // more core body slots (Lear's Hauberk)
 static const int EQF_LEAR = EQF_STATUE | SLOTF(EQ_HELMET);
@@ -2039,22 +2039,6 @@ void untransform(bool skip_move)
     if (you.species == SP_MERFOLK)
         init_player_doll();
 #endif
-
-    // If nagas wear boots while transformed, they fall off again afterwards:
-    // I don't believe this is currently possible, and if it is we
-    // probably need something better to cover all possibilities.  -bwr
-
-    // Removed barding check, no transformed creatures can wear barding
-    // anyway.
-    // *coughs* Ahem, blade hands... -- jpeg
-    if (you.species == SP_NAGA || you.species == SP_CENTAUR 
-        || you.char_class == JOB_CENTAUR || you.char_class == JOB_NAGA)
-    {
-        const int arm = you.equip[EQ_BOOTS];
-
-        if (arm != -1 && you.inv[arm].sub_type == ARM_BOOTS)
-            remove_one_equip(EQ_BOOTS);
-    }
 
     // End Ozocubu's Icy Armour if you unmelded wearing heavy armour
     if (you.duration[DUR_ICY_ARMOUR]

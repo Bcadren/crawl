@@ -145,12 +145,13 @@ static const armour_def Armour_prop[] =
     // and shapeshift status.
     { ARM_BOOTS,                "boots",                  1,   0,   45,
         EQ_BOOTS,       SIZE_SMALL,  SIZE_MEDIUM, true },
+
     // Changed max. barding size to large to allow for the appropriate
     // monster types (monsters don't differentiate between torso and general).
     { ARM_CENTAUR_BARDING,      "centaur barding",        4,  -60,  230,
-        EQ_BOOTS,       SIZE_MEDIUM, SIZE_LARGE, true },
+        EQ_BARDING,       SIZE_MEDIUM, SIZE_LARGE, true },
     { ARM_NAGA_BARDING,         "naga barding",           4,  -60,  230,
-        EQ_BOOTS,       SIZE_MEDIUM, SIZE_LARGE, true },
+        EQ_BARDING,       SIZE_MEDIUM, SIZE_LARGE, true },
 
     // Note: shields use ac-value as sh-value, EV pen is used as the basis
     // to calculate adjusted shield penalty.

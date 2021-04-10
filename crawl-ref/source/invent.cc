@@ -1032,7 +1032,8 @@ const char* item_slot_name(equipment_type type)
     case EQ_GLOVES:      return "gloves";
     case EQ_BOOTS:       return "boots";
     case EQ_BODY_ARMOUR: return "body";
-    case EQ_CYTOPLASM:    return "cytoplasm";
+    case EQ_BARDING:     return "barding";
+    case EQ_CYTOPLASM:   return "cytoplasm";
     default:             return "";
     }
 }

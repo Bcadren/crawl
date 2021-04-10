@@ -11,9 +11,7 @@ enum equipment_type
     EQ_HELMET,
     EQ_GLOVES,
     EQ_BOOTS,
-#if TAG_MAJOR_VERSION == 34
-    EQ_OLD_SHIELD,
-#endif
+    EQ_BARDING,
     EQ_BODY_ARMOUR,
     EQ_FIRST_JEWELLERY,
     EQ_LEFT_RING = EQ_FIRST_JEWELLERY,

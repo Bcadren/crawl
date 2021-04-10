@@ -503,6 +503,7 @@ int monster::wearing(equipment_type slot, int sub_type, bool calc_unid, bool /*c
     case EQ_HELMET:
     case EQ_GLOVES:
     case EQ_BOOTS:
+    case EQ_BARDING:
     case EQ_WEAPON1:
         item = mslot_item(MSLOT_SHIELD);
         if (item && item->is_type(OBJ_SHIELDS, sub_type))
@@ -565,6 +566,7 @@ int monster::wearing_ego(equipment_type slot, int special, bool calc_unid) const
     case EQ_HELMET:
     case EQ_GLOVES:
     case EQ_BOOTS:
+    case EQ_BARDING:
     case EQ_WEAPON1:
         item = mslot_item(MSLOT_SHIELD);
         if (item && item->base_type == OBJ_SHIELDS

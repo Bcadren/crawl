@@ -562,11 +562,11 @@ static int _count_digits(int val)
 static const equipment_type e_order[] =
 {
     EQ_WEAPON0, EQ_WEAPON1, EQ_BODY_ARMOUR, EQ_HELMET, EQ_CLOAK,
-    EQ_GLOVES, EQ_BOOTS, EQ_CYTOPLASM, EQ_AMULET, EQ_LEFT_RING, 
-    EQ_RIGHT_RING, EQ_FAIRY_JEWEL, EQ_RING_ONE, EQ_RING_TWO, 
-    EQ_RING_THREE, EQ_RING_FOUR, EQ_RING_FIVE, EQ_RING_SIX, 
-    EQ_RING_SEVEN, EQ_RING_EIGHT, EQ_RING_LEFT_TENDRIL, 
-    EQ_RING_RIGHT_TENDRIL, EQ_RING_AMULET,
+    EQ_GLOVES, EQ_BARDING, EQ_BOOTS, EQ_CYTOPLASM, EQ_AMULET, 
+    EQ_LEFT_RING, EQ_RIGHT_RING, EQ_FAIRY_JEWEL, EQ_RING_ONE, 
+    EQ_RING_TWO, EQ_RING_THREE, EQ_RING_FOUR, EQ_RING_FIVE, 
+    EQ_RING_SIX, EQ_RING_SEVEN, EQ_RING_EIGHT, 
+    EQ_RING_LEFT_TENDRIL, EQ_RING_RIGHT_TENDRIL, EQ_RING_AMULET,
 };
 
 static void _print_stats_equip(int x, int y)
@@ -878,7 +878,7 @@ static void _print_stats_ac(int x, int y)
 
     // SH:
     text_col = HUD_VALUE_COLOUR;
-    if (player_shield_class(true) <= player_shield_class())
+    if (player_shield_class(true) < player_shield_class())
         text_col = RED;
     else if (_boosted_sh())
         text_col = LIGHTBLUE;
@@ -1869,7 +1869,7 @@ static string _itosym(int level, int max = 1)
 static const char *s_equip_slot_names[] =
 {
     "Weapon", "Shield", "Cloak",  "Helmet", "Gloves", "Boots",
-    "UNUSED", "Armour", "Cytoplasm", "Left Ring", "Right Ring", 
+    "Barding", "Armour", "Cytoplasm", "Left Ring", "Right Ring", 
     "Amulet", "First Ring", "Second Ring", "Third Ring", 
     "Fourth Ring", "Fifth Ring", "Sixth Ring", "Seventh Ring", 
     "Eighth Ring", "Left Tendril Ring", "Right Tendril Ring", 
@@ -1889,13 +1889,6 @@ const char *equip_slot_to_name(int equip)
 
     if (equip == EQ_WEAPON1)
         return "Weapon";
-
-    if (equip == EQ_BOOTS
-        && (you.species == SP_CENTAUR || you.char_class == JOB_CENTAUR ||
-            you.species == SP_NAGA    || you.char_class == JOB_NAGA))
-    {
-        return "Barding";
-    }
 
     if (equip < EQ_FIRST_EQUIP || equip >= NUM_EQUIP)
         return "";
@@ -1991,7 +1984,7 @@ static void _print_overview_screen_equip(column_composer& cols,
             continue;
 
         if (you.species == SP_FAIRY && eqslot != EQ_FAIRY_JEWEL
-                                    && eqslot != EQ_RING_AMULET)
+            && eqslot != EQ_RING_AMULET)
         {
             continue;
         }
@@ -2011,10 +2004,13 @@ static void _print_overview_screen_equip(column_composer& cols,
             continue;
         }
 
-        if (eqslot == EQ_RING_AMULET && !you_can_wear(eqslot))
+        if ((eqslot == EQ_RING_AMULET || eqslot == EQ_BARDING || eqslot == EQ_CYTOPLASM) 
+            && !you_can_wear(eqslot))
+        {
             continue;
+        }
 
-        if (eqslot == EQ_CYTOPLASM && !you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+        if (eqslot == EQ_BOOTS && !you_can_wear(eqslot) && you_can_wear(EQ_BARDING))
             continue;
 
         const string slot_name_lwr = lowercase_string(equip_slot_to_name(eqslot));
@@ -2064,12 +2060,6 @@ static void _print_overview_screen_equip(column_composer& cols,
         }
         else if (eqslot == EQ_CYTOPLASM)
             str = "<darkgrey>(nothing subsumed)</darkgrey>";
-        else if (eqslot == EQ_BOOTS
-                 && (you.species == SP_NAGA || you.species == SP_CENTAUR
-                     || you.char_class == JOB_NAGA || you.char_class == JOB_CENTAUR))
-        {
-            str = "<darkgrey>(no " + slot_name_lwr + ")</darkgrey>";
-        }
         else if (!you_can_wear(eqslot))
             str = "<darkgrey>(" + slot_name_lwr + " unavailable)</darkgrey>";
         else if (!you_can_wear(eqslot, true))

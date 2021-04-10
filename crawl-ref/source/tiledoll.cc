@@ -483,7 +483,9 @@ void fill_doll_equipment(dolls_data &result)
     // Boots.
     if (result.parts[TILEP_PART_BOOTS] == TILEP_SHOW_EQUIP)
     {
-        const int item = you.melded[EQ_BOOTS] ? -1 : you.equip[EQ_BOOTS];
+        int item = you.melded[EQ_BOOTS] ? -1 : you.equip[EQ_BOOTS];
+        if (item == -1)
+            item = you.melded[EQ_BARDING] ? -1 : you.equip[EQ_BARDING];
         if (item != -1)
             result.parts[TILEP_PART_BOOTS] = tilep_equ_boots(you.inv[item]);
         else if (you.get_mutation_level(MUT_HOOVES) >= 3)

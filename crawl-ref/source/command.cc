@@ -272,13 +272,9 @@ void list_armour()
                  (i == EQ_HELMET)      ? "Helmet " :
                  (i == EQ_GLOVES)      ? "Gloves " :
                  (i == EQ_BODY_ARMOUR) ? "Armour " :
-                 (i == EQ_BOOTS) ?
-                 ((you.species == SP_CENTAUR
-                   || you.species == SP_NAGA
-                   || you.char_class == JOB_CENTAUR
-                   || you.char_class == JOB_NAGA)    ? "Barding"
-                                                     : "Boots  ")
-                                 : "unknown")
+                 (i == EQ_BOOTS)       ? "Boots  " :
+                 (i == EQ_BARDING)     ? "Barding" 
+                                       : "unknown")
              << " : ";
 
         if (you_can_wear(i) == MB_FALSE)

@@ -3960,7 +3960,9 @@ static void tag_read_you_items(reader &th)
         if (th.getMinorVersion() < TAG_MINOR_GOLDIFY_MANUALS)
         {
             // If wearing anything in the no-longer existant shield slot; unwear.
-            if (item && i == EQ_OLD_SHIELD)
+            // Note slot shift. Barding split into seperate slot from Boot to allow wearing both (Jiyva)
+            // New barding slot overwrote old shield slot (No worries the old tag takes care of it).
+            if (item && i == EQ_BARDING)
             {
                 you.equip[i] = -1;
                 you.melded.set(i, false);
@@ -3968,6 +3970,21 @@ static void tag_read_you_items(reader &th)
             }
         }
 #endif
+
+        if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK)
+        {
+            if (item && i == EQ_BOOTS && (item->sub_type == ARM_NAGA_BARDING || item->sub_type == ARM_CENTAUR_BARDING))
+            {
+                you.equip[EQ_BARDING] = item->link;
+                if (you.melded[EQ_BOOTS])
+                    you.melded.set(EQ_BARDING, true);
+
+                you.equip[i] = -1;
+                you.melded.set(i, false);
+                continue;
+            }
+        }
+
 
         if (item && i != EQ_AMULET && i != EQ_FAIRY_JEWEL && item->is_type(OBJ_JEWELLERY, AMU_CHAOS))
         {
