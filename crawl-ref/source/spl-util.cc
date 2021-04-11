@@ -1298,6 +1298,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_DEFLECT_MISSILES:
         if (temp && you.attribute[ATTR_DEFLECT_MISSILES])
             return "you're already deflecting missiles.";
+        if (you.get_mutation_level(MUT_MISSILE_GUARD))
+            return "it would provide no further protection beyond your natural sticky ooze.";
         break;
 
     case SPELL_STATUE_FORM:

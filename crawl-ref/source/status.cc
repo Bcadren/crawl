@@ -1225,7 +1225,15 @@ static void _describe_missiles(status_info& inf)
     if (!level)
         return;
 
-    if (level > 1)
+    if (level > 2)
+    {
+        inf.light_colour = LIGHTGREEN;
+        inf.light_text = "DMsl+";
+        inf.short_text = "devour missiles";
+        inf.long_text = "You devour missiles.";
+
+    }
+    else if (level > 1)
     {
         bool perm = false;
         inf.light_colour = perm ? WHITE : LIGHTMAGENTA;

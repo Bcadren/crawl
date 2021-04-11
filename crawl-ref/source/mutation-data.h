@@ -1244,6 +1244,14 @@ static const mutation_def mut_data[] =
   {"Your tail shrinks %s.", "", ""},
 },
 
+{ MUT_MISSILE_GUARD, 0, 1, mutflag::good | mutflag::jiyva, false, 
+  "missile-eating ooze (DMsl+)",
+
+  {"You are covered in a sticky ooze that may intercept and inject missiles aimed at you. (DMsl+)", "", ""},
+  {"You exude a sticky ooze from your skin.", "", ""},
+  {"The ooze on your skin dries up and flakes away.", "", ""},
+},
+
 { MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,
   "radiosynthesis",
 
@@ -1585,14 +1593,6 @@ static const mutation_def mut_data[] =
   "jelly sensing items",
 
   {"You have a small jelly attached to you that senses nearby items.", "", ""},
-  {"Your body partially splits into a small jelly.", "", ""},
-  {"The jelly growth is reabsorbed into your body.", "", ""},
-},
-
-{ MUT_JELLY_MISSILE, 0, 1, mutflag::good | mutflag::jiyva, true,
-  "jelly absorbing missiles",
-
-  {"You have a small jelly attached to you that may absorb incoming projectiles.", "", ""},
   {"Your body partially splits into a small jelly.", "", ""},
   {"The jelly growth is reabsorbed into your body.", "", ""},
 },

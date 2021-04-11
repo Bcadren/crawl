@@ -6673,6 +6673,9 @@ void player::shield_block_succeeded(actor *foe)
 
 int player::missile_deflection() const
 {
+    if (you.get_mutation_level(MUT_MISSILE_GUARD))
+        return 3;
+
     if (attribute[ATTR_DEFLECT_MISSILES])
         return 2;
 
@@ -6681,7 +6684,7 @@ int player::missile_deflection() const
 
     if (get_mutation_level(MUT_DISTORTION_FIELD) == 3
         || you.wearing_ego(EQ_ALL_ARMOUR, SPARM_REPULSION)
-        || scan_artefacts(ARTP_RMSL, true)
+        || scan_artefacts(ARTP_RMSL)
         || have_passive(passive_t::upgraded_storm_shield))
     {
         return 1;

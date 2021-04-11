@@ -3635,6 +3635,9 @@ static bool _test_beam_hit(int attack, int defence, bool pierce,
     if (attack == AUTOMATIC_HIT)
         return true;
 
+    if (defl >= 3)
+        defl--;
+
     if (pierce)
     {
         if (defl > 1)
@@ -3987,9 +3990,20 @@ bool bolt::misses_player()
     }
     else if (defl && !_test_beam_hit(real_tohit, dodge, pierce, defl, r))
     {
+        int healz = 0; 
+        
+        if (defl >= 3)
+        {
+            you.heal(healz);
+            healz = 4 + random2(8);
+        }
+
         // active voice to imply stronger effect
-        mprf(defl == 1 ? "The %s is repelled." : "You deflect the %s!",
-             name.c_str());
+        mprf(defl == 1 ? "The %s is repelled%s." : 
+             defl >= 3 ? "You devour the %s%s"  :
+                         "You deflect the %s%s!",
+             name.c_str(), defl < 3 ? "" : attack_strength_punctuation(healz).c_str());
+
         you.ablate_deflection();
         count_action(CACT_DODGE, DODGE_DEFLECT);
     }
@@ -4846,18 +4860,6 @@ void bolt::affect_player()
                 curare_actor(agent(), (actor*)&you, 2, name, source_name, true);
                 was_affected = true;
             }
-        }
-
-        if (hits_you && you.has_mutation(MUT_JELLY_MISSILE)
-            && you.hp < you.hp_max
-            && !you.duration[DUR_DEATHS_DOOR]
-            && item_is_jelly_edible(*item)
-            && coinflip())
-        {
-            mprf("Your attached jelly eats %s!", item->name(DESC_THE).c_str());
-            inc_hp(random2(yu_final_dam / 2));
-            canned_msg(MSG_GAIN_HEALTH);
-            drop_item = false;
         }
     }
 
