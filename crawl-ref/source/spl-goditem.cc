@@ -538,8 +538,6 @@ int detect_items(int pow)
         map_radius = get_los_radius();
     else
     {
-        if (you.has_mutation(MUT_JELLY_GROWTH))
-            map_radius = 5;
         // Check which god may be providing detect_items and set map_radius
         if (have_passive(passive_t::detect_items))
         {
