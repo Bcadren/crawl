@@ -1261,7 +1261,8 @@ bool can_wear_armour(const item_def &item, bool verbose, bool ignore_temporary)
     if (sub_type == ARM_NAGA_BARDING || sub_type == ARM_CENTAUR_BARDING)
     {
         if ((you.species == SP_NAGA || you.char_class == JOB_NAGA) && sub_type == ARM_NAGA_BARDING
-            || (you.species == SP_CENTAUR || you.char_class == JOB_CENTAUR) && sub_type == ARM_CENTAUR_BARDING)
+            || (you.species == SP_CENTAUR || you.char_class == JOB_CENTAUR) && sub_type == ARM_CENTAUR_BARDING
+            || you.get_mutation_level(MUT_GELATINOUS_TAIL))
         {
             if (ignore_temporary || !player_is_shapechanged())
                 return true;

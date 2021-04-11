@@ -3608,7 +3608,6 @@ colour_t item_def::armour_colour() const
     if (armour_type_is_hide((armour_type)sub_type))
         return mons_class_colour(monster_for_hide((armour_type)sub_type));
 
-
     // TODO: move (some of?) this into item-prop.cc
     switch (sub_type)
     {

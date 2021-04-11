@@ -853,8 +853,8 @@ static const mutation_def mut_data[] =
 
   {"", "", ""},
 },
-
 #endif
+
 // species-dependent innate mutations
 { MUT_ROT_IMMUNITY, 0, 1, mutflag::good, false,
   "rot immunity",
@@ -1234,6 +1234,14 @@ static const mutation_def mut_data[] =
   {"Your arms can morph in size from ridiculously small and thin to oversized and top-heavy.\n You may wield any weapon or shield, one-handed; including those normally too large or small for you.", "", ""},
   {"Your arms become more pliable.", "", ""},
   {"Your arms return to their normal size.", "", ""},
+},
+
+{ MUT_GELATINOUS_TAIL, 0, 1, mutflag::good | mutflag::jiyva, true, 
+  "gelatinous tail, constrict 1",
+
+  {"Your gelatinous tail can morph to fit any barding and constrict a single enemy in combat.", "", ""},
+  {"You grow a massive gelatinous, serpentine tail.", "", ""},
+  {"Your tail shrinks %s.", "", ""},
 },
 
 { MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,

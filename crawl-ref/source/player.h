@@ -923,6 +923,7 @@ public:
     bool attempt_escape(int attempts = 1);
 
     bool form_uses_xl() const;
+    bool have_serpentine_tail() const;
 
     bool clear_far_engulf() override;
 

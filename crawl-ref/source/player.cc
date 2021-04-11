@@ -8337,7 +8337,7 @@ int player::usable_tentacles(bool allow_tran) const
 
     int constrict = num_constricting();
 
-    if (you.mutation[MUT_CONSTRICTING_TAIL])
+    if (you.have_serpentine_tail())
         constrict = max(0, constrict - 1);
 
     int free_tentacles = numtentacle - constrict;
@@ -9155,6 +9155,11 @@ bool player::form_uses_xl() const
     return form == transformation::wisp || form == transformation::fungus
         || form == transformation::pig
         || form == transformation::bat && you.species != SP_VAMPIRE;
+}
+
+bool player::have_serpentine_tail() const
+{
+    return get_mutation_level(MUT_CONSTRICTING_TAIL) || get_mutation_level(MUT_GELATINOUS_TAIL);
 }
 
 static int _get_potion_heal_factor()

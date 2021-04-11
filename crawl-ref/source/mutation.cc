@@ -690,7 +690,7 @@ string describe_mutations(bool drop_title)
 
         int tents = you.usable_tentacles(false) + you.num_constricting();
 
-        if (you.mutation[MUT_CONSTRICTING_TAIL] && you.num_constricting())
+        if (you.have_serpentine_tail() && you.num_constricting())
             tents--;
 
         const string num_tentacles = number_in_words(tents);

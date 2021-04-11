@@ -4506,7 +4506,7 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
     switch (atk)
     {
     case UNAT_CONSTRICT:
-        return you.get_mutation_level(MUT_CONSTRICTING_TAIL)
+        return you.have_serpentine_tail()
                 || you.species == SP_OCTOPODE && x_chance_in_y(you.usable_tentacles(), 4);
 
     case UNAT_KICK:
