@@ -3058,12 +3058,6 @@ static void tag_read_you(reader &th)
             you.mutation[MUT_POISON_RESISTANCE] =
             you.innate_mutation[MUT_POISON_RESISTANCE] = 0;
         }
-        if (you.species == SP_FORMICID)
-        {
-            you.mutation[MUT_ANTENNAE] = you.innate_mutation[MUT_ANTENNAE] = 3;
-            you.mutation[MUT_EXOSKELETON] =
-            you.innate_mutation[MUT_EXOSKELETON] = 0;
-        }
     }
 
     if (th.getMinorVersion() < TAG_MINOR_DIET_MUT)

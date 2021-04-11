@@ -1174,7 +1174,7 @@ static const mutation_def mut_data[] =
 
   {"Your gelatinous tail can morph to fit any barding and constrict a single enemy in combat.", "", ""},
   {"You grow a massive gelatinous, serpentine tail.", "", ""},
-  {"Your tail shrinks %s.", "", ""},
+  {"Your tail shrinks ", "", ""},
 },
 
 { MUT_MISSILE_GUARD, 0, 1, mutflag::good | mutflag::jiyva, false, 
@@ -1546,30 +1546,6 @@ static const mutation_def mut_data[] =
   {"You feel sticky.", "", ""},
   {"You feel slippery.", "", ""},
 },
-
-{ MUT_EXOSKELETON, 0, 2, mutflag::good, true,
-  "exoskeleton",
-
-  {"Your body is surrounded by an exoskeleton. (buggy)",
-   "Your body is surrounded by a tough exoskeleton. (buggy)",
-   ""},
-
-  {"Your exoskeleton hardens.",
-   "Your exoskeleton becomes even harder.",
-   ""},
-
-  {"Your exoskeleton softens.",
-   "Your exoskeleton softens.",
-   ""},
-},
-
-{ MUT_FUMES, 0, 2, mutflag::good, false,
-  "fuming",
-
-  {"You emit clouds of smoke.", "You frequently emit clouds of smoke.", ""},
-  {"You fume.", "You fume more.", ""},
-  {"You stop fuming.", "You fume less.", ""},
-},
 #endif
 
 { MUT_BLACK_MARK, 0, 1, mutflag::good, false,
@@ -1603,16 +1579,6 @@ static const mutation_def mut_data[] =
   {"You feel less concerned about cold.", "", ""},
   {"", "", ""},
 },
-
-#if TAG_MAJOR_VERSION == 34
-{ MUT_SUSTAIN_ATTRIBUTES, 0, 1, mutflag::good, false,
-    "sustain attributes",
-
-    {"Your attributes are resistant to harm.", "", ""},
-    {"", "", ""},
-    {"", "", ""},
-},
-#endif
 
 { MUT_NO_DRINK, 0, 1, mutflag::bad, false,
   "inability to drink while threatened",

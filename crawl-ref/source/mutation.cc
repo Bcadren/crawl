@@ -2082,11 +2082,16 @@ static bool _delete_single_mutation_level(mutation_type mutat,
 
     if (lose_msg)
     {
-        species_mutation_message msg = _spmut_msg(mutat);
-        if (msg.mutation == MUT_NON_MUTATION)
-            mprf(MSGCH_MUTATION, "%s", mdef.lose[you.mutation[mutat]]);
+        if (mutat == MUT_GELATINOUS_TAIL)
+            mprf(MSGCH_MUTATION, "%s%s", mdef.lose[0], you.has_tail(false) ? "back to its normal size." : "away completely.");
         else
-            mprf(MSGCH_MUTATION, "%s", msg.lose[you.mutation[mutat]]);
+        {
+            species_mutation_message msg = _spmut_msg(mutat);
+            if (msg.mutation == MUT_NON_MUTATION)
+                mprf(MSGCH_MUTATION, "%s", mdef.lose[you.mutation[mutat]]);
+            else
+                mprf(MSGCH_MUTATION, "%s", msg.lose[you.mutation[mutat]]);
+        }
     }
 
     // Do post-mutation effects.
