@@ -1314,7 +1314,7 @@ int player_teleport(bool calc_unid)
     tp += 8 * you.scan_artefacts(ARTP_CAUSE_TELEPORTATION, calc_unid);
 
     // mutations
-    tp += you.get_mutation_level(MUT_TELEPORT) * 4;
+    tp += you.get_mutation_level(MUT_TELEPORT) * 12;
 
     return tp;
 }
