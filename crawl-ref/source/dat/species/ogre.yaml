@@ -42,9 +42,6 @@ dex: 4
 levelup_stat_frequency: 3
 levelup_stats:
   - str
-mutations:
-  1:
-    MUT_TOUGH_SKIN: 1
 recommended_jobs:
   - JOB_HUNTER
   - JOB_BERSERKER

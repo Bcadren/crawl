@@ -3032,6 +3032,7 @@ static void tag_read_you(reader &th)
         _cap_mutation_at(MUT_SHOUTITUS, 1);
         _cap_mutation_at(MUT_BERSERK, 1);
         _cap_mutation_at(MUT_DETERIORATION, 1);
+        _cap_mutation_at(MUT_TOUGH_SKIN, 0);
     }
 #endif
 
@@ -3044,8 +3045,6 @@ static void tag_read_you(reader &th)
         // was, so when TAG_MINOR_NO_POTION_HEAL was added
         // these were all moved to only apply to previous
         // tags.
-        if (you.mutation[MUT_TELEPORT_CONTROL] == 1)
-            you.mutation[MUT_TELEPORT_CONTROL] = 0;
         if (you.mutation[MUT_TRAMPLE_RESISTANCE] > 0
             || you.innate_mutation[MUT_TRAMPLE_RESISTANCE] > 0)
         {

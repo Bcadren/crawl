@@ -22,22 +22,6 @@ struct mutation_category_def
 static const mutation_def mut_data[] =
 {
 
-{ MUT_TOUGH_SKIN, 0, 3, mutflag::good, true,
-  "tough skin",
-
-  {"You have tough skin. (AC +1)",
-   "You have very tough skin. (AC +2)",
-   "You have extremely tough skin. (AC +3)"},
-
-  {"Your skin toughens.",
-   "Your skin toughens.",
-   "Your skin toughens."},
-
-  {"Your skin feels delicate.",
-   "Your skin feels delicate.",
-   "Your skin feels delicate."},
-},
-
 { MUT_STRONG, 7, 2, mutflag::good, false,
   "strong",
 
@@ -77,9 +61,7 @@ static const mutation_def mut_data[] =
   "carnivore",
 
   {"You are carnivorous and can eat meat at any time.", "", ""},
-
   {"You hunger for flesh.", "", ""},
-
   {"You feel able to eat a more balanced diet.", "", ""},
 },
 
@@ -87,9 +69,7 @@ static const mutation_def mut_data[] =
   "herbivore",
 
   {"You are a herbivore.", "", ""},
-
   {"You hunger for vegetation.", "", ""},
-
   {"You feel able to eat a more balanced diet."},
 },
 
@@ -212,9 +192,7 @@ static const mutation_def mut_data[] =
   "inhibited regeneration",
 
   {"You do not regenerate when monsters are visible.", "", ""},
-
   {"Your regeneration stops near monsters.", "", ""},
-
   {"You begin to regenerate regardless of the presence of monsters.", "", ""},
 },
 
@@ -276,16 +254,6 @@ static const mutation_def mut_data[] =
   {"", "", ""},
   {"", "", ""},
 },
-
-#if TAG_MAJOR_VERSION == 34
-{ MUT_TELEPORT_CONTROL, 0, 1, mutflag::good, false,
-  "teleport control",
-
-  {"You can control translocations.", "", ""},
-  {"You feel controlled.", "", ""},
-  {"You feel random.", "", ""},
-},
-#endif
 
 { MUT_MERFOLK_TAIL, 0, 1, mutflag::good, true,
   "merfolk tail",
@@ -367,9 +335,7 @@ static const mutation_def mut_data[] =
   {"Your vision seems duller.", "", ""},
 },
 
-{ MUT_DEFORMED, 8, 1,
-  mutflag::bad | mutflag::xom,
-  true,
+{ MUT_DEFORMED, 8, 1, mutflag::bad | mutflag::xom, true,
   "deformed body",
 
   {"Armour fits poorly on your strangely shaped body.", "", ""},
@@ -540,8 +506,7 @@ static const mutation_def mut_data[] =
    ""},
 },
 
-{ MUT_FRAIL, 10, 3,
-  mutflag::bad | mutflag::xom, false,
+{ MUT_FRAIL, 10, 3, mutflag::bad | mutflag::xom, false,
   "frail",
 
   {"You are frail. (-10% HP)",
@@ -1736,15 +1701,7 @@ static const mutation_def mut_data[] =
   {"You can no longer study or cast Charms magic.", "", ""},
   {"You can once more study and cast Charms magic.", "", ""},
 },
-#if TAG_MAJOR_VERSION == 34
-{ MUT_NO_CONJURATION_MAGIC, 0, 1, mutflag::bad, false,
-  "no conjurations magic",
 
-  {"You cannot study or cast Conjurations magic.", "", ""},
-  {"You can no longer study or cast Conjurations magic.", "", ""},
-  {"You can once more study and cast Conjurations magic.", "", ""},
-},
-#endif
 { MUT_NO_EARTH_MAGIC, 0, 1, mutflag::bad, false,
   "no earth magic",
 
@@ -1898,15 +1855,15 @@ static const mutation_def mut_data[] =
 { MUT_INEXPERIENCED, 0, 3, mutflag::bad, false,
     "inexperienced",
 
-    {"You are somewhat inexperienced. (-2 XL)",
-     "You are inexperienced. (-4 XL)",
-     "You are extremely inexperienced. (-6 XL)"},
-    {"You feel less experienced.",
-     "You feel less experienced.",
-     "You feel less experienced."},
-    {"You regain all your potential.",
-     "You regain some potential.",
-     "You regain some potential."},
+  {"You are somewhat inexperienced. (-2 XL)",
+   "You are inexperienced. (-4 XL)",
+   "You are extremely inexperienced. (-6 XL)"},
+  {"You feel less experienced.",
+   "You feel less experienced.",
+   "You feel less experienced."},
+  {"You regain all your potential.",
+   "You regain some potential.",
+   "You regain some potential."},
 },
 
 { MUT_PAWS, 0, 1, mutflag::good, true,
@@ -1944,11 +1901,11 @@ static const mutation_def mut_data[] =
 { MUT_GODS_PITY, 0, 2, mutflag::good, false,
     "god's pity",
 
-{ "The pity of the gods increases the power of your invoked divine abilities.",
+  { "The pity of the gods increases the power of your invoked divine abilities.",
     "The pity of the gods increases the power of your passive and invoked divine abilities.", "" },
-{ "The dieties of the dungeon take pity on you.",
+  { "The dieties of the dungeon take pity on you.",
     "The dieties of the dungeon take greater pity upon you.", "" },
-{ "The dieties treat you like any other subject.",
+  { "The dieties treat you like any other subject.",
     "The pity of the gods is waning.", "" },
 },
 
@@ -1961,20 +1918,20 @@ static const mutation_def mut_data[] =
 },
 
 { MUT_SILENT_CAST, 0, 1, mutflag::good, false,
-"silent casting",
+  "silent casting",
 
-{ "You can communicate with gods and cast spells while silenced.", "", "" },
-{ "You gain the power to cast without speech.", "", "" },
-{ "Silence once again prevents your spellcasting.", "", "" },
+  { "You can communicate with gods and cast spells while silenced.", "", "" },
+  { "You gain the power to cast without speech.", "", "" },
+  { "Silence once again prevents your spellcasting.", "", "" },
 },
 
 { MUT_INSUBSTANTIAL, 0, 1, mutflag::good, false,
-"insubstantial",
+  "insubstantial",
 
-{ "Your insubstantial form boosts your evasion and grants immunity to sticky flames, nets and constriction.", "", "" },
-{ "Your spirit separates from your body becoming a ghostly form.", "", "" },
-    // BCADDNOTE: This only makes sense for the only race that currently gains this with level. If more races are given this with level revise/use mutation-messaging.
-{ "You become solid.", "", "" },
+  { "Your insubstantial form boosts your evasion and grants immunity to sticky flames, nets and constriction.", "", "" },
+  { "Your spirit separates from your body becoming a ghostly form.", "", "" },
+      // BCADDNOTE: This only makes sense for the only race that currently gains this with level. If more races are given this with level revise/use mutation-messaging.
+  { "You become solid.", "", "" },
 },
 
 { MUT_ACID_RESISTANCE, 0, 1, mutflag::good, true,

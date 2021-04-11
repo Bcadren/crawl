@@ -6941,6 +6941,12 @@ int player::racial_ac(bool temp) const
 
         if (species == SP_NAGA)
             sAC = 100 * experience_level / 3;              // max 9
+        else if (species == SP_OGRE)
+            sAC = 100;
+        else if (species == SP_TROLL)
+            sAC = 400;
+        else if (species == SP_CENTAUR)
+            sAC = 300;
         else if (species == SP_GARGOYLE)
         {
             sAC = 200 + 100 * experience_level * 2 / 5     // max 20
@@ -6949,7 +6955,7 @@ int player::racial_ac(bool temp) const
         else if (species == SP_LIGNIFITE)
             sAC = max(0, (experience_level - 12) * 100);
         else if (species == SP_OCTOPODE)
-            sAC = 1;
+            sAC = 100;
     }
 
     return jAC + sAC;
@@ -7024,8 +7030,7 @@ const vector<int> ONE_TWO_THREE  = {1,2,3};
 const vector<int> TWO_THREE_FOUR = {2,3,4};
 
 vector<mutation_ac_changes> all_mutation_ac_changes = {
-     mutation_ac_changes(MUT_TOUGH_SKIN,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
-    ,mutation_ac_changes(MUT_SHAGGY_FUR,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
+     mutation_ac_changes(MUT_SHAGGY_FUR,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
     ,mutation_ac_changes(MUT_PHYSICAL_VULNERABILITY, mutation_activity_type::PARTIAL, {-5,-10,-15})
     // Scale mutations are more easily disabled (forms etc.). This appears to be for flavour reasons.
     // Preserved behavior from before mutation ac was turned to data.

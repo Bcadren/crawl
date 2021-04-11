@@ -343,7 +343,6 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         switch (mut)
         {
         case MUT_SLIME:
-        case MUT_TOUGH_SKIN:
         case MUT_SHAGGY_FUR:
         case MUT_FAST:
         case MUT_SLOW:
@@ -652,14 +651,18 @@ string describe_mutations(bool drop_title)
     }
 
     if (you.racial_ac(false) >= 100)
-    {
+    {             
+        const string job_string = you.char_class == JOB_CENTAUR ? "horsehide" : 
+                                  you.char_class == JOB_NAGA    ? "serpentine skin" : "";
+
         const string race_string = you.species == SP_DRACONIAN ? string(scale_type()) + " scales" :
                                    you.species == SP_NAGA      ? "serpentine skin"                :
                                    you.species == SP_GARGOYLE  ? "stone body"                     :
-                                   you.species == SP_LIGNIFITE ? "bark" : "";                
+                                   you.species == SP_TROLL     ? (job_string.length() ? "tough skin, shaggy fur" : "tough skin and shaggy fur") :
+                                   you.species == SP_CENTAUR   ? "horsehide"                      :
+                                   you.species == SP_OGRE      ? "tough skin"                     :
+                                   you.species == SP_LIGNIFITE ? "bark" : "";   
 
-        const string job_string = you.char_class == JOB_CENTAUR ? "horsehide" : 
-                                  you.char_class == JOB_NAGA    ? "serpentine skin" : "";
         const bool plural = race_string.length() && job_string.length();
 
         result += _annotate_form_based(
