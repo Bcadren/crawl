@@ -492,36 +492,20 @@ static const mutation_def mut_data[] =
   {"You feel calm.", "", ""},
 },
 
-{ MUT_DETERIORATION, 10, 2, mutflag::bad | mutflag::xom, false,
+{ MUT_DETERIORATION, 10, 1, mutflag::bad | mutflag::xom, false,
   "deterioration",
 
-  {"Your body sometimes deteriorates upon taking damage.",
-   "Your body often deteriorates upon taking damage.",
-   ""},
-
-  {"You feel yourself wasting away.",
-   "You feel your body start to fall apart.",
-   ""},
-
-  {"You feel healthier.",
-   "You feel a little healthier.",
-   ""},
+  {"Your body often falls apart upon taking damage.", "", ""},
+  {"You feel your body start to fall apart.", "", ""},
+  {"Your body feels more substantial.", "", ""},
 },
 
 { MUT_IMPAIRED_VISION, 10, 1, mutflag::bad | mutflag::xom, false,
   "impaired vision",
 
-  {"Your poor vision makes scrolls take longer to read and aiming more difficult.",
-   "",
-   ""},
-
-  {"Your vision dulls.",
-   "",
-   ""},
-
-  {"Your vision sharpens.",
-   "",
-   ""},
+  {"Your poor vision makes scrolls take longer to read and aiming more difficult.", "", ""},
+  {"Your vision dulls.", "", ""},
+  {"Your vision sharpens.", "", ""},
 },
 
 { MUT_MUTATION_RESISTANCE, 4, 3, mutflag::good, false,

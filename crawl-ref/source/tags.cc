@@ -3031,6 +3031,7 @@ static void tag_read_you(reader &th)
             mprf(MSGCH_ERROR, "Resetting old Jiyva Mutations. . .");
         _cap_mutation_at(MUT_SHOUTITUS, 1);
         _cap_mutation_at(MUT_BERSERK, 1);
+        _cap_mutation_at(MUT_DETERIORATION, 1);
     }
 #endif
 
@@ -3184,12 +3185,6 @@ static void tag_read_you(reader &th)
     {
         if (you.mutation[MUT_MP_WANDS] > 1)
             you.mutation[MUT_MP_WANDS] = 1;
-    }
-
-    if (th.getMinorVersion() < TAG_MINOR_DETERIORATION)
-    {
-        if (you.mutation[MUT_DETERIORATION] > 2)
-            you.mutation[MUT_DETERIORATION] = 2;
     }
 
     if (th.getMinorVersion() < TAG_MINOR_BLINK_MUT)

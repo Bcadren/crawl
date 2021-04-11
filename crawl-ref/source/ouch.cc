@@ -874,8 +874,8 @@ static void _maybe_fog(int dam)
 
 static void _deteriorate(int dam)
 {
-    if (x_chance_in_y(you.get_mutation_level(MUT_DETERIORATION), 4)
-        && dam > you.hp_max / 10)
+    if (x_chance_in_y(you.get_mutation_level(MUT_DETERIORATION), 2)
+        && dam > you.hp_max / 20)
     {
         mprf(MSGCH_WARN, "Your body deteriorates!");
         lose_stat(STAT_RANDOM, 1);
