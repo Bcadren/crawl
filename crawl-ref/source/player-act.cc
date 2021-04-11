@@ -793,8 +793,7 @@ void player::attacking(actor *other, bool ranged)
     if (ranged || mons_is_firewood(*(monster*) other))
         return;
 
-    const int chance = pow(3, get_mutation_level(MUT_BERSERK) - 1);
-    if (has_mutation(MUT_BERSERK) && x_chance_in_y(chance, 100))
+    if (has_mutation(MUT_BERSERK) && one_chance_in(5))
         go_berserk(false);
     if ((have_passive(passive_t::berserkitis) || player_under_penance(GOD_TROG)) && x_chance_in_y(you.piety, 2500))
         go_berserk(false);

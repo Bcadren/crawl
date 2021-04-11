@@ -9618,7 +9618,7 @@ void player_end_berserk()
     //       avoid the mutation being a "death sentence" to
     //       certain characters.
 
-    if (one_chance_in(10 + you.get_mutation_level(MUT_BERSERK) * 25))
+    if (one_chance_in(10 + you.get_mutation_level(MUT_BERSERK) * 50))
     {
         // Note the beauty of Trog! They get an extra save that's at
         // the very least 20% and goes up to 100%.

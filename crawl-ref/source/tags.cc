@@ -3030,6 +3030,7 @@ static void tag_read_you(reader &th)
         if (slimy)
             mprf(MSGCH_ERROR, "Resetting old Jiyva Mutations. . .");
         _cap_mutation_at(MUT_SHOUTITUS, 1);
+        _cap_mutation_at(MUT_BERSERK, 1);
     }
 #endif
 

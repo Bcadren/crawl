@@ -484,20 +484,12 @@ static const mutation_def mut_data[] =
   {"Your thinking seems confused.", "", ""},
 },
 
-{ MUT_BERSERK, 7, 3, mutflag::bad, false,
-  "berserk",
+{ MUT_BERSERK, 7, 1, mutflag::bad, false,
+  "berserkitis",
 
-  {"You tend to lose your temper in combat.",
-   "You often lose your temper in combat.",
-   "You have an uncontrollable temper."},
-
-  {"You feel a little pissed off.",
-   "You feel angry.",
-   "You feel extremely angry at everything!"},
-
-  {"You feel a little more calm.",
-   "You feel a little less angry.",
-   "You feel a little less angry."},
+  {"You have an uncontrollable temper.", "", ""},
+  {"You feel a little pissed off.", "", ""},
+  {"You feel calm.", "", ""},
 },
 
 { MUT_DETERIORATION, 10, 2, mutflag::bad | mutflag::xom, false,
