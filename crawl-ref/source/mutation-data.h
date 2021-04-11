@@ -1589,14 +1589,6 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_JELLY_GROWTH, 0, 1, mutflag::good | mutflag::jiyva, true,
-  "jelly sensing items",
-
-  {"You have a small jelly attached to you that senses nearby items.", "", ""},
-  {"Your body partially splits into a small jelly.", "", ""},
-  {"The jelly growth is reabsorbed into your body.", "", ""},
-},
-
 { MUT_PETRIFICATION_RESISTANCE, 0, 1, mutflag::good, false,
   "petrification resistance",
 
