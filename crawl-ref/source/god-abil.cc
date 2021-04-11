@@ -5594,10 +5594,6 @@ int get_sacrifice_piety(ability_type sac, bool include_skill)
                 piety_gain += 21;
             else
                 piety_gain += 14;
-
-            if (mut == MUT_SHOUTITUS)
-                piety_gain /= 2; // screaming just isn't that bad.
-
             break;
         case ABIL_RU_SACRIFICE_ARTIFICE:
             if (you.get_mutation_level(MUT_NO_LOVE))

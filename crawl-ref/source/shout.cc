@@ -702,7 +702,7 @@ void maybe_trigger_shoutitus(const vector<monster*> monsters)
     {
         if (!mons_is_tentacle_or_tentacle_segment(mon->type)
             && !mons_is_conjured(mon->type)
-            && x_chance_in_y(3 + you.get_mutation_level(MUT_SHOUTITUS) * 3, 100))
+            && one_chance_in(10))
         {
             yell(mon);
             return;

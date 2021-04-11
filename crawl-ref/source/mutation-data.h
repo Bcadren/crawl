@@ -468,20 +468,12 @@ static const mutation_def mut_data[] =
 },
 #endif
 
-{ MUT_SHOUTITUS, 6, 3, mutflag::bad | mutflag::xom, false,
-  "screaming",
+{ MUT_SHOUTITUS, 6, 1, mutflag::bad | mutflag::xom, false,
+  "shoutitus",
 
-  {"You occasionally shout uncontrollably at your foes.",
-   "You sometimes yell uncontrollably at your foes.",
-   "You frequently scream uncontrollably at your foes."},
-
-  {"You feel the urge to shout.",
-   "You feel a strong urge to yell.",
-   "You feel a strong urge to scream."},
-
-  {"Your urge to shout disappears.",
-   "Your urge to yell lessens.",
-   "Your urge to scream lessens."},
+  {"You frequently shout uncontrollably at your foes.", "", ""},
+  {"You feel a strong urge to shout.", "", ""},
+  {"Your urge to shout disappears.", "", ""},
 },
 
 { MUT_CLARITY, 6, 1, mutflag::good, false,
