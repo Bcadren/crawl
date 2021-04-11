@@ -7642,7 +7642,7 @@ int player_res_magic(bool calc_unid, bool temp)
     rm += MR_PIP * you.wearing(EQ_RINGS, RING_PROTECTION_FROM_MAGIC, calc_unid);
 
     // Mutations
-    rm += MR_PIP * you.get_mutation_level(MUT_MAGIC_RESISTANCE);
+    rm += MR_PIP * you.get_mutation_level(MUT_MAGIC_RESISTANCE) * 2;
     rm -= MR_PIP * you.get_mutation_level(MUT_MAGICAL_VULNERABILITY);
     if (you.get_mutation_level(MUT_GOLDEN_EYEBALLS))
         rm += MR_PIP * (you.get_mutation_level(MUT_GOLDEN_EYEBALLS) - 1);

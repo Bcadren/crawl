@@ -3033,6 +3033,7 @@ static void tag_read_you(reader &th)
         _cap_mutation_at(MUT_BERSERK, 1);
         _cap_mutation_at(MUT_DETERIORATION, 1);
         _cap_mutation_at(MUT_TELEPORT, 1);
+        _cap_mutation_at(MUT_MAGIC_RESISTANCE, 1);
         you.mutation[MUT_TOUGH_SKIN] = you.innate_mutation[MUT_TOUGH_SKIN] = 0;
     }
 #endif

@@ -271,20 +271,12 @@ static const mutation_def mut_data[] =
   {"You feel stable.", "", ""},
 },
 
-{ MUT_MAGIC_RESISTANCE, 5, 3, mutflag::good, false,
+{ MUT_MAGIC_RESISTANCE, 5, 1, mutflag::good, false,
   "magic resistance",
 
-  {"You are resistant to hostile enchantments. (MR+)",
-   "You are highly resistant to hostile enchantments. (MR++)",
-   "You are extremely resistant to the effects of hostile enchantments. (MR+++)"},
-
-  {"You feel resistant to hostile enchantments.",
-   "You feel more resistant to hostile enchantments.",
-   "You feel almost impervious to the effects of hostile enchantments."},
-
-  {"You feel less resistant to hostile enchantments.",
-   "You feel less resistant to hostile enchantments.",
-   "You feel vulnerable to hostile enchantments."},
+  {"You are highly resistant to hostile enchantments. (MR++)", "", ""},
+  {"You feel more resistant to hostile enchantments.", "", ""},
+  {"You feel vulnerable to hostile enchantments.", "", ""},
 },
 
 { MUT_FAST, 0, 3, mutflag::good, true,
