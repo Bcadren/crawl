@@ -5287,14 +5287,8 @@ static mutation_type _random_valid_sacrifice(const vector<mutation_type> &muts)
 
         // Special case a few weird interactions:
 
-        // Vampires can't get inhibited regeneration for some reason related
-        // to their existing regen silliness.
-        // Neither can deep dwarf, for obvious reasons.
-        if (mut == MUT_INHIBITED_REGENERATION && you.species == SP_VAMPIRE)
-            continue;
-
-        // Can't scream in permasilence. Hah.
-        if (mut == MUT_SHOUTITUS && you.species == SP_SILENT_SPECTRE)
+        // Can't scream or read in permasilence. Hah.
+        if ((mut == MUT_SHOUTITUS || mut == MUT_NO_READ) && you.species == SP_SILENT_SPECTRE)
             continue;
 
         // demonspawn can't get frail if they have a robust facet
