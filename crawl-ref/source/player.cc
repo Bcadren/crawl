@@ -1827,7 +1827,6 @@ int player_res_cold(bool calc_unid, bool temp, bool items)
     rc -= you.get_mutation_level(MUT_COLD_VULNERABILITY, temp);
     rc -= you.get_mutation_level(MUT_TEMPERATURE_SENSITIVITY, temp);
     rc += you.get_mutation_level(MUT_ICY_BLUE_SCALES, temp) == 3 ? 1 : 0;
-    rc += you.get_mutation_level(MUT_SHAGGY_FUR, temp) == 3 ? 1 : 0;
     rc += you.get_mutation_level(MUT_PROTOPLASM, temp) ? 1 : 0;
 
     // draconian scales:
@@ -3828,6 +3827,11 @@ void level_change(bool skip_attribute_increase)
                 break;
 
             case SP_FELID:
+                if (!(you.experience_level % 6))
+                {
+                    mprf(MSGCH_INTRINSIC_GAIN, "Your fur feels thicker.");
+                    you.redraw_armour_class = true;
+                }
                 _felid_extra_life();
                 break;
 
@@ -6956,6 +6960,8 @@ int player::racial_ac(bool temp) const
             sAC = max(0, (experience_level - 12) * 100);
         else if (species == SP_OCTOPODE)
             sAC = 100;
+        else if (species == SP_FELID)
+            sAC = 100 + (experience_level / 6);
     }
 
     return jAC + sAC;
@@ -7030,8 +7036,7 @@ const vector<int> ONE_TWO_THREE  = {1,2,3};
 const vector<int> TWO_THREE_FOUR = {2,3,4};
 
 vector<mutation_ac_changes> all_mutation_ac_changes = {
-     mutation_ac_changes(MUT_SHAGGY_FUR,             mutation_activity_type::PARTIAL, ONE_TWO_THREE)
-    ,mutation_ac_changes(MUT_PHYSICAL_VULNERABILITY, mutation_activity_type::PARTIAL, {-5,-10,-15})
+     mutation_ac_changes(MUT_PHYSICAL_VULNERABILITY, mutation_activity_type::PARTIAL, {-5,-10,-15})
     // Scale mutations are more easily disabled (forms etc.). This appears to be for flavour reasons.
     // Preserved behavior from before mutation ac was turned to data.
     ,mutation_ac_changes(MUT_IRIDESCENT_SCALES,      mutation_activity_type::FULL,    {2, 4, 6})

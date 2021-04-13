@@ -23,6 +23,17 @@ static const species_mutation_message spmu_data[] =
     { "","","" },
 },
 
+{ SP_FELID, MUT_COLD_RESISTANCE, 
+    "fur coat (rC)",
+
+    {"Your fur coat keeps you warm. (rC+)",
+     "Your luxious mane keeps you nice and toasty. (rC++)", ""},
+    {"Your fur is now thick enough to protect against the cold.",
+     "Your fur grows even thicker and insulates better against the cold.", ""},
+    {"Your fur thins out. You feel a chill.",
+     "Your fur thins out. You feel a chill.", ""},
+},
+
 { SP_FAIRY, MUT_MP_WANDS,
   "MP-powered wands",
 

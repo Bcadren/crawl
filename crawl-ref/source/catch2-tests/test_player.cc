@@ -64,8 +64,7 @@ TEST_CASE_METHOD(MockPlayerYouTestsFixture,
     // each of them. But scales mutations conflict in complicated ways,
     // so it was significantly easier just to use Monte Carlo method.
     for (int i=0; i<99999; i++){
-        mut = random_choose(MUT_TOUGH_SKIN, MUT_SHAGGY_FUR,
-                           MUT_GELATINOUS_BODY, MUT_IRIDESCENT_SCALES,
+        mut = random_choose(MUT_GELATINOUS_BODY, MUT_IRIDESCENT_SCALES,
                            MUT_NO_POTION_HEAL, MUT_RUGGED_BROWN_SCALES,
                            MUT_ICY_BLUE_SCALES, MUT_MOLTEN_SCALES,
                            MUT_SLIMY_GREEN_SCALES, MUT_THIN_METALLIC_SCALES,

@@ -384,40 +384,6 @@ static const mutation_def mut_data[] =
   {"You no longer feel jittery.", "", ""},
 },
 
-#if TAG_MAJOR_VERSION == 34
-{ MUT_STRONG_STIFF, 0, 3, mutflag::good, false,
-  "strong stiff",
-
-  {"Your muscles are strong, but stiff. (Str +1, Dex -1)",
-   "Your muscles are very strong, but stiff. (Str +2, Dex -2)",
-   "Your muscles are extremely strong, but stiff. (Str +3, Dex -3)"},
-
-  {"Your muscles feel sore.",
-   "Your muscles feel sore.",
-   "Your muscles feel sore."},
-
-  {"Your muscles feel loose.",
-   "Your muscles feel loose.",
-   "Your muscles feel loose."},
-},
-
-{ MUT_FLEXIBLE_WEAK, 0, 3, mutflag::good, false,
-  "flexible weak",
-
-  {"Your muscles are flexible, but weak (Str -1, Dex +1).",
-   "Your muscles are very flexible, but weak (Str -2, Dex +2).",
-   "Your muscles are extremely flexible, but weak (Str -3, Dex +3)."},
-
-  {"Your muscles feel loose.",
-   "Your muscles feel loose.",
-   "Your muscles feel loose."},
-
-  {"Your muscles feel sore.",
-   "Your muscles feel sore.",
-   "Your muscles feel sore."},
-},
-#endif
-
 { MUT_SHOUTITUS, 6, 1, mutflag::bad | mutflag::xom, false,
   "shoutitus",
 
@@ -799,23 +765,6 @@ static const mutation_def mut_data[] =
   {"", "Your legs feel stronger.", ""},
 
   {"", "", ""},
-},
-
-
-{ MUT_SHAGGY_FUR, 2, 3, mutflag::good, true,
-  "shaggy fur",
-
-  {"You are covered in fur. (AC +1)",
-   "You are covered in thick fur. (AC +2)",
-   "Your thick and shaggy fur keeps you warm. (AC +3, rC+)"},
-
-  {"Fur sprouts all over your body.",
-   "Your fur grows into a thick mane.",
-   "Your thick fur grows shaggy and warm."},
-
-  {"You shed all your fur.",
-   "Your thick fur recedes somewhat.",
-   "Your shaggy fur recedes somewhat."},
 },
 
 { MUT_HIGH_MAGIC, 2, 3, mutflag::good, false,

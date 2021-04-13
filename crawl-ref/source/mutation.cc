@@ -127,9 +127,6 @@ static const int conflict[][3] =
     { MUT_REGENERATION,        MUT_INHIBITED_REGENERATION,  0},
     { MUT_ACUTE_VISION,        MUT_IMPAIRED_VISION,         0},
     { MUT_FAST,                MUT_SLOW,                    0},
-#if TAG_MAJOR_VERSION == 34
-    { MUT_STRONG_STIFF,        MUT_FLEXIBLE_WEAK,           1},
-#endif
     { MUT_STRONG,              MUT_WEAK,                    1},
     { MUT_CLEVER,              MUT_DOPEY,                   1},
     { MUT_AGILE,               MUT_CLUMSY,                  1},
@@ -343,7 +340,6 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
         switch (mut)
         {
         case MUT_SLIME:
-        case MUT_SHAGGY_FUR:
         case MUT_FAST:
         case MUT_SLOW:
         case MUT_IRIDESCENT_SCALES:
@@ -661,7 +657,8 @@ string describe_mutations(bool drop_title)
                                    you.species == SP_TROLL     ? (job_string.length() ? "tough skin, shaggy fur" : "tough skin and shaggy fur") :
                                    you.species == SP_CENTAUR   ? "horsehide"                      :
                                    you.species == SP_OGRE      ? "tough skin"                     :
-                                   you.species == SP_LIGNIFITE ? "bark" : "";   
+                                   you.species == SP_LIGNIFITE ? "bark"                           : 
+                                   you.species == SP_FELID     ? "fur coat"                       : "";
 
         const bool plural = race_string.length() && job_string.length();
 
