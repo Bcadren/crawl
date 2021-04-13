@@ -2268,8 +2268,10 @@ int player_spec_invo()
     int si = 0;
     if (you.get_mutation_level(MUT_GODS_PITY) > 0)
         si++;
+    if (you.get_mutation_level(MUT_FORLORN) > 0)
+        si--;
 
-    si += you.high_priest(true,true);
+    si += you.high_priest();
 
     return si;
 }

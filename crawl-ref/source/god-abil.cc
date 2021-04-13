@@ -103,9 +103,25 @@ static bool _player_sacrificed_arcana();
 int apply_invo_enhancer(int power, bool message)
 {
     double calc = (double)power;
-    if (message && player_spec_invo() > 0)
-        god_speaks(you.religion,"You feel a surge of divine energy.");
-    return rand_round(calc * pow(1.5,player_spec_invo()));
+    const int spec = player_spec_invo();
+    if (spec > 0)
+    {
+        if (message)
+        {
+            if (spec > 1)
+                god_speaks(you.religion, "You feel a strong surge of divine energy!");
+            else
+                god_speaks(you.religion, "You feel a surge of divine energy!");
+        }
+        return rand_round(calc * pow(1.5, player_spec_invo()));
+    }
+    else if (player_spec_invo())
+    {
+        if (message)
+            god_speaks(you.religion, "You feel a miserable sensation.");
+        return rand_round(calc * pow(0.5, -player_spec_invo()));
+    }
+    return power;
 }
 
 /** Would a god currently allow using a one-time six-star ability?

@@ -766,7 +766,6 @@ static const mutation_def mut_data[] =
   {"Your magic regains its normal vibrancy.", "", ""},
 },
 
-#if TAG_MAJOR_VERSION == 34
 { MUT_FORLORN, 0, 1, mutflag::bad, false,
   "forlorn",
 
@@ -774,7 +773,6 @@ static const mutation_def mut_data[] =
   {"You feel forlorn.","",""},
   {"You feel more spiritual.","",""},
 },
-#endif
 
 { MUT_STOCHASTIC_TORMENT_RESISTANCE, 0, 1, mutflag::good, false,
   "50% torment resistance",
