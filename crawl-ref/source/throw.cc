@@ -60,7 +60,7 @@ bool is_penetrating_attack(const actor& attacker, const item_def* weapon,
     if (attacker.is_player())
     {
         const item_def * inside = you.slot_item(EQ_CYTOPLASM);
-        if (get_weapon_brand(*inside) == SPWPN_PENETRATION || is_unrandom_artefact(*inside, UNRAND_STORM_BOW))
+        if (inside && (get_weapon_brand(*inside) == SPWPN_PENETRATION || is_unrandom_artefact(*inside, UNRAND_STORM_BOW)))
             return true;
     }
 
