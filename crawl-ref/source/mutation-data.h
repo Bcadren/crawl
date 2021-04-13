@@ -750,36 +750,20 @@ static const mutation_def mut_data[] =
    "You feel more energetic.", ""},
 },
 
-{ MUT_WILD_MAGIC, 6, 3, mutflag::good, false,
+{ MUT_WILD_MAGIC, 6, 1, mutflag::good, false,
   "wild magic",
 
-  {"Your spells are a little harder to cast, but a little more powerful.",
-   "Your spells are harder to cast, but more powerful.",
-   "Your spells are much harder to cast, but much more powerful."},
-
-  {"You feel less in control of your magic.",
-   "You feel less in control of your magic.",
-   "You feel your magical power running wild!"},
-
-  {"You regain control of your magic.",
-   "You feel more in control of your magic.",
-   "You feel more in control of your magic."},
+  {"Your spells are harder to cast, but more powerful.", "", ""},
+  {"You feel your magical power running wild!", "", ""},
+  {"You regain control of your magic.", "", ""},
 },
 
-{ MUT_SUBDUED_MAGIC, 6, 3, mutflag::bad, false,
+{ MUT_SUBDUED_MAGIC, 6, 1, mutflag::bad, false,
   "subdued magic",
 
-  {"Your spells are a little easier to cast, but a little less powerful.",
-   "Your spells are easier to cast, but less powerful.",
-   "Your spells are much easier to cast, but much less powerful."},
-
-  {"Your connection to magic feels subdued.",
-   "Your connection to magic feels more subdued.",
-   "Your connection to magic feels nearly dormant."},
-
-  {"Your magic regains its normal vibrancy.",
-   "Your connection to magic feels less subdued.",
-   "Your connection to magic feels less subdued."},
+  {"Your spells are easier to cast, but less powerful.", "", ""},
+  {"Your connection to magic feels dormant.", "", ""},
+  {"Your magic regains its normal vibrancy.", "", ""},
 },
 
 #if TAG_MAJOR_VERSION == 34

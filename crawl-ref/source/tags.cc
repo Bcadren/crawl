@@ -3035,6 +3035,8 @@ static void tag_read_you(reader &th)
         _cap_mutation_at(MUT_MAGIC_RESISTANCE, 1);
         _cap_mutation_at(MUT_LOW_MAGIC, 2);
         _cap_mutation_at(MUT_HIGH_MAGIC, 2);
+        _cap_mutation_at(MUT_WILD_MAGIC, 1);
+        _cap_mutation_at(MUT_SUBDUED_MAGIC, 1);
         you.mutation[MUT_TOUGH_SKIN] = you.innate_mutation[MUT_TOUGH_SKIN] = 0;
         you.mutation[MUT_SHAGGY_FUR] = you.innate_mutation[MUT_SHAGGY_FUR] = 0;
     }
