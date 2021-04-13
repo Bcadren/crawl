@@ -2703,7 +2703,7 @@ string mutation_overview()
             if (ordinary_levels > 1)
                 current = make_stringf("strongly %s", current.c_str()).c_str();
         }
-        else if (max_levels > 1)
+        else if (max_levels > 1 && mut != MUT_STATS)
         {
             // add on any numeric levels
             ostringstream ostr;

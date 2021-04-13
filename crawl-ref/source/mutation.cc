@@ -127,9 +127,6 @@ static const int conflict[][3] =
     { MUT_REGENERATION,        MUT_INHIBITED_REGENERATION,  0},
     { MUT_ACUTE_VISION,        MUT_IMPAIRED_VISION,         0},
     { MUT_FAST,                MUT_SLOW,                    0},
-    { MUT_STRONG,              MUT_WEAK,                    1},
-    { MUT_CLEVER,              MUT_DOPEY,                   1},
-    { MUT_AGILE,               MUT_CLUMSY,                  1},
     { MUT_ROBUST,              MUT_FRAIL,                   1},
     { MUT_HIGH_MAGIC,          MUT_LOW_MAGIC,               1},
     { MUT_WILD_MAGIC,          MUT_SUBDUED_MAGIC,           1},
@@ -155,6 +152,7 @@ static const int conflict[][3] =
     { MUT_MAGIC_RESISTANCE,    MUT_MAGICAL_VULNERABILITY,  -1},
     { MUT_NO_REGENERATION,     MUT_INHIBITED_REGENERATION, -1},
     { MUT_NO_REGENERATION,     MUT_REGENERATION,           -1},
+    { MUT_FORLORN,             MUT_GODS_PITY,               1},
 };
 
 equipment_type beastly_slot(int mut)
@@ -1391,34 +1389,192 @@ bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll)
     return false;
 }
 
-static const char* _stat_mut_desc(mutation_type mut, bool gain)
+static string _stat_mut_msg(bool gain, int s, int i, int d, bool terse)
 {
-    stat_type stat = STAT_STR;
-    bool positive = gain;
-    switch (mut)
+    string STR = ""; string INT = ""; string DEX = "";
+    ostringstream ostr;
+    ostr << " (";
+
+    if (s)
     {
-    case MUT_WEAK:
-        positive = !positive;
-    case MUT_STRONG:
-        stat = STAT_STR;
-        break;
-
-    case MUT_DOPEY:
-        positive = !positive;
-    case MUT_CLEVER:
-        stat = STAT_INT;
-        break;
-
-    case MUT_CLUMSY:
-        positive = !positive;
-    case MUT_AGILE:
-        stat = STAT_DEX;
-        break;
-
-    default:
-        die("invalid stat mutation: %d", mut);
+        STR = make_stringf("%s%s", abs(s) > 4 ? "extremely " : abs(s) > 2 ? "very " : "", stat_desc(STAT_STR, s > 0 ? SD_INCREASE : SD_DECREASE));
+        ostr << "STR " << ((s > 0) ? "+" : "") << s;
     }
-    return stat_desc(stat, positive ? SD_INCREASE : SD_DECREASE);
+
+    if (i)
+    {
+        INT = make_stringf("%s%s", abs(i) > 4 ? "extremely " : abs(i) > 2 ? "very " : "", stat_desc(STAT_INT, i > 0 ? SD_INCREASE : SD_DECREASE));
+        if (s)
+            ostr << ", ";
+        ostr << "INT " << ((i > 0) ? "+" : "") << i;
+    }
+
+    if (d)
+    {
+        DEX = make_stringf("%s%s", abs(d) > 5 ? "extremely " : abs(d) > 2 ? "very " : "", stat_desc(STAT_DEX, d > 0 ? SD_INCREASE : SD_DECREASE));
+        if (s || i)
+            ostr << ", ";
+        ostr << "DEX " << ((d > 0) ? "+" : "") << d;
+    }
+    ostr << ")";
+
+    if (s || i || d)
+    {
+        return make_stringf("%s%s%s%s%s%s%s%s%s", terse ? "" : "You ", terse ? "" : gain ? "feel " : "are ", STR.c_str(),
+            s && i ? (d ? ", " : " and ") : "", INT.c_str(), (s || i) && d ? " and " : "", DEX.c_str(), terse ? "" : ".", ostr.str().c_str());
+    }
+    return "But nothing happened . . .";
+}
+
+// Bookkeeps that stat mut's actual level and displays message.
+static void _stat_mut_gain(bool gain, int orig_STR, int orig_INT, int orig_DEX)
+{
+    const bool end = !(you.mutated_stats[STAT_STR] || you.mutated_stats[STAT_INT] || you.mutated_stats[STAT_DEX]);
+
+    int s = you.mutated_stats[STAT_STR] - orig_STR;
+    int i = you.mutated_stats[STAT_INT] - orig_INT;
+    int d = you.mutated_stats[STAT_DEX] - orig_DEX;
+
+    string MSG = _stat_mut_msg(true, s, i, d, false);
+
+    mprf(MSGCH_MUTATION, "%s %s", gain ? "You feel your attributes changing!" : 
+                                   end ? "Your attributes return to normal." : 
+                                         "Your attributes move closer to where they started.", MSG.c_str());
+
+    you.mutation[MUT_STATS] = min(128, div_round_up(abs(you.mutated_stats[STAT_STR]) + abs(you.mutated_stats[STAT_INT]) + abs(you.mutated_stats[STAT_DEX]), 10));
+}
+
+static void _unmutate_stats()
+{
+    int x = 9 + random2(2);
+
+    int orig_STR = you.mutated_stats[STAT_STR];
+    int orig_INT = you.mutated_stats[STAT_INT];
+    int orig_DEX = you.mutated_stats[STAT_DEX];
+
+    for (; x > 0; x--)
+    {
+        int y = random2(3);
+        switch (y)
+        {
+        case 0:
+            if (you.mutated_stats[STAT_STR] > 0) { you.mutated_stats[STAT_STR]--; break; }
+            if (you.mutated_stats[STAT_STR] < 0) { you.mutated_stats[STAT_STR]++; break; } // else fallthrough;
+        case 1:
+            if (you.mutated_stats[STAT_INT] > 0) { you.mutated_stats[STAT_INT]--; break; }
+            if (you.mutated_stats[STAT_INT] < 0) { you.mutated_stats[STAT_INT]++; break; } // else fallthrough;
+        case 2:
+            if (you.mutated_stats[STAT_DEX] > 0) { you.mutated_stats[STAT_DEX]--; break; }
+            if (you.mutated_stats[STAT_DEX] < 0) { you.mutated_stats[STAT_DEX]++; break; } // else continue . . .
+            if (you.mutated_stats[STAT_STR] > 0) { you.mutated_stats[STAT_STR]--; break; }
+            if (you.mutated_stats[STAT_STR] < 0) { you.mutated_stats[STAT_STR]++; break; }
+            if (you.mutated_stats[STAT_INT] > 0) { you.mutated_stats[STAT_INT]--; break; }
+            if (you.mutated_stats[STAT_INT] < 0) { you.mutated_stats[STAT_INT]++; break; }
+            x -= 20; break;
+        }
+    }
+
+    _stat_mut_gain(false, orig_STR, orig_INT, orig_DEX);
+}
+
+static void _mutate_stats(mutation_type type)
+{
+    int positive = 0;
+    int negative = 0;
+
+    if (type == RANDOM_GOOD_MUTATION)
+    {
+        int x = random2(4);
+        positive = 4 + x;
+    }
+    else if (type == RANDOM_BAD_MUTATION)
+    {
+        int x = random2(4);
+        negative = 4 + x;
+    }
+
+    int z = 10;
+    while (positive + negative < z)
+    {
+        if (coinflip())
+            positive++;
+        else
+            negative++;
+    }
+
+    int orig_STR = you.mutated_stats[STAT_STR];
+    int orig_INT = you.mutated_stats[STAT_INT];
+    int orig_DEX = you.mutated_stats[STAT_DEX];
+
+    bool str_changed = false;
+    bool int_changed = false;
+    bool dex_changed = false;
+
+    if (positive)
+    {
+        if (coinflip())
+        {
+            int x = random2(3);
+            switch (x)
+            {
+            case 0: you.mutated_stats[STAT_STR] += positive; str_changed = true; break;
+            case 1: you.mutated_stats[STAT_INT] += positive; int_changed = true; break;
+            case 2: you.mutated_stats[STAT_DEX] += positive; dex_changed = true; break;
+            }
+        }
+        else
+        {
+            int x = random2(3);
+            switch (x)
+            {
+            case 0: you.mutated_stats[STAT_STR] += positive / 2; str_changed = true; break;
+            case 1: you.mutated_stats[STAT_INT] += positive / 2; int_changed = true; break;
+            case 2: you.mutated_stats[STAT_DEX] += positive / 2; dex_changed = true; break;
+            }
+
+            x = random2(3);
+            switch (x)
+            {
+            case 0: if (!str_changed) { you.mutated_stats[STAT_STR] += div_round_up(positive, 2); str_changed = true; break; } // else fallthrough;
+            case 1: if (!int_changed) { you.mutated_stats[STAT_INT] += div_round_up(positive, 2); int_changed = true; break; } // else fallthrough;
+            case 2: if (!dex_changed) { you.mutated_stats[STAT_DEX] += div_round_up(positive, 2); dex_changed = true; break; } // and repeat if we got here.
+                    if (coinflip())   { you.mutated_stats[STAT_STR] += div_round_up(positive, 2); str_changed = true; break; }
+                                        you.mutated_stats[STAT_INT] += div_round_up(positive, 2); int_changed = true; break;
+            }
+        }
+    }
+
+    bool success = false;
+    if (coinflip())
+    {
+        int x = random2(3);
+        switch (x)
+        {
+        case 0: if ((you.max_stat(STAT_STR, true) >= 1 + negative) && !str_changed) { you.mutated_stats[STAT_STR] -= negative; success = true; break; } // else fallthrough;
+        case 1: if ((you.max_stat(STAT_INT, true) >= 1 + negative) && !int_changed) { you.mutated_stats[STAT_INT] -= negative; success = true; break; } // else fallthrough;
+        case 2: if ((you.max_stat(STAT_DEX, true) >= 1 + negative) && !dex_changed) { you.mutated_stats[STAT_DEX] -= negative; success = true; break; } // and repeat if we got here.
+                if ((you.max_stat(STAT_STR, true) >= 1 + negative) && !str_changed) { you.mutated_stats[STAT_STR] -= negative; success = true; break; }
+                if ((you.max_stat(STAT_INT, true) >= 1 + negative) && !int_changed) { you.mutated_stats[STAT_INT] -= negative; success = true; break; }
+        }
+    }
+
+    if (!success)
+    {
+        for (int i = negative; i > 0; --i)
+        {
+            int x = random2(3);
+            switch (x)
+            {
+            case 0: if (you.max_stat(STAT_STR, true) >= 2 && !str_changed) { you.mutated_stats[STAT_STR]--;  break; } // else fallthrough;
+            case 1: if (you.max_stat(STAT_INT, true) >= 2 && !int_changed) { you.mutated_stats[STAT_INT]--;  break; } // else fallthrough;
+            case 2: if (you.max_stat(STAT_DEX, true) >= 2 && !dex_changed) { you.mutated_stats[STAT_DEX]--;  break; } // and repeat if we got here.
+                    if (you.max_stat(STAT_STR, true) >= 2 && !str_changed) { you.mutated_stats[STAT_STR]--;  break; } // . . .
+                    if (you.max_stat(STAT_INT, true) >= 2 && !int_changed) { you.mutated_stats[STAT_INT]--;  break; } // . . .
+            }
+        }
+    }
+
+    _stat_mut_gain(true, orig_STR, orig_INT, orig_DEX);
 }
 
 /**
@@ -1779,7 +1935,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
     while (count-- > 0)
     {
         // no fail condition past this point, so it is safe to do bookkeeping
-        you.mutation[mutat]++;
+        if (mutat != MUT_STATS)
+            you.mutation[mutat]++;
         if (mutclass == MUTCLASS_TEMPORARY)
         {
             // do book-keeping for temporary mutations
@@ -1794,9 +1951,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
         // More than three messages, need to give them by hand.
         switch (mutat)
         {
-        case MUT_STRONG: case MUT_AGILE:  case MUT_CLEVER:
-        case MUT_WEAK:   case MUT_CLUMSY: case MUT_DOPEY:
-            mprf(MSGCH_MUTATION, "You feel %s.", _stat_mut_desc(mutat, true));
+        case MUT_STATS:
+            _mutate_stats(which_mutation);
             gain_msg = false;
             break;
 
@@ -2025,14 +2181,14 @@ static bool _delete_single_mutation_level(mutation_type mutat,
 
     bool lose_msg = true;
 
-    you.mutation[mutat]--;
+    if (mutat != MUT_STATS)
+        you.mutation[mutat]--;
 
     switch (mutat)
     {
-    case MUT_STRONG: case MUT_AGILE:  case MUT_CLEVER:
-    case MUT_WEAK:   case MUT_CLUMSY: case MUT_DOPEY:
-        mprf(MSGCH_MUTATION, "You feel %s.", _stat_mut_desc(mutat, false));
+    case MUT_STATS:
         lose_msg = false;
+        _unmutate_stats();
         break;
 
     case MUT_SPIT_POISON:
@@ -2068,6 +2224,13 @@ static bool _delete_single_mutation_level(mutation_type mutat,
         ash_check_bondage();
         break;
 
+    case MUT_GELATINOUS_TAIL:
+        mprf(MSGCH_MUTATION, "%s%s", mdef.lose[0], you.has_tail(false) ? "back to its normal size." : "away completely.");
+        remove_one_equip(EQ_BARDING, false, true);
+        ash_check_bondage();
+        lose_msg = false;
+        break;
+
     default:
         break;
     }
@@ -2079,16 +2242,11 @@ static bool _delete_single_mutation_level(mutation_type mutat,
 
     if (lose_msg)
     {
-        if (mutat == MUT_GELATINOUS_TAIL)
-            mprf(MSGCH_MUTATION, "%s%s", mdef.lose[0], you.has_tail(false) ? "back to its normal size." : "away completely.");
+        species_mutation_message msg = _spmut_msg(mutat);
+        if (msg.mutation == MUT_NON_MUTATION)
+            mprf(MSGCH_MUTATION, "%s", mdef.lose[you.mutation[mutat]]);
         else
-        {
-            species_mutation_message msg = _spmut_msg(mutat);
-            if (msg.mutation == MUT_NON_MUTATION)
-                mprf(MSGCH_MUTATION, "%s", mdef.lose[you.mutation[mutat]]);
-            else
-                mprf(MSGCH_MUTATION, "%s", msg.lose[you.mutation[mutat]]);
-        }
+            mprf(MSGCH_MUTATION, "%s", msg.lose[you.mutation[mutat]]);
     }
 
     // Do post-mutation effects.
@@ -2171,17 +2329,6 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
                 return false;
 
             mutat = static_cast<mutation_type>(random2(NUM_MUTATIONS));
-
-            if (you.mutation[mutat] == 0
-                && mutat != MUT_STRONG
-                && mutat != MUT_CLEVER
-                && mutat != MUT_AGILE
-                && mutat != MUT_WEAK
-                && mutat != MUT_DOPEY
-                && mutat != MUT_CLUMSY)
-            {
-                continue;
-            }
 
             if (which_mutation == RANDOM_NON_SLIME_MUTATION
                 && is_slime_mutation(mutat))
@@ -2321,6 +2468,9 @@ const char* mutation_name(mutation_type mut, bool allow_category, bool for_displ
 
     if (!for_display)
         return _get_mutation_def(mut).short_desc;
+
+    if (mut == MUT_STATS)
+        return _stat_mut_msg(false, you.mutated_stats[STAT_STR], you.mutated_stats[STAT_INT], you.mutated_stats[STAT_DEX], true).c_str();
 
     if (mut == MUT_MINOR_MARTIAL_APT_BOOST || mut == MUT_MAJOR_MARTIAL_APT_BOOST || mut == MUT_DEFENSIVE_APT_BOOST)
     {
@@ -2536,12 +2686,8 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     const mutation_def& mdef = _get_mutation_def(mut);
     const species_mutation_message msg = _spmut_msg(mut);
 
-    if (mut == MUT_STRONG || mut == MUT_CLEVER
-        || mut == MUT_AGILE || mut == MUT_WEAK
-        || mut == MUT_DOPEY || mut == MUT_CLUMSY)
-    {
-        level = min(level, 2);
-    }
+    if (mut == MUT_STATS)
+        result = _stat_mut_msg(false, you.mutated_stats[STAT_STR], you.mutated_stats[STAT_INT], you.mutated_stats[STAT_DEX], false);
     else if (mut == MUT_PSEUDOPODS)
     {
         string brand = "Buggy";

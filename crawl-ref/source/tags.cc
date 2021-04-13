@@ -1534,6 +1534,10 @@ static void tag_construct_you(writer &th)
         marshallInt(th, you.next_timer_effect[j]);
     }
 
+    marshallByte(th, you.mutated_stats[STAT_STR]);
+    marshallByte(th, you.mutated_stats[STAT_INT]);
+    marshallByte(th, you.mutated_stats[STAT_DEX]);
+
     // how many mutations/demon powers?
     marshallShort(th, NUM_MUTATIONS);
     for (int j = 0; j < NUM_MUTATIONS; ++j)
@@ -2930,9 +2934,23 @@ static void tag_read_you(reader &th)
     }
     else
         timer_count = 0;
-#endif
     // We'll have to fix up missing/broken timer entries after
     // we unmarshall you.elapsed_time.
+
+    if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK)
+    {
+        you.mutated_stats[STAT_STR] = 0 + you.get_mutation_level(MUT_STRONG) - you.get_mutation_level(MUT_WEAK);
+        you.mutated_stats[STAT_INT] = 0 + you.get_mutation_level(MUT_CLEVER) - you.get_mutation_level(MUT_DOPEY);
+        you.mutated_stats[STAT_DEX] = 0 + you.get_mutation_level(MUT_AGILE) - you.get_mutation_level(MUT_CLUMSY);
+        you.mutation[MUT_STATS] = abs(you.mutated_stats[STAT_STR]) + abs(you.mutated_stats[STAT_INT]) + abs(you.mutated_stats[STAT_DEX]);
+    }
+    else
+    {
+        you.mutated_stats[STAT_STR] = unmarshallByte(th);
+        you.mutated_stats[STAT_INT] = unmarshallByte(th);
+        you.mutated_stats[STAT_DEX] = unmarshallByte(th);
+    }
+#endif
 
     // how many mutations/demon powers?
     count = unmarshallShort(th);
@@ -3039,6 +3057,12 @@ static void tag_read_you(reader &th)
         _cap_mutation_at(MUT_SUBDUED_MAGIC, 1);
         you.mutation[MUT_TOUGH_SKIN] = you.innate_mutation[MUT_TOUGH_SKIN] = 0;
         you.mutation[MUT_SHAGGY_FUR] = you.innate_mutation[MUT_SHAGGY_FUR] = 0;
+        you.mutation[MUT_STRONG] = 0;
+        you.mutation[MUT_WEAK]   = 0;
+        you.mutation[MUT_CLEVER] = 0;
+        you.mutation[MUT_DOPEY]  = 0;
+        you.mutation[MUT_AGILE]  = 0;
+        you.mutation[MUT_CLUMSY] = 0;
     }
 #endif
 
@@ -3441,24 +3465,6 @@ static void tag_read_you(reader &th)
         you.one_time_ability_used.set(i, unmarshallBoolean(th));
     for (int i = 0; i < count; i++)
         you.piety_max[i] = unmarshallByte(th);
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() < TAG_MINOR_NEMELEX_DUNGEONS)
-    {
-        unmarshallByte(th);
-        for (int i = 0; i < NEM_GIFT_SUMMONING; i++)
-            unmarshallBoolean(th);
-        unmarshallBoolean(th); // dungeons weight
-        for (int i = NEM_GIFT_SUMMONING; i < NUM_NEMELEX_GIFT_TYPES; i++)
-            unmarshallBoolean(th);
-    }
-    else if (th.getMinorVersion() < TAG_MINOR_NEMELEX_WEIGHTS)
-    {
-        count = unmarshallByte(th);
-        ASSERT(count == NUM_NEMELEX_GIFT_TYPES);
-        for (int i = 0; i < count; i++)
-            unmarshallBoolean(th);
-    }
-#endif
 
     you.gift_timeout   = unmarshallByte(th);
 #if TAG_MAJOR_VERSION == 34

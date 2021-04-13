@@ -31,7 +31,7 @@ enum mutation_type
     MUT_CAMOUFLAGE,
 
     MUT_ACUTE_VISION,
-    MUT_AGILE,
+    MUT_AGILE, // Not a true mutation, used by a potion.
     MUT_BERSERK,
     MUT_BLINK,
     MUT_IMPAIRED_VISION,
@@ -41,8 +41,10 @@ enum mutation_type
 #endif
     MUT_CARNIVOROUS,
     MUT_CLARITY,
-    MUT_CLEVER,
+    MUT_CLEVER, // Not a true mutation, used by a potion.
+#if TAG_MAJOR_VERSION == 34
     MUT_CLUMSY,
+#endif
 #if TAG_MAJOR_VERSION > 34
     MUT_COLD_BLOODED,
 #endif
@@ -57,7 +59,9 @@ enum mutation_type
     MUT_DEFORMED,
     MUT_DEMONIC_GUARDIAN,
     MUT_DETERIORATION,
+#if TAG_MAJOR_VERSION == 34
     MUT_DOPEY,
+#endif
     MUT_HEAT_RESISTANCE,
 #if TAG_MAJOR_VERSION > 34
     MUT_HEAT_VULNERABILITY,
@@ -109,17 +113,15 @@ enum mutation_type
     MUT_SPINY,
     MUT_SPIT_POISON,
     MUT_STOCHASTIC_TORMENT_RESISTANCE,
-    MUT_STRONG,
-#if TAG_MAJOR_VERSION == 34
-    MUT_STRONG_STIFF,
-#endif
+    MUT_STRONG, // Not a true mutation, used by a potion.
+    MUT_STATS,
     MUT_TELEPORT,
     MUT_TELEPORT_CONTROL,
     MUT_TORMENT_RESISTANCE,
 #if TAG_MAJOR_VERSION == 34
     MUT_TOUGH_SKIN,
-#endif
     MUT_WEAK,
+#endif
     MUT_WILD_MAGIC,
     MUT_UNBREATHING,
     MUT_UNBREATHING_FORM, // Special version for SS since they keep their unbreathing between forms, while Grey Draconians don't.

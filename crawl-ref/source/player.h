@@ -146,6 +146,7 @@ public:
     int max_magic_points;
     int mp_max_adj;             // max MP loss (ability costs, tutorial bonus)
 
+    FixedVector<int8_t, NUM_STATS> mutated_stats;
     FixedVector<int8_t, NUM_STATS> stat_loss;
     FixedVector<int8_t, NUM_STATS> base_stats;
     FixedVector<int8_t, NUM_STATS> jiyva_stat_targets;

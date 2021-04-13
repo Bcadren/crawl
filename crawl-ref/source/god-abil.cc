@@ -115,10 +115,10 @@ int apply_invo_enhancer(int power, bool message)
         }
         return rand_round(calc * pow(1.5, player_spec_invo()));
     }
-    else if (player_spec_invo())
+    else if (spec) //< 0
     {
         if (message)
-            god_speaks(you.religion, "You feel a miserable sensation.");
+            mpr("<lightred>You feel forlorn.</lightred>");
         return rand_round(calc * pow(0.5, -player_spec_invo()));
     }
     return power;

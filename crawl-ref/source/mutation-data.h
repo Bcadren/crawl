@@ -22,31 +22,13 @@ struct mutation_category_def
 static const mutation_def mut_data[] =
 {
 
-{ MUT_STRONG, 7, 2, mutflag::good, false,
-  "strong",
+// Messaging handled elsewhere.
+{ MUT_STATS, 45, 255, mutflag::good | mutflag::bad, false,
+  "stats",
 
-  {"You are strong. (Str +2)",
-   "You are very strong. (Str +4)", ""},
-  {"", "", ""},
-  {"", "", ""},
-},
-
-{ MUT_CLEVER, 7, 2, mutflag::good, false,
-  "clever",
-
-  {"Your mind is acute. (Int +2)",
-   "Your mind is very acute. (Int +4)", ""},
-  {"", "", ""},
-  {"", "", ""},
-},
-
-{ MUT_AGILE, 7, 2, mutflag::good, false,
-  "agile",
-
-  {"You are agile. (Dex +2)",
-   "You are very agile. (Dex +4)", ""},
-  {"", "", ""},
-  {"", "", ""},
+  { "", "", "" },
+  { "", "", "" },
+  { "", "", "" },
 },
 
 { MUT_POISON_RESISTANCE, 4, 1, mutflag::good, true,
@@ -226,33 +208,6 @@ static const mutation_def mut_data[] =
   {"You feel a little hungry.",
    "You feel a little hungry.",
    ""},
-},
-
-{ MUT_WEAK, 8, 2, mutflag::bad | mutflag::xom, false,
-  "weak",
-
-  {"You are weak. (Str -2)",
-   "You are very weak. (Str -4)", ""},
-  {"", "", ""},
-  {"", "", ""},
-},
-
-{ MUT_DOPEY, 8, 2, mutflag::bad | mutflag::xom, false,
-  "dopey",
-
-  {"You are dopey. (Int -2)",
-   "You are very dopey. (Int -4)", ""},
-  {"", "", ""},
-  {"", "", ""},
-},
-
-{ MUT_CLUMSY, 8, 2, mutflag::bad | mutflag::xom, false,
-  "clumsy",
-
-  {"You are clumsy. (Dex -2)",
-   "You are very clumsy. (Dex -4)", ""},
-  {"", "", ""},
-  {"", "", ""},
 },
 
 { MUT_MERFOLK_TAIL, 0, 1, mutflag::good, true,
