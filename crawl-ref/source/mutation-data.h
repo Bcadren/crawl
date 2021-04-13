@@ -359,23 +359,8 @@ static const mutation_def mut_data[] =
    "A chill runs up and down your throat.",
    "A chill runs up and down your throat."},
 },
-
-{ MUT_JUMP, 0, 3, mutflag::good, false,
-  "jump",
-
-  {"You can jump attack at a short distance.",
-   "You can jump attack at a medium distance.",
-   "You can jump attack at a long distance."},
-
-  {"You feel more sure on your feet.",
-   "You feel more sure on your feet.",
-   "You feel more sure on your feet."},
-
-  {"You feel less sure on your feet.",
-   "You feel less sure on your feet.",
-   "You feel less sure on your feet."},
-},
 #endif
+
 { MUT_BLINK, 3, 1, mutflag::good, false,
   "blink",
 
@@ -677,16 +662,6 @@ static const mutation_def mut_data[] =
    "Your tentacle spike becomes smaller.",
    "Your tentacle spike recedes somewhat."},
 },
-#if TAG_MAJOR_VERSION == 34
-
-{ MUT_BREATHE_POISON, 0, 1, mutflag::good, false,
-  "breathe poison",
-
-  {"You can exhale a cloud of poison.", "", ""},
-  {"You taste something nasty.", "", ""},
-  {"Your breath is less nasty.", "", ""},
-},
-#endif
 
 { MUT_CONSTRICTING_TAIL, 0, 1, mutflag::good, true,
   "constrict 1",
@@ -722,22 +697,6 @@ static const mutation_def mut_data[] =
   {"Your wings shrivel and weaken.", "", ""},
 },
 
-#if TAG_MAJOR_VERSION == 34
-{ MUT_SAPROVOROUS, 0, 3, mutflag::good, false,
-  "saprovore",
-
-  {"You can tolerate rotten meat.",
-   "You can eat rotten meat.",
-   "You thrive on rotten meat."},
-
-  {"You hunger for rotting flesh.",
-   "You hunger for rotting flesh.",
-   "You hunger for rotting flesh."},
-
-  {"", "", ""},
-},
-#endif
-
 // species-dependent innate mutations
 { MUT_ROT_IMMUNITY, 0, 1, mutflag::good, false,
   "rot immunity",
@@ -759,44 +718,36 @@ static const mutation_def mut_data[] =
   "strong legs",
 
   {"You can hop short distances.",
-   "You can hop long distances.",
-   ""},
+   "You can hop long distances.", ""},
 
   {"", "Your legs feel stronger.", ""},
-
   {"", "", ""},
 },
 
-{ MUT_HIGH_MAGIC, 2, 3, mutflag::good, false,
+{ MUT_HIGH_MAGIC, 2, 2, mutflag::good, false,
   "high mp",
 
-  {"You have an increased reservoir of magic. (+10% MP)",
-   "You have a considerably increased reservoir of magic. (+20% MP)",
-   "You have a greatly increased reservoir of magic. (+30% MP)"},
+  {"You have an increased reservoir of magic. (+15% MP)",
+   "You have a greatly increased reservoir of magic. (+30% MP)", ""},
 
   {"You feel more energetic.",
-   "You feel more energetic.",
-   "You feel more energetic."},
+   "You feel more energetic.", ""},
 
   {"You feel less energetic.",
-   "You feel less energetic.",
-   "You feel less energetic."},
+   "You feel less energetic.", ""},
 },
 
-{ MUT_LOW_MAGIC, 9, 3, mutflag::bad, false,
+{ MUT_LOW_MAGIC, 9, 2, mutflag::bad, false,
   "low mp",
 
-  {"Your magical capacity is low. (-10% MP)",
-   "Your magical capacity is very low. (-20% MP)",
-   "Your magical capacity is extremely low. (-30% MP)"},
+  {"Your magical capacity is low. (-15% MP)",
+   "Your magical capacity is very low. (-30% MP)", ""},
 
   {"You feel less energetic.",
-   "You feel less energetic.",
-   "You feel less energetic."},
+   "You feel less energetic.", ""},
 
   {"You feel more energetic.",
-   "You feel more energetic.",
-   "You feel more energetic."},
+   "You feel more energetic.", ""},
 },
 
 { MUT_WILD_MAGIC, 6, 3, mutflag::good, false,

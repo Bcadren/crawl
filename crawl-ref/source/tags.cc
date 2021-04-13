@@ -3002,10 +3002,6 @@ static void tag_read_you(reader &th)
     you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW];
     you.mutation[MUT_BREATHE_FLAMES] = 0;
 
-    // BCADDO: Add a minor tag here next minor bump.
-    if (you.species == SP_MERFOLK)
-        you.mutation[MUT_MERFOLK_TAIL] = you.innate_mutation[MUT_MERFOLK_TAIL] = 1;
-
     if (th.getMinorVersion() < TAG_MINOR_MOUNT_ENERGY)
     {
         if (you.char_class != JOB_MUMMY && you.species != SP_LIGNIFITE)
@@ -3017,6 +3013,9 @@ static void tag_read_you(reader &th)
 
     if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK)
     {
+        if (you.species == SP_MERFOLK)
+            you.mutation[MUT_MERFOLK_TAIL] = you.innate_mutation[MUT_MERFOLK_TAIL] = 1;
+
         bool slimy = false;
         for (int i = 0; i < NUM_MUTATIONS; ++i)
         {
@@ -3034,7 +3033,10 @@ static void tag_read_you(reader &th)
         _cap_mutation_at(MUT_DETERIORATION, 1);
         _cap_mutation_at(MUT_TELEPORT, 1);
         _cap_mutation_at(MUT_MAGIC_RESISTANCE, 1);
+        _cap_mutation_at(MUT_LOW_MAGIC, 2);
+        _cap_mutation_at(MUT_HIGH_MAGIC, 2);
         you.mutation[MUT_TOUGH_SKIN] = you.innate_mutation[MUT_TOUGH_SKIN] = 0;
+        you.mutation[MUT_SHAGGY_FUR] = you.innate_mutation[MUT_SHAGGY_FUR] = 0;
     }
 #endif
 

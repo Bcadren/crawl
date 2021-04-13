@@ -4881,10 +4881,10 @@ int get_real_mp(bool include_items)
     enp += highest_skill + min(8 * scale, min(highest_skill, scaled_xl)) / 2;
 
     // Analogous to ROBUST/FRAIL
-    enp *= 100  + (you.get_mutation_level(MUT_HIGH_MAGIC) * 10)
-                + (you.attribute[ATTR_DIVINE_VIGOUR] * 5)
-                - (you.get_mutation_level(MUT_LOW_MAGIC) * 10);
-    enp /= 100 * scale;
+    enp *= 20  + (you.get_mutation_level(MUT_HIGH_MAGIC) * 3)
+               + (you.attribute[ATTR_DIVINE_VIGOUR])
+               - (you.get_mutation_level(MUT_LOW_MAGIC) * 3);
+    enp /= 20 * scale;
     enp += species_mp_modifier(you.species);
 
     // This is our "rotted" base, applied after multipliers
