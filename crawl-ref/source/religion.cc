@@ -2486,15 +2486,9 @@ static void _gain_piety_point()
 
     // Don't run down the Zin timeout unless actually mutated, so that when
     // we get a new mut Zin doesn't always clear it right away.
-<<<<<<< HEAD
-    else if (you.gift_timeout > 0 &&
-        (!you_worship(GOD_ZIN) ||
-        (you.how_mutated() && (you.piety >= piety_breakpoint(1))))) 
-    {
-=======
     else if (you.gift_timeout > 0 && 
-             (!you_worship(GOD_ZIN) || you.how_mutated(false,false,false))) {
->>>>>>> c0df6bfcf4 (Make this check exclude transient muts.)
+             (!you_worship(GOD_ZIN) || you.how_mutated(false,false,false)))
+    {
         you.gift_timeout--;
     }
 
