@@ -300,7 +300,7 @@ item_def* use_an_item(int item_type, operation_types oper, const char* prompt,
     }
 }
 
-static bool _handle_warning(const item_def &item, string actionWord = "unwield")
+static bool _handle_warning(const item_def &item, const string actionWord = "unwield")
 {
     bool penance = false;
     if (needs_handle_warning(item, OPER_WIELD, penance))
@@ -2652,7 +2652,7 @@ bool subsume_item(int slot)
         return false;
     }
 
-    if(!_handle_warning(item, "subsume")){
+    if (!_handle_warning(item, "subsume")) {
         return false;
     }
 
@@ -2730,7 +2730,7 @@ bool eject_item()
 
     item_def &item = *you.slot_item(EQ_CYTOPLASM);
 
-    if(!_handle_warning(item, "eject")) {
+    if (!_handle_warning(item, "eject")) {
         return false;
     }
 
