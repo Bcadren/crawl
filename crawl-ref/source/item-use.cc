@@ -300,13 +300,13 @@ item_def* use_an_item(int item_type, operation_types oper, const char* prompt,
     }
 }
 
-static bool _handle_warning(const item_def &item)
+static bool _handle_warning(const item_def &item, const string actionWord = "unwield")
 {
     bool penance = false;
     if (needs_handle_warning(item, OPER_WIELD, penance))
     {
         string prompt =
-            "Really unwield " + item.name(DESC_INVENTORY) + "?";
+            "Really " + actionWord + " " + item.name(DESC_INVENTORY) + "?";
         if (penance)
             prompt += " This could place you under penance!";
 
@@ -2652,6 +2652,10 @@ bool subsume_item(int slot)
         return false;
     }
 
+    if (!_handle_warning(item, "subsume")) {
+        return false;
+    }
+
     if (item_is_equipped(item))
     {
         switch (item.base_type)
@@ -2725,6 +2729,11 @@ bool eject_item()
     }
 
     item_def &item = *you.slot_item(EQ_CYTOPLASM);
+
+    if (!_handle_warning(item, "eject")) {
+        return false;
+    }
+
     int delay = (_subsumption_delay(item) / 2);
 
     start_delay<EjectionDelay>(delay, item);
