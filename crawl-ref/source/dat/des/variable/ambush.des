@@ -7,7 +7,7 @@
 # from 8 to 24 monsters. Very random, middle part is all subvaults.
 #
 # Currently set to never appear earlier than D:14, meaning this is always
-# post-lair.
+# post-Bayou.
 
 NAME:     evilmike_ambush
 DEPTH:    Depths, !Depths:$, Elf, !Elf:$, Snake, !Snake:$, \

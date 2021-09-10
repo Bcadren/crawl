@@ -17,7 +17,7 @@ branch_type root_branch;
 static const branch_type logical_branch_order[] = {
     BRANCH_DUNGEON,
     BRANCH_TEMPLE,
-    BRANCH_LAIR,
+    BRANCH_BAYOU,
     BRANCH_SWAMP,
     BRANCH_SHOALS,
     BRANCH_SNAKE,
@@ -74,7 +74,7 @@ static const branch_type danger_branch_order[] = {
     BRANCH_SEWER,
     BRANCH_OSSUARY,
     BRANCH_BAILEY,
-    BRANCH_LAIR,
+    BRANCH_BAYOU,
     BRANCH_GAUNTLET,
     BRANCH_ICE_CAVE,
     BRANCH_VOLCANO,
@@ -110,12 +110,6 @@ static const branch_type danger_branch_order[] = {
 COMPILE_CHECK(ARRAYSZ(danger_branch_order) == NUM_BRANCHES);
 
 static const int number_of_branch_swap_pairs = 2;
-
-static const branch_type swap_branches[number_of_branch_swap_pairs][2] =
-{
-    {BRANCH_SHOALS, BRANCH_SWAMP},
-    {BRANCH_SPIDER, BRANCH_SNAKE}
-};
 
 branch_iterator::branch_iterator(branch_iterator_type type) :
     iter_type(type), i(0)
@@ -161,18 +155,6 @@ branch_iterator branch_iterator::operator++(int)
     return copy;
 }
 
-vector<branch_type> random_choose_disabled_branches()
-{
-    // You will get one of Shoals/Swamp and one of Spider/Snake.
-    // This way you get one "water" branch and one "poison" branch.
-    vector<branch_type> disabled_branch;
-
-    for (int i=0; i < number_of_branch_swap_pairs; i++)
-        disabled_branch.push_back(swap_branches[i][random_choose(0,1)]);
-
-    return disabled_branch;
-}
-
 const Branch& your_branch()
 {
     return branches[you.where_are_you];
@@ -204,17 +186,8 @@ bool is_hell_branch(branch_type branch)
     return is_hell_subbranch(branch) || branch == BRANCH_VESTIBULE;
 }
 
-bool is_random_subbranch(branch_type branch)
+bool is_random_subbranch(branch_type /*branch*/)
 {
-    for (int i=0; i < number_of_branch_swap_pairs; i++)
-    {
-        for (int j=0; j < 2; j++)
-        {
-            if (branch == swap_branches[i][j])
-                return true;
-        }
-    }
-
     return false;
 }
 
@@ -280,7 +253,10 @@ bool branch_is_unfinished(branch_type branch)
         || branch == BRANCH_BLADE
         || branch == BRANCH_LABYRINTH
         || branch == BRANCH_OSSUARY
-        || branch == BRANCH_SEWER)
+        || branch == BRANCH_SEWER
+        || branch == BRANCH_SNAKE
+        || branch == BRANCH_SHOALS
+        || branch == BRANCH_SWAMP)
     {
         return true;
     }

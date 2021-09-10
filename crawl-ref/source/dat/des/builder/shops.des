@@ -659,7 +659,7 @@ ENDMAP
 # enchanting and branding it yourself...
 NAME:    minmay_shop_damaged
 TAGS:    transparent extra
-# not interesting after Lair
+# not interesting after Bayou
 DEPTH:   D:2-5
 KFEAT:   S = general shop type:Lightly-Used suffix:Armoury ; \
              damaged ego:none demon whip | \

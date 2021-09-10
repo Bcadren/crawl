@@ -234,14 +234,14 @@ function arena_sprint_get_monster_set(round, boss)
             }
         elseif round <= 5 then
             mon_set = {
-                -- Branches: D, Orc, Elf, Lair, Shoals, Swamp, Spider, Snake, Slime,
+                -- Branches: D, Orc, Elf, Bayou, Shoals, Swamp, Spider, Snake, Slime,
                 -- Hive, Crypt, Pan, Tomb
                 "place:D:3 w:15 / place:D:5 w:15 / w:2 edmund / w:2 maurice /\
                     w:1 psyche / w:1 joseph",
                 "w:30 place:Orc / orc wizard / orc warrior / w:3 orc knight /\
                     orc priest / orc high priest w:1 / blork the orc w:3 / urug w:1",
                 "w:2 place:Elf / w:24 deep elf mage",
-                "place:Lair / w:5 yak / w:5 crocodile / w:3 basilisk /\
+                "place:Bayou / w:5 yak / w:5 crocodile / w:3 basilisk /\
                     w:1 death yak / sewer rat / hell rat / porcupine /\
                     w:2 dream sheep",
                 "w:20 merfolk / w:5 merfolk siren / hippogriff w:15 / centaur /\
@@ -279,7 +279,7 @@ function arena_sprint_get_monster_set(round, boss)
              }
         elseif round <= 10 then
             mon_set = {
-                -- Branches: D, Orc, Elf, Lair, Shoals, Swamp, Spider, Snake, Slime,
+                -- Branches: D, Orc, Elf, Bayou, Shoals, Swamp, Spider, Snake, Slime,
                 -- Hive, Crypt, Pan, Tomb
                 "place:D:5 w:15 / place:D:7 w:15 / w:2 erica / w:2 harold /\
                     w:1 rupert",
@@ -287,7 +287,7 @@ function arena_sprint_get_monster_set(round, boss)
                     orc priest / orc high priest w:3 / orc sorcerer w:2 /\
                     orc warlord w:1 / urug w:2",
                 "place:Elf",
-                "place:Lair:4 w:30 / rupert w:1",
+                "place:Bayou:4 w:30 / rupert w:1",
                 "place:Shoals",
                 "place:Swamp",
                 "place:Spider",
@@ -328,13 +328,13 @@ function arena_sprint_get_monster_set(round, boss)
             }
         elseif round <= 15 then
             mon_set = {
-                -- Branches: D, Orc, Elf, Lair, Shoals, Swamp, Spider, Snake, Slime,
+                -- Branches: D, Orc, Elf, Bayou, Shoals, Swamp, Spider, Snake, Slime,
                 -- Hive, Crypt, Pan, Tomb
                 "place:D:$ w:24 / w:1 louise / w:1 donald / w:1 circe",
                 "w:20 place:Orc:$ / orc wizard / orc sorcerer w:3 / orc warrior / orc knight /\
                     orc warlord w:3 / orc priest / orc high priest w:4 / urug w:3",
                 "place:Elf:$",
-                "place:Lair:$ w:100 / hydra / catoblepas / dire elephant / w:5 gastronok",
+                "place:Bayou:$ w:100 / hydra / catoblepas / dire elephant / w:5 gastronok",
                 "place:Shoals:$ w:20 / w:6 merfolk avatar / w:5 harpy",
                 "place:Swamp:$ w:20 / w:6 hydra / w:5 swamp dragon",
                 "place:Spider:$ w:20 / w:5 wolf spider / w:5 orb spider / w:2 emperor scorpion",

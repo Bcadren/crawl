@@ -2799,7 +2799,7 @@ static void _emergency_tunnel(FixedArray<bool, GXM, GYM > & connectivity_map, co
 // regardless of game mode.
 static void _post_vault_build()
 {
-    if (player_in_branch(BRANCH_LAIR))
+    if (player_in_branch(BRANCH_BAYOU))
     {
         int depth = you.depth + 1;
         _ruin_level(rectangle_iterator(1), MMT_VAULT,

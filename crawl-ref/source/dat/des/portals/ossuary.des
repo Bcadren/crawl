@@ -26,7 +26,7 @@ function ossuary_setup_features(e)
 	e.kmons(") = mummy")
 	e.kmons("% = phantom")
 	e.kmons("# = jackal / scorpion / nothing w:30")
-  elseif you.in_branch("Lair") or you.in_branch("Orc") then
+  elseif you.in_branch("Bayou") or you.in_branch("Orc") then
     e.kmons("0 = guardian mummy")
     e.kmons("1 = mummy priest / guardian mummy")
     e.kmons("4 = redback / wolf spider")
@@ -138,7 +138,7 @@ function callback.badplayer_boxes_open_up(data, triggerable, triggerer, marker,
 end
 }}
 
-default-depth: D:3-, !D:$, Lair, !Lair:$, Spider, !Spider:$, Swamp, !Swamp:$, Shoals, !Shoals:$
+default-depth: D:3-, !D:$, Bayou, !Bayou:$, Spider, !Spider:$, Swamp, !Swamp:$, Shoals, !Shoals:$
 
 NAME:   enter_ossuary_1
 TAGS:   transparent extra uniq_miniossuary
@@ -945,7 +945,7 @@ ENDMAP
 
 # INDY: Oh, rats! ... He hates rats. He's scared to death of 'em.
 NAME:    ossuary_due_small_catacomb
-DEPTH:   D:3-, !D:$, Lair, !Lair:$
+DEPTH:   D:3-, !D:$, Bayou, !Bayou:$
 TAGS:    uniq_ossuary
 ORIENT:  east
 ITEM:    any scroll / any potion
@@ -1090,7 +1090,7 @@ ccc2c2c2cccpppppppppccc2c2c2ccc
 ENDMAP
 
 NAME:    ossuary_bcadren_due_volcanic
-DEPTH: D:3-, !D:$, Lair, !Lair:$, Spider, !Spider:$, Swamp, !Swamp:$
+DEPTH: D:3-, !D:$, Bayou, !Bayou:$, Spider, !Spider:$, Swamp, !Swamp:$
 ORIENT:  south
 TAGS:    uniq_ossuary
 ITEM:    any scroll / any potion / any wand w:4
@@ -1250,7 +1250,7 @@ ENDMAP
 
 NAME:   ossuary_boxes_badplayer
 TAGS:   uniq_ossuary
-DEPTH:  D:3-, !D:$, Lair, !Lair:$, Spider, !Spider:$, Shoals, !Shoals:$
+DEPTH:  D:3-, !D:$, Bayou, !Bayou:$, Spider, !Spider:$, Shoals, !Shoals:$
 KFEAT:  01  = *
 KFEAT:  ab = stone_wall
 KITEM:  $  = any scroll / any potion / any wand w:4 / any ring w:2
@@ -1307,7 +1307,7 @@ ENDMAP
 
 NAME:   ossuary_bcadren_kennysheep_ruined_city_of_the_dead
 TAGS:   uniq_ossuary transparent
-DEPTH: D:3-, !D:$, Lair, !Lair:$, Spider, !Spider:$
+DEPTH: D:3-, !D:$, Bayou, !Bayou:$, Spider, !Spider:$
 : if crawl.coinflip() then
   SUBST: A = '
   SUBST: B = .

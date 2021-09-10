@@ -16,7 +16,7 @@
 # <<6>> Others             (slime denizens, insubstantial monsters)
 # <<7>> Random             (using 8,9,0 or too many monsters to categorise)
 # <<8>> Guardians          (thematic vaults centered around special items)
-# <<9>> Manuals            (pre-lair vaults placing manuals with guardians)
+# <<9>> Manuals            (pre-Bayou vaults placing manuals with guardians)
 # <<10>> Classics           (ancient minivaults and extensions)
 #
 # BCADDO: Consider some of the more placeless among these vaults being allowed in pan, hell, etc. since most are dungeon/depths only.
@@ -210,10 +210,10 @@ ENDMAP
 # Anthill origins
 NAME:   minivault_29
 TAGS:   uniq_anthill transparent
-DEPTH:  D:4-6, Lair:2-, Spider
+DEPTH:  D:4-6, Bayou:2-, Spider
 MONS:   patrolling worker ant, soldier ant
 MONS:   entropy weaver, patrolling queen ant
-: if (you.branch() == "Lair" and you.absdepth() < 14)
+: if (you.branch() == "Bayou" and you.absdepth() < 14)
 :  or you.absdepth() < 5 then
 SUBST:  0 = 1., ' = .
 : else
@@ -237,12 +237,12 @@ ENDMAP
 
 NAME:   zaba_anthell
 TAGS:   no_rotate uniq_anthill
-DEPTH:  D:4-6, Lair:2-, Spider
+DEPTH:  D:4-6, Bayou:2-, Spider
 MONS:   patrolling worker ant, soldier ant
 MONS:   entropy weaver, patrolling queen ant
 SUBST:  X = x.
 NSUBST: @ = 1:@ / * = x.
-: if (you.branch() == "Lair" and you.absdepth() < 14)
+: if (you.branch() == "Bayou" and you.absdepth() < 14)
 :  or you.absdepth() < 5 then
 SUBST:  1 = 111., 0 = 112, 3' = .
 : else
@@ -268,11 +268,11 @@ ENDMAP
 
 NAME:  zaba_antful_of_joy
 TAGS:  no_rotate uniq_anthill
-DEPTH: D:4-6, Lair:2-, Spider
+DEPTH: D:4-6, Bayou:2-, Spider
 MONS:  patrolling worker ant, soldier ant
 MONS:  entropy weaver, patrolling queen ant
 KFEAT: ^ = known alarm trap
-: if (you.branch() == "Lair" and you.absdepth() < 14)
+: if (you.branch() == "Bayou" and you.absdepth() < 14)
 :  or you.absdepth() < 5 then
 SUBST: 1 = 11., 2 = 221, 3 = ., ^ = ^.
 : else
@@ -300,7 +300,7 @@ ENDMAP
 # with monster/loot types and number scaling with depth. -gammafunk
 NAME:   worms_lemuel
 TAGS:   no_monster_gen no_pool_fixup transparent
-DEPTH:  D:4-, Lair, Spider, Swamp
+DEPTH:  D:4-, Bayou, Spider, Swamp
 KMONS:  1 = swamp worm
 KMONS:  2 = tyrant leech
 KMONS:  3 = demonic crawler
@@ -321,7 +321,7 @@ NSUBST: 1 = 1 / 3=1W / 23WW / |* / 2=|*WW / W
 SUBST:  D = 1W
 NSUBST: 1 = 2=1 / 3=1W / 23 / 2=23WW / 45 / 2=|* / 2=|*WW / W
 :     end
-: elseif you.in_branch("Lair") then
+: elseif you.in_branch("Bayou") then
 :     if you.depth() < 4 then
 SUBST:  D = 1WW
 NSUBST: 1 = 1 / 3=1W / 23WW / |* / 2=|*WW / W
@@ -353,10 +353,10 @@ ENDMAP
 
 NAME:   minmay_another_anthill
 TAGS:   uniq_anthill transparent
-DEPTH:  D:4-7, Lair:2-, Spider
+DEPTH:  D:4-7, Bayou:2-, Spider
 MONS:   patrolling worker ant, worker ant, soldier ant
 MONS:   entropy weaver, patrolling queen ant
-: if (you.branch() == "Lair" and you.absdepth() < 14)
+: if (you.branch() == "Bayou" and you.absdepth() < 14)
 :  or you.absdepth() < 6 then
 SUBST:  ab = 1:6 2:24 3 .:50 x:40
 : else
@@ -465,7 +465,7 @@ ENDMAP
 #
 NAME:   zaba_anthole
 TAGS:   extra layout_rooms
-DEPTH:  D:3-5, Lair
+DEPTH:  D:3-5, Bayou
 MONS:   worker ant / nothing w:5
 MAP
    @
@@ -631,7 +631,7 @@ ENDMAP
 # the lindwurms free.
 NAME:   minmay_lindwurm_lava
 TAGS:   no_monster_gen no_trap_gen transparent
-DEPTH:  D:4-, Lair:2-
+DEPTH:  D:4-, Bayou:2-
 KMASK:  '*|1> = opaque
 KPROP:  '*|1> = no_tele_into
 KMONS:  1 = lindwurm
@@ -675,7 +675,7 @@ ENDMAP
 
 NAME:  pond
 TAGS:  no_monster_gen
-DEPTH: D:5-, Lair
+DEPTH: D:5-, Bayou
 MONS:  plant w:30 / fungus
 MONS:  bullfrog w:30 / water moccasin / sewer rat / swamp drake w:2
 MONS:  vampire mosquito / insubstantial wisp w:5 / swamp drake w:1
@@ -827,7 +827,7 @@ ENDMAP
 
 NAME:  roderic_batcave
 TAGS:  no_monster_gen extra transparent
-DEPTH: D:2-, Lair, Orc
+DEPTH: D:2-, Bayou, Orc
 : local d = you.absdepth()
 : if d < 4 then d = 0 end
 : mons("bat w:60 / vampire bat w:" .. d .. " / nothing w:10")
@@ -1072,7 +1072,7 @@ MAP
   ..........
 ENDMAP
 
-NAME:  guppyfry_early_lair_pool
+NAME:  guppyfry_early_bayou_pool
 TAGS:  patrolling no_monster_gen transparent
 DEPTH: D:1-2
 KMONS: 2 = adder
@@ -1383,7 +1383,7 @@ ENDMAP
 
 # Necromancer has a house with a fridge (and a nice garden) (Eino)
 NAME:  eino_house_with_fridge
-DEPTH: D:4-, Lair:2-
+DEPTH: D:4-, Bayou:2-
 TAGS:  no_monster_gen no_item_gen transparent
 MONS:  patrolling necromancer, plant
 MONS:  sewer rat simulacrum / wolf simulacrum / \
@@ -1607,10 +1607,10 @@ ENDMAP
 
 NAME:   kilobyte_rumbling_trees
 TAGS:   transparent
-DEPTH:  Depths, Elf, Lair:4-
+DEPTH:  Depths, Elf, Bayou:4-
 MONS:   black bear / polar bear w:20 / wolf w:20
 MONS:   patrolling boggart, patrolling spriggan druid
-: if you.in_branch("Lair") then
+: if you.in_branch("Bayou") then
 SUBST:  ' = 2, 3 = .
 : else
 SUBST:  ' = .
@@ -2348,7 +2348,7 @@ ENDMAP
 # Bad water, a lot of carrion and feeders around, yuck!
 NAME:   roderic_carrion_pond
 TAGS:   no_monster_gen no_trap_gen transparent
-DEPTH:  Lair:2-, !Lair:$, Swamp
+DEPTH:  Bayou:2-, !Bayou:$, Swamp
 MONS:   necrophage
 SUBST:  ' = 111.
 SUBST:  ? = %%.
@@ -2698,7 +2698,7 @@ ENDMAP
 # Another Ice Statue vault
 NAME:  ice2_lemuel
 TAGS:  no_pool_fixup no_monster_gen
-DEPTH: D:6-, Depths, !Depths:$, Lair:2-, Coc, !Coc:$
+DEPTH: D:6-, Depths, !Depths:$, Bayou:2-, Coc, !Coc:$
 KMONS: 1 = ice statue
 KMONS: 2 = white imp / ice beast w:30 / polar bear / nothing w:50
 KMONS: 3 = ice devil / ice dragon / freezing wraith
@@ -2740,7 +2740,7 @@ ENDMAP
 # Oklob assault; statistically, three oklobs
 NAME:    dpeg_oklob_1
 TAGS:    transparent
-DEPTH:   Lair:4-
+DEPTH:   Bayou:4-
 MONS:    plant, oklob plant, bush
 SUBST:   ? = 1 2:5 '
 SHUFFLE: '"
@@ -2862,13 +2862,13 @@ ENDMAP
 
 NAME:   disabler_island
 TAGS:   no_monster_gen no_pool_fixup transparent
-DEPTH:  D:4-, !D:$, Lair
+DEPTH:  D:4-, !D:$, Bayou
 SUBST:  ? = W..
 NSUBST: ' = 3:* / 1:> / 3:1 / *:", 1 : 2:1 / 2 = 1" / *:w
 NSUBST: G = 1:2 / *:"
 KMASK:  *>12" = opaque
 KFEAT:  " = floor
-: if crawl.one_chance_in(3) and (not you.in_branch("Lair") or crawl.coinflip()) then
+: if crawl.one_chance_in(3) and (not you.in_branch("Bayou") or crawl.coinflip()) then
 MONS:   lava snake, orange crystal statue
 SUBST:  wW = l
 : elseif crawl.coinflip() then
@@ -2915,11 +2915,11 @@ ENDMAP
 # This could be expanded: pool with electric eel, or monsters behind grates.
 #
 NAME:     dpeg_stationary_puzzle
-DEPTH:    D:5-, Lair, Snake, Shoals, Depths
+DEPTH:    D:5-, Bayou, Snake, Shoals, Depths
 # Weights for levels not of subdepth 1 intentionally lower.
-WEIGHT:   1 (D:5-, Lair:2-, Snake:2-, Shoals:2-, Depths:2-)
-WEIGHT:   15 (Lair:1, Shoals:1, Snake:1, Depths:1)
-: if you.in_branch("D") or you.in_branch("Lair") then
+WEIGHT:   1 (D:5-, Bayou:2-, Snake:2-, Shoals:2-, Depths:2-)
+WEIGHT:   15 (Bayou:1, Shoals:1, Snake:1, Depths:1)
+: if you.in_branch("D") or you.in_branch("Bayou") then
 MONS:     oklob plant, electric eel
 SHUFFLE:  1" / 22
 : elseif you.in_branch("Snake") or you.in_branch("Shoals") then
@@ -3913,7 +3913,7 @@ ENDMAP
 
 NAME:    st_stairs_3
 TAGS:    extra transparent allow_dup ruin_lair luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  ' = 1:> / 2 = 0:19 .:1 / 2 = 0:1 .:4 / *:.
 SUBST:   > = }])
 MAP
@@ -3930,7 +3930,7 @@ ENDMAP
 
 NAME:    st_stairs_4
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  ' = 1:> / 2 = 0:19 .:1 / 2 = 0:1 .:4 / *:.
 SUBST:   > = }])
 MAP
@@ -3947,7 +3947,7 @@ ENDMAP
 
 NAME:    st_stairs_5
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  ' = 1:> / 2 = 0:19 .:1 / 3 = 0:1 .:4 / *:.
 SUBST:   > = }])
 MAP
@@ -3965,7 +3965,7 @@ ENDMAP
 
 NAME:    st_stairs_6
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  ' = 1:> / 1 = 0:19 .:1 / 2 = 0:1 .:4 / *:.
 SUBST:   > = }])
 MAP
@@ -3979,7 +3979,7 @@ ENDMAP
 
 NAME:    st_stairs_7
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  ' = 1:> / 1 = 0:19 .:1 / 2 = 0:1 .:4 / *:.
 SUBST:   > = }])
 MAP
@@ -3995,7 +3995,7 @@ ENDMAP
 # it reminds me of those rooms in Angband
 NAME:    st_stairs_8
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  . = 1:> / 1 = 0:19 .:1 / 2 = 0:1 .:4 / *:.
 : random_stair(_G, ">")
 MAP
@@ -4010,7 +4010,7 @@ ENDMAP
 
 NAME:    st_stairs_9
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  . = 1:> / 2:0 / 2 = .:3 0:1 / *:.
 : random_stair(_G, ">")
 MAP
@@ -4027,7 +4027,7 @@ ENDMAP
 
 NAME:    st_stairs_10
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  . = 1:> / 2 = 0:19 .:1 / 4 = 0:1 .:4 / *:.
 : random_stair(_G, ">")
 MAP
@@ -4046,7 +4046,7 @@ ENDMAP
 
 NAME:    st_stairs_11
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  . = 1:> / 3 = 0:19 .:1 / 5 = 0:1 .:9 / *:.
 : random_stair(_G, ">")
 MAP
@@ -4065,7 +4065,7 @@ ENDMAP
 
 NAME:    st_stairs_12
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  . = 1:> / 1 : 0:19 .:1 / 2 = 0:1 .:4 / *:.
 : random_stair(_G, ">")
 MAP
@@ -4080,7 +4080,7 @@ ENDMAP
 
 NAME:    st_stairs_13
 TAGS:    extra transparent allow_dup luniq_st_stairs
-DEPTH:   D, Depths, Zot, Snake, Lair, Elf, Crypt
+DEPTH:   D, Depths, Zot, Snake, Bayou, Elf, Crypt
 NSUBST:  . = 1:> / 1 : 0:19 .:1 / 2 = 0:1 .:4 / *:.
 : random_stair(_G, ">")
 MAP
@@ -6309,7 +6309,7 @@ MAP
 ENDMAP
 
 NAME:   minmay_shattered_shrine
-DEPTH:  D:4-, Depths, Lair
+DEPTH:  D:4-, Depths, Bayou
 TAGS:   transparent
 KMONS:  p = plant
 SUBST:  9 = 9., " = .:190 0:5 %:5, ' = .:30 0:5 %:5
@@ -7114,7 +7114,7 @@ ENDMAP
 
 ###################################################################
 #
-# <<9>> Pre-Lair vaults with monsters guarding a manual
+# <<9>> Pre-Bayou vaults with monsters guarding a manual
 #       Manuals are most interesting early in the game when your character may
 #       not yet be committed to a specific strategy. However, randomly
 #       generated manuals are extremely rare and biased towards deeper levels,
@@ -7620,7 +7620,7 @@ TAGS:   allow_dup luniq no_item_gen ruin_spider ruin_slime
 TAGS:   no_monster_gen layout_rooms layout_corridors layout_passages
 TAGS:   layout_narrow_caves layout_open_caves
 CHANCE: 0.5% (Slime), 1% (Geh, Coc, Dis, Tar), 2% (Orc, Spider, Crypt, Pan), 3%
-DEPTH:  D:4-, Depths, Orc, Elf, Lair, Snake, Spider, Slime, Crypt, \
+DEPTH:  D:4-, Depths, Orc, Elf, Bayou, Snake, Spider, Slime, Crypt, \
         Geh, !Geh:$, Coc, !Coc:$, Dis, !Dis:$, Geh, !Geh:$, Pan
 KFEAT:  X = slimy_wall
 {{

@@ -1,12 +1,11 @@
 ################################################################################
-# lair.des: All maps relating to the Lair branch.
+# Lair.des: All maps relating to the upper Bayou branch. (Formerly Lair)
 #           Content order: branch entries, vault sets, decorative vaults,
 #           other normal vaults, small ending vaults, large ending vaults.
 #
-#           Branches off of Lair can be found in their relevant file:
-#           Swamp - swamp.des                Shoals - shoals.des
-#           Snake Pit - snake.des            Spider Nest - spider.des
-#           Pits of Slime - slime.des
+#           Branches off and lower Bayou can be found in their relevant file:
+#           Middle Bayou - swamp.des         Lower Bayou - shoals.des
+#           Spider Nest - spider.des         Pits of Slime - slime.des
 ################################################################################
 
 {{
@@ -21,7 +20,7 @@ function wad_woods_setup(e, uniq, weight, mist, delaynum, sizenum, spreadnum)
     e.mons("bush")
     e.mons("fungus")
 
-    if you.in_branch("Lair") then
+    if you.in_branch("Bayou") then
         e.mons("spriggan")
         if you.absdepth() >= 14 then
             e.mons("wolf / black bear w:4 / yak w:2")
@@ -53,7 +52,7 @@ function wad_woods_setup(e, uniq, weight, mist, delaynum, sizenum, spreadnum)
     end
 end
 
-function beast_lair_populate_mons_large(e)
+function beast_bayou_populate_mons_large(e)
     local set = crawl.random2(3)
     if you.depth() > 3 then
       set = set + 3
@@ -87,10 +86,10 @@ function beast_lair_populate_mons_large(e)
     end
 end
 
-function beast_lair_populate_mons_small(e)
+function beast_bayou_populate_mons_small(e)
     -- don't do this while validating because this call changes the tags
     if not e.is_validating() and crawl.one_chance_in(25) then
-        beast_lair_populate_mons_large(e)
+        beast_bayou_populate_mons_large(e)
     else
         local monster_list = {}
         if you.depth() < 4 then
@@ -109,9 +108,9 @@ function beast_lair_populate_mons_small(e)
     end
 end
 
-function beast_lair_randomise(e)
+function beast_bayou_randomise(e)
     e.tags("no_trap_gen")
-    e.depth("Lair, !Lair:$")
+    e.depth("Bayou, !Bayou:$")
     -- Tools for randomizing environments,
     -- making given glyphs plants, floor, shallow water, or empty floor.
     e.subst("A = 1:5 .")
@@ -136,21 +135,21 @@ function lair_small_ending(e)
     if e.is_validating() then return end
 
     e.hook("post_place", function ()
-        if not dgn.persist.lair_second_ending_built then
-            dgn.persist.lair_second_ending_built = true
+        if not dgn.persist.bayou_second_ending_built then
+            dgn.persist.bayou_second_ending_built = true
             dgn.place_maps { tag = "lair_end_small" }
-            dgn.persist.lair_second_ending_built = nil
+            dgn.persist.bayou_second_ending_built = nil
         end
     end)
 end
 }}
 
 ################################################################################
-# Lair entries
+# Bayou entries
 ################################################################################
-# Dummy Lair entry
-NAME:   lair_entry_dummy
-TAGS:   lair_entry extra transparent
+# Dummy Bayou entry
+NAME:   bayou_entry_dummy
+TAGS:   bayou_entry extra transparent
 WEIGHT: 30
 ORIENT: float
 KFEAT:  O = enter_lair
@@ -159,10 +158,10 @@ O
 ENDMAP
 
 ######################################
-# Generic Lair entry.
+# Generic Bayou entry.
 #
-NAME:    david_lair_generic
-TAGS:    lair_entry transparent
+NAME:    david_bayou_generic
+TAGS:    bayou_entry transparent
 ORIENT:  float
 MONS:    crocodile / basilisk
 MONS:    hippogriff, yak / death yak w:2, elephant
@@ -182,9 +181,9 @@ xx.........xx
 xxxx..@..xxxx
 ENDMAP
 
-# Shrubbed Lair entry
-NAME:   david_lair_shrubbed
-TAGS:   lair_entry transparent
+# Shrubbed Bayou entry
+NAME:   david_bayou_shrubbed
+TAGS:   bayou_entry transparent
 ORIENT: float
 MONS:   komodo dragon
 KMONS:  P = plant
@@ -202,9 +201,9 @@ xx.''..'...xx
 xxxx..@..xxxx
 ENDMAP
 
-# Lair monsters near stair
-NAME:    dpeg_lair_monsters
-TAGS:    ruin lair_entry transparent
+# Bayou monsters near stair
+NAME:    dpeg_bayou_monsters
+TAGS:    ruin bayou_entry transparent
 ORIENT:  float
 MONS:    yak, death yak
 MONS:    iguana w:20 / crocodile w:20 / komodo dragon / basilisk w:5
@@ -227,9 +226,9 @@ x..yy.O.yy...
 y...@........
 ENDMAP
 
-# Obligatory Oklob Plant Lair Entry Vault
-NAME:   dpeg_oklobed_lair
-TAGS:   lair_entry no_monster_gen no_pool_fixup transparent
+# Obligatory Oklob Plant Bayou Entry Vault
+NAME:   dpeg_oklobed_bayou
+TAGS:   bayou_entry no_monster_gen no_pool_fixup transparent
 ORIENT: float
 MONS:   fungus, plant, oklob plant
 KFEAT:  O = enter_lair
@@ -257,9 +256,9 @@ MAP
 ...xxxxxxx...
 ENDMAP
 
-# Grove Lair entry
-NAME:   minmay_lair_entry_grove
-TAGS:   lair_entry no_monster_gen transparent
+# Grove Bayou entry
+NAME:   minmay_bayou_entry_grove
+TAGS:   bayou_entry no_monster_gen transparent
 ORIENT: float
 MONS:   crocodile / basilisk w:4, yak, black bear / wolf
 MONS:   porcupine w:14 / iguana w:2 / scorpion w:2
@@ -287,9 +286,9 @@ MAP
      .....
 ENDMAP
 
-# Lava Lair entry
-NAME:   minmay_lair_entry_lava
-TAGS:   lair_entry no_monster_gen transparent
+# Lava Bayou entry
+NAME:   minmay_bayou_entry_lava
+TAGS:   bayou_entry no_monster_gen transparent
 ORIENT: float
 WEIGHT: 1
 MONS:   fire dragon
@@ -308,9 +307,9 @@ MAP
 .........
 ENDMAP
 
-# Welcome to Lair Island. We make great pancakes.
-NAME:   erik_lair_island
-TAGS:   lair_entry transparent
+# Welcome to Bayou Island. We make great pancakes.
+NAME:   erik_bayou_island
+TAGS:   bayou_entry transparent
 ORIENT: float
 MONS:   boulder beetle, hound w:15 / wolf
 KFEAT:  O = enter_lair
@@ -333,9 +332,9 @@ MAP
 ...........-...@......
 ENDMAP
 
-# Dragon's Lair, for generous values of Dragon
-NAME:    erik_lair_dragon
-TAGS:    lair_entry no_rotate
+# Dragon's Bayou, for generous values of Dragon
+NAME:    erik_bayou_dragon
+TAGS:    bayou_entry no_rotate
 ORIENT:  float
 MONS:    steam dragon / acid dragon / swamp drake
 MONS:    basilisk / wyvern w:25 / komodo dragon / crocodile w:25
@@ -359,8 +358,8 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 # Orcish Takeover!
-NAME:   erik_lair_orcish_takeover
-TAGS:   lair_entry transparent
+NAME:   erik_bayou_orcish_takeover
+TAGS:   bayou_entry transparent
 ORIENT: float
 MONS:   orc, warg, orc warrior / warg
 MONS:   orc priest / orc wizard / plant
@@ -378,8 +377,8 @@ xxxx..@..xxxx
 ENDMAP
 
 # Plant/fungus spiral (due)
-NAME:   due_lair_maze_entry_diamond
-TAGS:   lair_entry transparent
+NAME:   due_bayou_maze_entry_diamond
+TAGS:   bayou_entry transparent
 ORIENT: float
 MONS:   porcupine w:50 / boulder beetle w:10 / bullfrog w:30 / \
         black bear w:25 / crocodile w:15 / yak
@@ -408,10 +407,10 @@ MAP
        ..P....
 ENDMAP
 
-# A guard hut placed over the entrance of the lair,
+# A guard hut placed over the entrance of the Bayou,
 # and a guard to watch over it.
-NAME:   grunt_lair_entry_orc_guard_hut
-TAGS:   lair_entry transparent
+NAME:   grunt_bayou_entry_orc_guard_hut
+TAGS:   bayou_entry transparent
 ORIENT: float
 MONS:   porcupine w:50 / bullfrog w:30 / scorpion w:20 / \
         black bear w:20 / crocodile / yak
@@ -439,15 +438,15 @@ MAP
 ENDMAP
 
 ###############################################################################
-# Regular Lair vaults.
+# Regular Bayou vaults.
 ###############################################################################
 
 #######################################
 # Vault sets.
 # First, a group of oklob-focused vaults.
 
-NAME:   minmay_lair_oklob_tunnel
-DEPTH:  Lair, !Lair:$
+NAME:   minmay_bayou_oklob_tunnel
+DEPTH:  Bayou, !Bayou:$
 ORIENT: southwest
 MONS:   plant, oklob plant
 NSUBST: 1 = 4:2 / 4 = 10 / *=1..
@@ -471,9 +470,9 @@ xxxxxxxxxxx
 xxxxxxxxx
 ENDMAP
 
-NAME:   minmay_lair_oklob_items
+NAME:   minmay_bayou_oklob_items
 TAGS:   luniq_oklob extra
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   plant / fungus w:3 / bush w:5
 KMONS:  | = oklob plant
 KITEM:  | = |
@@ -492,13 +491,13 @@ ENDMAP
 
 # Combined vault with four size settings, each with
 # one more oklob and more items.
-NAME:   minmay_lair_oklob_chamber
+NAME:   minmay_bayou_oklob_chamber
 TAGS:   luniq_oklob no_monster_gen extra
-DEPTH:  Lair
+DEPTH:  Bayou
 ORIENT: north
 KMONS:  p = plant
 KMONS:  P = oklob plant
-# Lair:1 is absdepth 11, for reference.
+# Bayou:1 is absdepth 6, for reference.
 : local size = crawl.random2(10) + you.absdepth() - 10
 : if size > 8 then
 SUBST:  '`" = ., yza = x, XYZ = ?, 1234 = p
@@ -532,9 +531,9 @@ ENDMAP
 
 # Combined vault. More and more open space
 # for an oklob plant ringed by bushes.
-NAME:   minmay_lair_oklob_bushes
+NAME:   minmay_bayou_oklob_bushes
 TAGS:   luniq_oklob extra
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   oklob plant, bush
 : local size = crawl.random2(10)
 : if size > 8 then
@@ -567,11 +566,11 @@ ENDMAP
 
 ###############################################################################
 # A long set of wood themed vaults, as salvaged scraps from an idea for an
-# early outdoors portal vault. Can generate in Lair and occasionally D.
+# early outdoors portal vault. Can generate in Bayou and occasionally D.
 # uniq_ tagged by tier: large, medium, small, rock, and decor.
 #
 NAME:   wad_woods_pond
-DEPTH:  D:2-, Lair, Forest
+DEPTH:  D:2-, Bayou, Forest
 ORIENT: float
 : wad_woods_setup(_G, "large", 1, true, 21, 2, 36)
 FTILE:  ' = floor_dirt
@@ -611,7 +610,7 @@ ttt....tt1tt.t......1ttt1...tttt.ttt1t.t.t.tt..
 ENDMAP
 
 NAME:   wad_woods_settlement
-DEPTH:  D:2-, Lair, Forest
+DEPTH:  D:2-, Bayou, Forest
 ORIENT: float
 : wad_woods_setup(_G, "large", 1, true, 21, 2, 36)
 NSUBST: 4 = 2:4 / 1 = 4' / *:', 6 = 4
@@ -648,7 +647,7 @@ tt.11..1.11..1.1  .1t.ttt      .t.ttt..1tt
 ENDMAP
 
 NAME:   wad_woods_tower
-DEPTH:  D:2-, Lair, Forest
+DEPTH:  D:2-, Bayou, Forest
 ORIENT: float
 FTILE:  q13%OG. = floor_woodground
 : wad_woods_setup(_G, "large", 2, true, 21, 2, 36)
@@ -673,7 +672,7 @@ t..t1t..t...11t..ttt..ttt....tOt...t.11t
 ENDMAP
 
 NAME:    wad_woods_stonehenge
-DEPTH:   D:2-, Lair, Forest
+DEPTH:   D:2-, Bayou, Forest
 ORIENT:  float
 : wad_woods_setup(_G, "med", 2, true, 21, 2, 36)
 SHUFFLE: 4% / '"
@@ -698,7 +697,7 @@ t1..t1.t.tt.t111.t...c.04C40.c..1t.1.tt.t.
 ENDMAP
 
 NAME:   wad_woods_01
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "small", 2, true, 21, 2, 8)
 MAP
      tt.tt  tt.1ttt
@@ -718,7 +717,7 @@ ttt.tt4ttt..%.4ttOttt
 ENDMAP
 
 NAME:   wad_woods_02
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "small", 2, false, 0, 0, 0)
 MAP
    .1t1.t   .t.1t
@@ -738,7 +737,7 @@ t.tt.t1t..1..1t.t1.t.
 ENDMAP
 
 NAME:   wad_woods_03
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "rock", 3, false, 0, 0, 0)
 FTILE:  '%0+14 = floor_dirt
 MAP
@@ -759,7 +758,7 @@ MAP
 ENDMAP
 
 NAME:   wad_woods_04
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 ORIENT: float
 : wad_woods_setup(_G, "rock", 2, false, 0, 0, 0)
 FTILE:  '+*0 = floor_dirt
@@ -785,7 +784,7 @@ ENDMAP
 
 NAME:   wad_woods_06
 TAGS:   extra
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "small", 2, false, 0, 0, 0)
 MAP
     tt2ttt  1
@@ -803,13 +802,13 @@ ENDMAP
 
 NAME:   wad_woods_antlair
 TAGS:   uniq_anthill
-DEPTH:  Lair:2-, Forest
+DEPTH:  Bayou:2-, Forest
 : wad_woods_setup(_G, "rock", 5, false, 0, 0, 0)
 MONS:   worker ant, soldier ant
 KMONS:  8 = entropy weaver
 KMONS:  Q = queen ant
-: if (you.branch() == "Lair" and you.absdepth() < 14)
-:  or you.absdepth() < 12 then
+: if (you.branch() == "Bayou" and you.absdepth() < 7)
+:  or you.absdepth() < 6 then
 SUBST:  8' = .
 : else
 SUBST:  ' = %
@@ -833,7 +832,7 @@ ENDMAP
 
 NAME:   wad_woods_river_01
 TAGS:   extra
-DEPTH:  D:2-, Lair, Forest
+DEPTH:  D:2-, Bayou, Forest
 ORIENT: float
 : wad_woods_setup(_G, "med", 1, false, 0, 0, 0)
 MAP
@@ -862,7 +861,7 @@ ENDMAP
 
 NAME:   wad_woods_river_02
 TAGS:   extra
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "small", 1, true, 32, 2, 24)
 MAP
       tttttttttt1tt
@@ -881,7 +880,7 @@ ttt1ttt.WWWt.ttt0t1t
 ENDMAP
 
 NAME:   wad_woods_river_03
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "decor", 1, false, 32, 3, 24)
 MAP
    1t.tWwW.t.t.t
@@ -899,7 +898,7 @@ ENDMAP
 
 NAME:   wad_woods_river_04
 TAGS:   no_vmirror no_rotate
-DEPTH:  D, Lair, Forest
+DEPTH:  D, Bayou, Forest
 TILE:   X = wall_brick_dark_leak
 TILE:   x = wall_brick_dark
 SUBST:  X = x
@@ -922,7 +921,7 @@ t.ttttWWWttttt1t
 ENDMAP
 
 NAME:   wad_woods_road_01
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "decor", 2, true, 32, 3, 24)
 FTILE:  @' = floor_dirt
 MAP
@@ -946,7 +945,7 @@ ENDMAP
 
 NAME:   wad_woods_road_02
 TAGS:   extra
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "small", 2, false, 32, 0, 0)
 FTILE:  @' = floor_dirt
 MAP
@@ -966,7 +965,7 @@ tt1tt1ttt303tttttt
 ENDMAP
 
 NAME:   wad_woods_road_03
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "decor", 2, false, 0, 0, 0)
 FTILE:  @' = floor_dirt
 MAP
@@ -984,7 +983,7 @@ tttt1tt
 ENDMAP
 
 NAME:   wad_woods_road_04
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 KMONS:  P = oklob plant
 : wad_woods_setup(_G, "small", 1, false, 0, 0, 0)
 FTILE:  @'+T = floor_dirt
@@ -1005,7 +1004,7 @@ ttt1tttt.'..ttttt1t
 ENDMAP
 
 NAME:   wad_woods_road_05
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 KMONS:  * = 9
 KITEM:  * = *
 : wad_woods_setup(_G, "small", 2, false, 0, 0, 0)
@@ -1025,7 +1024,7 @@ tt.@t1ttt    tttxttt
 ENDMAP
 
 NAME:   wad_woods_road_06
-DEPTH:  Lair, Forest
+DEPTH:  Bayou, Forest
 : wad_woods_setup(_G, "decor", 1, false, 0, 0, 0)
 FTILE:  @'*+T = floor_dirt
 MAP
@@ -1044,14 +1043,14 @@ ENDMAP
 
 NAME:   wad_woods_minihive
 TAGS:   uniq_beehive
-DEPTH:  D:4-, Lair, Forest
+DEPTH:  D:4-, Bayou, Forest
 ORIENT: float
 MONS:   killer bee, queen bee
 KMONS:  8 = meliai
 KITEM:  8 = %
 KFEAT:  a = x
 : wad_woods_setup(_G, "med", 5, false, 0, 0, 0)
-: if (you.branch() == "Lair" and you.absdepth() < 14)
+: if (you.branch() == "Bayou" and you.absdepth() < 7)
 :  or you.absdepth() < 12 then
 SUBST:  8 = 6
 : end
@@ -1082,11 +1081,12 @@ ENDMAP
 
 NAME:   wad_woods_structure_01
 TAGS:   no_monster_gen
-DEPTH:  D:5-, Lair, Forest
+DEPTH:  D:5-, Bayou, Forest
 ORIENT: float
 : wad_woods_setup(_G, "large", 5, false, 0, 0, 0)
 FTILE:  "2T = floor_grass
 FTILE:  @'0+ = floor_dirt
+KPROP: 1 = no_tele_into
 MAP
    ttxcxxxxxxxxxxxxxxxxxxxxxxxcxxxxxct
  ttttxc''''+''0'xxxxxx'''+''0'cx0'0'ctt
@@ -1122,7 +1122,7 @@ ENDMAP
 
 NAME:   grunt_forest_stairs_basic
 TAGS:   transparent extra luniq_staircase decor
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   plant
 SUBST:  1 = 1.
 : if you.depth() == dgn.br_depth(you.branch()) then
@@ -1142,7 +1142,7 @@ ENDMAP
 
 NAME:    grunt_forest_small_clearings
 TAGS:    transparent extra decor
-DEPTH:   Lair
+DEPTH:   Bayou
 MONS:    plant / bush
 KITEM:   d = ration
 KMASK:   G = no_monster_gen
@@ -1162,7 +1162,7 @@ t.......t
 ENDMAP
 
 NAME:   grunt_forest_stairs_clearing
-DEPTH:  Lair:2-, !Lair:$
+DEPTH:  Bayou:2-, !Bayou:$
 MONS:   wolf, black bear, polar bear, spriggan
 KMONS:  P = plant / bush
 NSUBST: t = 2:t / * = t.
@@ -1181,7 +1181,7 @@ ENDMAP
 
 # A secluded grove.
 NAME:   forest_entry_grove
-DEPTH:  Lair:2-, !Lair:$
+DEPTH:  Bayou:2-, !Bayou:$
 MONS:   centaur w:4 / spriggan
 MONS:   wolf, black bear, polar bear w:4 / boulder beetle
 KMONS:  P = plant / bush
@@ -1207,7 +1207,7 @@ ENDMAP
 
 NAME:   grunt_forest_small_clearing_treed
 TAGS:   transparent patrolling
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   plant / bush
 NSUBST: t = 2:t / * = t..
 SUBST:  T = t, * = **t
@@ -1227,7 +1227,7 @@ ENDMAP
 # Previously large_clearing_fruit, _statues, _slash, _guards
 NAME:    grunt_forest_large_clearings
 TAGS:    transparent no_pool_fixup
-DEPTH:   Lair
+DEPTH:   Bayou
 WEIGHT:  15
 MONS:    wolf, black bear w:2 / polar bear w:6 / boulder beetle w:1, spriggan / centaur w:4
 KMONS:   9 = 9
@@ -1263,7 +1263,7 @@ ENDMAP
 
 NAME:   grunt_forest_large_clearing_hut
 TAGS:   transparent
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   plant / bush, spriggan / centaur w:2
 SUBST:  t = t..
 SUBST:  . = 1 .:90
@@ -1296,8 +1296,8 @@ ENDMAP
 NAME:   beast_lair_carwin_large_1
 TAGS:   transparent luniq_beast_lair
 ORIENT: float
-: beast_lair_populate_mons_large(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_large(_G)
+: beast_bayou_randomise(_G)
 MAP
                 E.EEJ
       1     1  ..E.ME
@@ -1318,8 +1318,8 @@ ENDMAP
 NAME:   beast_lair_carwin_large_2
 TAGS:   transparent luniq_beast_lair
 ORIENT: float
-: beast_lair_populate_mons_large(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_large(_G)
+: beast_bayou_randomise(_G)
 MAP
   ..1.. 1
    .x........
@@ -1340,8 +1340,8 @@ ENDMAP
 NAME:   beast_lair_carwin_large_3
 TAGS:   transparent luniq_beast_lair
 ORIENT: float
-: beast_lair_populate_mons_large(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_large(_G)
+: beast_bayou_randomise(_G)
 MAP
             ..
         .......
@@ -1366,8 +1366,8 @@ ENDMAP
 NAME:   beast_lair_carwin_large_4
 TAGS:   transparent luniq_beast_lair
 ORIENT: float
-: beast_lair_populate_mons_large(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_large(_G)
+: beast_bayou_randomise(_G)
 SUBST:  T:5 6:3
 MAP
   .          .A1
@@ -1385,10 +1385,10 @@ xxxx....x.24xxxxxF...MWWWW
 4..       .  Ax ..M1WWW W
 ENDMAP
 
-NAME: beast_lair_carwin_1
+NAME: beast_lair_carwen_1
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
      ..
   1......
@@ -1401,10 +1401,10 @@ MAP
   .....
 ENDMAP
 
-NAME:   beast_lair_carwin_2
+NAME:   beast_lair_carwen_2
 TAGS:   transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 ITEM:  ration
 SUBST: ? : .
 MAP
@@ -1415,10 +1415,10 @@ MAP
   ...
 ENDMAP
 
-NAME: beast_lair_carwin_3
+NAME: beast_lair_carwen_3
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
   1
    ..
@@ -1430,10 +1430,10 @@ A.xx.xx.
  ..B...B
 ENDMAP
 
-NAME:   beast_lair_carwin_4
+NAME:   beast_lair_carwen_4
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
   ...  A
  ..x....
@@ -1444,10 +1444,10 @@ A.xxxFA..
 ....FxA
 ENDMAP
 
-NAME:   beast_lair_carwin_5
+NAME:   beast_lair_carwen_5
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
  .
  ...1...
@@ -1459,10 +1459,10 @@ MAP
  ........A
 ENDMAP
 
-NAME:   beast_lair_carwin_6
+NAME:   beast_lair_carwen_6
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
   .........
    .Axxxx.1
@@ -1475,10 +1475,10 @@ MAP
   ......
 ENDMAP
 
-NAME: beast_lair_carwin_7
+NAME: beast_lair_carwen_7
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
 .x....
 ...x....
@@ -1493,10 +1493,10 @@ E.xxxxx....x.
      A
 ENDMAP
 
-NAME:   beast_lair_carwin_8
+NAME:   beast_lair_carwen_8
 TAGS:   transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
 . .. . ..   1   .......   1
  ..Axxxx.... .  xxxxxx....
@@ -1506,10 +1506,10 @@ MAP
 ....G..1         FFA......
 ENDMAP
 
-NAME:   beast_lair_carwin_9
+NAME:   beast_lair_carwen_9
 TAGS:   transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
  .   1    .
  ........  .
@@ -1523,10 +1523,10 @@ MAP
       .
 ENDMAP
 
-NAME: beast_lair_carwin_10
+NAME: beast_lair_carwen_10
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
   AA
  .......
@@ -1541,10 +1541,10 @@ MAP
 1.........
 ENDMAP
 
-NAME: beast_lair_carwin_11
+NAME: beast_lair_carwen_11
 TAGS: transparent luniq_beast_lair
-: beast_lair_populate_mons_small(_G)
-: beast_lair_randomise(_G)
+: beast_bayou_populate_mons_small(_G)
+: beast_bayou_randomise(_G)
 MAP
      .E
 . .......xx
@@ -1556,13 +1556,13 @@ MAP
 ENDMAP
 
 ###############################################################################
-# Remaining ungrouped decorative Lair vaults.
+# Remaining ungrouped decorative Bayou vaults.
 
 # "Pointless plantage" by Lemuel.
 # Three separate decorative bubbles mixed into one vault.
 NAME:   lemuel_fruit_fields
 TAGS:   allow_dup extra transparent decor
-DEPTH:  Lair
+DEPTH:  Bayou
 ORIENT: float
 WEIGHT: 9
 MONS:   plant, butterfly
@@ -1603,7 +1603,7 @@ ENDMAP
 # Two separate small decorative vaults mixed into one:
 NAME:   lemuel_fruit_tree
 TAGS:   extra transparent decor
-DEPTH:  Lair, Snake
+DEPTH:  Bayou, Snake
 ORIENT: float
 MONS:   plant, fungus
 KITEM:  a : ration
@@ -1635,7 +1635,7 @@ ENDMAP
 # A trio of precisely-mirrored pools.
 NAME:    nicolae_quartered_pool_little
 TAGS:    transparent extra decor uniq_qpool
-DEPTH:   Lair
+DEPTH:   Bayou
 SHUFFLE: Aa, Bb, Cc, Dd, Ee, Ff, Gg, Hh, Ii, Jj, Kk, Ll, Mm, Nn, Oo, Pp, Qq
 SUBST:   abcdefghijklmnopq = ., ABCDEFGHIJKLMNOPQ = W
 NSUBST:  7 = 1:@ / * = t@@@
@@ -1658,7 +1658,7 @@ ENDMAP
 
 NAME:    nicolae_quartered_pool_medium
 TAGS:    transparent extra decor uniq_qpool
-DEPTH:   Lair
+DEPTH:   Bayou
 SHUFFLE: Aa, Bb, Cc, Dd, Ee, Ff, Gg, Hh, Ii, Jj, Kk, Ll, Mm
 SHUFFLE: Nn, Oo, Pp, Qq, Rr, Ss, Tt, Uu
 SUBST:   abcdefghijklmnopqrstu = ., ABCDEFGHIJKLMNOPQRSTU = W
@@ -1684,7 +1684,7 @@ ENDMAP
 
 NAME:    nicolae_quartered_pool_super
 TAGS:    transparent extra decor uniq_qpool
-DEPTH:   Lair
+DEPTH:   Bayou
 SHUFFLE: Aa, Bb, Cc, Dd, Ee, Ff, Gg, Hh, Ii, Jj, Kk, Ll, Mm
 SHUFFLE: Nn, Oo, Pp, Qq, Rr, Ss, Tt, Uu, Vv, Ww, Xx, Yy, Zz
 SHUFFLE: 12, 34, 56
@@ -1711,9 +1711,9 @@ MAP
       777777
 ENDMAP
 
-NAME:    nicolae_lair_grove_arrangements
+NAME:    nicolae_bayou_grove_arrangements
 TAGS:    transparent decor extra
-DEPTH:   Lair
+DEPTH:   Bayou
 SHUFFLE: abcdefghi/''''T''''/T'''''''T/T'''T'''T/T'T'''T'T/T'T'T'T'T/\
          TTT'''TTT/'T'T'T'T'/T'T''''T'/'T'TTT'T'/'T'''''T'/TTTT'TTTT/\
          T'TTTTT'T/TT'TTT'TT/'''TTT'''/T'TT'TTTT/TT'T'T'TT/TT'''''TT/\
@@ -1745,7 +1745,7 @@ ENDMAP
 
 NAME:    bh_autumn_forest_stairs
 TAGS:    extra luniq_staircase decor
-DEPTH:   Lair
+DEPTH:   Bayou
 WEIGHT:  5
 COLOUR:  t = lightred / red w:3
 SHUFFLE: Aaq / Bbr / Ccs
@@ -1778,9 +1778,9 @@ ENDMAP
 # Not very randomized, but the unusual shape, wall-plant use,
 # and location should be variable enough. Intentionally lacks
 # the transparent tag, to minimize niches in walls behind plants.
-NAME:    hangedman_lair_unloving_vines
+NAME:    hangedman_bayou_unloving_vines
 TAGS:    extra decor
-DEPTH:   Lair
+DEPTH:   Bayou
 KMONS:   P = plant
 KMASK:   ` = no_monster_gen
 SHUFFLE: xP'. / xP'. / .'xP
@@ -1798,9 +1798,9 @@ PPP'''...xP''.'.''Pxx
              xPx
 ENDMAP
 
-NAME:    cheibrodos_lair_caveside_slide
+NAME:    cheibrodos_bayou_caveside_slide
 TAGS:    extra decor
-DEPTH:   Lair, !Lair:$
+DEPTH:   Bayou, !Bayou:$
 MONS:    fungus w:3 / nothing, plant w:3 / nothing
 SUBST:   1 : 12, " = x.
 MAP
@@ -1824,17 +1824,17 @@ xxxWWWWWxxx
 ENDMAP
 
 ###############################################################################
-# Remaining non-grouped regular Lair vaults.
+# Remaining non-grouped regular Bayou vaults.
 
-# Rats! (Lemuel) [combined both Lair and D versions]
+# Rats! (Lemuel) [combined both Bayou and D versions]
 NAME:    lemuel_ratsnest
 ORIENT:  northeast
-DEPTH:   D:3-4, Lair:1-3
+DEPTH:   D:3-4, Bayou:1-3
 MONS:    rat, quokka, sewer rat, hell rat
 ITEM:    ration
 SUBST:   d = d$$$........., e = d$$$
 SHUFFLE: 234 / 324 / 243
-: if you.in_branch("Lair") then
+: if you.in_branch("Bayou") then
 NSUBST:  4 = 1:4 / * = 40, 3 = 2:3 / * = 34.
 NSUBST:  2 = 2:2 / * = 224., 1 = 2:1 / * = 13.
 CLEAR:   "
@@ -1875,7 +1875,7 @@ ENDMAP
 # A comfortable, reclusive cottage for the summer holidays (Eino)
 NAME:    pond_and_an_island_with_a_cottage
 ORIENT:  float
-DEPTH:   Lair:3-, !Lair:$
+DEPTH:   Bayou:3-, !Bayou:$
 MONS:    necromancer, elephant zombie
 MONS:    crocodile zombie / basilisk zombie / \
          komodo dragon zombie w:4 / boulder beetle zombie
@@ -1903,10 +1903,10 @@ wwwwwwwww...........wwwwwwwwww
          www
 ENDMAP
 
-# Ice dragon lair with assorted imp pets
-NAME:   bobbens_ice_dragon_lair
+# Ice dragon Bayou with assorted imp pets
+NAME:   bobbens_ice_dragon_bayou
 TAGS:   no_monster_gen
-DEPTH:  Lair:4-
+DEPTH:  Bayou:4-
 MONS:   ice dragon
 MONS:   white imp w:4 / ice devil w:1
 SUBST:  $ = $:3 *:2, _ = %:1 `:3
@@ -1932,11 +1932,11 @@ MAP
 ;;   ;;;....w..;
 ENDMAP
 
-# Dragon lair embedded in wall
-NAME:   bobbens_dragon_lair_wall
+# Dragon Bayou embedded in wall
+NAME:   bobbens_dragon_bayou_wall
 ORIENT: north
 TAGS:   no_monster_gen
-DEPTH:  Lair:2-
+DEPTH:  Bayou:2-
 MONS:   steam dragon, acid dragon, rime drake, lindwurm, fire dragon
 ITEM:   any good_item
 : if you.absdepth() > 13 then
@@ -1976,9 +1976,9 @@ Xzll..y.yyyyxzzxllx
 ENDMAP
 
 # Drake nest (minmay)
-NAME:   minmay_lair_drake_nest
+NAME:   minmay_bayou_drake_nest
 TAGS:   transparent
-DEPTH:  Lair:4-
+DEPTH:  Bayou:4-
 MONS:   rime drake, plant w:20 / fungus w:1 / bush w:1
 NSUBST: 1 = 2:1 / * = 1.., ' = 4:2 / * = ., . = 1:2 / 1:% / * = ..%2
 MAP
@@ -1994,9 +1994,9 @@ MAP
 ENDMAP
 
 # Venomous thicket (minmay)
-NAME:   minmay_lair_venomous_thicket
+NAME:   minmay_bayou_venomous_thicket
 TAGS:   ruin_lair
-DEPTH:  Lair
+DEPTH:  Bayou
 ORIENT: north
 MONS:   black mamba / spiny frog / wolf spider
 MONS:   basilisk / komodo dragon / hornet
@@ -2025,7 +2025,7 @@ ENDMAP
 
 # Hibernating monster in a tunnel, can be pretty dangerous
 NAME:   hibernation_bobbens
-DEPTH:  Lair
+DEPTH:  Bayou
 TAGS:   no_monster_gen no_item_gen
 MONS:   ice dragon / fire dragon / swamp dragon / anaconda w:5
 MONS:   swamp dragon / hydra / catoblepas / boulder beetle
@@ -2051,9 +2051,9 @@ xxx....xxx
 ENDMAP
 
 # Catoblepas lookout (blackcustard)
-NAME: lookout_lair_type
+NAME: lookout_bayou_type
 TAGS: extra no_pool_fixup transparent
-DEPTH: Lair:4-
+DEPTH: Bayou:4-
 MONS: generate_awake patrolling catoblepas
 SUBST: a = w W .
 SUBST: ' = W .
@@ -2069,8 +2069,8 @@ a'aw..ww
 ENDMAP
 
 # Two stream minivaults, combined.
-NAME:   guppyfry_lair_drakes
-DEPTH:  Lair
+NAME:   guppyfry_bayou_drakes
+DEPTH:  Bayou
 : if you.depth() > 3 and crawl.coinflip() then
 MONS:   rime drake / swamp drake / acid dragon
 MONS:   steam dragon
@@ -2097,7 +2097,7 @@ ENDMAP
 
 NAME:   kennysheep_rathole
 TAGS:   no_monster_gen
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   sewer rat band, hell rat, sewer rat / rat
 KMONS:  P = plant / fungus w:2
 KITEM:  d = ration
@@ -2117,7 +2117,7 @@ ENDMAP
 # Contains food and one ok item to make the hell rats a little more worth it.
 NAME:   kennysheep_abandoned_house
 TAGS:   ruin transparent
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   rat, sewer rat, hell rat
 KITEM:  d = ration
 NSUBST: d = 1:d / 1:* / 1:9 / 1:3 / * = d11223.......
@@ -2143,7 +2143,7 @@ ENDMAP
 # to make this only accessible from the floor below.
 NAME:   kennysheep_catoblepas_arena
 TAGS:   no_monster_gen ruin
-DEPTH:  Lair:3-, !Lair:$
+DEPTH:  Bayou:3-, !Bayou:$
 MONS:   catoblepas / boulder beetle
 NSUBST: d = 4=%* / 3:0 / *:.
 MAP
@@ -2168,7 +2168,7 @@ ENDMAP
 
 NAME:   kennysheep_basilisk_garden
 TAGS:   transparent
-DEPTH:  Lair:3-
+DEPTH:  Bayou:3-
 MONS:   basilisk
 NSUBST: . = 2:1 / 3 = 111G / *:.
 MAP
@@ -2186,7 +2186,7 @@ MAP
 ENDMAP
 
 NAME:   kennysheep_snail_temple
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   torpor snail
 KFEAT:  a = altar_cheibriados
 NSUBST: 1 = 1:1 / * = 1.
@@ -2208,9 +2208,9 @@ xxx.xxbbbbbbWbbx.xxxx
 ENDMAP
 
 # A den of bears.
-NAME:   gammafunk_lair_bear_cave
+NAME:   gammafunk_bayou_bear_cave
 TAGS:   patrolling no_monster_gen
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   black bear / polar bear
 KFEAT:  " = W
 KMONS:  " = electric eel w:40 / nothing
@@ -2233,9 +2233,9 @@ EEEEEEEEEEEEEEEEEEEEEEEEE
 ENDMAP
 
 # A hidden river runs under a mountain, feeding into an enchanted lake.
-NAME:   gammafunk_lair_enchanted_lake
+NAME:   gammafunk_bayou_enchanted_lake
 TAGS:   no_pool_fixup
-DEPTH:  Lair
+DEPTH:  Bayou
 ORIENT: north
 KMONS:  pq = plant / fungus / toadstool
 KMONS:  1 = electric eel / rime drake / elephant / wyvern
@@ -2281,9 +2281,9 @@ Ettttt...WWwwwwWW....ptttE
      EEEE..@@@@..EEEEE
 ENDMAP
 
-NAME:   nicolae_lair_yak_garden
+NAME:   nicolae_bayou_yak_garden
 TAGS:   no_monster_gen no_item_gen no_trap_gen transparent
-DEPTH:  Lair:4-
+DEPTH:  Bayou:4-
 KMONS:  Y = yak
 KMONS:  D = death yak
 KMONS:  C = catoblepas
@@ -2314,7 +2314,7 @@ ENDMAP
 # Snail & Pal
 NAME:   pf_torpor_hydra
 TAGS:   no_monster_gen no_item_gen
-DEPTH:  Lair:3-, !Lair:$
+DEPTH:  Bayou:3-, !Bayou:$
 MONS:   torpor snail, hydra / boulder_beetle
 # A decent item visible from the door, a superb item not visible,
 # and a couple of floor items anywhere
@@ -2330,9 +2330,9 @@ xx--x-xx
    x  x
 ENDMAP
 
-NAME:    hangedman_lair_generics_rect
+NAME:    hangedman_bayou_generics_rect
 TAGS:    no_monster_gen
-DEPTH:   Lair
+DEPTH:   Bayou
 MONS:    plant / fungus w:6
 NSUBST:  ' = 2:c / 2:. / * = c+....
 SHUFFLE: yY / yY / Yy
@@ -2354,9 +2354,9 @@ ZZxxxxxx%.9.xxxzx
  ZZZZZxxxxxxxxxxx
 ENDMAP
 
-NAME:    cheibrodos_lair_reptile_den
+NAME:    cheibrodos_bayou_reptile_den
 TAGS:    no_item_gen no_monster_gen transparent
-DEPTH:   Lair, !Lair:$
+DEPTH:   Bayou, !Bayou:$
 MONS:    adder / water moccasin, komodo dragon / black mamba
 KMONS:   P = plant / fungus w:5
 SHUFFLE: "', ABC
@@ -2383,7 +2383,7 @@ ENDMAP
 
 NAME:    minmay_guarded_unrand_snakebite
 TAGS:    ruin
-DEPTH:   Lair
+DEPTH:   Bayou
 ORIENT:  southeast
 ITEM:    snakebite no_pickup
 KMONS:   A = adder
@@ -2411,9 +2411,9 @@ xxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-NAME:   cheibrodos_lair_lostbears
+NAME:   cheibrodos_bayou_lostbears
 TAGS:   no_monster_gen transparent
-DEPTH:  Lair
+DEPTH:  Bayou
 MONS:   polar bear
 KMONS:  p = plant
 SUBST:  v = vvvvvpp..
@@ -2432,9 +2432,9 @@ MAP
    ........
 ENDMAP
 
-NAME: cheibrodos_lair_overgrown_chateau
+NAME: cheibrodos_bayou_overgrown_chateau
 TAGS: no_item_gen no_monster_gen
-DEPTH: Lair:2-, !Lair:$
+DEPTH: Bayou:2-, !Bayou:$
 ORIENT: float
 MONS: water moccasin / porcupine, hornet, crocodile, bullfrog / spiny frog
 MONS: black mamba / komodo dragon / w:3 rime drake, hydra / lindwurm
@@ -2469,9 +2469,9 @@ MAP
   ccccccttccccccccccccc
 ENDMAP
 
-NAME: cheibrodos_lair_river_kwai
+NAME: cheibrodos_bayou_river_kwai
 TAGS: no_item_gen no_monster_gen
-DEPTH: Lair
+DEPTH: Bayou
 ORIENT: northeast
 KMONS: P = plant
 MONS: bullfrog / spiny frog, water moccasin / black mamba, hydra
@@ -2504,20 +2504,20 @@ PwwwwwwP;-+---;x".""""xx
 ENDMAP
 
 ###############################################################################
-# Lair endings - split in two types.
+# Bayou endings - split in two types.
 ###############################################################################
 
 ###############################################################################
-# Small Lair endings.
-# If it's possible, the placement of one of these Lair ends vaults means
-# the placement of a second small Lair end vault. Currently, there are five.
+# Small Bayou endings.
+# If it's possible, the placement of one of these Bayou ends vaults means
+# the placement of a second small Bayou end vault. Currently, there are five.
 ###############################################################################
 
 # At some point long ago, this vault used to be about worms and slugs.
 # As standards changed, it is now left with snails and wyrms. Oh well.
 NAME:    wormcave
 TAGS:    no_wall_fixup no_monster_gen no_rotate
-PLACE:   Lair:$
+PLACE:   Bayou:$
 ORIENT:  southeast
 MONS:    torpor snail, tyrant leech, lindwurm, boulder beetle / hornet
 MONS:    fire dragon / ice dragon
@@ -2561,8 +2561,8 @@ ENDMAP
 
 # Dogs by themselves get repetitive, so do bears. What if we combine them?...
 # Previously "kennels" and "bearwithus", both by due.
-NAME:    hangedman_lair_caniforms_friends
-PLACE:   Lair:$
+NAME:    hangedman_bayou_caniforms_friends
+PLACE:   Bayou:$
 TAGS:    no_monster_gen no_rotate patrolling
 ORIENT:  southwest
 MONS:    wolf, warg, hell hound, raiju
@@ -2609,11 +2609,11 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-# One of the three dragon's lair end vaults,
+# One of the three dragon's Bayou end vaults,
 # and the most dragon-focused of them.
-NAME:   guppyfry_lair_end_dragon
+NAME:   guppyfry_bayou_end_dragon
 TAGS:   patrolling no_monster_gen no_pool_fixup
-PLACE:  Lair:$
+PLACE:  Bayou:$
 ORIENT: southeast
 MONS:   rime drake / swamp drake / acid dragon / steam dragon
 MONS:   basilisk / komodo dragon, iguana / crocodile
@@ -2652,11 +2652,11 @@ xxxxxxxxxxtttttttttxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
-# All-natural Lair spawns, in a condensed display.
-NAME:    hangedman_lair_in_review
+# All-natural Bayou spawns, in a condensed display.
+NAME:    hangedman_bayou_in_review
 TAGS:    no_monster_gen no_item_gen patrolling
 ORIENT:  float
-PLACE:   Lair:$
+PLACE:   Bayou:$
 # Compensate for the oblong floating status in the double vault set-up.
 WEIGHT:  14
 # Non-banded band monsters to highlight the vault, then
@@ -2702,11 +2702,11 @@ xx........xx.....K.D.K.....xx*~$....xxx
            xxx  xxx xxx  xxx
 ENDMAP
 
-# Some of the most famously dangerous Lair animals are small, fast, and
+# Some of the most famously dangerous Bayou animals are small, fast, and
 # incidentally poisonous. Let's try a different approach to frog_pond...
-# Inspired by minmay_lair_venomous_thicket.
-NAME:    hangedman_lair_tendril_chambers
-PLACE:   Lair:$
+# Inspired by minmay_bayou_venomous_thicket.
+NAME:    hangedman_bayou_tendril_chambers
+PLACE:   Bayou:$
 ORIENT:  float
 MONS:    water moccasin / wyvern, hornet, spiny frog w:4 / boulder beetle
 MONS:    black mamba, redback, wolf spider, guardian serpent
@@ -2754,7 +2754,7 @@ PP.xx....xx....xx....xx.PP
 ENDMAP
 
 ###############################################################################
-# Normal Lair endings.
+# Normal Bayou endings.
 ###############################################################################
 
 ##############################################################################
@@ -2764,7 +2764,7 @@ ENDMAP
 NAME:   due_jungle_book
 TAGS:   no_pool_fixup no_wall_fixup no_monster_gen
 ORIENT: north
-PLACE:  Lair:$
+PLACE:  Bayou:$
 MONS:   plant, elephant
 # The anaconda's name is Kaa.
 KMONS:  S = anaconda
@@ -2822,7 +2822,7 @@ ENDMAP
 #
 NAME:    evil_forest
 TAGS:    no_pool_fixup no_wall_fixup no_monster_gen no_rotate
-PLACE:   Lair:$
+PLACE:   Bayou:$
 ORIENT:  southeast
 WEIGHT:  5
 MONS:    rime drake, hydra w:15 / dire elephant, wizard
@@ -2873,9 +2873,9 @@ ENDMAP
 ##############################################################################
 # Frog pond.
 #
-NAME:    minmay_lair_end_frog_pond
+NAME:    minmay_bayou_end_frog_pond
 TAGS:    no_monster_gen
-PLACE:   Lair:$
+PLACE:   Bayou:$
 ORIENT:  float
 KMONS:   1 = bullfrog
 KMONS:   2 = spiny frog
@@ -2930,8 +2930,8 @@ ENDMAP
 ##############################################################################
 # A mock-up of Forest, made well before serious attempts at the branch.
 #
-NAME:   minmay_lair_end_enchanted_forest
-PLACE:  Lair:$
+NAME:   minmay_bayou_end_enchanted_forest
+PLACE:  Bayou:$
 ORIENT: northwest
 MONS:   black bear / polar bear w:12, wolf, dream sheep / hornet w:20
 MONS:   spriggan, spriggan rider, boggart
@@ -2981,7 +2981,7 @@ ENDMAP
 #
 NAME:   evilmike_catoblepas_cave
 TAGS:   no_monster_gen no_rotate no_item_gen
-PLACE:  Lair:$
+PLACE:  Bayou:$
 ORIENT: northwest
 ITEM:   any good_item
 MONS:   yak, death yak, manticore w:4 / boulder beetle w:1
@@ -3028,7 +3028,7 @@ x                           .....
 ENDMAP
 
 ##############################################################################
-# The beastmaster's lair.
+# The beastmaster's Bayou.
 # Inspired by discussions of deep troll professionals and the prospect of a
 # "beastmaster"; here he lives, with packs of beasts and one powerful
 # personal pet.
@@ -3037,9 +3037,9 @@ ENDMAP
 # and the inner welcoming party that add enough danger that this ending
 # stands on its own.
 #
-NAME:    grunt_lair_end_beastmaster
+NAME:    grunt_bayou_end_beastmaster
 TAGS:    no_monster_gen no_item_gen no_trap_gen patrolling
-PLACE:   Lair:$
+PLACE:   Bayou:$
 ORIENT:  northeast
 MONS:    deep troll shaman, dire elephant / hydra / lindwurm
 MONS:    catoblepas, death yak band
@@ -3088,8 +3088,8 @@ ENDMAP
 ###############################################################################
 # An ancient temple flooded with waters brought forth by a mystic avatar.
 #
-NAME:    gammafunk_lair_ancient_temple
-PLACE:   Lair:$
+NAME:    gammafunk_bayou_ancient_temple
+PLACE:   Bayou:$
 TAGS:    no_pool_fixup no_monster_gen
 ORIENT:  float
 KMONS:   ~ = plant
@@ -3153,9 +3153,9 @@ ENDMAP
 ###############################################################################
 # A mini-volcano! No fire clouds and twice as many enemies, though.
 #
-NAME:    cheibrodos_lair_end_hotspot
+NAME:    cheibrodos_bayou_end_hotspot
 TAGS:    no_item_gen no_monster_gen
-PLACE:   Lair:$
+PLACE:   Bayou:$
 ORIENT:  east
 MONS:    black mamba, steam dragon
 MONS:    hell hound, molten gargoyle

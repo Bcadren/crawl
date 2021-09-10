@@ -508,8 +508,7 @@ int random_stone()
         branch_specific0 = MI_SNOWBALL;
         branch_specific1 = MI_SNOWBALL;
     }
-    if (you.where_are_you == BRANCH_SEWER ||
-        you.where_are_you == BRANCH_SWAMP)
+    if (you.where_are_you == BRANCH_DUNGEON && you.depth == 2)
     {
         branch_specific0 = MI_MUD;
         branch_specific1 = MI_ROOT;
@@ -534,10 +533,16 @@ int random_stone()
         branch_specific0 = MI_OOZE;
         branch_specific1 = MI_OOZE;
     }
-    if (you.where_are_you == BRANCH_LAIR)
+    if (you.where_are_you == BRANCH_BAYOU)
     {
         branch_specific0 = MI_ROOT;
         branch_specific1 = MI_BONE;
+
+        if (you.depth + coinflip() > 4)
+            branch_specific0 = MI_SEASHELL;
+
+        if (you.depth + coinflip() > 2)
+            branch_specific1 = MI_MUD;
     }
     if (you.where_are_you == BRANCH_CRYPT)
     {

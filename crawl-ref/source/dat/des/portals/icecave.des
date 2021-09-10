@@ -56,14 +56,14 @@ end
 
 -- Figure out if an easy or a hard ice cave should be used. Players
 -- that enter the portal deeper in the dungeon end up in the hard ones.
--- Possible depths for easy ice caves are D:11-15, Lair, Orc. Hard ice caves
--- are in Elf and the Lair roulette branches. Those depths are set in the entry
+-- Possible depths for easy ice caves are D:11-15, Bayou, Orc. Hard ice caves
+-- are in Elf and the Bayou roulette branches. Those depths are set in the entry
 -- vault default-depth.
 --
 -- Returns true for hard difficulty.
 function ice_cave_difficulty()
 
-  if you.in_branch("D") or you.in_branch("Lair") or
+  if you.in_branch("D") or you.in_branch("Bayou") or
      you.in_branch("Orc") then
        return false
   end
@@ -213,9 +213,9 @@ end
 
 # Entries ##########################################
 # Not actually used, but useful for reference.
-default-depth: D:5-, Lair, Orc, Elf, Swamp, Shoals, Snake, Spider
+default-depth: D:5-, Bayou, Orc, Elf, Swamp, Shoals, Snake, Spider
 
-# "Easy" ice cave entrances (D, Lair, Orc).
+# "Easy" ice cave entrances (D, Bayou, Orc).
 NAME:   portal_ice_cave_entry_pillars_1
 TAGS:   transparent
 : ice_cave_portal(_G)
@@ -245,7 +245,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_entry_imps
 TAGS:   patrolling no_monster_gen transparent
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  D:11-, Bayou, Orc
 : ice_cave_portal(_G)
 MONS:   white imp
 MAP
@@ -258,7 +258,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_entry_ice_beasts
 TAGS:   patrolling no_monster_gen transparent
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  D:11-, Bayou, Orc
 : ice_cave_portal(_G)
 MONS:   ice beast
 MAP
@@ -271,7 +271,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_entry_animals_and_master
 TAGS:   patrolling no_monster_gen no_trap_gen
-DEPTH:  D:11-, Lair:4-, Orc
+DEPTH:  D:11-, Bayou:4-, Orc
 WEIGHT: 6
 : ice_cave_portal(_G)
 MONS:   wolf, yak, polar bear, rime drake, ice dragon
@@ -290,7 +290,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_demonic_guard
 TAGS:   patrolling no_monster_gen no_trap_gen
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  D:11-, Bayou, Orc
 : ice_cave_portal(_G)
 MONS:   ice devil
 MAP
@@ -308,7 +308,7 @@ ENDMAP
 
 NAME:   portal_ice_cave_rime
 TAGS:   patrolling no_monster_gen no_pool_fixup
-DEPTH:  D:11-, Lair, Orc
+DEPTH:  D:11-, Bayou, Orc
 : ice_cave_portal(_G)
 MONS:   rime drake
 MAP

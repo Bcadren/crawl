@@ -1544,7 +1544,7 @@ static const vector<branch_type> branch_generation_order =
 {
     BRANCH_DUNGEON,
     BRANCH_TEMPLE,
-    BRANCH_LAIR,
+    BRANCH_BAYOU,
     BRANCH_ORC,
     BRANCH_SPIDER,
     BRANCH_SNAKE,
@@ -2189,7 +2189,7 @@ static bool _bones_save_individual_levels(bool store)
     // n.b. some branches here may not currently generate ghosts.
     // TODO: further adjustments? Make Zot coarser?
     return store ? player_in_branch(BRANCH_DUNGEON) ||
-                   player_in_branch(BRANCH_LAIR)
+                   player_in_branch(BRANCH_BAYOU)
                  : !(player_in_branch(BRANCH_ZIGGURAT) ||
                      player_in_branch(BRANCH_CRYPT) ||
                      player_in_branch(BRANCH_TOMB) ||

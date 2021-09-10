@@ -109,7 +109,7 @@ function lone_ghost_extra_loot(e, none_glyph)
             e.subst("d = |*")
             e.subst("e = *$")
         end
-    elseif you.in_branch("Lair") then
+    elseif you.in_branch("Bayou") then
         e.subst("d = *%")
         e.subst("e = %$" .. none_glyph .. none_glyph)
     elseif you.in_branch("Orc") then
@@ -193,7 +193,7 @@ function ghost_good_loot(e)
                 second_item = true
             end
          end
-    elseif you.in_branch("Lair") then
+    elseif you.in_branch("Bayou") then
         if crawl.one_chance_in(3) then
             aux = dgn.good_aux_armour
             jewellery = good_jewellery

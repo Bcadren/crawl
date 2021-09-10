@@ -1,10 +1,10 @@
 # forest.des (by infiniplex)
 #
 # These a a series of vaults with trees in them that can appear
-#  on early dungeon levels or the Lair.
+#  on early dungeon levels or the Bayou.
 #
 # The vaults can also appear individually, but are not common.
-#  The individual vaults may appear more commonly in the Lair,
+#  The individual vaults may appear more commonly in the Bayou,
 #  depending on the vault.  Vaults that look artificial are
 #  equally common and vaults that look natural are 3 times as
 #  common.
@@ -30,11 +30,11 @@
 #  apply some effect to the themed portion of the vaults.
 
 {{
-function init_forest(e, base_weight, lair_weight)
+function init_forest(e, base_weight, bayou_weight)
   e.tags('allow_dup')
   e.tags('serial_forest')
-  if you.in_branch("Lair") then
-    e.weight(lair_weight)
+  if you.in_branch("Bayou") then
+    e.weight(bayou_weight)
   elseif you.absdepth() == 1 then
     e.weight(base_weight * 3)
   elseif you.absdepth() == 2 then
@@ -54,7 +54,7 @@ function init_forest(e, base_weight, lair_weight)
   e.kmask('E = no_monster_gen')
   e.kmask('D = no_monster_gen')
   e.kmask('" = no_monster_gen')
-  if you.in_branch("Lair") then
+  if you.in_branch("Bayou") then
     e.subst('E = tt12222_')
     e.subst('D = t1222222____')
     e.subst('" = 2:25 _:50')
@@ -76,8 +76,8 @@ end
 #
 NAME:   serial_forest
 TAGS:   allow_dup extra luniq_serial nolayout_encompass
-DEPTH:  D:1-4, Lair
-CHANCE: 3% (D:1), 2% (D:2), 1% (D:3-4), 1% (Lair)
+DEPTH:  D:1-4, Bayou
+CHANCE: 3% (D:1), 2% (D:2), 1% (D:3-4), 1% (Bayou)
 {{
   -- between 5 and 11 forests
   local c = 4 + crawl.random2(4) + crawl.random2(4)

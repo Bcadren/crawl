@@ -1274,7 +1274,7 @@ void tag_read(reader &inf, tag_type tag_id)
             if (you.depth == 6)
                 _ensure_entry(BRANCH_ORC);
             if (you.depth == 5)
-                _ensure_entry(BRANCH_LAIR);
+                _ensure_entry(BRANCH_BAYOU);
         }
         _shunt_monsters_out_of_walls();
         // The Abyss needs to visit other levels during level gen, before
@@ -4036,11 +4036,11 @@ static branch_type old_entries[] =
     /* Elf */    BRANCH_ORC,
     /* Dwarf */  BRANCH_ELF,
     /* Lair */   BRANCH_DUNGEON,
-    /* Swamp */  BRANCH_LAIR,
-    /* Shoals */ BRANCH_LAIR,
-    /* Snake */  BRANCH_LAIR,
-    /* Spider */ BRANCH_LAIR,
-    /* Slime */  BRANCH_LAIR,
+    /* Swamp */  BRANCH_BAYOU,
+    /* Shoals */ BRANCH_BAYOU,
+    /* Snake */  BRANCH_BAYOU,
+    /* Spider */ BRANCH_BAYOU,
+    /* Slime */  BRANCH_BAYOU,
     /* Vaults */ BRANCH_DUNGEON,
     /* Blade */  BRANCH_VAULTS,
     /* Crypt */  BRANCH_VAULTS,

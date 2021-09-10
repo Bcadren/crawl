@@ -128,7 +128,7 @@ function choose_mset_1(e)
 -- Snake
   elseif rnd < 19 then
     e.kmons("1 = ball python / adder / water moccasin w:5 / naga w:2")
--- Lair
+-- Bayou
   elseif rnd < 29 then
     e.kmons("1 = sewer rat / iguana / porcupine / yak w:5 /\
                jackal / wolf w:5 / bullfrog w:5")
@@ -217,11 +217,11 @@ function choose_mset_2(e)
   elseif rnd < 19 then
     e.kmons("1 = ball python / adder / water moccasin / naga /\
                black mamba w:5 / naga mage w:5")
--- Lair
+-- Bayou
   elseif rnd < 29 then
     e.kmons("1 =  sewer rat / iguana / porcupine / yak /\
                jackal / wolf / bullfrog / spiny frog w:5 /\
-               komodo dragon w:5 / basilisk w:5 / place:Lair:1 w:30")
+               komodo dragon w:5 / basilisk w:5 / place:Bayou:1 w:30")
 -- Spider
   elseif rnd < 34 then
     e.kmons("1 = scorpion w:15 / jumping spider w:5 / tarantella w:5 /\
@@ -315,9 +315,9 @@ function choose_mset_3(e)
     e.kmons("1 = ball python / adder / water moccasin / naga /\
                black mamba / naga mage / naga warrior / nagaraja w:5 /\
                anaconda w:5 / guardian serpent")
--- Lair
+-- Bayou
   elseif rnd < 19 then
-    e.kmons("1 =  place:Lair:2 / place:Lair:4 / place:Lair:$ w:5")
+    e.kmons("1 =  place:Bayou:2 / place:Bayou:4 / place:Bayou:$ w:5")
 -- Spider
   elseif rnd < 24 then
     e.kmons("1 = place:Spider:$ w:70 / hornet")
@@ -444,9 +444,9 @@ local rnd = crawl.random2(142)
     e.kmons("1 = ball python w:5 / adder w:5 / water moccasin / naga /\
                black mamba / naga mage / naga warrior / nagaraja /\
                anaconda / guardian serpent")
--- Lair
+-- Bayou
   elseif rnd < 19 then
-    e.kmons("1 = place:Lair:$ w:300 / hydra / catoblepas / dire elephant")
+    e.kmons("1 = place:Bayou:$ w:300 / hydra / catoblepas / dire elephant")
 -- Spider
   elseif rnd < 26 then
     e.kmons("1 = place:Spider:$ w:70 / ghost moth w:5 / hornet /\

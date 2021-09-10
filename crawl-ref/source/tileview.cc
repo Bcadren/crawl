@@ -175,7 +175,7 @@ void tile_default_flv(branch_type br, tile_flavour &flv)
         flv.floor = TILE_FLOOR_ORC;
         return;
 
-    case BRANCH_LAIR:
+    case BRANCH_BAYOU:
         flv.wall  = TILE_WALL_LAIR;
         flv.floor = TILE_FLOOR_LAIR;
         return;

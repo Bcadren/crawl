@@ -87,7 +87,7 @@
 #       and previous TODO are in, add to Elf with weight 10.
 #
 NAME:   layout_hall_layers
-DEPTH:  Lair
+DEPTH:  Bayou
 WEIGHT: 7
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand central layout_type_narrow_caves
@@ -184,7 +184,7 @@ TAGS:   overwritable layout allow_dup unrand central layout_type_narrow_caves
   }
 
   local cave = you.in_branch("D") and crawl.coinflip()
-               or you.in_branch("Lair") and crawl.x_chance_in_y(2,3)
+               or you.in_branch("Bayou") and crawl.x_chance_in_y(2,3)
 
   if cave then
     width = crawl.random_range(4,6)
@@ -540,8 +540,8 @@ ENDMAP
 #       Then remove minimum size validate as unneeded
 #
 NAME:   layout_concentric_octagons
-DEPTH:  Lair, Snake, Zot
-WEIGHT: 3 (Lair), 5 (Snake), 10 (Zot)
+DEPTH:  Bayou, Snake, Zot
+WEIGHT: 3 (Bayou), 5 (Snake), 10 (Zot)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand central layout_type_passages
 TAGS:   no_rotate no_vmirror no_hmirror

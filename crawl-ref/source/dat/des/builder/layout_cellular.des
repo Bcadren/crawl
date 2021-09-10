@@ -106,10 +106,10 @@
 #
 # TODO: This layout is sometimes very slow (several seconds) to
 #       generate.  If this can be fixed, add it in at weights
-#       2 (Lair), 5 (Zot), 10 (Pan)
+#       2 (Bayou), 5 (Zot), 10 (Pan)
 #
 NAME:   layout_cellular_growth
-DEPTH:  Lair, Zot, Pan
+DEPTH:  Bayou, Zot, Pan
 WEIGHT: 0
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_passages
@@ -339,13 +339,13 @@ ENDMAP
 #
 # TODO: Move D-specific variations to Depths.  This layout no
 #       longer appears in D.
-# TODO: Remove all "filled" rooms from Lair.  Lair ruination
+# TODO: Remove all "filled" rooms from Bayou.  Bayou ruination
 #       does strange and terrible things to them.
 # TODO: Only place lava rooms in Depths, Zot, and Pan
 #
 NAME:   layout_gridlike
-DEPTH:  Elf, Lair, Snake, Crypt, Depths, Zot, Pan
-WEIGHT: 20 (Elf), 10 (Lair), 10 (Snake), 15 (Crypt)
+DEPTH:  Elf, Bayou, Snake, Crypt, Depths, Zot, Pan
+WEIGHT: 20 (Elf), 10 (Bayou), 10 (Snake), 15 (Crypt)
 WEIGHT: 20 (Depths), 20 (Zot), 15 (Pan)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_rooms
@@ -399,7 +399,7 @@ TAGS:   no_rotate no_vmirror no_hmirror
     corridor_doors = crawl.coinflip()
     random_rooms = crawl.coinflip()
     maxcorridor = crawl.random_range(1,4)
-  elseif you.in_branch("Lair") then
+  elseif you.in_branch("Bayou") then
     doors = false
     corridor_doors = false
     corners = crawl.coinflip()

@@ -177,7 +177,7 @@ TAGS:   overwritable layout unrand uniq_open_layout layout_type_open
     -- Include a small possibility of adding windows around the cross.
     -- This layout can get used with spotty_level, so don't make this
     -- chance too large as lava/water prevents that from happening.
-    local window = not you.in_branch("Lair") and crawl.one_chance_in(20)
+    local window = not you.in_branch("Bayou") and crawl.one_chance_in(20)
 
     if window then
         if crawl.coinflip() then
@@ -288,7 +288,7 @@ TAGS:   uniq_open_layout
         {'w', 2},
         {'l', 1}
     }
-    if (you.in_branch("lair")) then
+    if (you.in_branch("Bayou")) then
         pillar_fill[#pillar_fill + 1] = {'t', 15}
     end
 
@@ -604,10 +604,10 @@ TAGS:   no_rotate no_vmirror no_hmirror
     local percent_room_gone = 14 -- was 1/7 chance
     local max_wall_in = 5
 
-    if you.in_branch("Lair") then
+    if you.in_branch("Bayou") then
         wall_type = 'x'
-        percent_thickness_2 = 50 + you.depth_fraction() * 150 -- 100% at Lair:4
-        percent_thickness_3 = 20 + you.depth_fraction() * 80  -- 100% at Lair:$
+        percent_thickness_2 = 50 + you.depth_fraction() * 150 -- 100% at Bayou:4
+        percent_thickness_3 = 20 + you.depth_fraction() * 80  -- 100% at Bayou:$
         percent_thickness_4 = 10 + you.depth_fraction() * 40
         percent_inner_new_wall = 0
         percent_inner_box   = 0
@@ -768,8 +768,8 @@ TAGS:   no_rotate no_vmirror no_hmirror
 	  kfeat("t = slimeshroom")
 	end
 
-    -- remove doors in Lair, increasingly with depth
-    if you.in_branch("Lair") then
+    -- remove doors in Bayou, increasingly with depth
+    if you.in_branch("Bayou") then
         local keep_weight   = dgn.br_depth(you.branch())
         local remove_weight = you.depth() * 2
         subst("+ = .:" .. remove_weight .. " +:" .. keep_weight)
@@ -785,8 +785,8 @@ ENDMAP
 # Previously named "layout_misc".
 #
 NAME:   layout_misc_corridors
-DEPTH:  Lair, Snake, Crypt, Zot
-WEIGHT: 20, 5 (Lair)
+DEPTH:  Bayou, Snake, Crypt, Zot
+WEIGHT: 20, 5 (Bayou)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_corridors
 TAGS:   no_rotate no_vmirror no_hmirror
@@ -926,8 +926,8 @@ ENDMAP
 # This replaces dungeon.cc:_roguey_level.
 #
 NAME:   layout_roguey
-DEPTH:  D:4-, Lair, Depths
-WEIGHT: 25 (D), 10 (Lair), 10 (Depths)
+DEPTH:  D:4-, Bayou, Depths
+WEIGHT: 25 (D), 10 (Bayou), 10 (Depths)
 ORIENT: encompass
 TAGS:   overwritable layout no_primary_vault allow_dup unrand layout_type_rooms
 {{
@@ -1172,7 +1172,7 @@ TAGS:   overwritable layout no_primary_vault allow_dup unrand layout_type_rooms
                and room.fill == '.'
                and (room.x2 - room.x1 > 5)
                and (room.y2 - room.y1 > 5)
-               and (you.in_branch("D") or you.in_branch("Lair"))
+               and (you.in_branch("D") or you.in_branch("Bayou"))
                and crawl.x_chance_in_y(you.absdepth() - 4, 450)
             then
                 local feat = util.random_choose_weighted({ {'v', 2},

@@ -70,7 +70,7 @@ end
 #
 {{
 function getRandomWallMaterial ()
-  if (you.in_branch("D") or you.in_branch("Lair"))
+  if (you.in_branch("D") or you.in_branch("Bayou"))
      and you.absdepth() >= 4 and crawl.one_chance_in(20) then
     if crawl.one_chance_in(3) then
       return 'v'
@@ -1202,8 +1202,8 @@ end
 #  can be difficult to see in the final map.
 #
 NAME:   layout_loops_ring
-DEPTH:  D, !D:2, Elf, Lair
-WEIGHT: 15 (D), 5 (Elf), 8 (Lair)
+DEPTH:  D, !D:2, Elf, Bayou
+WEIGHT: 15 (D), 5 (Elf), 8 (Bayou)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_corridors
 TAGS:   no_rotate no_vmirror no_hmirror

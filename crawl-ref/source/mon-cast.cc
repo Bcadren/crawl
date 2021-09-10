@@ -5582,7 +5582,7 @@ static const pop_entry _invitation_crypt[] =
 
 static branch_summon_pair _invitation_summons[] =
 {
-  { BRANCH_LAIR,   _invitation_lair },
+  { BRANCH_BAYOU,  _invitation_lair },
   { BRANCH_SNAKE,  _invitation_snake },
   { BRANCH_SPIDER, _invitation_spider },
   { BRANCH_SWAMP,  _invitation_swamp },
