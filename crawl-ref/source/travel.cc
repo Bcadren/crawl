@@ -1871,7 +1871,7 @@ static void _find_parent_branch(branch_type br, branch_type *pb, int *pd)
 // If level 3 of the snake pit is the level we want to track back from,
 // we'd call _trackback(vec, BRANCH_SNAKE, 3), and the resulting vector will
 // look like:
-// { BRANCH_SNAKE, 3 }, { BRANCH_LAIR, 5 }, { BRANCH_DUNGEON, 11 }
+// { BRANCH_SNAKE, 3 }, { BRANCH_BAYOU, 5 }, { BRANCH_DUNGEON, 11 }
 // (Assuming, of course, that the vector started out empty.)
 //
 static void _trackback(vector<level_id> &vec, branch_type branch, int subdepth)

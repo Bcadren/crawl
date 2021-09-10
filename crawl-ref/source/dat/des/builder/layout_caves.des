@@ -18,7 +18,7 @@
 # functions from weighted selections and draw them overwritten.
 #
 NAME:   layout_layer_cave
-DEPTH:  D:3-, Lair, Snake
+DEPTH:  D:3-, Bayou, Snake
 WEIGHT: 5, 15 (Snake)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_narrow_caves
@@ -115,8 +115,8 @@ ENDMAP
 #       * It should be possible to fold most of these effects into layer_cave
 #
 NAME:   layout_cave_shapes
-DEPTH:  Lair, Snake, Depths
-WEIGHT: 3 (Lair), 5 (Snake), 10 (Depths)
+DEPTH:  Bayou, Snake, Depths
+WEIGHT: 3 (Bayou), 5 (Snake), 10 (Depths)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_open_caves
 {{
@@ -291,8 +291,8 @@ validate {{
 # TODO: Wider the paths, then add to Spider at weight 10.
 #
 NAME:   layout_cave_pods
-DEPTH:  D:3-, Lair, Snake
-WEIGHT: 5, 15 (Lair)
+DEPTH:  D:3-, Bayou, Snake
+WEIGHT: 5, 15 (Bayou)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand layout_type_open_caves
 {{

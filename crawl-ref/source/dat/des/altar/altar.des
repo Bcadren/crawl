@@ -94,7 +94,7 @@ DEPTH:  2-
 CHANCE: 20% (Orc)
 CHANCE: 10% (Snake, Forest)
 CHANCE: 8% (D, Elf)
-CHANCE: 5% (Lair, Slime, Vaults, Crypt)
+CHANCE: 5% (Bayou, Slime, Vaults, Crypt)
 CHANCE: 1% (Zot)
 CHANCE: 0
 MAP
@@ -132,7 +132,7 @@ ENDMAP
 
 NAME:   lemuel_altar_in_water2
 TAGS:   no_pool_fixup no_monster_gen
-DEPTH:  D:2-, Lair, Snake, Swamp, Shoals
+DEPTH:  D:2-, Bayou, Snake, Swamp, Shoals
 WEIGHT: 1
 : interest_check(_G)
 MAP
@@ -146,7 +146,7 @@ MAP
 ENDMAP
 
 NAME:  lemuel_oklob_altar
-DEPTH: D:4-, Lair, Snake, Shoals
+DEPTH: D:4-, Bayou, Snake, Shoals
 MONS:  oklob plant, plant
 MAP
  2
@@ -230,7 +230,7 @@ ENDMAP
 # The mix of deep and shallow water is intended to keep the centaurs from
 # escaping without requiring the player to be able to cross deep water.
 NAME:  lemuel_centaur_altar
-DEPTH: D:4-, Shoals, Lair
+DEPTH: D:4-, Shoals, Bayou
 TAGS:  no_pool_fixup no_monster_gen
 MONS:  patrolling centaur
 MAP

@@ -2941,8 +2941,6 @@ void display_runes()
         for (branch_iterator it(branch_iterator_type::danger); it; ++it)
         {
             const branch_type br = it->id;
-            if (!connected_branch_can_exist(br))
-                continue;
 
             for (auto rune : branches[br].runes)
             {
@@ -2956,6 +2954,10 @@ void display_runes()
                 }
                 else
                     item.quantity = you.runes[rune] ? 1 : 0;
+
+                if (branch_is_unfinished(br) && !you.runes[rune])
+                    continue;
+
                 item_colour(item);
                 items.push_back(item);
             }

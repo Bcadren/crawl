@@ -131,7 +131,7 @@
 # to remove it entirely.
 #
 NAME:   layout_big_grid
-DEPTH:  Lair
+DEPTH:  Bayou
 WEIGHT: 2
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand no_rotate no_pool_fixup
@@ -163,8 +163,8 @@ TAGS:   no_hmirror no_vmirror layout_type_open
 # layout_small_grid
 #
 NAME:   layout_small_grid
-DEPTH:  D:4-, Lair, Depths, Pan
-WEIGHT: 5 (D), 5 (Lair), 3 (Depths), 10 (Pan)
+DEPTH:  D:4-, Bayou, Depths, Pan
+WEIGHT: 5 (D), 5 (Bayou), 3 (Depths), 10 (Pan)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand no_rotate no_pool_fixup
 TAGS:   no_hmirror no_vmirror layout_type_passages
@@ -194,15 +194,15 @@ TAGS:   no_hmirror no_vmirror layout_type_passages
 # layout_long_grid
 #
 NAME:   layout_long_grid
-DEPTH:  D:4-, Lair, Depths, Pan
-WEIGHT: 10 (D), 5 (Lair), 7 (Depths), 10 (Pan)
+DEPTH:  D:4-, Bayou, Depths, Pan
+WEIGHT: 10 (D), 5 (Bayou), 7 (Depths), 10 (Pan)
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand no_rotate no_pool_fixup
 TAGS:   no_hmirror no_vmirror layout_type_passages
 {{
   if is_validating() then return; end
-  local min_size = you.in_branch("lair") and 1 or 2
-  local max_size = you.in_branch("lair") and 4 or 3
+  local min_size = you.in_branch("Bayou") and 1 or 2
+  local max_size = you.in_branch("Bayou") and 4 or 3
   local size = crawl.random_range(min_size,max_size)
 
   local grid_opts = {
@@ -219,13 +219,13 @@ TAGS:   no_hmirror no_vmirror layout_type_passages
   local paint_opts = {
     fill_chance = crawl.random_range(min_fill,max_fill),
     corridor_width = size,
-    outer_corridor = you.in_branch("lair"),
+    outer_corridor = you.in_branch("Bayou"),
     jitter = false,
   }
 
-  -- In D, for fairness, allow some narrow corridors (sometimes in Lair)
+  -- In D, for fairness, allow some narrow corridors (sometimes in Bayou)
   if you.in_branch("D")
-    or (you.in_branch("lair") and size>1 and crawl.one_chance_in(3)) then
+    or (you.in_branch("Bayou") and size>1 and crawl.one_chance_in(3)) then
     paint_opts.corridor_width = 1
     paint_opts.jitter = true
     paint_opts.jitter_min = -1
@@ -258,7 +258,7 @@ TAGS:   no_hmirror no_vmirror layout_type_passages
 # Attempting to use this layout causes LUA runtime errors.
 #
 NAME:   layout_layered_grid
-DEPTH:  D, !D:2, Depths, Crypt, Lair
+DEPTH:  D, !D:2, Depths, Crypt, Bayou
 WEIGHT: 0
 ORIENT: encompass
 TAGS:   overwritable layout allow_dup unrand no_pool_fixup layout_type_passages
@@ -428,7 +428,7 @@ TAGS:   overwritable layout allow_dup unrand layout_type_passages
   local doors = crawl.x_chance_in_y(2,3)    -- Create doors sometimes instead of just holes in walls
   local fortify = you.in_branch("Tar")      -- Add wall crennelations?
 
-  if you.in_branch("Lair") or you.in_branch("Snake") then
+  if you.in_branch("Bayou") or you.in_branch("Snake") then
     thin = false
   elseif you.in_branch("D") then
     thin = true

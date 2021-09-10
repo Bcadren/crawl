@@ -55,7 +55,7 @@ end
 function grunt_megastairs_setup(e)
   e.orient("float")
   e.tags("extra luniq_grunt_megastairs transparent ruin_lair")
-  e.depth("Lair, Depths, Crypt, Elf, Snake, Zot, Dis, Geh, Coc, Tar")
+  e.depth("Bayou, Depths, Crypt, Elf, Snake, Zot, Dis, Geh, Coc, Tar")
   e.nsubst("0 = 2:0 / 2:0. / *:.")
   e.subst("@ = @+")
   if you.depth() == 1 then
@@ -75,10 +75,10 @@ function grunt_megastairs_setup(e)
     e.subst("x = v")
   elseif you.in_branch("Depths") then
     e.subst("x : cccccvvvb")
-  elseif not you.in_branch("Lair") then
+  elseif not you.in_branch("Bayou") then
     e.subst("x = c")
   end
-  if you.in_branch("Depths") or you.in_branch("Lair") or
+  if you.in_branch("Depths") or you.in_branch("Bayou") or
      you.in_branch("Snake") or you.in_branch("Elf") then
     e.subst("G : GGGGTTVt")
   else
@@ -760,7 +760,7 @@ ENDMAP
 NAME:    infiniplex_staircase_pool_2
 ORIENT:  float
 TAGS:    transparent extra luniq_staircase no_monster_gen decor
-DEPTH:   D:2-, !D:$, Depths:2-, !Depths:$, Lair, Swamp
+DEPTH:   D:2-, !D:$, Depths:2-, !Depths:$, Bayou, Swamp
 WEIGHT:  3 (D), 10 (Swamp)
 # Water
 SUBST:   D = WW.
@@ -790,7 +790,7 @@ ENDMAP
 NAME:    infiniplex_staircase_pool
 ORIENT:  float
 TAGS:    extra luniq_staircase decor
-DEPTH:   D, !D:$, Lair, Swamp
+DEPTH:   D, !D:$, Bayou, Swamp
 WEIGHT:  2 (D), 20 (Swamp)
 SUBST:   D = ww.
 SUBST:   E = w..
@@ -1056,7 +1056,7 @@ ENDMAP
 
 NAME:   wander_river
 TAGS:   transparent no_pool_fixup no_monster_gen
-DEPTH:  D, Lair, !Lair:$
+DEPTH:  D, Bayou, !Bayou:$
 ORIENT: float
 FTILE:  - = floor_pebble_lightgray
 MAP
@@ -1217,7 +1217,7 @@ ENDMAP
 # The slime creature may seem too tough for the level where this appears, but
 # since it is a normal speed monster with no range attacks, it can be escaped.
 NAME:   lemuel_slime
-DEPTH:  D:3-, Lair
+DEPTH:  D:3-, Bayou
 ORIENT: float
 MONS:   w:20 ooze / jelly / fungus
 MONS:   slime creature / oklob plant
@@ -1403,7 +1403,7 @@ ENDMAP
 #
 NAME:    onia_ninara_swampy_vault
 TAGS:    no_pool_fixup no_monster_gen
-DEPTH:   Lair:4-, !Lair:$, Snake, !Snake:$, Depths, !Depths:$
+DEPTH:   Bayou:4-, !Bayou:$, Snake, !Snake:$, Depths, !Depths:$
 ORIENT:  float
 KMONS:   1 = slime creature w:20 / swamp worm w:50 / \
              vampire mosquito / crocodile / swamp drake w:15
@@ -1450,7 +1450,7 @@ ENDMAP
 # Another low-level vault - LP
 #
 NAME:    lemuel_reptile_caves
-DEPTH:   D:5-7, Lair:1-, !Lair:$
+DEPTH:   D:5-7, Bayou:1-, !Bayou:$
 ORIENT:  float
 TAGS:    transparent no_pool_fixup
 MONS:    leopard gecko / cinder newt, crocodile, iguana
@@ -1559,7 +1559,7 @@ ENDMAP
 # of opening the doors so animals can go for a walk, that's intended.
 #
 NAME:   slaughterhouse
-DEPTH:  Lair:5-, D:5-
+DEPTH:  Bayou:5-, D:5-
 TAGS:   no_monster_gen
 ORIENT: float
 WEIGHT: 5
@@ -1598,7 +1598,7 @@ ENDMAP
 ##############################################################################
 # And for now, something woody (1KB)
 NAME:   kb_forest_paths
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 ORIENT: float
 MONS:   spriggan, spriggan rider, spriggan defender
 MONS:   boggart, spriggan druid
@@ -2127,10 +2127,10 @@ ENDMAP
 #
 NAME:   mu_elephants_graveyard
 TAGS:   no_monster_gen no_rotate no_vmirror no_pool_fixup
-DEPTH:  Depths, Lair:2-, !Lair:$
+DEPTH:  Depths, Bayou:2-, !Bayou:$
 ORIENT: float
   # we generate more dire elephants and deeper water at greater depths
-: if you.in_branch("Lair") then
+: if you.in_branch("Bayou") then
 MONS:   elephant, dire elephant, spriggan
 : else
 MONS:   w:1 elephant / dire elephant, hellephant, spriggan defender
@@ -2991,7 +2991,7 @@ cc'nn-...-nnnnnc...cncnc...cnnnnn-...-nn'cc
 ENDMAP
 
 NAME: cheibrodos_magma_flow
-DEPTH: D:5-, !D:$, Lair:2-, !Lair:$
+DEPTH: D:5-, !D:$, Bayou:2-, !Bayou:$
 ORIENT: float
 TAGS: no_item_gen no_monster_gen
 KMONS: ' = lava snake
@@ -4388,7 +4388,7 @@ ENDMAP
 
 NAME:   nzn_motion_control
 TAGS:   no_pool_fixup no_monster_gen
-DEPTH:  D:5-, Lair:4-, Shoals:2-, !Shoals:$
+DEPTH:  D:5-, Bayou:4-, Shoals:2-, !Shoals:$
 ORIENT: float
 SHUFFLE: HY / 12, $%, eE / rR
 SUBST:  ER = ., r = x, e = + .
@@ -4421,7 +4421,7 @@ ENDMAP
 
 NAME:  gammafunk_mikee_crab_dinner
 TAGS:  no_monster_gen no_trap_gen patrolling
-DEPTH: D:5-, Depths, Lair:3-, Swamp, Zot
+DEPTH: D:5-, Depths, Bayou:3-, Swamp, Zot
 ORIENT: float
 KMONS: F = apocalypse crab
 KITEM: F = |
@@ -4433,7 +4433,7 @@ KMONS: 2 = apocalypse crab
 KMONS: 3 = flayed ghost
 KITEM: 2 = *
 SUBST: = = +, E = D
-: elseif you.in_branch("Lair") then
+: elseif you.in_branch("Bayou") then
 MONS:  fire crab, ghost crab, entropy weaver
 SUBST: c = x
 : elseif you.in_branch("Swamp") then
@@ -4473,7 +4473,7 @@ ENDMAP
 
 NAME:   gammafunk_cloud_chamber
 TAGS:   no_monster_gen no_trap_gen no_tele_into
-DEPTH:  D:2-, Lair
+DEPTH:  D:2-, Bayou
 ORIENT: float
 KMASK:  -'DE12 = no_item_gen
 # Cancellation placed only for mutagenic clouds.
@@ -4533,10 +4533,10 @@ MONS:   ugly thing, ugly thing / very ugly thing
 SUBST:  ' = n
 NSUBST: 1 = 2=1 / 2 / 12-, $ = f / * / $
 :   end
-: elseif you.in_branch("Lair") then
+: elseif you.in_branch("Bayou") then
 :       cloud_types = {"flame", "freezing vapour", "poison gas"}
 MONS:   fire bat / fire elemental, hell hound / fire crab
-MONS:   simulacrum place:Lair
+MONS:   simulacrum place:Bayou
 MONS:   dire elephant simulacrum / anaconda simulacrum \
         / wolf spider simulacrum / hydra simulacrum
 MONS:   spiny frog / black mamba, swamp dragon
@@ -5031,7 +5031,7 @@ ENDMAP
 # Oklob gauntlet
 # average of 2.2 oklobs, and at most 5 of them
 NAME:    dpeg_oklob_gauntlet
-DEPTH:   Depths, !Depths:$, Lair, Snake, Elf
+DEPTH:   Depths, !Depths:$, Bayou, Snake, Elf
 ORIENT:  float
 MONS:    plant, oklob plant, thorn hunter, acid blob
 SHUFFLE: ]}) / def
@@ -5067,7 +5067,7 @@ ENDMAP
 # and the walls are always diggable then.
 #
 NAME:    dpeg_oklob_shooting_range
-DEPTH:   Depths:2-, !Depths:$, Lair:2-, Elf:2-
+DEPTH:   Depths:2-, !Depths:$, Bayou:2-, Elf:2-
 WEIGHT:  2
 ORIENT:  float
 SHUFFLE: ab" / AB'
@@ -9258,7 +9258,7 @@ ENDMAP
 
 NAME:    nzn_random_ring
 TAGS:    no_pool_fixup no_monster_gen no_trap_gen no_exits
-DEPTH:   D:4-, !D:$, Depths, !Depths:$, Lair, !Lair:$, Zot, !Zot:$
+DEPTH:   D:4-, !D:$, Depths, !Depths:$, Bayou, !Bayou:$, Zot, !Zot:$
 NSUBST:  D = 4=0 / 4=0. / 4=^. / r / ., E = 20=W / 12=w / .
 NSUBST:  F = 9 / 4=0 / 4=0. / 4=r / 4=^. / ., H = 0 / 9 / 4=09.. / 2=r / .
 NSUBST:  J = wl, K = 1 / } / s / K, 2 = 2 / G
@@ -9268,7 +9268,7 @@ MONS:    ice statue
 SHUFFLE: wW / LL
 SUBST:   9 = 09, 1 = 98, 2 = G:50 1, r = $%, s =  *|, } = }>
 KFEAT:   ^ = shaft trap / teleport trap / alarm trap / congregation trap
-: elseif you.in_branch("Lair") then
+: elseif you.in_branch("Bayou") then
 KMONS:   p = plant
 SHUFFLE: Ww / LL
 SUBST:   9 = 09, 1 = 98, r = $%, s = *|,  2G = ., bcv = x, } = }>, K = p

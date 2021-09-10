@@ -283,11 +283,6 @@ void wizard_list_branches()
             mprf(MSGCH_DIAGNOSTICS, "Branch %d (%s) is on %s",
                  it->id, it->longname, brentry[it->id].describe().c_str());
         }
-        else if (is_random_subbranch(it->id))
-        {
-            mprf(MSGCH_DIAGNOSTICS, "Branch %d (%s) was not generated "
-                 "this game", it->id, it->longname);
-        }
     }
 
     if (!you.props.exists(OVERFLOW_TEMPLES_KEY))

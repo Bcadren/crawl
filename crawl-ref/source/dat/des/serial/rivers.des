@@ -5,7 +5,7 @@
 # otherwise.
 NAME:   serial_rivers
 TAGS:   allow_dup extra luniq_serial decor nolayout_encompass
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 CHANCE: 1%
 {{
   local c = 4 + crawl.random2(3)
@@ -16,7 +16,7 @@ CHANCE: 1%
 
 NAME:   chequers_serial_rivers_micro_a
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 MAP
      @
@@ -27,7 +27,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_micro_b
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 MAP
      @
@@ -38,7 +38,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_micro_c
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 SUBST:  W = W:8 .
 MAP
@@ -53,7 +53,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_micro_d
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 MAP
   @
@@ -65,7 +65,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_micro_e
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 SUBST:  . = W., W = W:8 .
 MAP
@@ -77,7 +77,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_room_a
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 MAP
 xxxxxx+
@@ -90,7 +90,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_room_b
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 MAP
 xxx+xxx
@@ -103,7 +103,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_small_a
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 SUBST:  w = Ww
 MAP
@@ -117,7 +117,7 @@ ENDMAP
 NAME:   chequers_serial_rivers_small_b
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
 TAGS:   no_tele_into
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 MAP
 @     w
@@ -134,7 +134,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_marsh
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 SUBST:  . = W., - = W. t:4 w:6
 MAP
@@ -154,7 +154,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_small_3
 TAGS:   serial_rivers allow_dup extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 SUBST:  W = .:2 w:3 W, . = . W:4
 MAP
@@ -169,7 +169,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_large_a
 TAGS:   serial_rivers extra decor no_pool_fixup transparent
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 KMASK:  Ww = no_monster_gen
 SUBST:  W = .:1 w:4 W, ' = .:2 W, - = W:5 .
 MAP
@@ -199,7 +199,7 @@ ENDMAP
 
 NAME:   chequers_serial_rivers_large_b
 TAGS:   serial_rivers extra decor no_pool_fixup transparent no_monster_gen
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 MAP
               xxxxxx
    @..Wxx     xWWWWxx

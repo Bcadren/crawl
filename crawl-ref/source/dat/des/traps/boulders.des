@@ -131,7 +131,7 @@ ENDMAP
 # Two boulders at either end of the corridor
 #
 NAME:   boulder_dual_corridor_run
-DEPTH:  Lair:3-
+DEPTH:  Bayou:3-
 TAGS:   luniq_boulder_trap no_monster_gen ruin_lair no_trap_gen
 ORIENT: float
 KFEAT: ^ = pressure plate trap
@@ -159,7 +159,7 @@ ENDMAP
 # Four boulders all go for you in the center of the room
 # -- TODO: Make all the boulders slightly miss each other
 NAME:   boulder_quad_collide
-DEPTH:  Lair:4-
+DEPTH:  Bayou:4-
 TAGS:   luniq_boulder_trap no_monster_gen no_trap_gen
 ORIENT: float
 KFEAT:  ^ = pressure plate trap
@@ -245,7 +245,7 @@ NAME:     bcadren_xom_bowling
 TAGS:     luniq_boulder_trap no_monster_gen no_trap_gen extra temple_overflow_1 
 TAGS:     temple_overflow_xom uniq_altar_xom
 ORIENT:   float
-PLACE:    D:2-, Lair, !Lair:$
+PLACE:    D:2-, Bayou, !Bayou:$
 KMONS:    f = wandering mushroom hd:20 hp:1 perm_ench:entropic_burst perm_ench:paralysis
 KFEAT:    + = closed_door
 KFEAT:    ABD = floor

@@ -459,7 +459,7 @@ ENDMAP
 
 NAME:    hangedman_abyss_theft
 TAGS:    no_monster_gen
-KMONS:   1 = place:Lair:$
+KMONS:   1 = place:Bayou:$
 KMONS:   2 : place:Swamp:1 / place:Swamp:$
 KMONS:   3 : place:Snake:1 / place:Snake:$
 KMONS:   4 : place:Shoals:1 / place:Shoals:$

@@ -48,7 +48,7 @@ end
 NAME:   gauntlet_entry_generic
 TAGS:   transparent extra uniq_gauntlet
 CHANCE: 5%
-DEPTH:  D:6-, Orc:$, Lair
+DEPTH:  D:6-, Orc:$, Bayou
 : gauntlet_portal(_G)
 MAP
 O

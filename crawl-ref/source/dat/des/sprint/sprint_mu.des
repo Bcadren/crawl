@@ -43,7 +43,7 @@ SUBVAULT: 3 : sprint_mu_d3
 SUBVAULT: O : sprint_mu_orc
 SUBVAULT: F : sprint_mu_elf
 SUBVAULT: H : sprint_mu_hive
-SUBVAULT: L : sprint_mu_lair
+SUBVAULT: L : sprint_mu_bayou
 SUBVAULT: V : sprint_mu_vaults
 SUBVAULT: M : sprint_mu_slime
 SUBVAULT: w : sprint_mu_swamp
@@ -320,7 +320,7 @@ MARKER: # = lua:restrict_door()
 COLOUR: & = yellow
 KFEAT: & = closed_door
 : lua_marker('&', props_marker {
-:           door_description_suffix=" to the Lair of Beasts",
+:           door_description_suffix=" to the Bayou",
 :           })
 MARKER: & = lua:restrict_door()
 MARKER:  ! = lua:fog_machine { \
@@ -360,7 +360,7 @@ MARKER: # = lua:restrict_door()
 COLOUR: & = yellow
 KFEAT: & = closed_door
 : lua_marker('&', props_marker {
-:           door_description_suffix=" to the Lair of Beasts",
+:           door_description_suffix=" to the Bayou",
 :           })
 MARKER: & = lua:restrict_door()
 
@@ -485,9 +485,9 @@ ENDMAP
 ##############################################################################
 # Lairs
 #
-# Lair 1, fedhas
-NAME: sprint_mu_lair_fedhas
-TAGS: sprint_mu_lair no_rotate no_hmirror no_vmirror
+# Bayou 1, fedhas
+NAME: sprint_mu_bayou_fedhas
+TAGS: sprint_mu_bayou no_rotate no_hmirror no_vmirror
 KMONS: P = plant / w:1 ballistomycete spore
 KMONS: p = plant
 KMONS: 1 = patrolling wandering mushroom

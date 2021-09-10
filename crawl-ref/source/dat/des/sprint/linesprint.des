@@ -53,8 +53,8 @@ SUBVAULT:  B : line_temple
 SUBVAULT:  C : items_1
 SUBVAULT:  D : d_10
 SUBVAULT:  E : items_2
-SUBVAULT:  F : lair_1
-SUBVAULT:  G : lair_end
+SUBVAULT:  F : bayou_1
+SUBVAULT:  G : bayou_end
 SUBVAULT:  H : items_3
 SUBVAULT:  I : orc_1
 SUBVAULT:  J : orc_end
@@ -299,16 +299,16 @@ xxxxxxxxxxxxxx
 ENDMAP
 
 
-NAME:     lair_1
-TAGS:     lair_1
-KMONS:    1 = place:Lair:1
-KMONS:    2 = place:Lair:3
-KMONS:    3 = place:Lair:5
+NAME:     bayou_1
+TAGS:     bayou_1
+KMONS:    1 = place:Bayou:1
+KMONS:    2 = place:Bayou:3
+KMONS:    3 = place:Bayou:5
 COLOUR:   123 = green
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to the Lair",
+:           door_description_suffix=" to the Bayou",
 :           })
 MAP
 xxxxxxxxxxxxxxxxxxxx
@@ -317,8 +317,8 @@ xxxxxxxxxxxxxxxxxxxx
 ENDMAP
 
 
-NAME:     lair_end
-TAGS:     lair_end
+NAME:     bayou_end
+TAGS:     bayou_end
 KMONS:    1 = wolf w:15 / warg / hell hound w:8
 KMONS:    2 = yak / death yak w:15 / catoblepas w:5
 KMONS:    3 = worm w:15 / lindwurm / tyrant leech
@@ -331,7 +331,7 @@ SHUFFLE:  123456
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Lair:6",
+:           door_description_suffix=" to Bayou:6",
 :           })
 MAP
 xxxxxxxxxxxxx

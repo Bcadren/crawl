@@ -75,7 +75,7 @@ ENDMAP
 
 NAME: columned_hall_lemuel
 TAGS: transparent extra ruin_lair decor
-DEPTH: D, Depths, Lair, Elf, Crypt
+DEPTH: D, Depths, Bayou, Elf, Crypt
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 @...........................@
@@ -136,7 +136,7 @@ ENDMAP
 
 # Small intersection with statues (Eino)
 NAME:    small_statue_intersection
-DEPTH:   D, !D:2, Depths:2-, !Depths:$, Elf, Crypt, Lair, Abyss
+DEPTH:   D, !D:2, Depths:2-, !Depths:$, Elf, Crypt, Bayou, Abyss
 TAGS:    transparent allow_dup no_hmirror no_vmirror extra
 TAGS:    ruin_lair ruin_abyss decor
 MAP
@@ -148,7 +148,7 @@ xx.xx
 ENDMAP
 
 NAME:  fungi_pond_lemuel
-DEPTH: D:4-, Lair
+DEPTH: D:4-, Bayou
 TAGS:  allow_dup extra transparent
 MONS:  fungus
 SUBST: 1 = 1.
@@ -206,7 +206,7 @@ MAP
 ENDMAP
 
 NAME:  patterned_corridor
-DEPTH: D, Depths, Elf, Lair, Abyss
+DEPTH: D, Depths, Elf, Bayou, Abyss
 TAGS:  transparent ruin_abyss ruin_lair decor
 SUBST: x : xxccv
 MAP
@@ -342,7 +342,7 @@ ENDMAP
 
 NAME:    minmay_hedge_maze
 TAGS:    extra decor transparent
-DEPTH:   D, Depths, Lair
+DEPTH:   D, Depths, Bayou
 MONS:    bush
 SHUFFLE: ABC
 SUBST:   A=. , BC=1
@@ -878,7 +878,7 @@ ENDMAP
 
 NAME:   minmay_stone_trees_small
 TAGS:   transparent extra decor
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 WEIGHT: 6
 MAP
 .......
@@ -892,7 +892,7 @@ ENDMAP
 
 NAME:   minmay_stone_trees_medium
 TAGS:   transparent extra decor
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 WEIGHT: 3
 MAP
 .............
@@ -912,7 +912,7 @@ ENDMAP
 
 NAME:   minmay_stone_trees_large
 TAGS:   transparent extra decor
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 WEIGHT: 1
 SUBST:  T = t.
 MAP
@@ -950,7 +950,7 @@ ENDMAP
 
 NAME:   minmay_holes
 TAGS:   transparent extra decor
-DEPTH:  D, !D:2, !D:$, Depths, !Depths:$, Lair, !Lair:$
+DEPTH:  D, !D:2, !D:$, Depths, !Depths:$, Bayou, !Bayou:$
 KFEAT:  ^ = known shaft trap
 SUBST:  . = . ^:1, ' = . ^:2, " = . ^:4
 WEIGHT: 15
@@ -2843,7 +2843,7 @@ ENDMAP
 NAME:   mumra_transporter_accident
 TAGS:   extra transparent
 WEIGHT: 1
-DEPTH:  D:5-, Depths, Lair, Elf, !Elf:$, Orc
+DEPTH:  D:5-, Depths, Bayou, Elf, !Elf:$, Orc
 SUBST:  X = m.
  : dgn.delayed_decay(_G,'A', 'human skeleton')
 # Prevent random teleportation getting you stuck
@@ -2913,7 +2913,7 @@ ENDMAP
 
 NAME:   eino_small_chamber_without_monster
 TAGS:   allow_dup extra ruin_lair ruin_abyss
-DEPTH:  D:2-, Depths, Lair, Abyss
+DEPTH:  D:2-, Depths, Bayou, Abyss
 MAP
  xxxxx
 xx...xx
@@ -3276,7 +3276,7 @@ ENDMAP
 NAME:  bh_chokoban
 TAGS:  extra decor no_exits
 TAGS:  no_rotate no_hmirror no_vmirror
-DEPTH: D:2-, !D:$, Depths:2-, !Depths:$, Lair:2-, !Lair:$
+DEPTH: D:2-, !D:$, Depths:2-, !Depths:$, Bayou:2-, !Bayou:$
 ITEM:  ration w:5 / scroll of random uselessness
 MAP
 cccccc  ccccc
@@ -3385,7 +3385,7 @@ ENDMAP
 # Little wisps of steam around the lava, and then occasionally a big
 # eruption. No warning needed here - the steam does very little damage.
 NAME:   lemuel_old_faithful
-DEPTH:  D, Depths, Lair, Geh
+DEPTH:  D, Depths, Bayou, Geh
 TAGS:   uniq_geyser no_monster_gen transparent
 MONS:   nothing,nothing
 MARKER: 1 = lua:fog_machine { cloud_type="steam", \
@@ -3419,7 +3419,7 @@ MAP
 ENDMAP
 
 NAME:   lemuel_another_geyser
-DEPTH:  D, Depths, Lair
+DEPTH:  D, Depths, Bayou
 TAGS:   uniq_geyser no_monster_gen layout_rooms transparent
 MONS:   nothing,nothing
 MARKER: 1 = lua:fog_machine { cloud_type="steam", \
@@ -3702,7 +3702,7 @@ ENDMAP
 
 # Multicoloured onion
 NAME:    minivault_11
-DEPTH:   D, Depths, Elf, Crypt, Lair, Abyss
+DEPTH:   D, Depths, Elf, Crypt, Bayou, Abyss
 TAGS:    transparent extra ruin_abyss ruin_lair decor
 SHUFFLE: bcv
 MAP
@@ -3740,7 +3740,7 @@ ENDMAP
 
 NAME:  minivault_19
 TAGS:  transparent allow_dup extra ruin_lair ruin_abyss decor
-DEPTH: D, Elf, Crypt, Lair, Abyss
+DEPTH: D, Elf, Crypt, Bayou, Abyss
 MAP
 ............
 .xx......xx.
@@ -3796,7 +3796,7 @@ ENDMAP
 
 NAME:  minivault_23
 TAGS:  transparent allow_dup extra ruin_lair ruin_abyss decor
-DEPTH: D, Elf, Crypt, Lair, Abyss
+DEPTH: D, Elf, Crypt, Bayou, Abyss
 MAP
 x.x.x.x.x.x.
 .x.x.x.x.x.x
@@ -3814,7 +3814,7 @@ ENDMAP
 
 NAME:  minivault_24
 TAGS:  transparent allow_dup extra ruin_lair ruin_abyss decor
-DEPTH: D, Elf, Crypt, Lair, Abyss
+DEPTH: D, Elf, Crypt, Bayou, Abyss
 MAP
 ............
 ....xxxx....
@@ -3832,7 +3832,7 @@ ENDMAP
 
 NAME:    minivault_25
 TAGS:    transparent allow_dup extra ruin_lair ruin_abyss decor
-DEPTH:   D, Elf, Crypt, Lair, Abyss
+DEPTH:   D, Elf, Crypt, Bayou, Abyss
 SHUFFLE: XY
 SUBST:   X=x, Y=+
 MAP
@@ -3852,7 +3852,7 @@ ENDMAP
 
 NAME: minivault_26
 TAGS: transparent allow_dup extra ruin_lair ruin_abyss decor
-DEPTH: D, Elf, Crypt, Lair, Abyss
+DEPTH: D, Elf, Crypt, Bayou, Abyss
 MAP
 c..........c
 .c...cc...c.
@@ -3870,7 +3870,7 @@ ENDMAP
 
 NAME: minivault_27
 TAGS: transparent allow_dup extra ruin_lair ruin_abyss decor
-DEPTH: D, Elf, Crypt, Lair, Abyss
+DEPTH: D, Elf, Crypt, Bayou, Abyss
 MAP
 ............
 .x.xxxxxxxx.

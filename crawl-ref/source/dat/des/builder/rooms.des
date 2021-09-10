@@ -93,7 +93,7 @@ function sroom_beehive(e)
 
     local level = you.absdepth()
 
-    if you.in_branch("Lair") then
+    if you.in_branch("Bayou") then
         level = you.absdepth() - 2
     end
 
@@ -206,7 +206,7 @@ function sroom_jelly_pit(e)
 
     local level = you.absdepth()
 
-    if you.in_branch("Lair") then
+    if you.in_branch("Bayou") then
         level = you.absdepth() - 7
     elseif you.in_branch("Slime") then
         level = you.absdepth() + 10
@@ -243,7 +243,7 @@ function sroom_mythical_zoo(e)
 
     if you.in_branch("Elf") then
         Z = Z + 5
-    elseif you.in_branch("Lair") then
+    elseif you.in_branch("Bayou") then
         Z = Z - 2
 	elseif you.in_branch("D") then
 		Z = Z * 2
@@ -379,9 +379,9 @@ MAP
 ENDMAP
 
 NAME:   special_room_bee
-DEPTH:  D:4-, Lair, Orc, !Orc:$, Spider
+DEPTH:  D:4-, Bayou, Orc, !Orc:$, Spider
 TAGS:   special_room unrand uniq_beehive
-WEIGHT: 30 (D:4-6, Orc, Lair:1-3), 24 (D:7-, Lair:4-), 20
+WEIGHT: 30 (D:4-6, Orc, Bayou:1-3), 24 (D:7-, Bayou:4-), 20
 : sroom_beehive(_G)
 MAP
 ENDMAP
@@ -395,17 +395,17 @@ MAP
 ENDMAP
 
 NAME:   special_room_jelly
-DEPTH:  Depths, Lair:$, Slime
+DEPTH:  Depths, Bayou:$, Slime
 TAGS:   special_room allow_dup unrand
-WEIGHT: 9 (Lair:$), 13 (Depths:1-3), 40
+WEIGHT: 9 (Bayou:$), 13 (Depths:1-3), 40
 : sroom_jelly_pit(_G)
 MAP
 ENDMAP
 
 NAME:   special_room_mythical_zoo
-DEPTH:  D:7-, Depths, Lair:4-, Elf
+DEPTH:  D:7-, Depths, Bayou:4-, Elf
 TAGS:   special_room allow_dup unrand
-WEIGHT: 20 (D:7-, Lair:4-5), 25 (Depths:1-3, Lair:$, Elf), 28
+WEIGHT: 20 (D:7-, Bayou:4-5), 25 (Depths:1-3, Bayou:$, Elf), 28
 : sroom_mythical_zoo(_G)
 MAP
 ENDMAP

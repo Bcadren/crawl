@@ -1945,7 +1945,7 @@ static const map<monster_type, band_set> bands_by_leader = {
         return player_in_branch(BRANCH_SHOALS); }},
                                   {{ BAND_DREAM_SHEEP, {2, 5}, true }}}},
     { MONS_ALLIGATOR,       { { 5, 0, []() {
-        return !player_in_branch(BRANCH_LAIR); }},
+        return !player_in_branch(BRANCH_BAYOU); }},
                                   {{ BAND_ALLIGATOR, {1, 2}, true }}}},
     { MONS_POLYPHEMUS,      { {}, {{ BAND_POLYPHEMUS, {3, 6}, true }}}},
     { MONS_HARPY,           { {}, {{ BAND_HARPIES, {2, 5} }}}},
@@ -2101,7 +2101,7 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
         const static map<branch_type, band_weights> band_pick =
         {
             // branch              band             #min #max weight
-            { BRANCH_LAIR,   { { { BAND_YAKS,          2, 5 },  3 },
+            { BRANCH_BAYOU,   { { { BAND_YAKS,          2, 5 },  3 },
                                { { BAND_DEATH_YAKS,    1, 2 },  1 },
                                { { BAND_DREAM_SHEEP,   2, 4 },  1 },
                              } },
@@ -2141,7 +2141,7 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
         break;
 
     case MONS_CHAOS_BUTTERFLY:
-        if (player_in_branch(BRANCH_LAIR))
+        if (player_in_branch(BRANCH_BAYOU))
             band = random_choose_weighted(3, BAND_YAKS, 1, BAND_ELEPHANT, 1, BAND_HELL_HOUNDS);
         else if (player_in_branch(BRANCH_SPIDER))
             band = BAND_TARANTELLA;

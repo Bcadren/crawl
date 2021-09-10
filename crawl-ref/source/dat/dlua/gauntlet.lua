@@ -402,7 +402,7 @@ tier1_gauntlet_arenas = {
   },
   {
     first  = {mons = "death scarab", min = 1, max = 1},
-    second = {mons = "spectre place:Lair:4", min = 1, max = 1},
+    second = {mons = "spectre place:Bayou:4", min = 1, max = 1},
     liquid = "water",
     plant  = "withered",
   },
@@ -631,7 +631,7 @@ tier2_gauntlet_arenas = {
   },
   {
     second = {mons = "death scarab", min = 2, max = 2},
-    third  = {mons = "spectre place:Lair:4", min = 2, max = 4},
+    third  = {mons = "spectre place:Bayou:4", min = 2, max = 4},
     liquid = "water",
     plant  = "withered",
   },

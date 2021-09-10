@@ -10,7 +10,7 @@ enum branch_type                // you.where_are_you
 #if TAG_MAJOR_VERSION == 34
     BRANCH_DWARF,
 #endif
-    BRANCH_LAIR,
+    BRANCH_BAYOU,
     BRANCH_SWAMP,
     BRANCH_SHOALS,
     BRANCH_SNAKE,

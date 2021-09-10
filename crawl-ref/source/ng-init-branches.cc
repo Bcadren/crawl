@@ -24,14 +24,6 @@ FixedVector<level_id, NUM_BRANCHES> create_brentry()
         }
     }
 
-    vector<branch_type> disabled_branch = random_choose_disabled_branches();
-
-    for (branch_type disabled : disabled_branch)
-    {
-        dprf("Disabling branch: %s", branches[disabled].shortname);
-        candidate_brentry[disabled].clear();
-    }
-
     for (branch_iterator it; it; ++it)
         brdepth[it->id] = it->numlevels;
 
