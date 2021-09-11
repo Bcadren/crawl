@@ -4097,15 +4097,14 @@ static void _ploss(bool mini, int depth)
 
 static void _place_ossuary(bool mini)
 {
-    if (you.where_are_you != BRANCH_DUNGEON && you.where_are_you != BRANCH_LAIR
-        && you.where_are_you != BRANCH_SPIDER && you.where_are_you != BRANCH_SWAMP
-        && you.where_are_you != BRANCH_SHOALS)
+    if (you.where_are_you != BRANCH_DUNGEON && you.where_are_you != BRANCH_BAYOU
+        && you.where_are_you != BRANCH_SPIDER)
     {
         return;
     }
 
     if (!you.props.exists(mini ? MINIOSSUARY_DEPTH_KEY : OSSUARY_DEPTH_KEY))
-        you.props[mini ? MINIOSSUARY_DEPTH_KEY : OSSUARY_DEPTH_KEY] = random2(16);
+        you.props[mini ? MINIOSSUARY_DEPTH_KEY : OSSUARY_DEPTH_KEY] = random2(14);
 
     const int depth = you.props[mini ? MINIOSSUARY_DEPTH_KEY : OSSUARY_DEPTH_KEY].get_int();
 
@@ -4127,23 +4126,15 @@ static void _place_ossuary(bool mini)
     case 7:
     case 8:
     case 9:
-        if (you.where_are_you == BRANCH_LAIR && (you.depth + 4 == depth))
+    case 10:
+        if (you.where_are_you == BRANCH_BAYOU && (you.depth + 4 == depth))
             _ploss(mini, depth);
         return;
-    case 10:
     case 11:
     case 12:
-        if (you.where_are_you == BRANCH_SPIDER && (you.depth + 9 == depth))
-            _ploss(mini, depth);
-        return;
     case 13:
-    case 14:
-    case 15:
-        if ((you.where_are_you == BRANCH_SWAMP || you.where_are_you == BRANCH_SHOALS)
-            && (you.depth + 12 == depth))
-        {
+        if (you.where_are_you == BRANCH_SPIDER && (you.depth + 10 == depth))
             _ploss(mini, depth);
-        }
         return;
     default:
         you.props[mini ? MINIOSSUARY_DEPTH_KEY : OSSUARY_DEPTH_KEY] = -1;
