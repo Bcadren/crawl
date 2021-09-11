@@ -11,7 +11,6 @@
 #
 ##############################################################################
 
-# BCADDO: Depth weights will need changing as shit rearranges/shortens.
 {{
 function ossuary_setup_features(e)
   e.nsubst("1 = 2:1 / *:0")
