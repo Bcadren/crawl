@@ -456,6 +456,7 @@ bool monster_polymorph(monster* mons, monster_type targetc,
 
     // There's not a single valid target on the '&' demon tier, so unless we
     // make one, let's ban this outright.
+    // BCADDO: Change this.
     if (source_tier == -1)
     {
         return simple_monster_message(*mons,

@@ -13,7 +13,7 @@ explorer.generation_order = {
                 "Temple",
                 "Lair:1", "Lair:2", "Lair:3", "Lair:4", "Lair:5", "Lair:6",
                 "Orc:1", "Orc:2",
-                "Spider:1", "Spider:2", "Spider:3", "Spider:4",
+                "Spider:1", "Spider:2", "Spider:3", "Spider:$",
                 "Snake:1", "Snake:2", "Snake:3", "Snake:4",
                 "Shoals:1", "Shoals:2", "Shoals:3", "Shoals:4",
                 "Swamp:1", "Swamp:2", "Swamp:3", "Swamp:4",

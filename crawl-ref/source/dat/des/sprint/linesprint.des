@@ -512,7 +512,7 @@ ENDMAP
 NAME:     spider_1
 TAGS:     spider_1
 KMONS:    1 = place:Spider:1
-KMONS:    2 = place:Spider:4
+KMONS:    2 = place:Spider:$
 COLOUR:   12 = brown
 : line_setup(_G)
 : general_item_setup(_G)
@@ -704,7 +704,7 @@ KITEM:    2 = gossamer rune of zot
 : line_setup(_G)
 : general_item_setup(_G)
 : lua_marker('~', props_marker {
-:           door_description_suffix=" to Spider:4",
+:           door_description_suffix=" to Spider:3",
 :           })
 MAP
 xxxxxxxxxxxxxx
