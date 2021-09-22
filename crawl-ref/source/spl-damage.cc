@@ -1548,6 +1548,7 @@ static int _shatter_walls(coord_def where, int /*pow*/, actor *agent)
 
     case DNGN_SILVER_WALL:
     case DNGN_METAL_WALL:
+    case DNGN_CLEAR_METAL_WALL:
         chance = 15;
         break;
 
@@ -3309,6 +3310,7 @@ bool setup_fragmentation_beam(bolt &beam, int pow, const actor *caster,
 
     // Metal -- small but nasty explosion
     case DNGN_METAL_WALL:
+    case DNGN_CLEAR_METAL_WALL:
         if (what)
             *what = "metal wall";
         beam.name = "blast of metal fragments";

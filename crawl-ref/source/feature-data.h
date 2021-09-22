@@ -100,6 +100,13 @@ static feature_def feat_defs[] =
 },
 
 {
+    DNGN_CLEAR_METAL_WALL, "transparent aluminium wall", "clear_metal_wall",
+    DCHAR_WALL, DCHAR_WALL_MAGIC,
+    COLOUR_IS(LIGHTCYAN),
+    FFT_WALL | FFT_SOLID, MF_WALL,
+},
+
+{
     DNGN_SILVER_WALL, "silver wall", "silver_wall",
     DCHAR_WALL, DCHAR_WALL_MAGIC,
     COLOUR_IS(WHITE),

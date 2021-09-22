@@ -188,6 +188,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_DNGN_CLOSED_CLEAR_DOOR;
     case DNGN_METAL_WALL:
         return TILE_DNGN_METAL_WALL;
+    case DNGN_CLEAR_METAL_WALL:
+        return TILE_DNGN_CLEAR_METAL_WALL;
     case DNGN_SILVER_WALL:
         return TILE_DNGN_SILVER_WALL;
     case DNGN_CRYSTAL_WALL:

@@ -119,6 +119,7 @@ static dungeon_feature_type _abyss_proto_feature()
                                    600, DNGN_ROCK_WALL,
                                    300, DNGN_STONE_WALL,
                                    100, DNGN_METAL_WALL,
+                                    20, DNGN_CLEAR_METAL_WALL,
                                      3, DNGN_SILVER_WALL,
                                      1, DNGN_CLOSED_DOOR);
 }
@@ -1173,6 +1174,7 @@ static cloud_type _cloud_from_feat(const dungeon_feature_type &ft)
             return random_choose(CLOUD_BLUE_SMOKE, CLOUD_PURPLE_SMOKE);
         case DNGN_CLEAR_ROCK_WALL:
         case DNGN_CLEAR_STONE_WALL:
+        case DNGN_CLEAR_METAL_WALL:
         case DNGN_CLEAR_PERMAROCK_WALL:
         case DNGN_RUNED_CLEAR_STONE_WALL:
         case DNGN_GRATE:
@@ -1931,6 +1933,7 @@ static bool _is_grid_corruptible(const coord_def &c)
 
     case DNGN_METAL_WALL:
     case DNGN_CRYSTAL_WALL:
+    case DNGN_CLEAR_METAL_WALL:
     case DNGN_RUNED_CLEAR_STONE_WALL:
         return one_chance_in(4);
 

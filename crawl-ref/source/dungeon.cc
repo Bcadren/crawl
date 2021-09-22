@@ -1787,7 +1787,8 @@ static void _fixup_walls()
         if (you.depth == branches[BRANCH_VAULTS].numlevels)
         {
             wall_type = random_choose_weighted(1, DNGN_CRYSTAL_WALL,
-                                               9, DNGN_METAL_WALL);
+                                               2, DNGN_CLEAR_METAL_WALL,
+                                               7, DNGN_METAL_WALL);
         }
         break;
     }
@@ -5718,6 +5719,7 @@ static dungeon_feature_type _glyph_to_feat(int glyph)
            (glyph == 'o') ? DNGN_CLEAR_PERMAROCK_WALL :
          //(glyph == 'p') is too commonly used to mean plant to use for a feature.
            (glyph == 'q') ? DNGN_RUNED_CLEAR_STONE_WALL :
+           (glyph == 'r') ? DNGN_CLEAR_METAL_WALL :
            (glyph == 't') ? DNGN_TREE :
            (glyph == '+') ? DNGN_CLOSED_DOOR :
            (glyph == '=') ? DNGN_RUNED_CLEAR_DOOR :

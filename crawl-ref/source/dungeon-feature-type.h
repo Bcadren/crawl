@@ -316,6 +316,8 @@ enum dungeon_feature_type
 
     DNGN_ALTAR_BAHAMUT_TIAMAT,
 
+    DNGN_CLEAR_METAL_WALL,
+
     NUM_FEATURES,
 };
 COMPILE_CHECK(NUM_FEATURES <= 256);

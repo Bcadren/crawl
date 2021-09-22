@@ -232,6 +232,12 @@ A translucent stone wall
 A harder obstacle than rock walls. Only the mightiest magic can shatter stone
 walls. It has been imbued with arcane magics which render it translucent.
 %%%%
+A transparent aluminium wall
+
+A wall of strange metal. As every dungeon electrician knows, it will ground
+even magical bolts of lightning. Magical metallurgy has rendered it almost 
+perfectly transparent and glass-like.
+%%%%
 A translucent runed stone wall
 
 A harder obstacle than rock walls. Only the mightiest magic can shatter stone

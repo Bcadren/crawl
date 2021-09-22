@@ -1293,6 +1293,8 @@ void apply_variations(const tile_flavour &flv, tileidx_t *bg,
             orig = TILE_WALL_LAB_STONE;
         else if (orig == TILE_DNGN_METAL_WALL)
             orig = TILE_WALL_LAB_METAL;
+        else if (orig == TILE_DNGN_CLEAR_METAL_WALL)
+            orig = TILE_WALL_LAB_METAL_TRANSPARENT;
         else if (orig == TILE_WALL_PERMAROCK)
             orig = TILE_WALL_PERMAROCK_BROWN;
     }
@@ -1309,6 +1311,8 @@ void apply_variations(const tile_flavour &flv, tileidx_t *bg,
             orig = TILE_WALL_CRYPT;
         else if (orig == TILE_DNGN_METAL_WALL)
             orig = TILE_WALL_CRYPT_METAL;
+        else if (orig == TILE_DNGN_CLEAR_METAL_WALL)
+            orig = TILE_WALL_CRYPT_METAL_TRANSPARENT;
         else if (orig == TILE_DNGN_OPEN_DOOR)
         {
             if (is_christmas())
@@ -1333,6 +1337,8 @@ void apply_variations(const tile_flavour &flv, tileidx_t *bg,
     {
         if (orig == TILE_DNGN_METAL_WALL)
             orig = TILE_DNGN_METAL_IRON;
+        else if (orig == TILE_DNGN_CLEAR_METAL_WALL)
+            orig = TILE_DNGN_CLEAR_METAL_ALUMINIUM;
         else if (orig == TILE_DNGN_CRYSTAL)
             orig = TILE_WALL_EMERALD;
     }

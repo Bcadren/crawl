@@ -172,8 +172,9 @@ void dgn_build_chaotic_city_level(dungeon_feature_type force_wall)
     else
     {
         drawing = random_choose_weighted(10, DNGN_ROCK_WALL,
-                                         5, DNGN_STONE_WALL,
-                                         3, DNGN_METAL_WALL);
+                                          4, DNGN_STONE_WALL,
+                                          3, DNGN_METAL_WALL,
+                                          2, DNGN_CLEAR_METAL_WALL);
     }
 
     dgn_replace_area(10, 10, (GXM - 10), (GYM - 10), DNGN_ROCK_WALL,
@@ -205,7 +206,7 @@ void dgn_build_chaotic_city_level(dungeon_feature_type force_wall)
         {
             drawing = random_choose_weighted(261, DNGN_ROCK_WALL,
                                              116, DNGN_STONE_WALL,
-                                             40, DNGN_METAL_WALL);
+                                              40, DNGN_METAL_WALL);
         }
 
         if (one_chance_in(3))

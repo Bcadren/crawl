@@ -482,7 +482,7 @@ UnderworldLayout::operator()(const coord_def &p, const uint32_t offset) const
     {
         dungeon_feature_type city_wall = DNGN_ROCK_WALL;
         if (rich > 0.5) city_wall = DNGN_STONE_WALL;
-        else if (rich > 0.75) city_wall = DNGN_METAL_WALL;
+        else if (rich > 0.75) city_wall = one_chance_in(4) ? DNGN_CLEAR_METAL_WALL : DNGN_METAL_WALL;
         else if (rich > 0.9) city_wall = DNGN_CRYSTAL_WALL;
 
         // Doors and windows

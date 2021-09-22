@@ -1087,6 +1087,16 @@ lab-metal4
 lab-metal5
 lab-metal6
 
+lab_metal_transparent0 WALL_LAB_METAL_TRANSPARENT
+%weight 2
+lab_metal_transparent1
+lab_metal_transparent2
+lab_metal_transparent3
+lab_metal_transparent4
+%weight 10
+lab_metal_transparent5
+lab_metal_transparent6
+
 %weight 15
 crypt0 WALL_CRYPT
 %weight 2
@@ -1100,6 +1110,14 @@ crypt6
 crypt7
 crypt8
 crypt9
+%weight 10
+
+crypt_metal_transparent0 WALL_CRYPT_METAL_TRANSPARENT
+%weight 2
+crypt_metal_transparent1
+crypt_metal_transparent2
+crypt_metal_transparent3
+crypt_metal_transparent4
 %weight 10
 
 crypt-metal0 WALL_CRYPT_METAL
@@ -1382,6 +1400,18 @@ mirrored_wall DNGN_MIRROR_WALL
 silver_wall DNGN_SILVER_WALL
 
 %weight 10
+metal_wall_transparent0 DNGN_CLEAR_METAL_WALL
+metal_wall_transparent1
+metal_wall_transparent2
+%weight 3
+metal_wall_transparent3
+metal_wall_transparent4
+metal_wall_transparent5
+metal_wall_transparent6
+metal_wall_transparent7
+metal_wall_transparent8
+
+%weight 10
 metal_wall0 DNGN_METAL_WALL
 metal_wall1
 metal_wall2
@@ -1470,6 +1500,28 @@ iron4-3
 iron0-4
 iron1-4
 iron2-4
+
+aluminium0-0 DNGN_CLEAR_METAL_ALUMINIUM
+aluminium2-0
+aluminium3-0
+aluminium4-0
+aluminium5-0
+aluminium1-1
+aluminium2-1
+aluminium3-1
+aluminium0-2
+aluminium1-2
+aluminium2-2
+aluminium3-2
+aluminium4-2
+aluminium5-2
+aluminium1-3
+aluminium2-3
+aluminium3-3
+aluminium4-3
+aluminium0-4
+aluminium1-4
+aluminium2-4
 
 dngn/grate DNGN_GRATE
 
