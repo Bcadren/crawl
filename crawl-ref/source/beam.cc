@@ -1899,11 +1899,10 @@ bool miasma_monster(monster* mons, const actor* who)
 // Actually napalms a monster (with message).
 bool napalm_monster(monster* mons, const actor *who, int levels, bool verbose)
 {
-    if (!mons->alive())
-        return false;
-
-    if (mons->res_sticky_flame() || levels <= 0 || mons->has_ench(ENCH_WATER_HOLD)
-        || mons->has_ench(ENCH_AIR_HOLD))
+    if (levels <= 0 || !mons->alive() || mons->res_sticky_flame() 
+        || mons->has_ench(ENCH_WATER_HOLD)
+        || mons->has_ench(ENCH_AIR_HOLD)
+        || mons->has_ench(ENCH_SWALLOWED))
     {
         return false;
     }
@@ -4151,6 +4150,12 @@ void bolt::affect_player()
 {
     hit_count[MID_PLAYER]++;
 
+    if (origin_spell == SPELL_TONGUE_LASH)
+    {
+        name = make_stringf("%s's tongue", agent()->name(DESC_PLAIN).c_str());
+        hit_verb = coinflip() ? "whips" : "lashes";
+    }
+
     // Explosions only have an effect during their explosion phase.
     // Special cases can be handled here.
     if (is_explosion && !in_explosion_phase)
@@ -4282,9 +4287,6 @@ void bolt::affect_player()
         }
     }
 
-    if (origin_spell == SPELL_FORCE_LASSO && you.alive())
-        beckon(source, you, *this, damage.size, *agent());
-
     // Apply resistances to damage, but don't print "You resist" messages yet
     int yu_final_dam = hits_you ? resist_adjust_damage(&you, flavour, yu_pre_res_dam) : 0;
     int mt_final_dam = hits_mount ? resist_adjust_damage(&you, flavour, mt_pre_res_dam) : 0;
@@ -4316,6 +4318,12 @@ void bolt::affect_player()
             harmless ? "." : attack_strength_punctuation(mt_final_dam).c_str());
     }
 
+    if (you.alive() && (origin_spell == SPELL_FORCE_LASSO
+        || origin_spell == SPELL_TONGUE_LASH))
+    {
+        beckon(source, you, *this, damage.size, *agent());
+    }
+
     // Now print the messages associated with checking resistances, so that
     // these come after the beam actually hitting.
     // Note that this must be called with the pre-resistance damage, so that
@@ -4335,6 +4343,14 @@ void bolt::affect_player()
 
     if (hits_mount)
         you.beam_effects(flavour, yu_pre_res_dam, yu_final_dam, this, true);
+
+    if (origin_spell == SPELL_TONGUE_LASH && you.alive())
+    {
+        // Chameleon special damage here.
+
+        if (you.alive() && agent()->alive() && adjacent(you.pos(), agent()->pos()))
+            fight_melee(agent(), &you);
+    }
 
     if (flavour == BEAM_MIASMA)
     {

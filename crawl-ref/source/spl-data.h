@@ -1256,14 +1256,14 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_HYDRA_FORM, "Hydra Form", "",
-    spschool::transmutation,
-    spflag::helpful | spflag::chaotic | spflag::utility,
-    6,
+    SPELL_TONGUE_LASH, "Tongue Lash", "",
+    spschool::evocation,
+    spflag::dir_or_target | spflag::not_self | spflag::needs_tracer,
+    4,
     200,
-    -1, -1,
-    6, 0,
-    TILEG_HYDRA_FORM,
+    5, 5,
+    0, 6,
+    TILEG_GENERIC_MONSTER_SPELL,
 },
 
 {
@@ -1980,7 +1980,7 @@ static const struct spell_desc spelldata[] =
     0,
     4, 4,
     5, 0,
-    TILEG_METAL_SPLINTERS,
+    TILEG_METAL_SPLINTERS, // BCADDO: Give own sprite.
 },
 
 {

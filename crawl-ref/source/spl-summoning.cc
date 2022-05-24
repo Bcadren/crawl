@@ -2771,6 +2771,7 @@ static spell_type servitor_spells[] =
     SPELL_FREEZING_CLOUD,
     SPELL_POISONOUS_CLOUD,
     SPELL_FORCE_LANCE,
+    SPELL_FORCE_LASSO,
     SPELL_BLINDING_SPRAY,
     SPELL_MEPHITIC_CLOUD,
     // fallback spells

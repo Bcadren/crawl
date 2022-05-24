@@ -129,5 +129,6 @@ enum zap_type
     ZAP_MALIGN_OFFERING,
     ZAP_CASCADE,
     ZAP_CASCADE_II,
+    ZAP_TONGUE_LASH,
     NUM_ZAPS
 };

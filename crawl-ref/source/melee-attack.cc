@@ -3636,15 +3636,15 @@ void melee_attack::mons_apply_attack_flavour()
         special_damage_flavour = BEAM_FIRE;
         special_damage =
             resist_adjust_damage(defender,
-                                 special_damage_flavour,
-                                 base_damage, mount_defend);
+                special_damage_flavour,
+                base_damage, mount_defend);
 
         if (needs_message && base_damage)
         {
             mprf("%s %s engulfed in flames%s",
-                 defender_name(false).c_str(),
-                 mount_defend ? "is" : defender->conj_verb("are").c_str(),
-                 special_damage < 0 ? "." : attack_strength_punctuation(special_damage).c_str());
+                defender_name(false).c_str(),
+                mount_defend ? "is" : defender->conj_verb("are").c_str(),
+                special_damage < 0 ? "." : attack_strength_punctuation(special_damage).c_str());
 
             defender->beam_effects(special_damage_flavour, base_damage, special_damage, nullptr, mount_defend);
         }
@@ -3656,16 +3656,16 @@ void melee_attack::mons_apply_attack_flavour()
         special_damage_flavour = BEAM_COLD;
         special_damage =
             resist_adjust_damage(defender,
-                                 special_damage_flavour,
-                                 base_damage, mount_defend);
+                special_damage_flavour,
+                base_damage, mount_defend);
 
         if (needs_message && base_damage)
         {
             mprf("%s %s %s%s",
-                 atk_name(DESC_THE).c_str(),
-                 attacker->conj_verb("freeze").c_str(),
-                 defender_name(true).c_str(),
-                 special_damage < 0 ? "." : attack_strength_punctuation(special_damage).c_str());
+                atk_name(DESC_THE).c_str(),
+                attacker->conj_verb("freeze").c_str(),
+                defender_name(true).c_str(),
+                special_damage < 0 ? "." : attack_strength_punctuation(special_damage).c_str());
 
             defender->beam_effects(special_damage_flavour, base_damage, special_damage, nullptr, mount_defend);
         }
@@ -3679,15 +3679,15 @@ void melee_attack::mons_apply_attack_flavour()
         special_damage =
             resist_adjust_damage(defender,
                 special_damage_flavour,
-                                 base_damage, mount_defend);
+                base_damage, mount_defend);
 
         if (needs_message && base_damage)
         {
             mprf("%s %s %s%s",
-                 atk_name(DESC_THE).c_str(),
-                 attacker->conj_verb("shock").c_str(),
-                 defender_name(true).c_str(),
-                 special_damage < 0 ? "." : attack_strength_punctuation(special_damage).c_str());
+                atk_name(DESC_THE).c_str(),
+                attacker->conj_verb("shock").c_str(),
+                defender_name(true).c_str(),
+                special_damage < 0 ? "." : attack_strength_punctuation(special_damage).c_str());
 
             defender->beam_effects(special_damage_flavour, base_damage, special_damage, nullptr, mount_defend);
         }
@@ -3720,17 +3720,17 @@ void melee_attack::mons_apply_attack_flavour()
         if (defender->stat_hp() < defender->stat_maxhp())
         {
             int healed = resist_adjust_damage(defender, BEAM_NEG,
-                                              1 + random2(damage_done));
+                1 + random2(damage_done));
             if (healed > 0)
             {
                 attacker->heal(healed);
                 if (needs_message)
                 {
                     mprf("%s %s strength from %s injuries%s",
-                         atk_name(DESC_THE).c_str(),
-                         attacker->conj_verb("draw").c_str(),
-                         def_name(DESC_ITS).c_str(),
-                         attack_strength_punctuation(healed).c_str());
+                        atk_name(DESC_THE).c_str(),
+                        attacker->conj_verb("draw").c_str(),
+                        def_name(DESC_ITS).c_str(),
+                        attack_strength_punctuation(healed).c_str());
                 }
             }
         }
@@ -3744,8 +3744,8 @@ void melee_attack::mons_apply_attack_flavour()
         if (one_chance_in(20) || one_chance_in(3))
         {
             stat_type drained_stat = (flavour == AF_DRAIN_STR ? STAT_STR :
-                                      flavour == AF_DRAIN_INT ? STAT_INT
-                                                              : STAT_DEX);
+                flavour == AF_DRAIN_INT ? STAT_INT
+                : STAT_DEX);
             defender->drain_stat(drained_stat, 1);
         }
         break;
@@ -3779,16 +3779,16 @@ void melee_attack::mons_apply_attack_flavour()
             if (defender_visible)
             {
                 mprf("%s %s engulfed in a cloud of spores%s",
-                     defender->name(DESC_THE).c_str(),
-                     mount_defend ? "is" : defender->conj_verb("are").c_str(),
-                     mount_defend ? "to no avail." : "!");
+                    defender->name(DESC_THE).c_str(),
+                    mount_defend ? "is" : defender->conj_verb("are").c_str(),
+                    mount_defend ? "to no avail." : "!");
             }
         }
 
         if (!mount_defend && one_chance_in(3))
         {
             defender->confuse(attacker,
-                              1 + random2(3+attacker->get_hit_dice()));
+                1 + random2(3 + attacker->get_hit_dice()));
         }
         break;
 
@@ -3797,7 +3797,7 @@ void melee_attack::mons_apply_attack_flavour()
             drain_defender();
         break;
 
-	case AF_CONTAM:	
+    case AF_CONTAM:
         if (mount_defend)
         {
             if (one_chance_in(8))
@@ -3807,17 +3807,17 @@ void melee_attack::mons_apply_attack_flavour()
                 you.increase_duration(DUR_MOUNT_WRETCHED, 3 + random2(attacker->get_hit_dice()), 30);
             }
         }
-		else if (defender->is_player())
-		{
-			contaminate_player(1000 + random2(1000), false);
-		}
-		else if (one_chance_in(8)) // fall back to af_mutate behavior, but less frequent
+        else if (defender->is_player())
+        {
+            contaminate_player(1000 + random2(1000), false);
+        }
+        else if (one_chance_in(8)) // fall back to af_mutate behavior, but less frequent
         {
             defender->malmutate(you.can_see(*attacker) ?
                 apostrophise(attacker->name(DESC_PLAIN)) + " mutagenic touch" :
                 "mutagenic touch");
         }
-		break;
+        break;
 
     case AF_POISON_PETRIFY:
     {
@@ -3834,7 +3834,7 @@ void melee_attack::mons_apply_attack_flavour()
         if (one_chance_in(3))
         {
             int dmg = random_range(attacker->get_hit_dice() * 3 / 2,
-                                   attacker->get_hit_dice() * 5 / 2);
+                attacker->get_hit_dice() * 5 / 2);
             if (mount_defend)
                 poison_mount(dmg);
             else
@@ -3844,7 +3844,7 @@ void melee_attack::mons_apply_attack_flavour()
         // Try to apply petrification, with the normal 2/3
         // chance to resist with rPois.
         // Don't petrify things that are already petrified or petrifying. Since this is an on-melee effect it's too strong to allow it to extend durations.
-        if ((defender->res_poison(mount_defend) <= 0 || one_chance_in(3)) && 
+        if ((defender->res_poison(mount_defend) <= 0 || one_chance_in(3)) &&
             !(defender->petrifying(mount_defend) || defender->petrified(mount_defend)))
         {
             defender->petrify(attacker, false, mount_defend);
@@ -3879,9 +3879,9 @@ void melee_attack::mons_apply_attack_flavour()
         if (needs_message)
         {
             mprf("%s %s %s!",
-                 atk_name(DESC_THE).c_str(),
-                 attacker->conj_verb("infuriate").c_str(),
-                 defender_name(true).c_str());
+                atk_name(DESC_THE).c_str(),
+                attacker->conj_verb("infuriate").c_str(),
+                defender_name(true).c_str());
         }
 
         defender->go_berserk(false);
@@ -3913,10 +3913,10 @@ void melee_attack::mons_apply_attack_flavour()
         if (needs_message && special_damage)
         {
             mprf("%s %s %s%s",
-                 atk_name(DESC_THE).c_str(),
-                 attacker->conj_verb("sear").c_str(),
-                 defender_name(true).c_str(),
-                 attack_strength_punctuation(special_damage).c_str());
+                atk_name(DESC_THE).c_str(),
+                attacker->conj_verb("sear").c_str(),
+                defender_name(true).c_str(),
+                attack_strength_punctuation(special_damage).c_str());
 
         }
         break;
@@ -3932,9 +3932,9 @@ void melee_attack::mons_apply_attack_flavour()
             if (you.can_see(*attacker) || you.can_see(*defender))
             {
                 mprf("%s drains %s %s.",
-                     attacker->name(DESC_THE).c_str(),
-                     defender->pronoun(PRONOUN_POSSESSIVE).c_str(),
-                     spell_user ? "magic" : "power");
+                    attacker->name(DESC_THE).c_str(),
+                    defender->pronoun(PRONOUN_POSSESSIVE).c_str(),
+                    spell_user ? "magic" : "power");
             }
 
             monster* vine = attacker->as_monster();
@@ -3946,9 +3946,9 @@ void melee_attack::mons_apply_attack_flavour()
                 mon_enchant me = vine->get_ench(ENCH_ANTIMAGIC);
                 vine->lose_ench_duration(me, random2(damage_done) + 1);
                 simple_monster_message(*attacker->as_monster(),
-                                       spell_user
-                                       ? " looks very invigorated."
-                                       : " looks invigorated.");
+                    spell_user
+                    ? " looks very invigorated."
+                    : " looks invigorated.");
             }
         }
         break;
@@ -3967,16 +3967,43 @@ void melee_attack::mons_apply_attack_flavour()
         if (needs_message)
         {
             mprf("%s %s %s%s.",
-                 atk_name(DESC_THE).c_str(),
-                 attacker->conj_verb("grab").c_str(),
-                 defender_name(true).c_str(),
-                 attacker->is_monster() 
-                     && (mons_genus(attacker->as_monster()->type) == MONS_ABOMINATION_SMALL) ? "and wraps up in its own intestines" : "");
+                atk_name(DESC_THE).c_str(),
+                attacker->conj_verb("grab").c_str(),
+                defender_name(true).c_str(),
+                attacker->is_monster()
+                && (mons_genus(attacker->as_monster()->type) == MONS_ABOMINATION_SMALL) ? "and wraps up in its own intestines" : "");
         }
         attacker->start_constricting(*defender);
         // if you got grabbed, interrupt stair climb and passwall
         if (defender->is_player())
             stop_delay(true);
+        break;
+
+    case AF_FROG:
+        if (x_chance_in_y(2, 3) && attacker->can_constrict(defender, true) 
+            && !attacker->as_monster()->has_ench(ENCH_SWALLOWING))
+        {
+            if (defender->is_player())
+            {
+                you.duration[DUR_SWALLOWED] = 10;
+                you.props["frog"].get_int() = attacker->as_monster()->mid;
+            }
+            else 
+                defender->as_monster()->add_ench(mon_enchant(ENCH_SWALLOWED, 1, attacker, 1));
+
+            attacker->as_monster()->add_ench(mon_enchant(ENCH_SWALLOWING, 1, defender, INFINITE_DURATION));
+
+            if (needs_message)
+            {
+                mprf("%s %s %s!",
+                    atk_name(DESC_THE).c_str(),
+                    attacker->conj_verb("swallow").c_str(),
+                    defender_name(true).c_str());
+            }
+        }
+
+        defender->expose_to_element(BEAM_ACID, 0);
+
         break;
 
     case AF_ENGULF:

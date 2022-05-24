@@ -184,5 +184,6 @@ enum duration_type
     DUR_CHAOSNADO,
     DUR_NOXIOUS_BOG,
     DUR_STAFF,
+    DUR_SWALLOWED,
     NUM_DURATIONS
 };

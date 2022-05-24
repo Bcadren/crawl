@@ -266,6 +266,20 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    // ('F') Frogs
+    { MST_TONGUE_LASH,
+     {
+       { SPELL_TONGUE_LASH, 110, MON_SPELL_NATURAL },
+     }
+    },
+
+    { MST_BLINK_FROG,
+     {
+       { SPELL_TONGUE_LASH, 110, MON_SPELL_NATURAL },
+       { SPELL_BLINK, 28, MON_SPELL_MAGICAL },
+     }
+    },
+
     // ('g') Small humanoids.
     {  MST_GNOLL_SHAMAN,
       {
@@ -1951,6 +1965,7 @@ static const mon_spellbook mspell_list[] =
     // ('F') Frogs.
     {  MST_PRINCE_RIBBIT,
       {
+       { SPELL_TONGUE_LASH, 110, MON_SPELL_NATURAL },
        { SPELL_BLINK, 29, MON_SPELL_MAGICAL },
        { SPELL_TELEPORT_SELF, 66, MON_SPELL_WIZARD | MON_SPELL_EMERGENCY },
       }

@@ -570,6 +570,22 @@ void actor::stop_constricting(mid_t whom, bool intentional, bool quiet)
  */
 void actor::stop_constricting_all(bool intentional, bool quiet)
 {
+    if (is_monster())
+    {
+        monster * mon = as_monster();
+
+        if (mon->has_ench(ENCH_SWALLOWING))
+        {
+            actor * swallowed = mon->get_ench(ENCH_SWALLOWING).agent();
+            if (swallowed->is_player())
+                you.duration[DUR_SWALLOWED] = 0;
+            else
+                swallowed->as_monster()->del_ench(ENCH_SWALLOWED);
+
+            mon->del_ench(ENCH_SWALLOWING);
+        }
+    }
+
     if (!constricting)
         return;
 
@@ -758,20 +774,24 @@ bool actor::can_constrict(const actor* defender, bool direct) const
     if (is_monster() && (as_monster()->type == MONS_ECTOPLASMIC_ORB || as_monster()->type == MONS_WATER_ELEMENTAL))
         size = SIZE_BIG;
 
+    if (defender->is_constricted() || defender->res_constrict() >= 3
+        || defender->is_player() && you.duration[DUR_SWALLOWED]
+        || defender->is_monster() && defender->as_monster()->has_ench(ENCH_SWALLOWED))
+    {
+        return false;
+    }
+
     if (direct)
     {
         return (!is_constricting() || usable_tentacles())
-               && !defender->is_constricted()
                && can_see(*defender)
                && !confused()
                && size >= defender->body_size(PSIZE_BODY)
-               && defender->res_constrict() < 3
-               && adjacent(pos(), defender->pos());
+               && adjacent(pos(), defender->pos())
+               && !(is_monster() && as_monster()->has_ench(ENCH_SWALLOWED));
     }
 
     return can_see(*defender)
-        && !defender->is_constricted()
-        && defender->res_constrict() < 3
         // All current indrect forms of constriction require reachable ground.
         && feat_has_solid_floor(grd(defender->pos()));
 }

@@ -4059,6 +4059,12 @@ string cannot_read_item_reason(const item_def &item)
     if (you.duration[DUR_AIR_HOLD] && !you.is_unbreathing())
         return "You cannot read scrolls while unable to breathe!";
 
+    if (you.duration[DUR_SWALLOWED])
+    {
+        return make_stringf("You cannot read scrolls while your head is inside %s!", 
+                monster_by_mid(you.props["frog"].get_int(), true)->name(DESC_THE).c_str());
+    }
+
     // ru
     if (you.duration[DUR_NO_SCROLLS])
         return "You cannot read scrolls in your current state!";

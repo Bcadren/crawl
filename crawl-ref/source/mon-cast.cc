@@ -1377,6 +1377,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_SILVER_SHOT:
     case SPELL_STONE_ARROW:
     case SPELL_FORCE_LANCE:
+    case SPELL_FORCE_LASSO:
+    case SPELL_TONGUE_LASH:
     case SPELL_CORROSIVE_BOLT:
     case SPELL_HIBERNATION:
     case SPELL_SLEEP:
@@ -5027,7 +5029,7 @@ static bool _mons_cast_freeze(monster* mons)
     actor *target = mons->get_foe();
     if (!target)
         return false;
-    if (grid_distance(mons->pos(), target->pos()) > 1)
+    if (!adjacent(mons->pos(), target->pos()))
         return false;
 
     const int pow = _mons_spellpower(SPELL_FREEZE, *mons);
@@ -8710,6 +8712,9 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_HOLY_FLAMES:
         return !foe || no_clouds;
 
+    case SPELL_TONGUE_LASH:
+        return !foe || adjacent(mon->pos(), foe->pos());
+
     case SPELL_FREEZE:
         return !foe || !adjacent(mon->pos(), foe->pos());
 
@@ -8998,7 +9003,6 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_CHANT_FIRE_STORM:
     case SPELL_IGNITE_POISON_SINGLE:
     case SPELL_STONESKIN:
-    case SPELL_HUNTING_CRY:
     case SPELL_CONTROL_WINDS:
     case SPELL_DEATHS_DOOR:
     case SPELL_FULMINANT_PRISM:

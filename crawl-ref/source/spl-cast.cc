@@ -832,6 +832,13 @@ bool can_cast_spells(bool quiet)
         return false;
     }
 
+    if (you.duration[DUR_SWALLOWED])
+    {
+        if (!quiet)
+            mprf("You cannot cast spells while your head is inside %s!", actor_by_mid(you.props["frog"].get_int())->name(DESC_THE).c_str());
+        return false;
+    }
+
     if (you.duration[DUR_BRAINLESS])
     {
         if (!quiet)

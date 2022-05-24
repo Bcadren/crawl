@@ -179,6 +179,8 @@ enum enchant_type
     ENCH_CHAOTIC_INFUSION,
     ENCH_CHAOSNADO,
     ENCH_SACRED_ORDER,
+    ENCH_SWALLOWED,
+    ENCH_SWALLOWING,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS

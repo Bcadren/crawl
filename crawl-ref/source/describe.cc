@@ -4319,6 +4319,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_DECAY,             " ignoring the target's armour and causing rotting" },
         { AF_ENSNARE,           "ensnare with webbing" },
         { AF_ENGULF,            "engulf inside $" },
+        { AF_FROG,              "attempt to swallow whole" },
         { AF_PURE_FIRE,         "" },
         { AF_DRAIN_SPEED,       "drain speed" },
         { AF_VULN,              "reduce resistance to hostile enchantments" },
@@ -4469,6 +4470,7 @@ static string _monster_attacks_description(const monster_info& mi)
         // description, but not for plain attacks.
         bool has_flavour = !_flavour_base_desc(attack.flavour).empty();
         const string damage_desc =
+            attack.flavour == AF_FROG ? "" :
             make_stringf("%sfor up to %d damage%s%s%s",
                          has_flavour ? "(" : "",
                          attack.damage,

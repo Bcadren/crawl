@@ -1124,6 +1124,12 @@ bool monster::clear_far_engulf()
         you.clear_far_engulf();
     }
 
+    if (you.duration[DUR_SWALLOWED]
+        && (mid_t)you.props["frog"].get_int() == mid)
+    {
+        you.clear_far_engulf();
+    }
+
     bool retval = false;
 
     if (has_ench(ENCH_WATER_HOLD))
@@ -1132,6 +1138,21 @@ bool monster::clear_far_engulf()
         const bool nonadj = !me.agent() || !adjacent(me.agent()->pos(), pos());
         if (nonadj)
             del_ench(ENCH_WATER_HOLD);
+
+        retval |= nonadj;
+    }
+
+    if (has_ench(ENCH_SWALLOWED))
+    {
+        const mon_enchant& me = get_ench(ENCH_SWALLOWED);
+        const bool nonadj = !me.agent() || !adjacent(me.agent()->pos(), pos());
+
+        if (nonadj)
+        {
+            if (me.agent())
+                me.agent()->as_monster()->del_ench(ENCH_SWALLOWING);
+            del_ench(ENCH_SWALLOWED);
+        }
 
         retval |= nonadj;
     }
@@ -1937,6 +1958,25 @@ void monster::apply_enchantment(const mon_enchant &me)
         }
         break;
 
+    case ENCH_SWALLOWED:
+        if (!clear_far_engulf())
+        {
+            const int dur = speed_to_duration(speed); // sequence point for randomness
+            if (res_water_drowning() <= 0)
+            {
+                lose_ench_duration(me, -dur);
+                int dam = div_rand_round((50 + stepdown((float)me.duration, 30.0))
+                    * dur,
+                    BASELINE_DELAY * 10);
+                if (res_water_drowning() < 0)
+                    dam = dam * 3 / 2;
+                hurt(me.agent(), dam);
+            }
+            if (alive())
+                splash_with_acid(me.agent(), div_rand_round(dur * me.agent()->get_experience_level(), 40), true, "is digested");
+        }
+        break;
+
     case ENCH_AIR_HOLD:
         if (!clear_far_engulf())
         {
@@ -2249,7 +2289,7 @@ static const char *enchant_names[] =
     "stilling the winds", "thunder_ringed", "pinned_by_whirlwind",
     "vortex", "vortex_cooldown", "vile_clutch", "trapped_in_lava", "stick",
     "elec_vuln", "cold_vuln", "phys_vuln", "staff_shield_down", "entropic_burst",
-    "chaotic_infusion", "chaosnado", "sacred_order",
+    "chaotic_infusion", "chaosnado", "sacred_order", "swallowed", "swallowing",
     "buggy",
 };
 

@@ -156,6 +156,11 @@ static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)
     case ENCH_HELD:
         return get_trapping_net(mons.pos(), true) == NON_ITEM
                ? MB_WEBBED : MB_CAUGHT;
+    case ENCH_SWALLOWED:
+        if (mons.res_water_drowning())
+            return MB_SWALLOWED;
+        else
+            return MB_SWALLOWED_DROWN;
     case ENCH_WATER_HOLD:
         if (mons.res_water_drowning())
             return MB_WATER_HOLD;
@@ -1455,15 +1460,22 @@ vector<string> monster_info::attributes() const
     if (is(MB_INJURY_BOND))
         v.emplace_back("sheltered from injuries");
     if (is(MB_WATER_HOLD))
+        v.emplace_back("partially swallowed");
+    if (is(MB_WATER_HOLD_DROWN))
+    {
+        v.emplace_back("partially swallowed");
+        v.emplace_back("unable to breathe");
+    }
+    if (is(MB_WATER_HOLD))
         v.emplace_back("engulfed in water");
     if (is(MB_WATER_HOLD_DROWN))
     {
         v.emplace_back("engulfed in water");
         v.emplace_back("unable to breathe");
     }
-    if (is(MB_WATER_HOLD))
+    if (is(MB_AIR_HOLD))
         v.emplace_back("enveloped in gas");
-    if (is(MB_WATER_HOLD_DROWN))
+    if (is(MB_AIR_HOLD_DROWN))
     {
         v.emplace_back("enveloped in gas");
         v.emplace_back("unable to breathe");

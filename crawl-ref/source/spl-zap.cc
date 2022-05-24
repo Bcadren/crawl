@@ -62,6 +62,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_SNAKES_TO_STICKS,       ZAP_SNAKES_TO_STICKS },
     { SPELL_CORROSIVE_BOLT,         ZAP_CORROSIVE_BOLT },
     { SPELL_FORCE_LASSO,            ZAP_FORCE_LASSO },
+    { SPELL_TONGUE_LASH,            ZAP_TONGUE_LASH },
     { SPELL_DEBUGGING_RAY,          ZAP_DEBUGGING_RAY },
     { SPELL_DRAIN_LIFE,             ZAP_DRAIN_LIFE},
     { SPELL_SONIC_WAVE,             ZAP_SONIC_WAVE},

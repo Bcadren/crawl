@@ -402,6 +402,12 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
         if (!attacker->alive())
             return false;
 
+        if (attacker->is_monster() && attacker->as_monster()->has_ench(ENCH_SWALLOWING))
+        {
+            attacker->lose_energy(EUT_MOVE);
+            return true;
+        }
+
         if (attacker->is_monster() && attacker->as_monster()->has_hydra_multi_attack(attack_number))
         {
             multiattacking = true;

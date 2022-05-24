@@ -1924,6 +1924,24 @@ _mon_hex_zap(ZAP_DRAIN_MAGIC, BEAM_DRAIN_MAGIC),
 },
 
 {
+    ZAP_TONGUE_LASH,
+    "its tongue",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<3, 2, 1, 10>,
+    new tohit_calculator<30, 1, 5>,
+    MAGENTA,
+    false,
+    BEAM_MMISSILE,
+    DCHAR_FIRED_ZAP,
+    true,
+    false,
+    false,
+    6
+},
+
+{
     ZAP_FIRE_STORM,
     "great blast of fire",
     200,

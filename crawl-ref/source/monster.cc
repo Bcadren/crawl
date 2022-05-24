@@ -742,7 +742,8 @@ bool monster::is_silenced() const
             || has_ench(ENCH_WATER_HOLD)
                && !res_water_drowning()
             || has_ench(ENCH_AIR_HOLD)
-               && !is_unbreathing();
+               && !is_unbreathing()
+            || has_ench(ENCH_SWALLOWED);
 }
 
 bool monster::search_slots(function<bool (const mon_spell_slot &)> func) const
@@ -7224,36 +7225,54 @@ bool monster::nightvision() const
 
 bool monster::attempt_escape(int attempts)
 {
-    int attfactor;
-    int randfact;
-
-    if (!is_constricted())
+    if (!is_constricted() && has_ench(ENCH_SWALLOWED))
         return true;
 
-    escape_attempts += attempts;
-    attfactor = 3 * escape_attempts;
+    int randfact;
+    monster* themonst = nullptr;
 
-    if (constricted_by == MID_PLAYER)
+    escape_attempts += attempts;
+    const int attfactor = 3 * escape_attempts;
+
+    if (is_constricted())
     {
-        if (has_ench(ENCH_VILE_CLUTCH))
+        if (constricted_by == MID_PLAYER)
         {
-            randfact = roll_dice(1, 10 + div_rand_round(
+            if (has_ench(ENCH_VILE_CLUTCH))
+            {
+                randfact = roll_dice(1, 10 + div_rand_round(
                     calc_spell_power(SPELL_BORGNJORS_VILE_CLUTCH, true), 5));
+            }
+            else
+                randfact = roll_dice(1, 3 + you.experience_level);
         }
         else
-            randfact = roll_dice(1, 3 + you.experience_level);
+        {
+            randfact = roll_dice(1, 5) + 5;
+            themonst = monster_by_mid(constricted_by);
+            ASSERT(themonst);
+            randfact += roll_dice(2, themonst->get_hit_dice());
+        }
     }
-    else
+    else // if swallowed
     {
         randfact = roll_dice(1, 5) + 5;
-        const monster* themonst = monster_by_mid(constricted_by);
+        mon_enchant ench = get_ench(ENCH_SWALLOWED);
+        themonst = ench.agent()->as_monster();
         ASSERT(themonst);
-        randfact += roll_dice(1, themonst->get_hit_dice());
+        randfact = roll_dice(1, themonst->get_hit_dice());
     }
 
     if (attfactor > randfact)
     {
-        stop_being_constricted(true);
+        if (is_constricted())
+            stop_being_constricted(true);
+        else
+        {
+            themonst->del_ench(ENCH_SWALLOWING, true);
+            del_ench(ENCH_SWALLOWED);
+            escape_attempts = 0;
+        }
         return true;
     }
     else

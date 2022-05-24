@@ -95,7 +95,7 @@ static spell_type search_order_misc[] =
     SPELL_DRAIN_MAGIC,
     SPELL_PETRIFY,
     SPELL_POLYMORPH,
-    SPELL_FORCE_LANCE,
+    SPELL_FORCE_LASSO,
     SPELL_SLOW,
 };
 

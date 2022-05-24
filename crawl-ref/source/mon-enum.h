@@ -48,7 +48,8 @@ enum attack_type
     AT_POUNCE,
     AT_PINCER,
     AT_SHIELD,
-    AT_LAST_REAL_ATTACK = AT_SHIELD,
+    AT_SLAM,
+    AT_LAST_REAL_ATTACK = AT_SLAM,
 
     AT_CHERUB,
     AT_MULTIBITE,
@@ -126,6 +127,7 @@ enum attack_flavour
 	AF_CONTAM,
     AF_PURE_PAIN,
     AF_DECAY,
+    AF_FROG,
 };
 
 // Non-spell "summoning" types to give to monster::mark_summoned(), or

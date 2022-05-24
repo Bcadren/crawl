@@ -2335,8 +2335,10 @@ static spell_type _fixup_player_spell(spell_type s, int version)
 {
     switch (s)
     {
-    case SPELL_HYDRA_FORM:
-        return SPELL_NO_SPELL;
+    case SPELL_TONGUE_LASH:
+        if (version < TAG_MINOR_ICICLE_CASCADE)
+            return SPELL_NO_SPELL;
+        return s;
 
     case SPELL_SUMMON_HYDRA:
         return SPELL_SUMMON_HYDRA_MOUNT;

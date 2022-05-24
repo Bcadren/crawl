@@ -5477,7 +5477,8 @@ bool napalm_player(int amount, string source, string source_aux)
     ASSERT(!crawl_state.game_is_arena());
 
     if (player_res_sticky_flame() || amount <= 0 || you.duration[DUR_WATER_HOLD]
-        || you.duration[DUR_AIR_HOLD] || feat_is_watery(grd(you.pos())))
+        || you.duration[DUR_AIR_HOLD] || you.duration[DUR_SWALLOWED] 
+        || (!you.airborne() && feat_is_watery(grd(you.pos()))))
     {
         return false;
     }
@@ -5964,30 +5965,42 @@ bool land_player(bool quiet)
 
 bool player::clear_far_engulf()
 {
-    if (!you.duration[DUR_WATER_HOLD] && !you.duration[DUR_AIR_HOLD])
+    if (!you.duration[DUR_WATER_HOLD] && !you.duration[DUR_AIR_HOLD] && !you.duration[DUR_SWALLOWED])
         return false;
 
-    const bool water = you.duration[DUR_WATER_HOLD];
-    const string key = water ? "water_holder" : "air_holder";
+    string key = you.duration[DUR_WATER_HOLD] ? "water_holder" : you.duration[DUR_AIR_HOLD] ? "air_holder" : "frog";
     monster * const mons = monster_by_mid(you.props[key].get_int());
     if (!mons || !mons->alive() || !adjacent(mons->pos(), you.pos()))
     {
-        if (water && you.res_water_drowning())
+        if (you.duration[DUR_SWALLOWED])
+        {
+            if (!mons || !mons->alive())
+                mpr("You escape from the dying creature's maw.");
+            else
+                mprf("You escape from %s's mouth.", mons->name(DESC_THE).c_str());
+        }
+
+        if (you.duration[DUR_WATER_HOLD] && you.res_water_drowning())
             mpr("The water engulfing you falls away.");
-        else if (you.is_unbreathing())
+        else if (you.duration[DUR_AIR_HOLD] && you.is_unbreathing())
             mpr("The cloud enveloping you dissipates.");
-        else
+        else if (!you.is_unbreathing())
             mpr("You gasp with relief as air once again reaches your lungs.");
 
-        if (water)
+        if (you.duration[DUR_WATER_HOLD])
         {
             you.duration[DUR_WATER_HOLD] = 0;
             you.props.erase("water_holder");
         }
-        else
+        else if (you.duration[DUR_AIR_HOLD])
         {
             you.duration[DUR_AIR_HOLD] = 0;
             you.props.erase("air_holder");
+        }
+        else if (you.duration[DUR_SWALLOWED])
+        {
+            you.duration[DUR_SWALLOWED] = 0;
+            you.props.erase("frog");
         }
 
         return true;
@@ -5995,31 +6008,44 @@ bool player::clear_far_engulf()
     return false;
 }
 
-void handle_player_drowning(int delay, bool water)
+void handle_player_drowning(int delay, duration_type dur)
 {
     if (you.clear_far_engulf())
         return;
 
+    const bool air = dur == DUR_AIR_HOLD;
+    const bool frog = dur == DUR_SWALLOWED;
+
     // Reset so damage doesn't ramp up while able to breathe
-    if (you.res_water_drowning() && water)
-        you.duration[DUR_WATER_HOLD] = 10;
+    if (you.res_water_drowning() && !air)
+        you.duration[dur] = 10;
     else if (you.is_unbreathing())
-        you.duration[DUR_AIR_HOLD] = 10;
+        you.duration[dur] = 10;
     else
     {
-        you.duration[water ? DUR_WATER_HOLD : DUR_AIR_HOLD] += delay;
+        you.duration[dur] += delay;
+
         int dam =
-            div_rand_round((28 + stepdown((float)you.duration[DUR_WATER_HOLD], 28.0))
+            div_rand_round((28 + stepdown((float)you.duration[dur], 28.0))
                             * delay,
                             BASELINE_DELAY * 10);
-        ouch(dam, water ? KILLED_BY_WATER : KILLED_BY_AIR, 
-            water ? you.props["water_holder"].get_int() : you.props["air_holder"].get_int());
-        if (!water && one_chance_in(3))
+        if (frog)
+            dam /= 2; // Frogs are early, be kind (the acid damage scales with XL so late still nasty).
+
+        ouch(dam, air ? KILLED_BY_AIR : frog ? KILLED_BY_MONSTER : KILLED_BY_WATER, 
+            frog ? you.props["frog"].get_int() : air ? you.props["air_holder"].get_int() : you.props["water_holder"].get_int());
+        if (air && one_chance_in(3))
         {
             mprf(MSGCH_WARN, "You accidentally inhale some ghastly fumes!");
             drain_player();
         }
         mprf(MSGCH_WARN, "Your lungs strain for air!");
+    }
+
+    if (you.alive() && frog)
+    {
+        const actor * toad = actor_by_mid(you.props["frog"].get_int());
+        you.splash_with_acid(toad, max(1 , random2avg(toad->get_experience_level(), 3)), true, "You are digested");
     }
 }
 
@@ -9463,35 +9489,50 @@ void player::goto_place(const level_id &lid)
 bool player::attempt_escape(int attempts)
 {
     monster *themonst;
+    const bool c = is_constricted();
+    const int escape_score = roll_dice(3 + escape_attempts, 3 + you.strength());
 
-    if (!is_constricted())
+    if (c)
+    {
+        themonst = monster_by_mid(constricted_by);
+        ASSERT(themonst);
+    }
+    else if (duration[DUR_SWALLOWED] && !clear_far_engulf())
+    {
+        themonst = monster_by_mid(you.props["frog"].get_int());
+        ASSERT(themonst);
+    }
+    else
         return true;
 
-    themonst = monster_by_mid(constricted_by);
-    ASSERT(themonst);
     escape_attempts += attempts;
 
     // player breaks free if (4+n)d13 >= 5d(8+HD/4)
-    const int escape_score = roll_dice(4 + escape_attempts, 13);
     if (escape_score
-        >= roll_dice(5, 8 + div_rand_round(themonst->get_hit_dice(), 4)))
+        >= roll_dice(c ? 5 : 4, 4  + div_rand_round(themonst->get_hit_dice(), 3)))
     {
-        mprf("You escape %s grasp.", themonst->name(DESC_ITS, true).c_str());
+        mprf("You escape %s %s.", themonst->name(DESC_ITS, true).c_str(), c ? "grasp" : "maw");
 
         // Stun the monster to prevent it from constricting again right away.
         themonst->speed_increment -= 5;
 
-        stop_being_constricted(true);
+        if (c)
+           stop_being_constricted(true);
+        else
+        {
+            duration[DUR_SWALLOWED] = 0;
+            monster_by_mid(props["frog"].get_int())->del_ench(ENCH_SWALLOWING, true);
+            props.erase("frog");
+            escape_attempts = 0;
+        }
 
         return true;
     }
-    else
-    {
-        mprf("%s grasp on you weakens, but your attempt to escape fails.",
-             themonst->name(DESC_ITS, true).c_str());
-        turn_is_over = true;
-        return false;
-    }
+
+    mprf("%s hold on you weakens, but your attempt to escape fails.",
+        themonst->name(DESC_ITS, true).c_str());
+    turn_is_over = true;
+    return false;
 }
 
 void player::sentinel_mark(bool trap)

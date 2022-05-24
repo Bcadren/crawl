@@ -1189,7 +1189,7 @@ void player_close_door(coord_def doorpos);
 void dec_disease_player(int delay);
 void player_end_berserk();
 
-void handle_player_drowning(int delay, bool water = true);
+void handle_player_drowning(int delay, duration_type dur);
 
 // Determines if the given grid is dangerous for the player to enter.
 bool is_feat_dangerous(dungeon_feature_type feat, bool permanently = false,

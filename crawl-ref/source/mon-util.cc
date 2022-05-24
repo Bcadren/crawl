@@ -2415,6 +2415,7 @@ string mon_attack_name(attack_type attack, bool with_object)
         "pounce on",
         "pinch",
         "hit",          // shield attack should only actually use the shield's vorpal type. 
+        "body-slam",      
         "hit, bite, peck, or gore", // AT_CHERUB
         "bite", // AT_MULTIBITE
         "hit", // AT_WEAP_ONLY,
@@ -2455,7 +2456,8 @@ bool flavour_triggers_damageless(attack_flavour flavour)
         || flavour == AF_CORRODE
         || flavour == AF_HUNGER
         || flavour == AF_POISON_STR
-		|| flavour == AF_CONTAM;
+		|| flavour == AF_CONTAM
+        || flavour == AF_FROG;
 }
 
 /**

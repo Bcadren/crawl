@@ -1334,7 +1334,10 @@ static coord_def _beckon_destination(const coord_def &origin, const actor &becko
 
     pow -= 6;
     int distance = grid_distance(origin, beckoned.pos());
-    distance -= div_rand_round(pow, 4);
+    if (path.origin_spell == SPELL_TONGUE_LASH)
+        distance -= random2(1 + agent.get_experience_level());
+    else
+        distance -= div_rand_round(pow, 4);
     coord_def retval = beckoned.pos();
     ray_def ray;
 
@@ -1406,9 +1409,15 @@ bool beckon(coord_def &origin, actor &beckoned, const bolt &path, int pow, actor
     if (!beckoned.move_to_pos(dest))
         return false;
 
-    mprf("%s %s wrenched violently forward by a lasso of force!",
+    string substr = " a lasso of force";
+
+    if (path.origin_spell == SPELL_TONGUE_LASH)
+        substr = make_stringf(" %s tongue", agent.name(DESC_ITS).c_str());
+
+    mprf("%s %s wrenched violently forward by%s!",
         beckoned.name(DESC_THE).c_str(),
-        beckoned.is_player() ? "are" : "is");
+        beckoned.is_player() ? "are" : "is",
+        substr.c_str());
 
     beckoned.props[PULLED_KEY] = (int)agent.mid;
 

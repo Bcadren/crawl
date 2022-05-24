@@ -770,10 +770,13 @@ static void _decrement_durations()
     }
 
     if (you.duration[DUR_WATER_HOLD])
-        handle_player_drowning(delay);
+        handle_player_drowning(delay, DUR_WATER_HOLD);
+        
+    if (you.duration[DUR_SWALLOWED])
+        handle_player_drowning(delay, DUR_SWALLOWED);
 
     if (you.duration[DUR_AIR_HOLD])
-        handle_player_drowning(delay, false);
+        handle_player_drowning(delay, DUR_AIR_HOLD);
 
     if (you.duration[DUR_FLAYED])
     {

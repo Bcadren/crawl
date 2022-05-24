@@ -182,6 +182,8 @@ enum monster_info_flags
     MB_CHAOSNADO,
     MB_AIR_HOLD,
     MB_AIR_HOLD_DROWN,
+    MB_SWALLOWED,
+    MB_SWALLOWED_DROWN,
     NUM_MB_FLAGS
 };
 
