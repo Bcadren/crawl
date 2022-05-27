@@ -3807,9 +3807,15 @@ static bool _get_spell_description(const spell_type spell,
     {
         const int hd = mon_owner->spell_hd();
         const int range = spell_range(spell, mons_power_for_hd(spell, hd));
-        description += "\nRange : "
-                       + range_string(range, range, mons_char(mon_owner->type))
-                       + "\n";
+
+        if (spell == SPELL_TONGUE_LASH)
+            description += "\nRange : @.--->\n"; // Special case: tongue lash cannot be used on adjacents.
+        else
+        {
+            description += "\nRange : "
+                        + range_string(range, range, mons_char(mon_owner->type))
+                        + "\n";
+        }
 
         // only display this if the player exists (not in the main menu)
         if (crawl_state.need_save && (get_spell_flags(spell) & spflag::MR_check)

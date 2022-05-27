@@ -1746,7 +1746,7 @@ Summons a protective golem. It redirects the injuries of its allies (but not
 the caster) to itself. When sufficiently damaged, it may fill with an inner
 flame, causing it to explode if destroyed. It gains more health at high power.
 %%%%
-Summon helvityr spell
+Summon Helvityr spell
 
 Summons a deadly helvityr.
 %%%%
@@ -1925,6 +1925,15 @@ Tomb of Doroklohe spell
 Entombs the caster within walls of rock. These walls will push away objects in
 their way, but their growth is obstructed by the presence of any creature. They
 are not permanent, and will expire after a period of time.
+%%%%
+Tongue Lash spell
+
+The monster whips a single non-adjacent target with their tongue, dealing weak 
+damage and pulling the target closer, if it survives. If pulled to melee range, 
+the monster will immediately melee the target as part of the cast.
+
+When used by a chameleon, additionally deals branded damage based on the 
+chameleon's colour.
 %%%%
 Tornado spell
 
