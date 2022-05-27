@@ -1967,13 +1967,13 @@ void monster::apply_enchantment(const mon_enchant &me)
                 lose_ench_duration(me, -dur);
                 int dam = div_rand_round((50 + stepdown((float)me.duration, 30.0))
                     * dur,
-                    BASELINE_DELAY * 10);
+                    BASELINE_DELAY * 30);
                 if (res_water_drowning() < 0)
                     dam = dam * 3 / 2;
                 hurt(me.agent(), dam);
             }
-            if (alive())
-                splash_with_acid(me.agent(), div_rand_round(dur * me.agent()->get_experience_level(), 40), true, "is digested");
+            if (alive() && me.agent() && me.agent()->alive())
+                splash_with_acid(me.agent(), max(1, random2avg(me.agent()->get_experience_level(), 3)), true, "is digested");
         }
         break;
 

@@ -6030,7 +6030,7 @@ void handle_player_drowning(int delay, duration_type dur)
                             * delay,
                             BASELINE_DELAY * 10);
         if (frog)
-            dam /= 2; // Frogs are early, be kind (the acid damage scales with XL so late still nasty).
+            dam /= 3; // Frogs are early, be kind (the acid damage scales with XL so late still nasty).
 
         ouch(dam, air ? KILLED_BY_AIR : frog ? KILLED_BY_MONSTER : KILLED_BY_WATER, 
             frog ? you.props["frog"].get_int() : air ? you.props["air_holder"].get_int() : you.props["water_holder"].get_int());
@@ -6045,7 +6045,8 @@ void handle_player_drowning(int delay, duration_type dur)
     if (you.alive() && frog)
     {
         const actor * toad = actor_by_mid(you.props["frog"].get_int());
-        you.splash_with_acid(toad, max(1 , random2avg(toad->get_experience_level(), 3)), true, "You are digested");
+        if (toad && toad->alive())
+            you.splash_with_acid(toad, max(1 , random2avg(toad->get_experience_level(), 3)), true, "You are digested");
     }
 }
 
