@@ -574,13 +574,27 @@ void actor::stop_constricting_all(bool intentional, bool quiet)
     {
         monster * mon = as_monster();
 
+        if (mon->has_ench(ENCH_SWALLOWED))
+        {
+            actor * swallowing = mon->get_ench(ENCH_SWALLOWED).agent();
+
+            if (swallowing)
+                swallowing->as_monster()->del_ench(ENCH_SWALLOWED);
+
+            mon->del_ench(ENCH_SWALLOWED);
+        }
+
         if (mon->has_ench(ENCH_SWALLOWING))
         {
             actor * swallowed = mon->get_ench(ENCH_SWALLOWING).agent();
-            if (swallowed->is_player())
-                you.duration[DUR_SWALLOWED] = 0;
-            else
-                swallowed->as_monster()->del_ench(ENCH_SWALLOWED);
+
+            if (swallowed)
+            {
+                if (swallowed->is_player())
+                    you.duration[DUR_SWALLOWED] = 0;
+                else
+                    swallowed->as_monster()->del_ench(ENCH_SWALLOWED);
+            }
 
             mon->del_ench(ENCH_SWALLOWING);
         }
