@@ -2813,8 +2813,7 @@ void bolt::affect_place_clouds()
     const coord_def p = pos();
     const dungeon_feature_type feat = grd(p);
     actor * defender = actor_at(p);
-    bool see_destruction = false;
-    bool see_preservation = false;
+    int see_preservation = 0;
 
     // Terrain changes don't care about the clouds.
     if (feat == DNGN_LAVA && (flavour == BEAM_COLD || flavour == BEAM_FREEZE))
@@ -2860,25 +2859,18 @@ void bolt::affect_place_clouds()
         {
             for (stack_iterator si(p); si; ++si)
             {
-                if (!is_artefact(*si))
-                {
-                    item_was_destroyed(*si);
-                    destroy_item(si->index());
-                    if (player_likes_water())
-                        see_destruction = true;
-                }
-                else
-                    see_preservation = true;
+                see_preservation++;
             }
             temp_change_terrain(p, DNGN_ICE, damage.roll() * 5, TERRAIN_CHANGE_FROZEN);
         }
     }
 
-    if (see_destruction)
-        mpr("Ice forming cracks and breaks items beneath the surface."); // Not the best solution, but at least it's one that seems logical.
-
     if (see_preservation)
-        mpr("A magical artifact is magically pushed up through the ice!");
+    {
+        mprf("%s item%s pushed up through the ice!", 
+            see_preservation == 1 ? "An" : uppercase_first(number_in_words(see_preservation)).c_str(),
+            see_preservation == 1 ? " is" : "s are");
+    }
 
     // BCADNOTE: Any vault or Abyss placed ice/obsidian is assumed to be permanent and unaltered by this.
     if ((feat == DNGN_ICE || feat == DNGN_OBSIDIAN) && (flavour == BEAM_COLD || flavour == BEAM_FREEZE))
