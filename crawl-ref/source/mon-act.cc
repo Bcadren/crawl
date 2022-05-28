@@ -1385,7 +1385,7 @@ bool handle_throw(monster* mons, bolt & beem, spell_type call_spell, bool check_
     bool can_throw = (mons_itemuse(*mons) & MU_THROW_MASK);
     bool can_ranged = (mons_itemuse(*mons) & MU_WEAPON_RANGED);
 
-    if (!can_throw && !can_ranged && (mons->type != MONS_SPECTRAL_THING))
+    if (!can_throw && !can_ranged)
         return false;
 
     const bool prefer_ranged_attack = mons_class_flag(mons->type,

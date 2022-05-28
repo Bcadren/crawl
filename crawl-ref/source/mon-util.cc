@@ -1779,8 +1779,21 @@ monuse_flags mons_class_itemuse(monster_type mc)
 
 monuse_flags mons_itemuse(const monster& mon)
 {
-    if (mons_enslaved_soul(mon))
-        return mons_class_itemuse(mons_zombie_base(mon));
+    if (mons_class_is_zombified(mon.type))
+    {
+        int retval = mons_class_itemuse(mons_zombie_base(mon));
+
+        retval &= ~MU_THROW_BLOWGUN;
+
+        if (mons_enslaved_soul(mon))
+            return (monuse_flags)retval;
+
+        retval &= ~MU_WAND;
+        retval &= ~MU_CONSUMABLES;
+        retval &= MU_START_ONLY;
+
+        return (monuse_flags)retval;
+    }
 
     return mons_class_itemuse(mon.type);
 }

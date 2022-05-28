@@ -1850,7 +1850,8 @@ static void _equip_undead(const coord_def &a, const item_def& corpse, monster *m
         if (si->base_type != OBJ_WEAPONS
             && si->base_type != OBJ_STAVES
             && si->base_type != OBJ_ARMOURS
-            || is_range_weapon(*si))
+            && si->base_type != OBJ_SHIELDS
+            && si->base_type != OBJ_JEWELLERY)
         {
             continue;
         }
@@ -1993,6 +1994,9 @@ static bool _raise_remains(const coord_def &pos, int corps, beh_type beha,
     {
         name_zombie(*mons, monnum, name);
     }
+
+    if (!actor_at(pos))
+        mons->move_to_pos(pos, true, true);
 
     // Re-equip the zombie.
     if (mons_class_itemuse(monnum) & MU_WIELD_MASK)
@@ -2155,7 +2159,7 @@ bool cast_animate_skeleton(god_type god, bool fail, coord_def pos)
     bool forbidden_found = false;
     string name = "";
 
-    for (stack_iterator si(pos, true); si; ++si)
+    for (stack_iterator si(pos, false); si; ++si)
     {
         if (si->base_type == OBJ_CORPSES
             && mons_class_can_be_zombified(si->mon_type)
@@ -2200,15 +2204,18 @@ bool cast_animate_skeleton(god_type god, bool fail, coord_def pos)
     }
 
     // If not, look for a corpse and butcher it.
-    for (stack_iterator si(pos, true); si; ++si)
+    for (stack_iterator si(pos, false); si; ++si)
     {
         if (si->is_type(OBJ_CORPSES, CORPSE_BODY)
             && mons_skeleton(si->mon_type)
             && mons_class_can_be_zombified(si->mon_type))
         {
             butcher_corpse(*si, true);
-            mpr("Before your eyes, flesh is ripped from the corpse!");
-            request_autopickup();
+            if (you.visible_igrd(pos))
+            {
+                mpr("Before your eyes, flesh is ripped from the corpse!");
+                request_autopickup();
+            }
             // Only convert the top one.
             break;
         }

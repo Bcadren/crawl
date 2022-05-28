@@ -618,6 +618,12 @@ static bool _valid_monster_generation_location(const mgen_data &mg,
         return false;
     }
 
+    // BCADNOTE: Zombies can't drown, they might not like deep water, but they will 
+    // survive. Mostly a special case to allow reviving the corpses of living monsters 
+    // that drowned.
+    if (mons_class_is_zombified(mg.cls) && grd(mg_pos) == DNGN_DEEP_WATER)
+        return true;
+
     const monster_type montype = fixup_zombie_type(mg.cls, mg.base_type);
     if (!monster_habitable_grid(montype, grd(mg_pos), mg.preferred_grid_feature)
         || (mg.behaviour != BEH_FRIENDLY
@@ -661,7 +667,6 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
 #ifdef DEBUG_MON_CREATION
     mprf(MSGCH_DIAGNOSTICS, "in place_monster()");
 #endif
-
     const int mon_count = count_if(begin(menv), end(menv),
                                    [] (const monster &mons) -> bool
                                    { return mons.type != MONS_NO_MONSTER; });
@@ -693,11 +698,11 @@ monster* place_monster(mgen_data mg, bool force_pos, bool dont_place)
         return 0;
 
     bool create_band = mg.permit_bands();
-    // If we drew an OOD monster and the level has less absdepth than D:13
+    // If we drew an OOD monster and the level has less absdepth than D:7
     // disable band generation. This applies only to randomly picked monsters
     // -- chose_ood_monster will never be set true for explicitly specified
     // monsters in vaults and other places.
-    if (chose_ood_monster && env.absdepth0 < 12)
+    if (chose_ood_monster && env.absdepth0 < 6)
     {
         dprf(DIAG_MONPLACE,
              "Chose monster with OOD roll: %s, disabling band generation",
