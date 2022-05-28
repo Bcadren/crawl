@@ -3689,7 +3689,8 @@ bool monster_swaps_places(monster* mon, const coord_def& delta,
     if (m2->type == MONS_FOXFIRE || m2->type == MONS_EPHEMERAL_SPIRIT)
     {
         foxfire_attack(m2, mon);
-        monster_die(*m2, KILL_DISMISSED, NON_MONSTER, true);
+        if (m2->alive()) // Chaos attack rarely kills self
+            monster_die(*m2, KILL_DISMISSED, NON_MONSTER, true);
     }
 
     return false;

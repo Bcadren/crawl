@@ -519,7 +519,7 @@ static int _los_spell_damage_player(actor* agent, bolt &beam,
                             // Monsters use the average for foe calculations.
                             : (1 + beam.damage.max()) / 2;
     const int hurted = resist_adjust_damage(&you, beam.flavour, base);
-    const int mntdmg = resist_adjust_damage(&you, beam.flavour, base, true);
+    const int mntdmg = you.mounted() ? resist_adjust_damage(&you, beam.flavour, base, true) : 0;
 
     if (actual)
     {

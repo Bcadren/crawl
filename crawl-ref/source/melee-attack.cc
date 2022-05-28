@@ -4212,7 +4212,7 @@ void melee_attack::do_passive_freeze()
 
 void melee_attack::mons_do_eyeball_confusion()
 {
-    if (you.has_mutation(MUT_GOLDEN_EYEBALLS) || you.has_mutation(MUT_BUDDING_EYEBALLS)
+    if ((you.has_mutation(MUT_GOLDEN_EYEBALLS) || you.has_mutation(MUT_BUDDING_EYEBALLS))
         && effective_attack_number == 0
         && attacker->alive()
         && adjacent(you.pos(), attacker->as_monster()->pos())
