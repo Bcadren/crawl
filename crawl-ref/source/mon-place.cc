@@ -1738,8 +1738,13 @@ void define_zombie(monster* mon, monster_type ztype, monster_type cs)
     monster_spells oldspells = mon->spells;
     mon->spells.clear();
     for (const mon_spell_slot &slot : oldspells)
-        if (slot.spell == SPELL_CREATE_TENTACLES)
+    {
+        if (slot.spell == SPELL_CREATE_TENTACLES
+            || slot.spell == SPELL_TONGUE_LASH)
+        {
             mon->spells.push_back(slot);
+        }
+    }
 
     // handle zombies with jobs & ghostdemon zombies; they otherwise
     // wouldn't store enough information for us to recreate them right.
