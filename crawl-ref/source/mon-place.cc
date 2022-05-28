@@ -1271,8 +1271,12 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->props["dbname"] = mons_class_name(mon->type);
     }
 
-    if (mons_class_itemuse(mon->type) & MU_THROW_MASK)
+    if (bool (mons_class_itemuse(mon->type) & MU_THROW_MASK)
+        || (mons_class_is_zombified(mon->type) 
+             && bool(mons_class_itemuse(mon->base_monster) & MU_THROW_MASK)))
+    {
         maybe_give_throw_spell(*mon, mg.place.absdepth());
+    }
 
     if (mon->type == MONS_SILVER_STAR && place.branch == BRANCH_ABYSS)
     {
@@ -1745,7 +1749,12 @@ void define_zombie(monster* mon, monster_type ztype, monster_type cs)
     for (const mon_spell_slot &slot : oldspells)
     {
         if (slot.spell == SPELL_CREATE_TENTACLES
-            || slot.spell == SPELL_TONGUE_LASH)
+            || slot.spell == SPELL_TONGUE_LASH
+            || slot.spell == SPELL_THROW_ROCK
+            || slot.spell == SPELL_THROW_NET
+            || slot.spell == SPELL_THROW_JAVELIN
+            || slot.spell == SPELL_THROW_FRUIT
+            || slot.spell == SPELL_THROW_TOMAHAWK)
         {
             mon->spells.push_back(slot);
         }

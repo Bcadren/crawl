@@ -135,12 +135,17 @@ static bool _level_adjust(monster_type mon, int* level)
 
 static void _give_jewels(monster* mon, int level)
 {
-    if (mon->type != MONS_SWOOPING_MAGPIE && !one_chance_in(6))
+    monster_type type = mon->type;
+
+    if (mons_class_is_zombified(type))
+        type = mon->base_monster;
+
+    if (type != MONS_SWOOPING_MAGPIE && !one_chance_in(6))
         return;
 
-    bool fragile = _level_adjust(mon->type, &level);
+    bool fragile = _level_adjust(type, &level);
 
-    if (mon->type != MONS_SWOOPING_MAGPIE)
+    if (type != MONS_SWOOPING_MAGPIE)
         fragile |= !one_chance_in(3);
 
     // BCADDO: OBJ_RANDOM variant for monster jewels that avoids useless for monster brands.
@@ -1422,7 +1427,12 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
 {
     ASSERT(mon); // TODO: change to monster &mon
 
-    if (mon->type == MONS_DEEP_ELF_BLADEMASTER && mon->weapon())
+    monster_type type = mon->type;
+
+    if (mons_class_is_zombified(type))
+        type = mon->base_monster;
+
+    if (type == MONS_DEEP_ELF_BLADEMASTER && mon->weapon())
     {
         const item_def &first_sword = *mon->weapon();
         ASSERT(first_sword.base_type == OBJ_WEAPONS);
@@ -1431,7 +1441,7 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
         return;
     }
 
-    const int thing_created = make_mons_weapon(mon->type, level, second_weapon);
+    const int thing_created = make_mons_weapon(type, level, second_weapon);
     if (thing_created == NON_ITEM)
         return;
 
@@ -1449,7 +1459,7 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
         _give_weapon(mon, level, true);
     }
 
-    if (mon->type == MONS_FANNAR && i.is_type(OBJ_WEAPONS, WPN_QUARTERSTAFF))
+    if (type == MONS_FANNAR && i.is_type(OBJ_WEAPONS, WPN_QUARTERSTAFF))
     {
         make_item_for_monster(mon, OBJ_JEWELLERY, RING_ICE,
                               0, 1, ISFLAG_KNOW_TYPE);
@@ -1503,7 +1513,12 @@ static void _give_shield(monster* mon, int level)
         return;
     }
 
-    switch (mon->type)
+    monster_type type = mon->type;
+
+    if (mons_class_is_zombified(type))
+        type = mon->base_monster;
+
+    switch (type)
     {
     case MONS_ASTERION:
         make_item_for_monster(mon, OBJ_SHIELDS, 
@@ -1664,8 +1679,8 @@ static void _give_shield(monster* mon, int level)
     case MONS_BLACK_SUN:
         if (one_chance_in(3))
         {
-            shield_type type = random_choose(SHD_SAI, SHD_TARGE, SHD_SHIELD);
-            make_item_for_monster(mon, OBJ_SHIELDS, type, level);
+            shield_type stype = random_choose(SHD_SAI, SHD_TARGE, SHD_SHIELD);
+            make_item_for_monster(mon, OBJ_SHIELDS, stype, level);
         }
         break;
 
@@ -2172,7 +2187,13 @@ int make_mons_armour(monster_type type, int level)
 static void _give_armour(monster* mon, int level)
 {
     ASSERT(mon); // TODO: make monster &mon
-    give_specific_item(mon, make_mons_armour(mon->type, level));
+
+    monster_type type = mon->type;
+
+    if (mons_class_is_zombified(type))
+        type = mon->base_monster;
+
+    give_specific_item(mon, make_mons_armour(type, level));
 }
 
 static void _give_gold(monster* mon, int level)
@@ -2210,7 +2231,11 @@ void give_item(monster *mons, int level_number, bool mons_summoned)
 
     monuse_flags itemuse = mons_itemuse(*mons);
 
-    if (mons->type == MONS_SWOOPING_MAGPIE)
+    if (mons_class_is_zombified(mons->type))
+        itemuse = mons_class_itemuse(mons->base_monster);
+
+    if (mons->type == MONS_SWOOPING_MAGPIE
+        || mons->base_monster == MONS_SWOOPING_MAGPIE)
     {
         if (one_chance_in(5))
             _give_jewels(mons, level_number);

@@ -1781,7 +1781,7 @@ monuse_flags mons_itemuse(const monster& mon)
 {
     if (mons_class_is_zombified(mon.type))
     {
-        int retval = mons_class_itemuse(mons_zombie_base(mon));
+        int retval = mons_class_itemuse(mon.base_monster);
 
         retval &= ~MU_THROW_BLOWGUN;
 
@@ -1790,7 +1790,7 @@ monuse_flags mons_itemuse(const monster& mon)
 
         retval &= ~MU_WAND;
         retval &= ~MU_CONSUMABLES;
-        retval &= MU_START_ONLY;
+        retval |= MU_START_ONLY;
 
         return (monuse_flags)retval;
     }
