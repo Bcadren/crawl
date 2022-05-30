@@ -33,6 +33,7 @@ levelup_stats:
   - int
 mutations:
   1:
+    MUT_EXOSKELETON: 1
     MUT_ANTENNAE: 1
     MUT_STASIS: 1
     MUT_BURROWING: 1

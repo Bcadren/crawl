@@ -2614,6 +2614,24 @@ bool player::wearing_heavy_armour() const
     return !player_effectively_in_light_armour();
 }
 
+bool player::wearing_heavy_manmade_armour() const
+{
+    if (you.get_mutation_level(MUT_AMORPHOUS_BODY))
+    {
+        for (int i = EQ_FIRST_MORPH; i <= EQ_LAST_MORPH; i++)
+        {
+            const item_def * worn = you.slot_item(static_cast<equipment_type>(i));
+
+            if (is_heavy_manmade_armour(worn))
+                return true;
+        }
+        return false;
+    }
+
+    const item_def *armour = you.slot_item(EQ_BODY_ARMOUR, false);
+    return is_heavy_manmade_armour(armour);
+}
+
 // This function returns true if the player has a radically different
 // shape... minor changes like blade hands don't count, also note
 // that lich transformation doesn't change the character's shape
@@ -2785,13 +2803,6 @@ static int _player_scale_evasion(int prescaled_ev, const int scale)
     {
         prescaled_ev *= _octopode_evasion_penalty();
         prescaled_ev /= 10;
-    }
-
-    // Ghost Mutation (Silent Spectre) gives a 20% EV boost.
-    if (you.get_mutation_level(MUT_INSUBSTANTIAL) == 1)
-    {
-        const int ev_bonus = max(1 * scale, prescaled_ev / 5);
-        prescaled_ev += ev_bonus;
     }
 
     return prescaled_ev;
@@ -3579,6 +3590,7 @@ void change_drac_colour (draconian_colour new_colour)
         }
 
         perma_mutate(MUT_INSUBSTANTIAL, 1, "draconic bloodline");
+
         if (was_undead)
             mprf(MSGCH_INTRINSIC_GAIN, "Your ghostly form can be transmuted to any form you wish and you can drink potions once more.");
         else
@@ -3695,7 +3707,8 @@ void level_change(bool skip_attribute_increase)
         // player of their level-up perks.
 
         // Used in Demonspawn messaging at the bottom. Need to be set before xl is gained.
-        const int AC = you.ac_changes_from_mutations();
+        const mutation_type scales = get_scales();
+        const int AC = you.ac_change_from_mutation(scales);
         const int SH = player_shield_class(false);
 
         const int new_exp = you.experience_level + 1;
@@ -3876,7 +3889,6 @@ void level_change(bool skip_attribute_increase)
             // that are still Species Demonspawn (if there are any) into a new species, but...
             if (you.char_class == JOB_DEMONSPAWN || you.species == SP_DEMONSPAWN) 
             {
-                const mutation_type scales = get_scales();
                 for (const player::demon_trait trait : you.demonic_traits)
                 {
                     if (trait.level_gained == you.experience_level)
@@ -3888,8 +3900,15 @@ void level_change(bool skip_attribute_increase)
                 }
                 if (scales != MUT_NON_MUTATION && scales == get_scales())
                 {
-                    if (AC < you.ac_changes_from_mutations())
+                    if (AC < you.ac_change_from_mutation(scales))
+                    {
                         mprf(MSGCH_INTRINSIC_GAIN, "Your %s feel tougher.", you.species == SP_LIGNIFITE ? "demonic bark patches" : "scales");
+                        if (AC < 5 && you.ac_change_from_mutation(scales) && you.get_mutation_level(MUT_SOFT_FLESH, false))
+                        {
+                            mprf(MSGCH_INTRINSIC_GAIN, "Your flesh is no longer weak to slashes, due to your scales covering it completely.");
+                            you.mutation[MUT_SOFT_FLESH] = you.innate_mutation[MUT_SOFT_FLESH] = 0;
+                        }
+                    }
                     if (SH < player_shield_class())
                         mprf(MSGCH_INTRINSIC_GAIN, "Your %s plates grow larger.", you.species == SP_LIGNIFITE ? "wooden" : "bone");
                     if (!(you.experience_level % 3))
@@ -6992,7 +7011,7 @@ int player::base_ac_from(const item_def &armour, int scale) const
         return base / 2;
 
     if (you.get_mutation_level(MUT_CORE_MELDING) > 1)
-        return base * 2;
+        return base * 1.5;
 
     // [ds] effectively: ac_value * (22 + Arm) / 22, where Arm = Armour Skill.
     const int AC = base * (440 + skill(SK_ARMOUR, 20)) / 440;
@@ -7050,7 +7069,7 @@ int player::racial_ac(bool temp) const
         sAC = 500 + 100 * (experience_level / 3);  // max 14
         if (you.drac_colour == DR_BONE)
             sAC *= 2;
-        if (you.drac_colour == DR_PEARL || you.drac_colour == DR_SILVER)
+        if (you.drac_colour == DR_PEARL)
             sAC = div_round_up(sAC * 3, 2);
         if (you.drac_colour == DR_SCINTILLATING)
             sAC += 300;
@@ -7072,10 +7091,7 @@ int player::racial_ac(bool temp) const
         else if (species == SP_CENTAUR)
             sAC = 300;
         else if (species == SP_GARGOYLE)
-        {
-            sAC = 200 + 100 * experience_level * 2 / 5     // max 20
-                      + 100 * max(0, experience_level - 7) * 2 / 5;
-        }
+            sAC = 100 + 100 * experience_level / 3;     // max 10
         else if (species == SP_LIGNIFITE)
             sAC = max(0, (experience_level - 12) * 100);
         else if (species == SP_OCTOPODE)
@@ -7691,7 +7707,26 @@ int player::res_slash(bool mt) const
         }
     }
 
-    return 0;
+    if (you.get_mutation_level(MUT_INSUBSTANTIAL))
+        return 1;
+
+    int rs = 0;
+
+    rs += get_form()->res_slashing();
+    rs += you.get_mutation_level(MUT_ARTIFICIAL_FLESH);
+    rs += you.get_mutation_level(MUT_GELATINOUS_FLESH);
+    rs += you.get_mutation_level(MUT_EXOSKELETON);
+
+    if (get_mutation_level(MUT_DRACONIAN_DEFENSE, true)
+        && drac_colour == DR_BONE)
+    {
+        rs++;
+    }
+
+    if (!wearing_heavy_manmade_armour())
+        rs -= you.get_mutation_level(MUT_SOFT_FLESH);
+
+    return _clamp(rs, -1, 1);
 }
 
 int player::res_pierce(bool mt) const
@@ -7708,7 +7743,25 @@ int player::res_pierce(bool mt) const
         }
     }
 
-    return 0;
+    if (you.get_mutation_level(MUT_INSUBSTANTIAL))
+        return 1;
+
+    if (get_mutation_level(MUT_DRACONIAN_DEFENSE, true)
+        && (drac_colour == DR_OLIVE || drac_colour == DR_BONE
+            || drac_colour == DR_BLACK && undead_state()))
+    {
+        return 1;
+    }
+
+    int rp = 0;
+
+    rp += get_form()->res_piercing();
+    rp += you.get_mutation_level(MUT_UNDEAD_FLESH);
+    rp += you.get_mutation_level(MUT_BARKSKIN);
+    rp += you.get_mutation_level(MUT_GELATINOUS_FLESH);
+    rp -= you.get_mutation_level(MUT_EXOSKELETON);
+
+    return _clamp(rp, -1, 1);
 }
 
 int player::res_bludgeon(bool mt) const
@@ -7724,7 +7777,24 @@ int player::res_bludgeon(bool mt) const
         }
     }
 
-    return 0;
+    if (you.get_mutation_level(MUT_INSUBSTANTIAL))
+        return 1;
+
+    int rb = 0;
+
+    rb += get_form()->res_bludgeoning();
+    rb += you.get_mutation_level(MUT_ARTIFICIAL_FLESH);
+
+    if (get_mutation_level(MUT_DRACONIAN_DEFENSE, true)
+        && drac_colour == DR_SILVER)
+    {
+        rb++;
+    }
+
+    if (!wearing_heavy_manmade_armour())
+        rb -= you.get_mutation_level(MUT_GELATINOUS_FLESH);
+
+    return _clamp(rb, -1, 1);
 }
 
 int player::res_water_drowning(bool mt) const
@@ -10294,7 +10364,7 @@ bool player::immune_to_hex(const spell_type hex) const
     case SPELL_PETRIFY:
     case SPELL_PETRIFICATION_GAZE:
     {
-        if (you.get_mutation_level(MUT_INSUBSTANTIAL) > 0)
+        if (you.get_mutation_level(MUT_INSUBSTANTIAL))
             return true;
     }   // fallthrough
     case SPELL_PARALYSE:

@@ -43,6 +43,7 @@ mutations:
     MUT_DAYSTRIDER: 1
     MUT_SLOW: 1
     MUT_FROG_LEGS: 1
+    MUT_SOFT_FLESH: 1
   13:
     MUT_FROG_LEGS: 1
 recommended_jobs:

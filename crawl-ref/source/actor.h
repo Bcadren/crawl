@@ -299,6 +299,7 @@ public:
     virtual int res_cold(bool mt = false) const = 0;
     virtual int res_elec(bool mt = false) const = 0;
     virtual bool wearing_heavy_armour() const = 0;
+    virtual bool wearing_heavy_manmade_armour() const = 0;
     virtual int res_slash(bool mt = false) const = 0;
     virtual int res_pierce(bool mt = false) const = 0;
     virtual int res_bludgeon(bool mt = false) const = 0;

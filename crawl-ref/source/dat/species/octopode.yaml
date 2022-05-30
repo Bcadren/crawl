@@ -48,6 +48,7 @@ species_flags:
   - hairless
 mutations:
   1:
+    MUT_SOFT_FLESH: 1
     MUT_CAMOUFLAGE: 1
 fake_mutations:
   - long: You cannot wear most types of armour.

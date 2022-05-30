@@ -159,6 +159,8 @@ skill_type item_attack_skill(const item_def &item) PURE;
 skill_type item_attack_skill(object_class_type wclass, int wtype) IMMUTABLE;
 skill_type staff_magic_skill(const item_def &item) PURE;
 
+bool is_heavy_manmade_armour(const item_def *item) IMMUTABLE;
+
 bool staff_uses_evocations(const item_def &item);
 bool item_skills(const item_def &item, set<skill_type> &skills);
 

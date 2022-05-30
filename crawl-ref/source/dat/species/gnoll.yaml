@@ -45,6 +45,7 @@ dex: 10
 levelup_stat_frequency: 4
 mutations:
   1:
+    MUT_SOFT_FLESH: 1
     MUT_STRONG_NOSE: 1
     MUT_FANGS: 1
 fake_mutations:

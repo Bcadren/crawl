@@ -40,6 +40,9 @@ dex: 6
 levelup_stat_frequency: 5
 levelup_stats:
   - str
+mutations:
+  1:
+    MUT_SOFT_FLESH: 1
 recommended_jobs:
   - JOB_FIGHTER
   - JOB_MONK

@@ -1119,7 +1119,8 @@ static mutation_type _delete_random_slime_mutation()
 bool is_slime_mutation(mutation_type mut)
 {
     if (you.species == SP_OOZOMORPH
-        && (mut == MUT_CYTOPLASMIC_SUSPENSION || mut == MUT_AMORPHOUS_BODY)
+        && (mut == MUT_CYTOPLASMIC_SUSPENSION || mut == MUT_AMORPHOUS_BODY
+            || mut == MUT_GELATINOUS_FLESH || mut == MUT_GELATINOUS_FLESH)
         || you.species == SP_MOLTEN_GARGOYLE && mut == MUT_CORE_MELDING)
     {
         return false;
@@ -1779,7 +1780,8 @@ static species_mutation_message _spmut_msg(mutation_type mutat)
 {
     for (unsigned int i = 0; i < spmu_length; ++i)
     {
-        if (spmu_data[i].species == you.species)
+        if (
+spmu_data[i].species == you.species)
         {
             if (spmu_data[i].mutation == mutat)
                 return spmu_data[i];
@@ -1796,6 +1798,8 @@ static string _drac_def_msg()
     {
     case DR_BLACK:
         ostr << "make you much more stealthy. (Stealth++)";
+        if (you.undead_state())
+            ostr << "\nAnd are hard to cut into; additionally you lack functioning organs to stab. (rPiercing+, rSlashing+)";
         break;
     case DR_BLOOD:
         ostr << "grant partial resistance to hellfire and unholy torment. (rTorm, rHellfire)";
@@ -1804,7 +1808,7 @@ static string _drac_def_msg()
         ostr << "grant you resistance to electric shocks. (rElec)";
         break;
     case DR_BONE: // Special case; no scales.
-        return "Your tough skeletal form vastly boosts your defenses. (AC+++)\nHowever; you are also weak to shatter and Lee's Rapid Deconstruction.";
+        return "Your tough skeletal form vastly boosts your defenses and you lack weak points to cut into. (AC++, rPiercing+, rSlashing+)\nHowever; you are also weak to shatter and Lee's Rapid Deconstruction.";
     default:
     case DR_BROWN:
         ostr << "don't do anything special. (This message shouldn't ever display.)";
@@ -1826,6 +1830,7 @@ static string _drac_def_msg()
         break;
     case DR_OLIVE:
         ostr << "grant you resistance to rotting caused by mutagenic radiation. (rMut)";
+        ostr << "\nAnd are hard to cut into; additionally you lack functioning organs to stab. (rPiercing+, rSlashing+)";
         break;
     case DR_PEARL:
         if (you.char_class == JOB_DEMONSPAWN)
@@ -1849,7 +1854,7 @@ static string _drac_def_msg()
         ostr << "chaotically grant elemental resistances and boost your physical defenses a bit. (AC+, Chaos+)";
         break;
     case DR_SILVER:
-        ostr << "boost your physical defenses and make you resistant to mutation. (AC++, rMut)";
+        ostr << "grant you resistance to blunt weaponry and mutation. (rBlugeoning+, rMut)";
         break;
     case DR_TEAL:
         ostr << "hold together your spectral form.";
@@ -2905,6 +2910,18 @@ bool remove_slime_mutations()
                 ; // for the messages
         }
     }
+
+    if (you.props.exists("old_flesh"))
+    {
+        ret = true;
+
+        const int x = you.props["old_flesh"].get_int();
+        you.mutation[x] = you.innate_mutation[x] = 1;
+        you.mutation[MUT_GELATINOUS_FLESH] = you.innate_mutation[MUT_GELATINOUS_FLESH] = 0;
+
+        you.props.erase("old_flesh");
+    }
+
     return ret;
 }
 
@@ -3038,7 +3055,7 @@ void display_mutation_name(mutation_type mut, string &name)
         case DR_PURPLE:             name = "MR++";              break;
         case DR_RED:                name = "rF+";               break;
         case DR_SCINTILLATING:      name = "AC+, Chaos+";       break;
-        case DR_SILVER:             name = "AC++, rMut";        break;
+        case DR_SILVER:             name = "rBlugeon+, rMut";   break;
         case DR_TEAL:               name = "spectral";          break;
         case DR_WHITE:              name = "rC+";               break;
         }
@@ -3239,7 +3256,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     const bool partially_active = (active == mutation_activity_type::PARTIAL)
         || curlvl != 0 && curlvl < you.get_base_mutation_level(mut, true, true, true, false);
     const bool fully_inactive = (active == mutation_activity_type::INACTIVE)
-        || curlvl == 0;
+        || curlvl == 0 || mut == MUT_SOFT_FLESH && you.wearing_heavy_manmade_armour();
 
     const bool temporary = you.has_temporary_mutation(mut);
 

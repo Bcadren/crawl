@@ -352,9 +352,33 @@ bool Form::res_rot() const
 /**
  * Does this form provide resistance against acid?
  */
-bool Form::res_acid() const
+int Form::res_acid() const
 {
     return get_resist(resists, MR_RES_ACID);
+}
+
+/**
+* Does this form provide resistance against piercing?
+*/
+int Form::res_piercing() const
+{
+    return get_resist(resists, MR_RES_PIERCING);
+}
+
+/**
+* Does this form provide resistance against slashing?
+*/
+int Form::res_slashing() const
+{
+    return get_resist(resists, MR_RES_SLASHING);
+}
+
+/**
+* Does this form provide resistance against bludgeoning?
+*/
+int Form::res_bludgeoning() const
+{
+    return get_resist(resists, MR_RES_BLUDGEONING);
 }
 
 /**

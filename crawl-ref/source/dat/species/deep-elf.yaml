@@ -45,6 +45,9 @@ dex: 10
 levelup_stat_frequency: 4
 levelup_stats:
   - int
+mutations:
+  1:
+    MUT_SOFT_FLESH: 1
 recommended_jobs:
   - JOB_WIZARD
   - JOB_SUMMONER

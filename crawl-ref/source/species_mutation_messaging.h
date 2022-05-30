@@ -23,6 +23,14 @@ static const species_mutation_message spmu_data[] =
     { "","","" },
 },
 
+{ SP_LIGNIFITE, MUT_BARKSKIN,
+  "barkskin",
+
+  {"Your bark is difficult to pierce. (rPiercing+)", "", ""},
+  {"", "", ""},
+  {"", "", ""},
+},
+
 { SP_TENGU, MUT_HOOVES,
   "hippogriff form",
 
@@ -59,6 +67,14 @@ static const species_mutation_message spmu_data[] =
    "The dieties of the dungeon take greater pity upon you.", "" },
   {"The dieties treat you like any other subject.",
    "The pity of the gods is waning.", "" },
+},
+
+{ SP_DRACONIAN, MUT_EXOSKELETON,
+ "draconic flesh",
+ 
+  {"Your scales resist being cut, but it’s oddly easy to stick a small blade between them. (rSlashing+, rPiercing-)", "", ""},
+  {"", "", ""},
+  {"", "", ""},
 },
 
 { SP_LIGNIFITE, MUT_HEAT_VULNERABILITY,

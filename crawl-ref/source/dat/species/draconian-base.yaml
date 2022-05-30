@@ -44,6 +44,7 @@ dex: 6
 levelup_stat_frequency: 4
 mutations:
   1:
+    MUT_EXOSKELETON: 1
     MUT_DEFORMED: 2
     MUT_COLD_BLOODED: 1
   7:

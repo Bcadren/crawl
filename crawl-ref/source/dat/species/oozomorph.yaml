@@ -26,6 +26,7 @@ mutations:
     MUT_AMORPHOUS_BODY: 1
     MUT_CYTOPLASMIC_SUSPENSION: 1
     MUT_OOZOMORPH: 1
+    MUT_GELATINOUS_FLESH: 1
 str: 8
 int: 8
 dex: 8

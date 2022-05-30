@@ -2786,6 +2786,24 @@ bool get_jewellery_improved_vision(const item_def &ring, bool check_artp)
     return false;
 }
 
+bool is_heavy_manmade_armour(const item_def *item)
+{
+    if (!item || item->base_type != OBJ_ARMOURS)
+        return false;
+
+    switch (item->sub_type)
+    {
+    case ARM_RING_MAIL:
+    case ARM_SCALE_MAIL:
+    case ARM_CHAIN_MAIL:
+    case ARM_PLATE_ARMOUR:
+    case ARM_CRYSTAL_PLATE_ARMOUR:
+        return true;
+    default:
+        return false;
+    }
+}
+
 bool is_effectively_light_armour(const item_def *item)
 {
     return !item || item->base_type != OBJ_ARMOURS 

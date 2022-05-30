@@ -2613,8 +2613,6 @@ static vector<formatted_string> _get_overview_resistances(
     const int rmagi = player_res_magic(calc_unid) / MR_PIP;
     out += _resist_composer("MR", cwidth, rmagi, 5) + "\n";
 
-    out += _stealth_bar(20) + "\n";
-
     const int regen = player_regen(); // round up
     out += make_stringf("HPRegen  %d.%d%d/turn\n", regen/100, regen/10%10, regen%10);
 
@@ -2625,13 +2623,24 @@ static vector<formatted_string> _get_overview_resistances(
                         mp_regen / 100, mp_regen % 100,
                         etheric ? "*" : "");
 
+    out += _stealth_bar(20) + "\n";
+
     cols.add_formatted(0, out, false);
 
     // Second column, resist name is 9 chars
     out.clear();
     cwidth = 9;
+
+    const int rSlashing = you.res_slash();
+    out += _resist_composer("Slash", cwidth, rSlashing, 1, true) + "\n";
+
+    const int rPiercing = you.res_pierce();
+    out += _resist_composer("Pierce", cwidth, rPiercing, 1, true) + "\n";
+
+    const int rBludgeoning = you.res_bludgeon();
+    out += _resist_composer("Bludgeon", cwidth, rBludgeoning, 1, true) + "\n";
+
     const int rinvi = you.vision(calc_unid);
-        
     out += _resist_composer("Vision", cwidth, rinvi, 1, true) + "\n";
 
     const int gourmand = you.gourmand(calc_unid);

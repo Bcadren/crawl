@@ -391,6 +391,7 @@ public:
     int res_cold(bool /*mt*/ = false) const override;
     int res_elec(bool /*mt*/ = false) const override;
     bool wearing_heavy_armour() const override;
+    bool wearing_heavy_manmade_armour() const override;
     int res_slash(bool /*mt*/ = false) const override;
     int res_pierce(bool /*mt*/ = false) const override;
     int res_bludgeon(bool /*mt*/ = false) const override;

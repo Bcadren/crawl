@@ -47,6 +47,7 @@ levelup_stats:
   - str
 mutations:
   1:
+    MUT_UNDEAD_FLESH: 1
     MUT_CARNIVOROUS: 1
     MUT_NEGATIVE_ENERGY_RESISTANCE: 3
     MUT_TORMENT_RESISTANCE: 1

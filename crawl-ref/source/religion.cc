@@ -1199,7 +1199,24 @@ static bool _jiyva_mutate()
         const mutation_type gift = _choose_gift();
 
         if (gift != MUT_NON_MUTATION)
+        {
+            if (gift == MUT_SLIME && you.get_mutation_level(MUT_SLIME) == 2)
+            {
+                for (int i = MUT_FIRST_FLESH; i <= MUT_LAST_FLESH; i++)
+                {
+                    if (you.get_mutation_level((mutation_type)i))
+                    {
+                        you.props["old_flesh"] = i;
+                        you.mutation[i] = you.innate_mutation[i] = 0;
+                        break;
+                    }
+                }
+
+                you.mutation[MUT_GELATINOUS_FLESH] = you.innate_mutation[MUT_GELATINOUS_FLESH] = 1;
+            }
+
             return mutate(gift, "Jiyva's grace", true, false, true, true, MUTCLASS_INNATE);
+        }
         // else fallthrough.
     }
     case 3:

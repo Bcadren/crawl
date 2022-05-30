@@ -44,6 +44,7 @@ levelup_stats: []
 levelup_stat_frequency: 28
 mutations:
   1:
+    MUT_SOFT_FLESH: 1
     MUT_LOW_MAGIC: 1
     MUT_GODS_PITY: 2
     MUT_MUTATION_RESISTANCE: 1

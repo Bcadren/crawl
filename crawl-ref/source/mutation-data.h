@@ -1183,7 +1183,7 @@ static const mutation_def mut_data[] =
   "core melding",
 
    { "The liquid core of your body molds to fit into any body armour near perfectly. (Reduced Encumberance from Armour).", 
-     "The molten core of your body molds to fit into any body armour perfectly. (2x Base AC and No Encumberance from Armour).", "" },
+     "The molten core of your body molds to fit into any body armour perfectly. (1.5x Base AC and No Encumberance from Armour).", "" },
    { "The core of your form feels very pliable.", "", "" },
    { "Your core feels rigid.", "", "" },
 },
@@ -1795,10 +1795,58 @@ static const mutation_def mut_data[] =
 { MUT_INSUBSTANTIAL, 0, 1, mutflag::good, false,
   "insubstantial",
 
-  { "Your insubstantial form boosts your evasion and grants immunity to sticky flames, nets and constriction.", "", "" },
+  { "Your insubstantial form grants resistance to all physical attack and full immunity to sticky flames, nets and constriction. (rPhysical+)", "", "" },
   { "Your spirit separates from your body becoming a ghostly form.", "", "" },
       // BCADDNOTE: This only makes sense for the only race that currently gains this with level. If more races are given this with level revise/use mutation-messaging.
   { "You become solid.", "", "" },
+},
+
+{ MUT_SOFT_FLESH, 0, 1, mutflag::bad, true,
+  "soft flesh",
+
+  { "Your soft flesh is weak to deep cuts. Heavy manmade armour will nullify this weakness. (rSlashing-)", "", "" },
+  { "Your flesh turns soft and spongy.", "", "" },
+  { "Your scales now protect your innards.", "", "" },
+},
+
+{ MUT_UNDEAD_FLESH, 0, 1, mutflag::good, true,
+  "undead flesh",
+
+  { "Your undead flesh lacks the need for functioning vital organs and takes reduced damage from stabs. (rPiercing+)", "", "" },
+  { "You are no longer resistant against piercing.", "", "" },
+  { "Your undeath grants you resistance to stabs.", "", "" },
+},
+
+{ MUT_BARKSKIN, 0, 1, mutflag::good, false,
+  "vine-covered skin",
+
+  { "The vines covering you are difficult to pierce. (rPiercing+)", "", "" },
+  { "Your skin becomes covered in vines.", "", "" },
+  { "The vines on your skin wither and fall away.", "", "" },
+},
+
+{ MUT_ARTIFICIAL_FLESH, 0, 1, mutflag::good, true,
+  "artificial flesh",
+
+  { "Your artificial form resists hard blunt hits and is difficult to cut into. (rBludgeoning+ , rSlashing+)", "", "" },
+  { "", "", "" },
+  { "", "", "" },
+},
+
+{ MUT_EXOSKELETON, 0, 1, mutflag::good, true,
+  "exoskeleton",
+
+  { "Your insectoid exoskeleton is difficult to cut into, but your joints provide obvious stabbing targets. (rSlashing+, rPiercing-)", "", "" },
+  { "", "", "" },
+  { "", "", "" },
+},
+
+{ MUT_GELATINOUS_FLESH, 0, 1, mutflag::good | mutflag::jiyva, true,
+  "gelatinous flesh",
+
+  { "Your formless flesh reforms from cuts and stabs, but takes increased shock from blunt direct hits. Heavy manmade armour will nullify this weakness. (rSlashing+, rPiercing+, rBludgeoning-)", "", "" },
+  { "", "", "" },
+  { "", "", "" },
 },
 
 { MUT_ACID_RESISTANCE, 7, 1, mutflag::good, true,

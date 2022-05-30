@@ -4034,12 +4034,20 @@ bool monster::wearing_heavy_armour() const
     return false;
 }
 
+bool monster::wearing_heavy_manmade_armour() const
+{
+    item_def * armour = mslot_item(MSLOT_ARMOUR);
+    if (armour && is_heavy_manmade_armour(armour))
+        return true;
+    return false;
+}
+
 int monster::res_slash(bool /*mount*/) const
 {
     int u = get_mons_resist(*this, MR_RES_SLASHING);
 
-    if (wearing_heavy_armour())
-        return 1;
+    if (wearing_heavy_manmade_armour())
+        u++;
 
     return max(min(u, 1), -1);
 }
@@ -4048,7 +4056,7 @@ int monster::res_pierce(bool /*mount*/) const
 {
     int u = get_mons_resist(*this, MR_RES_PIERCING);
 
-    if (wearing_heavy_armour())
+    if (wearing_heavy_manmade_armour())
         u--;
 
     return max(u, -1);

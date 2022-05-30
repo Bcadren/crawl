@@ -44,6 +44,7 @@ levelup_stats:
   - dex
 mutations:
   1:
+    MUT_SOFT_FLESH: 1
     MUT_FAST: 3
     MUT_HERBIVOROUS: 1
     MUT_ACUTE_VISION: 1

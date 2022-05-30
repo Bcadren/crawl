@@ -121,9 +121,12 @@ public:
     bool res_elec() const;
     int res_pois() const;
     bool res_rot() const;
-    bool res_acid() const;
+    int res_acid() const;
     bool res_sticky_flame() const;
     bool res_petrify() const;
+    int res_piercing() const;
+    int res_bludgeoning() const;
+    int res_slashing() const;
 
     /**
      * Base unarmed damage provided by the form.

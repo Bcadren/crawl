@@ -47,6 +47,7 @@ levelup_stats:
   - dex
 mutations:
   1:
+    MUT_SOFT_FLESH: 1
     MUT_HORNS: 2
 recommended_jobs:
   - JOB_FIGHTER

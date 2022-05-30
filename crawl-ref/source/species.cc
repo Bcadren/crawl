@@ -507,7 +507,11 @@ void mummify()
     you.mutation[MUT_NEGATIVE_ENERGY_RESISTANCE] = you.innate_mutation[MUT_NEGATIVE_ENERGY_RESISTANCE] = 3;
     you.mutation[MUT_COLD_RESISTANCE] = you.innate_mutation[MUT_COLD_RESISTANCE] = (you.get_mutation_level(MUT_COLD_RESISTANCE) + 1);
     you.mutation[MUT_TORMENT_RESISTANCE] = you.innate_mutation[MUT_TORMENT_RESISTANCE] = 1;
-    you.mutation[MUT_COLD_BLOODED] = you.innate_mutation[MUT_COLD_BLOODED] = 0; // Taking this back away from things that have it because it makes no sense on undead.
+    you.mutation[MUT_COLD_BLOODED] = you.innate_mutation[MUT_COLD_BLOODED] = 0; // Taking this back away from things that have it because it makes no sense on undead. 
+    you.mutation[MUT_SOFT_FLESH] = you.innate_mutation[MUT_SOFT_FLESH] = 0;
+
+    if (you.species != SP_DRACONIAN)
+        you.mutation[MUT_UNDEAD_FLESH] = you.innate_mutation[MUT_UNDEAD_FLESH] = 1;
 }
 
 void give_basic_mutations(species_type species)
@@ -543,6 +547,7 @@ void give_basic_mutations(species_type species)
         you.mutation[MUT_POISON_RESISTANCE] = you.innate_mutation[MUT_POISON_RESISTANCE] = 1;
         you.mutation[MUT_SLOW_METABOLISM] = you.innate_mutation[MUT_SLOW_METABOLISM] = 1;
         you.mutation[MUT_CONSTRICTING_TAIL] = you.innate_mutation[MUT_CONSTRICTING_TAIL] = 1;
+        you.mutation[MUT_SOFT_FLESH] = you.innate_mutation[MUT_SOFT_FLESH] = 0;
     }
 
     if (you.char_class == JOB_MERFOLK)

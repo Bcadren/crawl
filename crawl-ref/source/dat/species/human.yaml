@@ -15,6 +15,9 @@ str: 8
 int: 8
 dex: 8
 levelup_stat_frequency: 4
+mutations:
+  1:
+    MUT_SOFT_FLESH: 1
 recommended_jobs:
   - JOB_BERSERKER
   - JOB_NECROMANCER

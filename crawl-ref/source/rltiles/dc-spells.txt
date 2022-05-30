@@ -36,6 +36,7 @@ sandblast SANDBLAST
 shatter SHATTER
 statue_form STATUE_FORM
 stone_arrow STONE_ARROW
+stoneskin STONESKIN
 
 %sdir gui/spells/enchantment
 berserker_rage BERSERKER_RAGE
@@ -164,6 +165,7 @@ teleport_other TELEPORT_OTHER
 shroud_of_golubria SHROUD_OF_GOLUBRIA
 gravitas GRAVITAS
 projected_noise PROJECTED_NOISE
+phase_shift PHASE_SHIFT
 
 %sdir gui/spells/transmutation
 blade_hands BLADE_HANDS
