@@ -2177,9 +2177,10 @@ hosts. Its eyes burn with divine fire.
 %%%%
 servant of whispers
 
-A member of an order of monks who abandoned their former faith. It now serves
-a minor god of wind and whispers, who allows it to calm the air and, when
-in great need, to break the stillness with divine thunder.
+A member of an order of monks whose god is no longer anchored to this world.
+They now mimic their ancient god of wind and whispers' powers through magical 
+means, by calming the air and breaking the stillness with lightning. Their 
+magic pales compared to what they lost and cling to the hope of restoring.
 %%%%
 shadow
 
