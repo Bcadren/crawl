@@ -1001,7 +1001,13 @@ tail rain down blows upon its opponents.
 draconian scorcher
 
 A cunning draconian who has mastered the inner secrets of the element of fire.
-Its scales are sooty from years of magical pyrotechnics.
+Its scales are sooty from years of magical pyrotechnics; even enlisting the aid 
+of Makhleb to scorch with the fires of hell.
+%%%%
+draconian sharpshooter
+
+A master ranger that bogs down its foes with summoned drakes and snipes them with 
+teleported ranged shots.
 %%%%
 draconian shifter
 
@@ -1010,8 +1016,7 @@ to any place, either on this world or outside of it.
 %%%%
 draconian stormcaller
 
-A draconian deriving its thunderous powers and draconic allies from the worship
-of Qazlal.
+A draconian deriving its thunderous powers from the worship of Qazlal.
 %%%%
 dream sheep
 
@@ -1347,7 +1352,8 @@ punishment.
 %%%%
 guardian mummy
 
-An ancient warrior, embalmed and cursed to walk in undeath for eternity.
+An ancient warrior, embalmed and cursed to walk in undeath for eternity. 
+It radiates a malign aura.
 %%%%
 guardian serpent
 
@@ -1757,12 +1763,12 @@ from the surface centuries ago.
 mummy
 
 An undead figure covered in bandages and embalming fluids, compelled to walk by
-an ancient curse. It radiates a malign aura.
+an ancient curse.
 %%%%
 mummy priest
 
-An ancient servant of a long forgotten god, embalmed and cursed to walk in
-undeath for all eternity.
+An ancient servant of one of the dungeon's dieties, embalmed and cursed to walk in
+undeath for all eternity. It radiates a malign aura.
 %%%%
 mutant beast
 

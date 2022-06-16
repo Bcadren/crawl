@@ -1060,29 +1060,73 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     // Not a god gift, give priestly monsters a god.
     else if (mon->is_priest())
     {
-        // Berserkers belong to Trog.
-        if (mg.cls == MONS_SPRIGGAN_BERSERKER)
-            mon->god = GOD_TROG;
-        // Death knights belong to Yredelemnul.
-        else if (mg.cls == MONS_DEATH_KNIGHT || mg.cls == MONS_DEEP_ELF_DEATH_MAGE)
-            mon->god = GOD_YREDELEMNUL;
-        // Asterion belongs to Mahkleb.
-        else if (mg.cls == MONS_ASTERION)
-            mon->god = GOD_MAKHLEB;
+        for (auto spellslot : mon->spells)
+        {
+            if (spellslot.flags | MON_SPELL_PRIEST)
+            {
+                switch (spellslot.spell)
+                {
+                case SPELL_HURL_HELLFIRE:
+                case SPELL_HELLFIRE_BLAST:
+                case SPELL_CALL_IMP:
+                case SPELL_SUMMON_MINOR_DEMON:
+                case SPELL_SUMMON_DEMON:
+                case SPELL_SUMMON_GREATER_DEMON:
+                case SPELL_GREATER_SERVANT_MAKHLEB:
+                case SPELL_MAJOR_DESTRUCTION:
+                case SPELL_LEGENDARY_DESTRUCTION:
+                case SPELL_CALL_OF_CHAOS: // BCADDO: Consider player version.
+                    mon->god = GOD_MAKHLEB;
+                    break;
+                case SPELL_SPECTRAL_CLOUD: // this too.
+                case SPELL_SUMMON_UNDEAD:
+                case SPELL_MALIGN_OFFERING:
+                case SPELL_SYMBOL_OF_TORMENT:
+                case SPELL_BLACK_MARK: // and this.
+                    mon->god = GOD_KIKUBAAQUDGHA;
+                    break;
+                case SPELL_PLANEREND: // and this.
+                case SPELL_CORRUPTING_PULSE: // maybe replace completely?
+                    mon->god = GOD_LUGONU;
+                    break;
+                case SPELL_TWISTED_RESURRECTION:
+                case SPELL_INJURY_MIRROR:
+                    mon->god = GOD_YREDELEMNUL;
+                    break;
+                case SPELL_SUMMON_EYEBALLS:
+                    mon->god = GOD_JIYVA;
+                    break;
+                case SPELL_SUMMON_DRAKES:
+                    mon->god = GOD_BAHAMUT_TIAMAT;
+                    break;
+                case SPELL_UPHEAVAL:
+                    mon->god = GOD_QAZLAL;
+                    break;
+                case SPELL_BROTHERS_IN_ARMS:
+                case SPELL_BERSERKER_RAGE:
+                case SPELL_TROGS_HAND:
+                    mon->god = GOD_TROG;
+                    break;
+
+                // Associated with multiple gods or no (player) god.
+                case SPELL_SMITING:
+                case SPELL_SAP_MAGIC:
+                case SPELL_HASTE_OTHER:
+                case SPELL_MIGHT_OTHER:
+                case SPELL_HEAL_OTHER:
+                case SPELL_MINOR_HEALING:
+                default:
+                    break;
+                }
+            }
+        }
+
         // Seraphim follow the Shining One.
-        else if (mg.cls == MONS_SERAPH)
+        if (mg.cls == MONS_SERAPH)
             mon->god = GOD_SHINING_ONE;
-        // Draconian stormcallers worship Qazlal.
-        else if (mg.cls == MONS_DRACONIAN_STORMCALLER)
-            mon->god = GOD_QAZLAL;
-        // Classed demonspawn.
-        else if (mg.cls == MONS_BLOOD_SAINT || mg.cls == MONS_DEEP_ELF_DEMONOLOGIST || mg.cls == MONS_DEEP_ELF_SORCERER)
-            mon->god = GOD_MAKHLEB;
-        else if (mg.cls == MONS_BLACK_SUN || mg.cls == MONS_DEEP_ELF_HIGH_PRIEST)
-            mon->god = GOD_KIKUBAAQUDGHA;
-        else if (mg.cls == MONS_CORRUPTER)
-            mon->god = GOD_LUGONU;
-        else
+
+        // Not set earlier.
+        if (mg.god == GOD_NO_GOD)
         {
             switch (mons_genus(mg.cls))
             {
