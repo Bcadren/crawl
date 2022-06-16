@@ -969,7 +969,7 @@ static void _describe_hunger(status_info& inf)
         inf.short_text   = "fainting";
         break;
     case HS_SATIATED:
-        inf.light_colour = BLUE;
+        inf.light_colour = DARKGRAY;
         inf.light_text   = "Sated";
     default:
         break;

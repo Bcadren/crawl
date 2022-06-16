@@ -1932,7 +1932,7 @@ purposes.
 %%%%
 pain elemental
 
-A spirit drawn from the plain of pure suffering. Survives on this plane by 
+A spirit drawn from the plane of pure suffering. Survives on this plane by 
 inhabiting a writhing mass of blood and bone. Just looking at it hurts.
 %%%%
 pale draconian
