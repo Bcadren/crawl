@@ -1087,6 +1087,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
                     break;
                 case SPELL_PLANEREND: // and this.
                 case SPELL_CORRUPTING_PULSE: // maybe replace completely?
+                case SPELL_BANISHMENT:
                     mon->god = GOD_LUGONU;
                     break;
                 case SPELL_TWISTED_RESURRECTION:
