@@ -409,6 +409,7 @@ unsigned int item_value(item_def item, bool ident)
                 good = true;
                 break;
 
+            case WAND_DRAIN:
             case WAND_ENSNARE:
             case WAND_ACID:
             case WAND_HASTING:

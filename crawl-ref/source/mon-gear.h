@@ -5,8 +5,11 @@
 
 #pragma once
 
-void give_specific_item(monster* mon, const item_def& tpl);
-void give_specific_item(monster* mon, int thing);
+
+item_def* make_item_for_monster(monster* mons, object_class_type base, int subtype,
+    int level, bool on_spawn = true, int allow_uniques = 0, iflags_t flags = 0);
+void give_specific_item(monster* mon, const item_def& tpl, bool on_spawn = true);
+void give_specific_item(monster* mon, int thing, bool on_spawn = true);
 void give_item(monster *mon, int level_number, bool mons_summoned);
 int make_mons_weapon(monster_type mtyp, int level, bool melee_only = false);
 void give_weapon(monster *mon, int level_number);

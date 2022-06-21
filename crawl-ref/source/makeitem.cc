@@ -1587,6 +1587,7 @@ bool is_high_tier_wand(int type)
     {
     case WAND_ENSLAVEMENT:
     case WAND_ACID:
+    case WAND_DRAIN:
     case WAND_ICEBLAST:
     case WAND_DISINTEGRATION:
     case WAND_CLOUDS:

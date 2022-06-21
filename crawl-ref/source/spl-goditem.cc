@@ -1314,9 +1314,10 @@ void cleansing_flame(int pow, cleansing_flame_source caster, coord_def where,
 
 int random_effects_zap()
 {
-    // 5 Damage, 4 Hex, 3 Charm.
+    // 6 Damage, 4 Hex, 3 Charm.
     return random_choose(ZAP_WAND_FLAME,
                          ZAP_WAND_ACID,
+                         ZAP_WAND_DRAIN,
                          ZAP_ICEBLAST,
                          ZAP_SCATTERSHOT,
                          ZAP_DISINTEGRATE,
@@ -1329,7 +1330,7 @@ int random_effects_zap()
                          ZAP_WAND_HEALING);
     // BCADNOTE: Old effects removed (some could be worth rescaling?):
     // ZAP_THROW_FROST, ZAP_SLOW, ZAP_CONFUSE, ZAP_TELEPORT_OTHER, ZAP_FIREBALL,
-    // ZAP_BOLT_OF_DRAINING, ZAP_VENOM_BOLT,
+    // ZAP_VENOM_BOLT,
 }
 
 spret cast_random_effects(int pow, bolt& beam, bool fail)

@@ -1662,7 +1662,7 @@ int attack::apply_resists(int damage)
     case DAM_PIERCE:
         damage = resist_adjust_damage(defender, BEAM_PIERCE, damage, mount_defend);
         if (preresist < damage)
-            resist_message = make_stringf(" %s %s is perforated ruthlessly!", uppercase_first(defender_name(false, true)).c_str(), defender->conj_verb("are").c_str());
+            resist_message = make_stringf(" %s %s perforated ruthlessly!", uppercase_first(defender_name(false, true)).c_str(), defender->conj_verb("are").c_str());
         break;
     }
 

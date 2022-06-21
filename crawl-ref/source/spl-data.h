@@ -1812,18 +1812,16 @@ static const struct spell_desc spelldata[] =
     TILEG_HURL_HELLFIRE,
 },
 
-#if TAG_MAJOR_VERSION == 34
 {
-    SPELL_VAMPIRE_SUMMON, "Vampire Summon", "",
-    spschool::summoning,
-    spflag::unholy | spflag::monster,
-    3,
+    SPELL_SUMMON_GREATER_UNDEAD, "Summon Greater Undead", "",
+    spschool::summoning | spschool::necromancy,
+    spflag::monster | spflag::mons_abjure,
+    8,
     0,
     -1, -1,
-    3, 0,
-    TILEG_ERROR,
+    8, 0,
+    TILEG_SUMMON_UNDEAD,
 },
-#endif
 
 {
     SPELL_BRAIN_FEED, "Brain Feed", "",
@@ -1921,7 +1919,7 @@ static const struct spell_desc spelldata[] =
     SPELL_SUMMON_UNDEAD, "Summon Undead", "",
     spschool::summoning | spschool::necromancy,
     spflag::monster | spflag::mons_abjure,
-    7,
+    6,
     0,
     -1, -1,
     6, 0,
@@ -3642,6 +3640,17 @@ TILEG_ERROR,
     5, 5,
     6, 0,
     TILEG_CORROSIVE_BOLT,
+},
+
+{
+    SPELL_WAND_DRAIN, "Draining Wand", "",
+    spschool::necromancy | spschool::evocation,
+    spflag::dir_or_target | spflag::needs_tracer,
+    6,
+    200,
+    5, 5,
+    6, 0,
+    TILEG_BOLT_OF_DRAINING,
 },
 
 {

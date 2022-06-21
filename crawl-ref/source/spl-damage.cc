@@ -461,6 +461,12 @@ static bool _drain_lifeable(const actor* agent, const actor* act)
     if (act->res_negative_energy() >= 3)
         return false;
 
+    if (!agent->is_player() && agent->as_monster()->friendly()
+        && you_worship(GOD_YREDELEMNUL))
+    {
+        return false;
+    }
+
     if (!agent)
         return true;
 

@@ -1783,14 +1783,14 @@ monuse_flags mons_itemuse(const monster& mon)
     {
         int retval = mons_class_itemuse(mon.base_monster);
 
-        retval &= ~MU_THROW_BLOWGUN;
+        retval |= MU_START_ONLY;
 
         if (mons_enslaved_soul(mon))
             return (monuse_flags)retval;
 
+        retval &= ~MU_THROW_BLOWGUN;
         retval &= ~MU_WAND;
         retval &= ~MU_CONSUMABLES;
-        retval |= MU_START_ONLY;
 
         return (monuse_flags)retval;
     }
@@ -3566,6 +3566,7 @@ void define_monster(monster& mons)
     int hp = 0;
 
     mons.mname.clear();
+    mons.spawn_items.clear();
 
     // misc
     mons.god = GOD_NO_GOD;
@@ -3573,8 +3574,16 @@ void define_monster(monster& mons)
     switch (mcls)
     {
     case MONS_ABOMINATION_SMALL:
+        hd = 6 + random2(5);
+        init_abomination(mons, hd, mons.friendly());
+        break;
+
     case MONS_ABOMINATION_LARGE:
-        hd = 1;
+        if (one_chance_in(8))
+            hd = 16 + random2(5);
+        else
+            hd = 11 + random2(5);
+
         init_abomination(mons, hd, mons.friendly());
         break;
 
@@ -4646,6 +4655,7 @@ bool mons_has_incapacitating_spell(const monster& mon, const actor& foe)
     return false;
 }
 
+// BCADDO: Rework this. IDK what it's for, but it's always false now.
 static bool _mons_has_usable_ranged_weapon(const monster* mon)
 {
     // Ugh.

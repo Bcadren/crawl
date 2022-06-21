@@ -1395,6 +1395,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     // Wands
     case SPELL_WAND_FLAME:
     case SPELL_WAND_ACID:
+    case SPELL_WAND_DRAIN:
     case SPELL_ICEBLAST:
     case SPELL_ENSLAVEMENT:
     case SPELL_WAND_POLYMORPH:
@@ -1948,9 +1949,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_SMALL_MAMMAL:
     case SPELL_VAMPIRIC_DRAINING:
     case SPELL_MAJOR_HEALING:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_VAMPIRE_SUMMON:
-#endif
+    case SPELL_SUMMON_GREATER_UNDEAD:
     case SPELL_SHADOW_CREATURES:       // summon anything appropriate for level
 #if TAG_MAJOR_VERSION == 34
     case SPELL_FAKE_RAKSHASA_SUMMON:
@@ -4802,18 +4801,41 @@ static monster_type _pick_jungle_animal()
                             : MONS_DIRE_ELEPHANT;
 }
 
-static monster_type _pick_undead_summon()
+// These are sorted in order of power.
+static monster_type _undead_servants[] =
 {
-    static monster_type undead[] =
-    {
-        MONS_NECROPHAGE, MONS_JIANGSHI, MONS_HUNGRY_GHOST, MONS_FLAYED_GHOST,
-        MONS_ZOMBIE, MONS_SKELETON, MONS_SIMULACRUM, MONS_SPECTRAL_THING,
-        MONS_FLYING_SKULL, MONS_MUMMY, MONS_VAMPIRE, MONS_WIGHT, MONS_WRAITH,
-        MONS_SHADOW_WRAITH, MONS_FREEZING_WRAITH, MONS_PHANTASMAL_WARRIOR, MONS_SHADOW
-    };
+    // Lesser Undead
+    MONS_PHANTOM, MONS_WIGHT, MONS_FLYING_SKULL, MONS_WRAITH,
+    MONS_PHANTASMAL_WARRIOR, MONS_SKELETAL_WARRIOR, MONS_FREEZING_WRAITH,
+    MONS_SHADOW_WRAITH, MONS_FLAYED_GHOST,
+    // Either Spell
+    MONS_JIANGSHI, MONS_ANCIENT_CHAMPION, 
+    // Greater Undead
+    MONS_REVENANT, MONS_BONE_DRAGON, MONS_PROFANE_SERVITOR
+};
 
-    return RANDOM_ELEMENT(undead);
+static void _do_undead_summon(monster* mons, spell_type spell_cast, god_type god)
+{
+    const int power = mons->spell_hd(spell_cast);
+    const int nsummons = (spell_cast == SPELL_SUMMON_UNDEAD) ? random_range(3, 5) : 1 + coinflip();
+    const int duration = min(2 + power / 5, 6);
+
+    for (int i = 0; i < nsummons; ++i)
+    {
+        int which_mons;
+
+        if (spell_cast == SPELL_SUMMON_UNDEAD)
+            which_mons = random_range(min(4, power / 3), 4 + min(random2(power / 3), 6));
+        else // SPELL_SUMMON_GREATER_UNDEAD
+            which_mons = random_range(9, min(10 + random2(power / 3), 13));
+
+        monster* summon = create_monster(
+            mgen_data(_undead_servants[which_mons], SAME_ATTITUDE(mons), mons->pos(), mons->foe)
+            .set_summoned(mons, duration, spell_cast, god));
+        chaos_summon(spell_cast, summon, mons);
+    }
 }
+
 
 static monster_type _pick_vermin()
 {
@@ -4868,7 +4890,6 @@ static void _do_high_level_summon(monster* mons, spell_type spell_cast,
             post_hook(summon, target ? *target : mons->pos());
     }
 }
-
 
 static void _mons_summon_elemental(monster &mons, mon_spell_slot slot, bolt&)
 {
@@ -4949,7 +4970,7 @@ static void _mons_cast_spectral_orcs(monster* mons)
             const int lvl = env.absdepth0;
             give_specific_item(orc, make_mons_weapon(orc->base_monster, lvl));
             give_specific_item(orc, make_mons_armour(orc->base_monster, lvl));
-            // XXX: and a shield, for warlords...? (wasn't included before)
+            // BCADDO: XXX: and a shield, for warlords...? (wasn't included before)
 
             // set gear as summoned
             orc->mark_summoned(abj, true, SPELL_SUMMON_SPECTRAL_ORCS);
@@ -6590,9 +6611,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
             " squirts a massive cloud of ink into the water!");
         return;
 
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_VAMPIRE_SUMMON:
-#endif
     case SPELL_SUMMON_SMALL_MAMMAL:
         sumcount2 = 1 + random2(3);
 
@@ -6645,7 +6663,8 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         for (sumcount = 0; sumcount < sumcount2; ++sumcount)
         {
             x = create_monster(
-                mgen_data(RANDOM_MOBILE_MONSTER, SAME_ATTITUDE(mons),
+                mgen_data(mons->friendly() ? RANDOM_COMPATIBLE_MONSTER : RANDOM_MOBILE_MONSTER, 
+                          SAME_ATTITUDE(mons),
                           mons->pos(), mons->foe)
                           .set_summoned(mons, 5, spell_cast, god)
                           .set_place(place));
@@ -6829,10 +6848,10 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     }
 
     case SPELL_SUMMON_UNDEAD:
-        _do_high_level_summon(mons, spell_cast, _pick_undead_summon,
-                              2 + random2(mons->spell_hd(spell_cast) / 5 + 1),
-                              god);
+    case SPELL_SUMMON_GREATER_UNDEAD:
+        _do_undead_summon(mons, spell_cast, god);
         return;
+
 
     case SPELL_BROTHERS_IN_ARMS:
     {

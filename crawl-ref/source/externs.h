@@ -532,7 +532,7 @@ typedef uint32_t iflags_t;
 struct item_def
 {
     object_class_type base_type;   ///< basic class (eg OBJ_WEAPON)
-    uint8_t        sub_type;       ///< type within that class (eg WPN_DAGGER)
+    uint8_t           sub_type;    ///< type within that class (eg WPN_DAGGER)
 #pragma pack(push,2)
     union
     {
@@ -685,6 +685,25 @@ private:
     colour_t book_colour() const;
     colour_t miscellany_colour() const;
     colour_t corpse_colour() const;
+};
+
+struct item_type
+{
+    object_class_type base_type;   ///< basic class (eg OBJ_WEAPON)
+    uint8_t           sub_type;    ///< type within that class (eg WPN_DAGGER)
+
+public:
+    item_type(object_class_type base, uint8_t sub)
+    {
+        base_type = base;
+        sub_type = sub;
+    }
+
+    item_type(const item_def item)
+    {
+        base_type = item.base_type;
+        sub_type  = item.sub_type;
+    }
 };
 
 typedef item_def item_info;

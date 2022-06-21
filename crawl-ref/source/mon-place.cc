@@ -340,7 +340,9 @@ static bool _has_big_aura(monster_type mt)
 static bool _is_incompatible_monster(monster_type mt)
 {
     return mons_class_is_stationary(mt)
-        || player_will_anger_monster(mt);
+        || player_will_anger_monster(mt)
+        || (you.religion == GOD_YREDELEMNUL) 
+            && (bool)(mons_class_holiness(mt) & (MH_CONSTRUCT | MH_ELEMENTAL));
 }
 
 static bool _is_banded_monster(monster_type mt)
@@ -1080,6 +1082,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
                     break;
                 case SPELL_SPECTRAL_CLOUD: // this too.
                 case SPELL_SUMMON_UNDEAD:
+                case SPELL_SUMMON_GREATER_UNDEAD:
                 case SPELL_MALIGN_OFFERING:
                 case SPELL_SYMBOL_OF_TORMENT:
                 case SPELL_BLACK_MARK: // and this.
@@ -1107,6 +1110,9 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
                 case SPELL_BERSERKER_RAGE:
                 case SPELL_TROGS_HAND:
                     mon->god = GOD_TROG;
+                    break;
+                case SPELL_AURA_OF_BRILLIANCE:
+                    mon->god = GOD_SIF_MUNA;
                     break;
 
                 // Associated with multiple gods or no (player) god.

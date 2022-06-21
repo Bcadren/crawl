@@ -460,12 +460,17 @@ static void _place_delayed_monsters();
 
 bool is_evil_god(god_type god)
 {
-    return god == GOD_KIKUBAAQUDGHA
+    return is_necro_god(god)
            || god == GOD_MAKHLEB
-           || god == GOD_YREDELEMNUL
            || god == GOD_BEOGH
            || god == GOD_LUGONU
            || god == GOD_DITHMENOS;
+}
+
+bool is_necro_god(god_type god)
+{
+    return god == GOD_KIKUBAAQUDGHA
+        || god == GOD_YREDELEMNUL;
 }
 
 bool is_good_god(god_type god)
@@ -957,100 +962,6 @@ void inc_gift_timeout(int val)
         you.gift_timeout = 200;
     else
         you.gift_timeout += val;
-}
-
-// These are sorted in order of power.
-static monster_type _yred_servants[] =
-{
-    MONS_PHANTOM, MONS_WIGHT, MONS_FLYING_SKULL, MONS_WRAITH,
-    MONS_PHANTASMAL_WARRIOR, MONS_SKELETAL_WARRIOR,
-    MONS_FLAYED_GHOST, MONS_REVENANT, MONS_GHOUL, MONS_ANCIENT_CHAMPION,
-    MONS_BONE_DRAGON, MONS_PROFANE_SERVITOR
-};
-
-#define MIN_YRED_SERVANT_THRESHOLD 3
-#define MAX_YRED_SERVANT_THRESHOLD ARRAYSZ(_yred_servants)
-
-static bool _yred_high_level_servant(monster_type type)
-{
-    return type == MONS_BONE_DRAGON
-           || type == MONS_PROFANE_SERVITOR;
-}
-
-int yred_random_servants(unsigned int threshold, bool force_hostile)
-{
-    if (threshold == 0)
-    {
-        if (force_hostile)
-        {
-            // This implies wrath - scale the threshold with XL.
-            threshold =
-                MIN_YRED_SERVANT_THRESHOLD
-                + (MAX_YRED_SERVANT_THRESHOLD - MIN_YRED_SERVANT_THRESHOLD)
-                  * you.experience_level / 27;
-        }
-        else
-            threshold = ARRAYSZ(_yred_servants);
-    }
-    else
-    {
-        threshold = min(static_cast<unsigned int>(ARRAYSZ(_yred_servants)),
-                        threshold);
-    }
-
-    const unsigned int servant = random2(threshold);
-
-    // Skip some of the weakest servants, once the threshold is high.
-    if ((servant + 2) * 2 < threshold)
-        return -1;
-
-    monster_type mon_type = _yred_servants[servant];
-
-    // Cap some of the strongest servants.
-    if (!force_hostile && _yred_high_level_servant(mon_type))
-    {
-        int current_high_level = 0;
-        for (auto &entry : companion_list)
-        {
-            monster* mons = monster_by_mid(entry.first);
-            if (!mons)
-                mons = &entry.second.mons.mons;
-            if (_yred_high_level_servant(mons->type))
-                current_high_level++;
-        }
-
-        if (current_high_level >= 3)
-            return -1;
-    }
-
-    int how_many = (mon_type == MONS_FLYING_SKULL) ? 2 + random2(4)
-                                                   : 1;
-
-    mgen_data mg(mon_type, !force_hostile ? BEH_FRIENDLY : BEH_HOSTILE,
-                 you.pos(), MHITYOU);
-    mg.set_summoned(!force_hostile ? &you : 0, 0, 0, GOD_YREDELEMNUL);
-
-    if (force_hostile)
-        mg.non_actor_summoner = "the anger of Yredelemnul";
-
-    int created = 0;
-    if (force_hostile)
-    {
-        mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
-
-        for (; how_many > 0; --how_many)
-        {
-            if (create_monster(mg))
-                created++;
-        }
-    }
-    else
-    {
-        for (; how_many > 0; --how_many)
-            delayed_monster(mg);
-    }
-
-    return created;
 }
 
 static bool _give_nemelex_gift(bool forced = false)
@@ -2997,15 +2908,10 @@ void excommunication(bool voluntary, god_type new_god)
     you.piety_hysteresis = 0;
 
     // so that the player isn't punished for "switching" between good gods via aX
-    if (is_good_god(old_god) && voluntary)
+    if (voluntary)
     {
         you.saved_good_god_piety = old_piety;
         you.previous_good_god = old_god;
-    }
-    else
-    {
-        you.saved_good_god_piety = 0;
-        you.previous_good_god = GOD_NO_GOD;
     }
 
     if (old_god == GOD_ASHENZARI)
@@ -3588,13 +3494,13 @@ static void _apply_monk_bonus()
 /// Transfer some piety from an old good god to a new one, if applicable.
 static void _transfer_good_god_piety()
 {
-    if (!is_good_god(you.religion))
+    if (!is_good_god(you.religion) && !is_necro_god(you.religion))
         return;
 
     const god_type old_god = you.previous_good_god;
     const uint8_t old_piety = you.saved_good_god_piety;
 
-    if (!is_good_god(old_god))
+    if (!god_likes_your_god(old_god))
         return;
 
     if (you.religion != old_god)
@@ -3603,6 +3509,8 @@ static void _transfer_good_god_piety()
             { GOD_ELYVILON, "aid the meek" },
             { GOD_SHINING_ONE, "vanquish evil" },
             { GOD_ZIN, "enforce order" },
+            { GOD_YREDELEMNUL, "forge unholy abominations" },
+            { GOD_KIKUBAAQUDGHA, "practice dark magic" },
         };
 
         // Some feedback that piety moved over.
@@ -3972,6 +3880,7 @@ static const map<god_type, function<void ()>> on_join = {
 #endif
     { GOD_RU, _join_ru },
     { GOD_TROG, _join_trog },
+    { GOD_YREDELEMNUL, []() { you.enslaved_soul = MONS_NO_MONSTER; } },
     { GOD_ZIN, _join_zin },
 };
 
@@ -4204,7 +4113,8 @@ int had_gods()
 
 bool god_likes_your_god(god_type god, god_type your_god)
 {
-    return is_good_god(god) && is_good_god(your_god);
+    return is_good_god(god) && is_good_god(your_god)
+        || is_necro_god(god) && is_necro_god(your_god);
 }
 
 bool god_hates_your_god(god_type god, god_type your_god)
@@ -4215,6 +4125,10 @@ bool god_hates_your_god(god_type god, god_type your_god)
 
     // Gods do not hate themselves.
     if (god == your_god)
+        return false;
+
+    // Yred & Kiku are buddies
+    if (is_necro_god(god) && is_necro_god(your_god))
         return false;
 
     // Non-good gods always hate your current god.

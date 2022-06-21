@@ -1755,6 +1755,24 @@ _mon_hex_zap(ZAP_SLEEP, BEAM_SLEEP),
 },
 
 {
+    ZAP_WAND_DRAIN,
+    "bolt of negative energy",
+    200,
+    new calcdice_calculator<3, 2, 1, 1>,
+    new tohit_calculator<12, 5, 3>,
+    new dicedef_calculator<3, 2, 1, 1>,
+    new tohit_calculator<12, 5, 3>,
+    DARKGREY,
+    false,
+    BEAM_DRAIN,
+    DCHAR_FIRED_ZAP,
+    true,
+    true,
+    false,
+    6
+},
+
+{
     ZAP_RANDOM_BOLT_TRACER,
     "random bolt tracer",
     200,

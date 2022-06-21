@@ -244,6 +244,7 @@ enum tag_minor_version
     TAG_MINOR_GOLDIFY_MANUALS,     // Manuals disintegrate when picked up, like books.
     TAG_MINOR_JIYVA_REWORK,        // Draining old Jiyva mutations to start Jiyva rework.
     TAG_MINOR_ICICLE_CASCADE,      // Adding this spell also removed Ignition. Tagging adjust spellbook should this affect a player.
+    TAG_MINOR_YRED_SPELLS,         // Save spells with enslaved souls. Save monsters spawn items for enslaved soul use.
 #endif
     NUM_TAG_MINORS,
     TAG_MINOR_VERSION = NUM_TAG_MINORS - 1

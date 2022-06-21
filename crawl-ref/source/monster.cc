@@ -2334,6 +2334,10 @@ string monster::full_name(description_level_type desc) const
 
 void monster::set_pronoun()
 {
+    // Don't set it again . . . [Prevents gender change on promotion or becoming spectral]
+    if (props.exists(MON_GENDER_KEY))
+        return;
+
     // Preserve mainline behavior of these uniques having higher gender neutral odds.
     if ((type == MONS_HELLBINDER || type == MONS_CLOUD_MAGE) && one_chance_in(4))
         props[MON_GENDER_KEY] = GENDER_NEUTRAL;

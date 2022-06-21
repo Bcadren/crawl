@@ -1034,7 +1034,7 @@ static bool _handle_scroll(monster& mons)
         {
             int x = items(true, type, OBJ_RANDOM, ISPEC_GIFT);
             item_def &item = mitm[x];
-            give_specific_item(&mons, x);
+            give_specific_item(&mons, x, false);
             if (item.defined())
             {
                 set_ident_type(item, true);
@@ -1052,7 +1052,7 @@ static bool _handle_scroll(monster& mons)
             item.base_type = OBJ_GOLD;
             item.quantity = acquire_gold_amt();
             simple_monster_message(mons, " didn't like any of the acquirement options so just took some gold.");
-            give_specific_item(&mons, x);
+            give_specific_item(&mons, x, false);
         }
         break;
     }

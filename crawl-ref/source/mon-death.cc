@@ -3017,6 +3017,9 @@ item_def* monster_die(monster& mons, killer_type killer,
                 mprf("%s has temporarily lost its spectral form.", mons.name(DESC_YOUR).c_str());
             you.duration[DUR_ANCESTOR_DELAY] = random_range(900, 1200);
             you.enslaved_soul = mons.base_monster;
+            you.soul_gender = (gender_type)mons.props[MON_GENDER_KEY].get_int();
+            you.soul_items = mons.spawn_items;
+            you.soul_spells = mons.spells;
             you.soul_hd_boost = mons.props[YRED_HD_KEY];
         }
 

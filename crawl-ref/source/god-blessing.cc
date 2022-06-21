@@ -151,7 +151,7 @@ static void _gift_weapon_to_orc(monster* orc, int weapon_type)
     weapon.sub_type = weapon_type;
     weapon.quantity = 1;
     set_ident_flags(weapon, ISFLAG_IDENT_MASK);
-    give_specific_item(orc, weapon);
+    give_specific_item(orc, weapon, false);
 }
 
 /**
@@ -353,7 +353,7 @@ static void _gift_armour_to_orc(monster* orc, bool shield = false)
     }
     armour.quantity = 1;
     set_ident_flags(armour, ISFLAG_IDENT_MASK);
-    give_specific_item(orc, armour);
+    give_specific_item(orc, armour, false);
 }
 
 /**

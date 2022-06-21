@@ -65,6 +65,7 @@ public:
     mutable montravel_target_type travel_target;
     vector<coord_def> travel_path;
     FixedVector<short, NUM_MONSTER_SLOTS> inv;
+    vector<item_type> spawn_items;
     monster_spells spells;
     mon_attitude_type attitude;
     beh_type behaviour;

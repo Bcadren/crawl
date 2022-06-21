@@ -33,7 +33,7 @@ static void _strip_item_ego(item_def &item)
     item_set_appearance(item);
 }
 
-void give_specific_item(monster* mon, int thing)
+void give_specific_item(monster* mon, int thing, bool on_spawn)
 {
     if (thing == NON_ITEM || thing == -1)
         return;
@@ -81,18 +81,21 @@ void give_specific_item(monster* mon, int thing)
         return;
     ASSERT(mthing.holding_monster() == mon);
 
+    if (on_spawn)
+        mon->spawn_items.emplace_back(item_type(mthing));
+
     if (!mthing.appearance_initialized())
         item_colour(mthing);
 }
 
-void give_specific_item(monster* mon, const item_def& tpl)
+void give_specific_item(monster* mon, const item_def& tpl, bool on_spawn)
 {
     int thing = get_mitm_slot();
     if (thing == NON_ITEM)
         return;
 
     mitm[thing] = tpl;
-    give_specific_item(mon, thing);
+    give_specific_item(mon, thing, on_spawn);
 }
 
 static bool _should_give_unique_item(monster* mon)
@@ -154,12 +157,14 @@ static void _give_jewels(monster* mon, int level)
     if (idx == NON_ITEM)
         return;
 
+    item_def item = mitm[idx];
+
     if (fragile)
     {
-        if (is_unrandom_artefact(mitm[idx]))
-            curse_item(mitm[idx]);
+        if (is_unrandom_artefact(item))
+            curse_item(item);
         else
-            apply_curse(mitm[idx], ARTP_FRAGILE, true);
+            apply_curse(item, ARTP_FRAGILE, true);
     }
 
     give_specific_item(mon, idx);
@@ -250,14 +255,6 @@ static void _give_potion(monster* mon, int level)
         give_specific_item(mon, thing_created);
     }
 }
-
-static item_def* make_item_for_monster(
-    monster* mons,
-    object_class_type base,
-    int subtype,
-    int level,
-    int allow_uniques = 0,
-    iflags_t flags = 0);
 
 typedef vector<pair<weapon_type, int>> weapon_list;
 struct plus_range
@@ -1466,13 +1463,8 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
     }
 }
 
-static item_def* make_item_for_monster(
-    monster* mons,
-    object_class_type base,
-    int subtype,
-    int level,
-    int allow_uniques,
-    iflags_t flags)
+item_def* make_item_for_monster(monster* mons, object_class_type base,
+    int subtype, int level, bool on_spawn, int allow_uniques, iflags_t flags)
 {
     const int bp = get_mitm_slot();
     if (bp == NON_ITEM)
@@ -1494,7 +1486,7 @@ static item_def* make_item_for_monster(
             apply_curse(mitm[thing_created], ARTP_FRAGILE, true);
     }
 
-    give_specific_item(mons, thing_created);
+    give_specific_item(mons, thing_created, on_spawn);
     return &mitm[thing_created];
 }
 

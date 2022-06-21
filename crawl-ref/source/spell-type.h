@@ -173,9 +173,7 @@ enum spell_type : int
 
     // Mostly monster-only spells after this point:
     SPELL_HELLFIRE_BLAST,
-#if TAG_MAJOR_VERSION == 34
-    SPELL_VAMPIRE_SUMMON,
-#endif
+    SPELL_SUMMON_GREATER_UNDEAD,
     SPELL_BRAIN_FEED,
 #if TAG_MAJOR_VERSION == 34
     SPELL_FAKE_RAKSHASA_SUMMON,
@@ -487,5 +485,6 @@ enum spell_type : int
     SPELL_HOLY_SUPPRESSION,
     SPELL_PROJECTED_NOISE,
     SPELL_UNSTABLE_FIERY_DASH,
+    SPELL_WAND_DRAIN,
     NUM_SPELLS
 };

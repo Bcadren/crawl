@@ -2043,6 +2043,111 @@ bool yred_can_enslave_soul(monster* mon)
            && mon->type != MONS_PANDEMONIUM_LORD;
 }
 
+static int _yred_gear_enslaved_soul(vector<item_type> items, monster * mon)
+{
+    // More items, less HD bonus from invo.
+    int item_count = 0;
+
+    for (item_type type : items)
+    {
+        switch (type.base_type)
+        {
+        case OBJ_WANDS:
+        {
+            switch (type.sub_type)
+            {
+                // Random upgrade for Random Effects.
+            case WAND_RANDOM_EFFECTS:
+                if (coinflip())
+                    type.sub_type = WAND_DRAIN;
+                else
+                    type.sub_type = WAND_ENSLAVEMENT;
+                break;
+
+                // Damaging wands collapse to Drain.
+            default:
+            case WAND_ACID:
+            case WAND_CLOUDS:
+            case WAND_FLAME:
+            case WAND_ICEBLAST:
+            case WAND_SCATTERSHOT:
+                type.sub_type = WAND_DRAIN;
+                break;
+
+                // These wands unchanged.
+            case WAND_ENSLAVEMENT:
+            case WAND_ENSNARE:
+            case WAND_HEAL_WOUNDS:
+            case WAND_DRAIN:
+            case WAND_HASTING:
+                break;
+
+                // MR Checking wands collapse to enslave.
+            case WAND_DISINTEGRATION:
+            case WAND_POLYMORPH:
+                type.sub_type = WAND_ENSLAVEMENT;
+                break;
+            }
+        }
+        case OBJ_ARMOURS:
+        case OBJ_SHIELDS:
+        case OBJ_JEWELLERY:
+        case OBJ_WEAPONS:
+            break;
+        default:
+            continue;
+        }
+
+        item_count++;
+
+        item_def * item = make_item_for_monster(mon, type.base_type, type.sub_type, -1);
+
+        item->flags |= ISFLAG_SUMMONED | ISFLAG_IDENT_MASK;
+
+        const int invo_value = apply_invo_enhancer(you.skill(SK_INVOCATIONS), false);
+
+        switch (type.base_type)
+        {
+        case OBJ_WEAPONS:
+            set_item_ego_type(*item, SPWPN_DRAINING);
+            item->plus = invo_value / 3;
+            break;
+
+        case OBJ_ARMOURS:
+            item->plus = armour_max_enchant(*item) * (3 + invo_value) / 30;
+            item->brand = SPARM_NORMAL;
+
+            if (!armour_is_special(*item))
+            {
+                if (invo_value > 16)
+                    item->brand = SPARM_RESISTANCE;
+            }
+            break;
+
+        case OBJ_SHIELDS:
+            if (is_hybrid(type.sub_type))
+            {
+                item->plus = invo_value / 3;
+                item->brand = SPWPN_DRAINING;
+            }
+            else
+            {
+                item->plus = property(*item, PSHD_SH) * (3 + invo_value) / 30;
+                item->brand = SPARM_NORMAL;
+
+                if (invo_value > 8)
+                    item->brand = SPARM_REFLECTION;
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    return item_count;
+}
+
 void yred_respawn_enslaved_soul()
 {
     coord_def respawn_point;
@@ -2061,11 +2166,26 @@ void yred_respawn_enslaved_soul()
 
     mon->set_new_monster_id();
     define_zombie(mon, you.enslaved_soul, MONS_SPECTRAL_THING);
+    mon->inv.init(NON_ITEM);
+
+    if (you.soul_spells.size())
+    {
+        mon->spells = you.soul_spells;
+        mon->props[CUSTOM_SPELLS_KEY] = true;
+    }
+    else // In case it got a throwing spell during define zombie that it shouldn't have.
+    {
+        mon->spells.clear();
+        mon->props.erase(CUSTOM_SPELLS_KEY);
+    }
+
+    const int item_count = _yred_gear_enslaved_soul(you.soul_items, mon);
+
     monster_info mi = monster_info(you.enslaved_soul);
     int hd = mi.hd;
     hd += you.soul_hd_boost;
     mon->props[YRED_HD_KEY] = you.soul_hd_boost;
-    hd += apply_invo_enhancer(div_rand_round(you.skill(SK_INVOCATIONS), 3), true);
+    hd += apply_invo_enhancer(div_rand_round(you.skill(SK_INVOCATIONS), 3) * max(0, 4 - item_count) / 4, true);
 
     mon->set_hit_dice(hd);
     roll_zombie_hp(mon);
@@ -2099,13 +2219,16 @@ void yred_respawn_enslaved_soul()
 
     env.mid_cache[mon->mid] = mon->mindex();
     mon->hit_points = mon->max_hit_points;
-    mon->inv.init(NON_ITEM);
 
     mon->move_to_pos(respawn_point);
+    mon->props[MON_GENDER_KEY] = you.soul_gender;
+
     if (!cell_is_solid(respawn_point))
         place_cloud(CLOUD_RANDOM_SMOKE, respawn_point, 2 + random2(4), &you, 2);
 
     you.enslaved_soul = MONS_NO_MONSTER;
+    you.soul_items.clear();
+    you.soul_spells.clear();
     you.soul_hd_boost = 0;
 }
 
@@ -2123,6 +2246,8 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
         mprf("%s is freed!", temp.proper_name(DESC_YOUR).c_str());
 
         you.enslaved_soul = MONS_NO_MONSTER;
+        you.soul_items.clear();
+        you.soul_spells.clear();
         you.soul_hd_boost = 0;
         you.duration[DUR_ANCESTOR_DELAY] = 1;
     }
@@ -2142,25 +2267,22 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
     // If the monster's held in a net, get it out.
     mons_clear_trapping_net(mon);
 
-    // Rebrand or drop any holy equipment, and keep wielding the rest. Also
+    // Drop old equipment
+    monster_drop_things(mon);
     // remove any active avatars.
-    for (int slot = MSLOT_WEAPON; slot <= MSLOT_ALT_WEAPON; slot++)
-    {
-        item_def *wpn = mon->mslot_item(static_cast<mon_inv_type>(slot));
-        if (wpn && get_weapon_brand(*wpn) == SPWPN_HOLY_WRATH)
-            set_item_ego_type(*wpn, SPWPN_DRAINING);
-    }
-    monster_drop_things(mon, false, [](const item_def& item)
-                                    { return is_holy_item(item); });
     mon->align_summons();
 
     const monster orig = *mon;
+
+    vector<item_type> gear = mon->spawn_items;
 
     // Use the original monster type as the zombified type here, to get
     // the proper stats from it.
     define_zombie(mon, mon->type, MONS_SPECTRAL_THING);
 
-    mon->set_hit_dice(max(orig.get_experience_level(), 1) + apply_invo_enhancer(div_rand_round(you.skill(SK_INVOCATIONS), 3), true));
+    const int item_count = _yred_gear_enslaved_soul(gear, mon);
+
+    mon->set_hit_dice(max(orig.get_experience_level(), 1) + apply_invo_enhancer(div_rand_round(you.skill(SK_INVOCATIONS), 3), true) * max(0, 4 - item_count) / 4);
     roll_zombie_hp(mon);
 
     mon->colour = ETC_UNHOLY;
@@ -2172,11 +2294,78 @@ void yred_make_enslaved_soul(monster* mon, bool force_hostile)
     // its spectral thing has them as well.
     mon->flags |= orig.flags & MF_MELEE_MASK;
     monster_spells spl = orig.spells;
-    for (const mon_spell_slot &slot : spl)
-        if (!(get_spell_flags(slot.spell) & spflag::holy))
-            mon->spells.push_back(slot);
+    bool spl_changed = false;
+
+    for (mon_spell_slot &slot : spl)
+    {
+        if ((bool)(slot.flags & MON_SPELL_PRIEST) ||
+            (bool)(get_spell_flags(slot.spell) & spflag::holy)
+            || slot.spell == SPELL_SPELLFORGED_SERVITOR)
+        {
+            switch (slot.spell)
+            {
+            default:
+                break;
+            case SPELL_HASTE:
+            case SPELL_AURA_OF_BRILLIANCE:
+            case SPELL_BERSERKER_RAGE:
+            case SPELL_CORRUPTING_PULSE:
+            case SPELL_BANISHMENT:
+                slot.spell = SPELL_INJURY_MIRROR;
+                break;
+            case SPELL_MINOR_HEALING:
+            case SPELL_MAJOR_HEALING:
+            case SPELL_TROGS_HAND:
+                slot.spell = SPELL_DRAIN_LIFE;
+                break;
+            case SPELL_HOLY_FLAMES:
+            case SPELL_CLEANSING_FLAME:
+            case SPELL_HURL_HELLFIRE:
+            case SPELL_HELLFIRE_BLAST:
+            case SPELL_UPHEAVAL:
+            case SPELL_MAJOR_DESTRUCTION:
+            case SPELL_LEGENDARY_DESTRUCTION:
+                slot.spell = SPELL_GHOSTLY_FIREBALL;
+                break;
+            case SPELL_HEAL_OTHER:
+            case SPELL_HEALING_BLAST:
+                slot.spell = SPELL_MALIGN_OFFERING;
+                break;
+            case SPELL_SUMMON_DEMON:
+            case SPELL_PLANEREND:
+            case SPELL_MIGHT_OTHER:
+            case SPELL_SUMMON_EYEBALLS:
+                slot.spell = SPELL_SUMMON_UNDEAD;
+                break;
+            case SPELL_SUMMON_HOLIES:
+            case SPELL_SUMMON_GREATER_DEMON:
+            case SPELL_HASTE_OTHER:
+            case SPELL_GREATER_SERVANT_MAKHLEB:
+            case SPELL_BROTHERS_IN_ARMS:
+            case SPELL_SUMMON_DRAKES:
+            case SPELL_SPELLFORGED_SERVITOR:
+                slot.spell = SPELL_SUMMON_GREATER_UNDEAD;
+                break;
+            case SPELL_SAP_MAGIC:
+            case SPELL_HOLY_BREATH:
+                slot.spell = SPELL_BOLT_OF_DRAINING;
+                break;
+            }
+        }
+
+        mon->spells.push_back(slot);
+    }
+
     if (mon->spells.size())
         mon->props[CUSTOM_SPELLS_KEY] = true;
+
+    if (spl_changed)
+    {
+        bool nameless = (mon->god == GOD_NO_GOD || mon->god >= NUM_GODS);
+        mprf("As %s leaves the service of %s and becomes dedicated to Yredelemnul, "
+            "their holy abilities change to the powers of Yredelemnul and their allies.",
+            mon->name(DESC_THE, true).c_str(), nameless ? "their former master" : god_name(mon->god, true).c_str());
+    }
 
     name_zombie(*mon, orig);
 

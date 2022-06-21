@@ -1847,8 +1847,12 @@ Summons multiple ufetubi; small, annoying demons.
 %%%%
 Summon Undead spell
 
-Summons multiple undead monsters, creating various ghosts, vampires, wraiths
-and other lesser undead.
+Summons multiple undead creatures, such as ghosts, wraiths and skeletal warriors.
+%%%%
+Summon Greater Undead spell
+
+Summons one or more of the strongest undead creatures, varying from Jiangshi to 
+Bone Dragons and Profane Servitors.
 %%%%
 Summon Vermin spell
 

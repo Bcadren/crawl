@@ -779,6 +779,9 @@ static string _raw_penance_message(god_type which_god)
         }
     }
 
+    if (penance > 0 && is_necro_god(which_god) && is_necro_god(you.religion))
+        return "%s is ambivalent towards you.";
+
     // could do some math tricks to turn this into a table, but it seems fiddly
     const int initial_penance = initial_wrath_penance_for(which_god);
 

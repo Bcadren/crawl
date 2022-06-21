@@ -130,29 +130,6 @@ static mgen_data _wrath_mon_data(monster_type mtyp, god_type god)
     return mg;
 }
 
-static bool _yred_random_zombified_hostile()
-{
-    const bool skel = one_chance_in(4);
-
-    monster_type z_base;
-
-    do
-    {
-        // XXX: better zombie selection?
-        level_id place(BRANCH_DUNGEON,
-                       min(27, you.experience_level + 5));
-        z_base = pick_local_zombifiable_monster(place, RANDOM_MONSTER,
-                                                you.pos());
-    }
-    while (skel && !mons_skeleton(z_base));
-
-    mgen_data temp = _wrath_mon_data(skel ? MONS_SKELETON : MONS_ZOMBIE,
-                                     GOD_YREDELEMNUL)
-                     .set_base(z_base);
-
-    return create_monster(temp, false);
-}
-
 static const pop_entry _okawaru_servants[] =
 { // warriors
   {  1,  3,   3, FALL, MONS_ORC },
@@ -689,24 +666,21 @@ static bool _yredelemnul_retribution()
 
             for (; how_many > 0; --how_many)
             {
-                if (one_chance_in(you.experience_level))
-                {
-                    if (_yred_random_zombified_hostile())
-                        count++;
-                }
-                else
-                {
-                    const int num = yred_random_servants(0, true);
-                    if (num >= 0)
-                        count += num;
-                    else
-                        ++how_many;
-                }
+                monster_type mon_type = MONS_ABOMINATION_SMALL;
+                if (x_chance_in_y(you.experience_level, 40))
+                    mon_type = MONS_ABOMINATION_LARGE;
+
+                mgen_data mg(mon_type, BEH_HOSTILE, you.pos(), MHITYOU);
+                mg.set_summoned(0, 0, 0, GOD_YREDELEMNUL);
+                mg.non_actor_summoner = "the anger of Yredelemnul";
+                mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+
+                create_monster(mg);
             }
 
-            simple_god_message(count > 1 ? " sends servants to punish you." :
-                               count > 0 ? " sends a servant to punish you."
-                                         : "'s servants fail to arrive.", god);
+            simple_god_message(count > 1 ? " sends abominations to punish you." :
+                               count > 0 ? " sends an abomination to punish you."
+                                         : "'s abominations fail to arrive.", god);
         }
     }
     else

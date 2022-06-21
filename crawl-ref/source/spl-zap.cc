@@ -72,6 +72,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     // wands
     { SPELL_WAND_FLAME,             ZAP_WAND_FLAME },
     { SPELL_WAND_ACID,              ZAP_WAND_ACID },
+    { SPELL_WAND_DRAIN,             ZAP_WAND_DRAIN },
     { SPELL_WAND_POLYMORPH,         ZAP_WAND_POLYMORPH },
     { SPELL_WAND_HEALING,           ZAP_WAND_HEALING },
     { SPELL_WAND_ENSNARE,           ZAP_WAND_ENSNARE },

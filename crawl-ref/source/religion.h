@@ -27,6 +27,7 @@ enum class lifesaving_chance
 };
 
 bool is_evil_god(god_type god);
+bool is_necro_god(god_type god);
 bool is_good_god(god_type god);
 bool is_chaotic_god(god_type god);
 bool is_unknown_god(god_type god);

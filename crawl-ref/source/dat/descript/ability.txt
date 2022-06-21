@@ -377,9 +377,11 @@ long as they are relatively uninjured. The duration of the mark is dependent on
 Invocations skill. If the monster dies while still marked, its soul will become
 yours.
 
-The enslaved soul will retain the monster's faculties, equipment and abilities,
-as well as some of its innate healing. However, only one soul can be enslaved
-at a time.
+The enslaved soul will retain the monster's faculties and abilities, as well as 
+some of its innate healing. Yredelemnul will provide them with suitable gear for 
+their new form, matching items that they held most dear in life. 
+
+Only one soul can be enslaved at a time.
 %%%%
 # Okawaru
 Heroism ability

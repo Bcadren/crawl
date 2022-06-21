@@ -23,6 +23,7 @@
 #include "equipment-type.h"
 #include "flush-reason-type.h"
 #include "game-chapter.h"
+#include "gender-type.h"
 #include "kills.h"
 #include "mon-holy-type.h"
 #include "mount.h"
@@ -308,6 +309,9 @@ public:
 
     // Yred Enslaved Soul Information (In case a save is in a state where it'd need revival)
     monster_type enslaved_soul;
+    gender_type soul_gender;
+    monster_spells soul_spells;
+    vector<item_type> soul_items;
     int soul_hd_boost;
 
     int magic_contamination;
