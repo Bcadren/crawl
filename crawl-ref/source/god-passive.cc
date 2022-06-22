@@ -1388,13 +1388,6 @@ monster* shadow_monster(bool equip)
             return nullptr;
         item_def& new_item = mitm[wpn_index];
 
-        // BCADDO: Let shadow creature copy staff melee proper?
-        if (wpn->base_type == OBJ_STAVES)
-        {
-            new_item.base_type = OBJ_WEAPONS;
-            new_item.sub_type  = WPN_STAFF;
-        }
-
         // Hack to prevent a crash. BCADDO: Remove if/when enemies are able to use shield hybrids as weapons.
 
         if (wpn->base_type == OBJ_SHIELDS)
@@ -1405,7 +1398,6 @@ monster* shadow_monster(bool equip)
             else
                 new_item.sub_type = WPN_QUARTERSTAFF;
         }
-
         else
         {
             new_item.base_type = wpn->base_type;

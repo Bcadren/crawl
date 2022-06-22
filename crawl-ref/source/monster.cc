@@ -2870,7 +2870,7 @@ void monster::expose_to_element(beam_type flavour, int strength,
             del_ench(ENCH_CONDENSATION_SHIELD);
             if (you.can_see(*this))
             {
-                mprf("The heat dissipates %s  shield.",
+                mprf("The heat dissipates %s shield.",
                     apostrophise(name(DESC_THE)).c_str());
             }
         }
