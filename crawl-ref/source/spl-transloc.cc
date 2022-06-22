@@ -1335,7 +1335,7 @@ static coord_def _beckon_destination(const coord_def &origin, const actor &becko
     pow -= 6;
     int distance = grid_distance(origin, beckoned.pos());
     if (path.origin_spell == SPELL_TONGUE_LASH)
-        distance -= random2(1 + agent.get_experience_level());
+        distance -= 1 + coinflip();
     else
         distance -= div_rand_round(pow, 4);
     coord_def retval = beckoned.pos();
