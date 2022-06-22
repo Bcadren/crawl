@@ -7263,8 +7263,8 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
             mprf("A floating shield of ice appears before %s.",
                 mons->name(DESC_THE).c_str());
         }
-        const int power = (mons->spell_hd(spell_cast) * 15) / 10;
-        int deg = 20 + random2(power);
+        const int power = mons->spell_hd(spell_cast) * 15;
+        int deg = 12 + random2(power);
         deg += random2(power); // Split for RNG.
         mons->add_ench(mon_enchant(ENCH_CONDENSATION_SHIELD,
             deg, mons));
@@ -8546,6 +8546,14 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     // handled here as well. - bwr
     switch (monspell)
     {
+    case SPELL_CONDENSATION_SHIELD:
+    {
+        item_def * shld = mon->shield();
+        return mon->has_ench(ENCH_CONDENSATION_SHIELD) ||
+                shld && shld->base_type == OBJ_SHIELDS
+                && !is_hybrid(shld->sub_type);
+    }
+
     case SPELL_CALL_TIDE:
         return !player_in_branch(BRANCH_SHOALS)
                || mon->has_ench(ENCH_TIDE)
@@ -8943,9 +8951,6 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
 
     case SPELL_DEFLECT_MISSILES:
         return mon->has_ench(ENCH_DEFLECT_MISSILES);
-
-    case SPELL_CONDENSATION_SHIELD:
-        return mon->has_ench(ENCH_CONDENSATION_SHIELD);
 
     case SPELL_CONFUSION_GAZE:
         return !foe || !mon->can_see(*foe);

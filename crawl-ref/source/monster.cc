@@ -2867,8 +2867,10 @@ void monster::expose_to_element(beam_type flavour, int strength,
             del_ench(ENCH_ICEMAIL);
         if (has_ench(ENCH_CONDENSATION_SHIELD))
         {
-            del_ench(ENCH_CONDENSATION_SHIELD);
-            if (you.can_see(*this))
+            const int amount = strength ? strength : 10;
+            if (!lose_ench_levels(get_ench(ENCH_CONDENSATION_SHIELD),
+                                  amount * BASELINE_DELAY, true) 
+                && you.can_see(*this))
             {
                 mprf("The heat dissipates %s shield.",
                     apostrophise(name(DESC_THE)).c_str());

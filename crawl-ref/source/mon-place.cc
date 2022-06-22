@@ -28,6 +28,7 @@
 #include "ghost.h"
 #include "god-abil.h"
 #include "god-passive.h" // passive_t::slow_abyss, slow_orb_run
+#include "item-prop.h"  
 #include "libutil.h"
 #include "losglobal.h"
 #include "message.h"
@@ -1343,8 +1344,16 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->add_ench(mon_enchant(ENCH_OZOCUBUS_ARMOUR, 20 + rnd_power, mon));
     }
 
-    if (mon->has_spell(SPELL_CONDENSATION_SHIELD))
-        mon->add_ench(ENCH_CONDENSATION_SHIELD);
+    const item_def *shld = mon->shield();
+
+    if (mon->has_spell(SPELL_CONDENSATION_SHIELD) 
+        && (!shld || shld->base_type != OBJ_SHIELDS || is_hybrid(shld->sub_type)))
+    {
+        const int power = mon->spell_hd(SPELL_OZOCUBUS_ARMOUR);
+        int rnd_power = random2(power);
+        rnd_power += random2(power);
+        mon->add_ench(mon_enchant(ENCH_CONDENSATION_SHIELD, 12 + rnd_power, mon));
+    }
 
     if (mon->has_spell(SPELL_SHROUD_OF_GOLUBRIA))
         mon->add_ench(ENCH_SHROUD);
