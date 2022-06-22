@@ -3873,6 +3873,10 @@ static bool _can_move(monster* mons, move_array * moves, bool * preferred_availa
                 retval = true;
                 (*moves)[count_x][count_y] = true;
 
+                // Zombies not smart enough for preferential moves.
+                if (mons_is_zombified(*mons) && mons->type != MONS_SPECTRAL_THING)
+                    continue;
+
                 if ((target_grid == DNGN_DEEP_WATER) && (habitat == HT_WATER))
                     *preferred_available = true;
 
