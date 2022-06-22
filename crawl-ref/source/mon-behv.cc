@@ -152,10 +152,11 @@ static bool _should_keep_range(monster* mon)
     if (mons_enslaved_soul(*mon))
         type = mon->base_monster;
 
-    if (coinflip() && you.where_are_you == BRANCH_DUNGEON && you.depth < 5)
+    if (!mon->friendly() && coinflip() &&
+        (you.where_are_you == BRANCH_DUNGEON && you.depth < 5 || you.where_are_you == BRANCH_SEWER))
+    {
         return false;
-    if (coinflip() && you.where_are_you == BRANCH_SEWER)
-        return false;
+    }
     if (mons_class_flag(type, M_MAINTAIN_RANGE))
         return true;
     if (mons_class_flag(type, M_FIGHTER))
