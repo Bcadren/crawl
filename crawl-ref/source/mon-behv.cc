@@ -147,17 +147,26 @@ static void _set_firing_pos(monster* mon, coord_def target)
 
 static bool _should_keep_range(monster* mon)
 {
-    if (coinflip() && you.where_are_you == BRANCH_DUNGEON && you.depth < 10)
+    monster_type type = mon->type;
+
+    if (mons_enslaved_soul(*mon))
+        type = mon->base_monster;
+
+    if (coinflip() && you.where_are_you == BRANCH_DUNGEON && you.depth < 5)
         return false;
     if (coinflip() && you.where_are_you == BRANCH_SEWER)
         return false;
-    if (mons_class_flag(mon->type, M_MAINTAIN_RANGE))
+    if (mons_class_flag(type, M_MAINTAIN_RANGE))
         return true;
-    if (mons_class_flag(mon->type, M_FIGHTER))
+    if (mons_class_flag(type, M_FIGHTER))
         return false;
-    if (mons_class_flag(mon->type, M_ARCHER) && (mon->launcher() || can_throw(mon)))
+    if ((mons_class_flag(type, M_ARCHER)
+        || type == MONS_SPECTRAL_THING && mons_class_flag(mon->base_monster, M_ARCHER))
+        && (mon->launcher() || can_throw(mon)))
+    {
         return true;
-    if (mons_class_flag(mon->type, M_SPELLCASTER))
+    }
+    if (mons_class_flag(type, M_SPELLCASTER))
     {
         if (silenceable(mon) && mon->is_silenced())
             return false;
