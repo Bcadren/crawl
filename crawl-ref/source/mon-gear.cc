@@ -2222,8 +2222,9 @@ void give_item(monster *mons, int level_number, bool mons_summoned)
         _give_gold(mons, level_number);
 
     monuse_flags itemuse = mons_itemuse(*mons);
+    bool zombie = mons_class_is_zombified(mons->type);
 
-    if (mons_class_is_zombified(mons->type))
+    if (zombie)
         itemuse = mons_class_itemuse(mons->base_monster);
 
     if (mons->type == MONS_SWOOPING_MAGPIE
@@ -2234,14 +2235,14 @@ void give_item(monster *mons, int level_number, bool mons_summoned)
         else
             _give_gold(mons, level_number);
     }
-    else if (itemuse & MU_JEWELS)
+    else if (bool(itemuse & MU_JEWELS) && !zombie)
         _give_jewels(mons, level_number);
 
     if (mons->type == MONS_ROXANNE)
         _give_book(mons, level_number);
-    if (itemuse & MU_WAND)
+    if (bool(itemuse & MU_WAND) && !zombie)
         _give_wand(mons, level_number, mons_summoned);
-    if (itemuse & MU_CONSUMABLES)
+    if (bool(itemuse & MU_CONSUMABLES) && !zombie)
         _give_potion(mons, level_number);
     if (itemuse & MU_WEAPONS)
         _give_weapon(mons, level_number);

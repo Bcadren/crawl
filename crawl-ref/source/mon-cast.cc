@@ -4967,9 +4967,14 @@ static void _mons_cast_spectral_orcs(monster* mons)
 
             chaos_summon(SPELL_SUMMON_SPECTRAL_ORCS, orc, mons);
 
+            // Clear default inventory
+            monster_drop_things(orc);
+
             // give gear using the base type
             const int lvl = pow + random2(pow);
             give_weapon(orc, lvl);
+            if (one_chance_in(3))
+                make_item_for_monster(orc, OBJ_WEAPONS, WPN_ARBALEST, lvl);
             give_armour(orc, lvl);
             give_shield(orc, lvl);
 
