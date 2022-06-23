@@ -4935,6 +4935,7 @@ static void _mons_cast_spectral_orcs(monster* mons)
 {
     ASSERT(mons->get_foe());
     const coord_def fpos = mons->get_foe()->pos();
+    const int pow = mons->spell_hd(SPELL_SUMMON_SPECTRAL_ORCS);
 
     const int abj = 3;
 
@@ -4967,10 +4968,10 @@ static void _mons_cast_spectral_orcs(monster* mons)
             chaos_summon(SPELL_SUMMON_SPECTRAL_ORCS, orc, mons);
 
             // give gear using the base type
-            const int lvl = env.absdepth0;
-            give_specific_item(orc, make_mons_weapon(orc->base_monster, lvl));
-            give_specific_item(orc, make_mons_armour(orc->base_monster, lvl));
-            // BCADDO: XXX: and a shield, for warlords...? (wasn't included before)
+            const int lvl = pow + random2(pow);
+            give_weapon(orc, lvl);
+            give_armour(orc, lvl);
+            give_shield(orc, lvl);
 
             // set gear as summoned
             orc->mark_summoned(abj, true, SPELL_SUMMON_SPECTRAL_ORCS);

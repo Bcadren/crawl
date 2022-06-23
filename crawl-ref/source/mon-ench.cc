@@ -22,6 +22,7 @@
 #include "english.h"
 #include "env.h"
 #include "fight.h"
+#include "god-passive.h" // For old Ash id.
 #include "hints.h"
 #include "item-status-flag-type.h"
 #include "items.h"
@@ -2099,6 +2100,8 @@ void monster::mark_summoned(int longevity, bool mark_items, int summon_type, boo
     if (mark_items)
         for (mon_inv_iterator ii(*this); ii; ++ii)
             ii->flags |= ISFLAG_SUMMONED;
+
+    passive_id_monster_equipment(this);
 }
 
 /* Is the monster temporarily summoned?

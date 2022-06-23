@@ -2204,14 +2204,14 @@ void give_armour(monster *mons, int level_number)
     _give_armour(mons, 1 + level_number/2);
 }
 
-void give_shield(monster *mons)
+void give_shield(monster *mons, int level_number)
 {
-    _give_shield(mons, -1);
+    _give_shield(mons, 1 + level_number / 2);
 }
 
-void give_jewels(monster *mons)
+void give_jewels(monster *mons, int level_number)
 {
-    _give_jewels(mons, -1);
+    _give_jewels(mons, level_number);
 }
 
 void give_item(monster *mons, int level_number, bool mons_summoned)
