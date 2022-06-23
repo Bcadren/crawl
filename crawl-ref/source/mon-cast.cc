@@ -8626,13 +8626,13 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     case SPELL_BLINK_AWAY:
         // Prefer to keep a tornado going rather than blink.
         // Prefer to maintain swallowing or constriction over blink.
-        // BCADDO: Also add water/air holding here?
         return mon->no_tele(true, false)
                || mon->has_ench(ENCH_TORNADO)
                || mon->has_ench(ENCH_CHAOSNADO)
                || mon->has_ench(ENCH_VORTEX)
                || mon->is_constricting()
-               || mon->has_ench(ENCH_SWALLOWING);
+               || mon->has_ench(ENCH_SWALLOWING)
+               || mon->props.exists("holding");
 
     case SPELL_BLINK_OTHER:
     case SPELL_BLINK_OTHER_CLOSE:

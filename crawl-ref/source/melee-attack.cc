@@ -4014,12 +4014,14 @@ void melee_attack::mons_apply_attack_flavour()
             {
                 you.duration[water ? DUR_WATER_HOLD : DUR_AIR_HOLD] = 10;
                 you.props[water ? "water_holder" : "air_holder"].get_int() = attacker->as_monster()->mid;
+                attacker->props["holding"] = true;
             }
             else if (defender->is_monster()
                      && !defender->as_monster()->has_ench(water ? ENCH_WATER_HOLD : ENCH_AIR_HOLD))
             {
                 defender->as_monster()->add_ench(mon_enchant(water ? ENCH_WATER_HOLD : ENCH_AIR_HOLD, 1,
                                                              attacker, 1));
+                attacker->props["holding"] = true;
             }
             else
                 return; //Didn't apply effect; no message

@@ -381,6 +381,15 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
 {
     switch (me.ench)
     {
+    case ENCH_AIR_HOLD:
+    case ENCH_WATER_HOLD:
+    {
+        actor * holder = me.agent();
+        if (holder && holder->alive() && holder->is_monster())
+            holder->props.erase("holding");
+        break;
+    }
+
     case ENCH_TIDE:
         shoals_release_tide(this);
         break;

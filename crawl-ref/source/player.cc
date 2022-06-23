@@ -5991,6 +5991,9 @@ bool player::clear_far_engulf()
     monster * const mons = monster_by_mid(you.props[key].get_int());
     if (!mons || !mons->alive() || !adjacent(mons->pos(), you.pos()))
     {
+        if (mons && mons->alive() && mons->props.exists("holding"))
+            mons->props.erase("holding");
+
         if (you.duration[DUR_SWALLOWED])
         {
             if (!mons || !mons->alive())
