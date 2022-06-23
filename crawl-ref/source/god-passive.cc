@@ -2068,7 +2068,7 @@ static void _slimify_feat(coord_def pos)
     }
     else if (feat_is_diggable(feat, true)
         || feat == DNGN_SILVER_WALL && one_chance_in(10)
-        || feat == DNGN_METAL_WALL && one_chance_in(5)
+        || (feat == DNGN_METAL_WALL || feat == DNGN_CLEAR_METAL_WALL) && one_chance_in(5)
         || feat == DNGN_STONE_WALL && one_chance_in(3))
     {
         new_feat = DNGN_SLIMY_WALL;

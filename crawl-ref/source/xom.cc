@@ -1760,7 +1760,8 @@ static inline dungeon_feature_type _vitrified_feature(dungeon_feature_type feat)
         return DNGN_CLOSED_CLEAR_DOOR;
     case DNGN_SILVER_WALL:
         return DNGN_RUNED_CLEAR_STONE_WALL;
-    // BCADDO: Transparent aluminium.
+    case DNGN_METAL_WALL:
+        return DNGN_CLEAR_METAL_WALL;
     default:
         return feat;
     }
@@ -1840,7 +1841,7 @@ static void _xom_pseudo_miscast(int /*sever*/)
     if (in_view[DNGN_DEEP_WATER])
     {
         messages.emplace_back("From the corner of your eye you spot something "
-                           "lurking in the deep water.");
+            "lurking in the deep water.");
     }
 
     if (in_view[DNGN_ORCISH_IDOL])
@@ -1861,7 +1862,8 @@ static void _xom_pseudo_miscast(int /*sever*/)
         priority.emplace_back("The granite statue turns to stare at you.");
 
     if (in_view[DNGN_CLEAR_ROCK_WALL] || in_view[DNGN_CLEAR_STONE_WALL]
-        || in_view[DNGN_CLEAR_PERMAROCK_WALL] || in_view[DNGN_RUNED_CLEAR_STONE_WALL])
+        || in_view[DNGN_CLEAR_PERMAROCK_WALL] || in_view[DNGN_RUNED_CLEAR_STONE_WALL]
+        || in_view[DNGN_CLEAR_METAL_WALL])
     {
         messages.emplace_back("Dim shapes swim through the translucent wall.");
     }
@@ -1869,7 +1871,7 @@ static void _xom_pseudo_miscast(int /*sever*/)
     if (in_view[DNGN_CRYSTAL_WALL])
         messages.emplace_back("Dim shapes swim through the crystal wall.");
 
-    if (in_view[DNGN_METAL_WALL])
+    if (in_view[DNGN_METAL_WALL] || in_view[DNGN_CLEAR_METAL_WALL])
     {
         messages.emplace_back("Tendrils of electricity crawl over the metal "
                               "wall!");

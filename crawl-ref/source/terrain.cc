@@ -626,7 +626,7 @@ bool feat_is_tree(dungeon_feature_type feat)
  */
 bool feat_is_metal(dungeon_feature_type feat)
 {
-    return feat == DNGN_METAL_WALL || feat == DNGN_GRATE || feat == DNGN_SILVER_WALL;
+    return feat == DNGN_METAL_WALL || feat == DNGN_GRATE || feat == DNGN_SILVER_WALL || feat == DNGN_CLEAR_METAL_WALL;
 }
 
 /** Is this feature ambivalent about whether we're going up or down?

@@ -486,6 +486,7 @@ static bool _octa_room(dgn_region& region, int oblique_max,
     return true;
 }
 
+// BCADDO: Redo this to have explicit in list.
 static dungeon_feature_type _random_wall()
 {
     const dungeon_feature_type min_rand = DNGN_METAL_WALL;

@@ -553,6 +553,7 @@ spret cast_SMD(const coord_def& target, int pow, bool fail)
         // Metal 
         case DNGN_SILVER_WALL:
         case DNGN_METAL_WALL:
+        case DNGN_CLEAR_METAL_WALL:
             delay = 12;
             break;
 

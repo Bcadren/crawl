@@ -106,7 +106,7 @@ static bool _feat_compatible(dungeon_feature_type wanted_feat,
            || wanted_feat == DNGN_DEEP_WATER && feat_is_watery(actual_feat)
            || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat) && (actual_feat != DNGN_SLIMY_WATER)
            || wanted_feat == DNGN_ROCK_WALL && actual_feat == DNGN_CLEAR_ROCK_WALL
-           || wanted_feat == DNGN_METAL_WALL && actual_feat == DNGN_SILVER_WALL;
+           || wanted_feat == DNGN_METAL_WALL && (actual_feat == DNGN_SILVER_WALL || actual_feat == DNGN_CLEAR_METAL_WALL);
 }
 
 static bool _hab_requires_mon_flight(dungeon_feature_type g)

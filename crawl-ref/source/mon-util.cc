@@ -124,6 +124,7 @@ static habitat_type _grid2habitat(dungeon_feature_type grid)
         return HT_ROCK;
     case DNGN_METAL_WALL:
     case DNGN_SILVER_WALL:
+    case DNGN_CLEAR_METAL_WALL:
         return HT_STEEL;
     case DNGN_FLOOR:
     default:

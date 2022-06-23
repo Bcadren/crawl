@@ -3166,7 +3166,7 @@ NAME: nicolae_zen_rock_garden
 TAGS: no_monster_gen no_trap_gen no_item_gen extra decor
 DEPTH: D:2-6
 SUBST: Q = TPW, T = tP, P = p'', Y = W', Z = tW, ' = ':13 r:1
-FTILE: tp'r = floor_sand
+FTILE: tp'rW = floor_sand
 KMONS: p = plant
 KITEM: r = scroll of random uselessness q:1
 KITEM: s = pair of boots

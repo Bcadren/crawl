@@ -1382,6 +1382,18 @@ mirrored_wall DNGN_MIRROR_WALL
 silver_wall DNGN_SILVER_WALL
 
 %weight 10
+metal_wall_clear0 DNGN_TRANSPARENT_METAL_WALL
+metal_wall_clear1
+metal_wall_clear2
+%weight 3
+metal_wall_clear3
+metal_wall_clear4
+metal_wall_clear5
+metal_wall_clear6
+metal_wall_clear7
+metal_wall_clear8
+
+%weight 10
 metal_wall0 DNGN_METAL_WALL
 metal_wall1
 metal_wall2
