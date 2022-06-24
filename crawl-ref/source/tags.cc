@@ -6004,7 +6004,7 @@ void unmarshallMonster(reader &th, monster& m)
     m.mname           = unmarshallString(th);
     m.xp_tracking     = static_cast<xp_tracking_type>(unmarshallUByte(th));
     m.set_hit_dice(     unmarshallByte(th));
-    ASSERT(m.get_experience_level() > 0);
+    m.set_hit_dice(max(m.get_experience_level(), 1));
     m.speed           = unmarshallByte(th);
     // Avoid sign extension when loading files (Elethiomel's hang)
     m.speed_increment = unmarshallUByte(th);
