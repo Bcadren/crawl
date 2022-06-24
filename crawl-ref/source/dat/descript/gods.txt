@@ -101,7 +101,8 @@ the powers of death. An evil god, Kikubaaqudgha requires worshippers to cause
 the death and destruction of as many creatures as possible. In exchange,
 Kikubaaqudgha offers great assistance to the aspiring necromancer: spellbooks
 filled with dark magic, protection against necromantic backlash, and an endless
-supply of bodies taken from Kikubaaqudgha's vast mausoleum.
+supply of bodies taken from Kikubaaqudgha's vast mausoleum. Kikubaaqudgha's
+followers can convert to the Yredelemnul while keeping some piety.
 %%%%
 Lugonu
 
@@ -212,11 +213,12 @@ capricious. There is nothing a follower can do to influence Xom's mood.
 Yredelemnul
 
 Yredelemnul the Dark is a god worshipped by those who seek powers over death
-and the undead. Followers can raise legions of servile undead, and gain a
-number of other useful powers with which to make better use of the souls of
+and the undead. Followers can raise legions of horrific abominations, and gain 
+a number of other useful powers with which to make better use of the souls of
 the living. Yredelemnul especially favours those who would destroy holy
 creatures, which oppose the realm of undeath, and the nonliving, which exist
-outside of it.
+outside of it. Yredelemnul's followers can convert to the Kikubaaqudgha while 
+keeping some piety.
 %%%%
 Zin
 
@@ -475,13 +477,15 @@ playthings...
 %%%%
 Yredelemnul powers
 
-Yredelemnul gives followers the power to raise skeletons and corpses, to recall
-undead followers to their vicinity, and to heal by draining the life force of
-living creatures. With sufficient piety, Yredelemnul can be called upon to
-mirror a follower's injuries onto attackers. Eventually, followers will gain
-the power to bind a monster's soul, and make it fight for them instead.
-Yredelemnul will sporadically gift followers increasingly powerful undead
-servants.
+Yredelemnul gives followers the power to craft unholy abominations, to recall
+these twisted creations to their vicinity, and to mirror a follower's injuries 
+onto attackers. Eventually, followers will gain the power to bind the soul of 
+an intelligent living, demonic or holy creature, and make it fight for them 
+instead. This process makes them leave any former diety and any priestly 
+powers they may possess will change to those of a servant of Yredelemnul 
+or the allied necromantic god, Kikubaaqudha. With sufficient piety, 
+Yredelemnul can be called upon to heal devotees by draining the life force 
+of living, holy and demonic creatures. 
 %%%%
 Zin powers
 
