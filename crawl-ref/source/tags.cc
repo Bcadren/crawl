@@ -6061,6 +6061,7 @@ void unmarshallMonster(reader &th, monster& m)
         }
     }
 
+    m.spawn_items.clear();
     if (parts & MP_SPAWN_ITEMS)
     {
         int l = (int)unmarshallByte(th);
@@ -6543,11 +6544,6 @@ static ghost_demon unmarshallGhost(reader &th)
     ghost.ac               = unmarshallShort(th);
     ghost.damage           = unmarshallShort(th);
     ghost.speed            = unmarshallShort(th);
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() < TAG_MINOR_GHOST_ENERGY)
-        ghost.move_energy  = 10;
-    else
-#endif
     ghost.move_energy      = unmarshallShort(th);
     // fix up ghost_demons that forgot to have move_energy initialized
     if (ghost.move_energy < FASTEST_PLAYER_MOVE_SPEED
@@ -6560,19 +6556,7 @@ static ghost_demon unmarshallGhost(reader &th)
     ghost.att_type = static_cast<attack_type>(unmarshallShort(th));
     ghost.att_flav = static_cast<attack_flavour>(unmarshallShort(th));
     ghost.resists          = unmarshallInt(th);
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() < TAG_MINOR_NO_GHOST_SPELLCASTER)
-        unmarshallByte(th);
-    if (th.getMinorVersion() < TAG_MINOR_MON_COLOUR_LOOKUP)
-        unmarshallByte(th);
-#endif
     ghost.colour           = unmarshallByte(th);
-
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() < TAG_MINOR_BOOL_FLIGHT)
-        ghost.flies        = unmarshallShort(th);
-    else
-#endif
     ghost.flies        = unmarshallBoolean(th);
 
     unmarshallSpells(th, ghost.spells
