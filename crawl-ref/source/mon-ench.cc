@@ -386,7 +386,7 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
     case ENCH_WATER_HOLD:
     {
         actor * holder = me.agent();
-        if (holder && holder->alive() && holder->is_monster())
+        if (holder && holder->alive() && holder->is_monster() && holder->props.exists("holding"))
             holder->props.erase("holding");
         break;
     }
