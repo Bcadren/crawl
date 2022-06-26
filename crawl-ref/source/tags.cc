@@ -6065,7 +6065,11 @@ void unmarshallMonster(reader &th, monster& m)
     {
         int l = (int)unmarshallByte(th);
         for (int i = 0; i < l; i++)
-            m.spawn_items.emplace_back(item_type((object_class_type)unmarshallByte(th), (int)unmarshallByte(th)));
+        {
+            object_class_type b = static_cast<object_class_type>(unmarshallByte(th));
+            int               s = (int)unmarshallByte(th);
+            m.spawn_items.emplace_back(item_type(b, s));
+        }
     }
 
     if (parts & MP_SPELLS)
