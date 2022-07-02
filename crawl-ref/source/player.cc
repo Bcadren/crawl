@@ -8626,7 +8626,7 @@ int player::has_claws(bool allow_tran) const
             return 0;
     }
 
-    if (you.wearing(EQ_GLOVES, ARM_CLAW, true, false))
+    if (wearing(EQ_GLOVES, ARM_CLAW, true, false))
         return 1;
 
     if (get_mutation_level(MUT_PAWS, allow_tran))

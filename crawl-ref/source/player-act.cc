@@ -236,7 +236,7 @@ int player::damage_type(int attack_number)
     {
         if (get_mutation_level(MUT_PAWS))
             return DAM_PIERCE;
-        if (has_claws() > 1)
+        if (has_claws() > 1 || wearing(EQ_GLOVES, ARM_CLAW, true, false))
             return DAM_SLICE;
     }
 
