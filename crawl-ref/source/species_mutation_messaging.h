@@ -72,7 +72,7 @@ static const species_mutation_message spmu_data[] =
 { SP_DRACONIAN, MUT_EXOSKELETON,
  "draconic flesh",
  
-  {"Your scales resist being cut, but it’s oddly easy to stick a small blade between them. (rSlashing+, rPiercing-)", "", ""},
+  {"Your scales resist being cut, but it's oddly easy to stick a small blade between them. (rSlashing+, rPiercing-)", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
