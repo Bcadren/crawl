@@ -1947,11 +1947,13 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
             {
                 if (mount)
                 {
+                    if (you.mount == mount_type::slime)
+                        return;
                     int healed = heal_mount(healz);
                     if (healed)
                     {
                         mprf("Your %s reforms in the acidic ooze%s", you.mount_name(true).c_str(),
-                            attack_strength_punctuation(healz).c_str());
+                            attack_strength_punctuation(healed).c_str());
                     }
                 }
                 else
@@ -1983,7 +1985,7 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
             }
         }
 
-        else
+        if (hurted < 0)
             hurted = 0;
 
         if (act->alive() && x_chance_in_y(hurted, 20))
