@@ -2469,6 +2469,8 @@ static void tag_read_you(reader &th)
         you.mount = unmarshall_int_as<mount_type>(th);
         you.mount_hp_max = unmarshallInt(th);
         you.mount_hp = unmarshallInt(th);
+        if (you.mount_hp > you.mount_hp_max)
+            you.mount_hp = you.mount_hp_max;
     }
     if (th.getMinorVersion() >= TAG_MINOR_MOUNT_REGEN)
         you.mount_hp_regen = unmarshallInt(th);

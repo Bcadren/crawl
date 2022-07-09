@@ -167,15 +167,22 @@ void dismount()
 
 int heal_mount(int amount)
 {
-    amount = abs(amount);
+    if (you.mount_hp >= you.mount_hp_max)
+    {
+        you.mount_hp = you.mount_hp_max;
+        return 0;
+    }
 
-    if (you.mount_hp + amount < you.mount_hp_max)
+    amount = abs(amount);
+    const int new_hp = you.mount_hp + amount;
+
+    if (new_hp > you.mount_hp_max)
     {
         amount = you.mount_hp_max - you.mount_hp;
         you.mount_hp = you.mount_hp_max;
     }
     else
-        you.mount_hp += amount;
+        you.mount_hp = new_hp;
 
     return amount;
 }

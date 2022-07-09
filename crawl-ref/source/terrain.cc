@@ -1947,9 +1947,12 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
             {
                 if (mount)
                 {
-                    mprf("Your %s reforms in the acidic ooze%s", you.mount_name(true).c_str(), 
+                    int healed = heal_mount(healz);
+                    if (healed)
+                    {
+                        mprf("Your %s reforms in the acidic ooze%s", you.mount_name(true).c_str(),
                             attack_strength_punctuation(healz).c_str());
-                    heal_mount(healz);
+                    }
                 }
                 else
                 {
