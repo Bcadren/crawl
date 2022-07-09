@@ -6056,9 +6056,12 @@ mon_resist_type bolt::try_enchant_monster(monster* mon, int &res_margin)
     return apply_enchantment_to_monster(mon);
 }
 
+static bool _cig_check(const monster * mon);
+
 static bool _cigotuvi(monster * mon, actor * agent)
 {
-    if (!mon->has_ench(ENCH_CIGOTUVI)
+    if (_cig_check(mon) 
+        && !mon->has_ench(ENCH_CIGOTUVI)
         && mon->add_ench(mon_enchant(ENCH_CIGOTUVI, 0, agent, (3 + random2(8)) * BASELINE_DELAY)))
     {
         if (you.can_see(*mon))
