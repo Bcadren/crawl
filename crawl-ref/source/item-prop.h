@@ -124,7 +124,7 @@ void ident_reflector(item_def *item);
 
 // Only works for armour/weapons/missiles
 // weapon functions:
-int weapon_rarity(int w_type) IMMUTABLE;
+int weapon_rarity(int w_type, branch_type place = BRANCH_DUNGEON) IMMUTABLE;
 int shield_rarity(int s_type) IMMUTABLE;
 
 bool is_hybrid(int s_type) IMMUTABLE;

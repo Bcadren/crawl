@@ -164,6 +164,8 @@ static weapon_type _determine_weapon_subtype(int item_level, branch_type place)
     {
         if (place == BRANCH_ORC && one_chance_in(4))
             return WPN_PICKAXE;
+        if (place == BRANCH_SHOALS && one_chance_in(4))
+            return WPN_LEIOMANO;
         return random_choose(WPN_QUARTERSTAFF,
                              WPN_FALCHION,
                              WPN_LONG_SWORD,
@@ -174,7 +176,7 @@ static weapon_type _determine_weapon_subtype(int item_level, branch_type place)
     }
     else
     {
-        if (place == BRANCH_ORC)
+        if (place == BRANCH_ORC & !one_chance_in(3))
             return WPN_PICKAXE;
         return random_choose(WPN_HUNTING_SLING,
                              WPN_SPEAR,

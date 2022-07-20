@@ -1841,8 +1841,14 @@ bool is_enchantable_item(const item_def &item)
 // Checks how rare a weapon is. Many of these have special routines for
 // placement, especially those with a rarity of zero. Chance is out of 10.
 // ^^^ vvv "rarity" is exactly the wrong term - inverted...
-int weapon_rarity(int w_type)
+int weapon_rarity(int w_type, branch_type place)
 {
+    if (place == BRANCH_ORC && w_type == WPN_PICKAXE
+        || place == BRANCH_SHOALS && w_type == WPN_LEIOMANO)
+    {
+        return 3;
+    }
+
     return Weapon_prop[Weapon_index[w_type]].commonness;
 }
 
