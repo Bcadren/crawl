@@ -398,7 +398,7 @@ bool is_weapon_brand_ok(int type, int brand, bool /*strict*/)
     if (brand <= SPWPN_NORMAL)
         return true;
 
-    if (weapon_has_flag(type, WPNF_LIGHTWEIGHT))
+    if (weapon_has_flag(type, WPNF_LIGHTWEIGHT) && brand == SPWPN_SPEED)
         return false;
 
     switch ((brand_type)brand)
