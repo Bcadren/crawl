@@ -131,6 +131,9 @@ tileidx_t tilep_equ_hand1(const item_def &item)
     case WPN_MACE:
         tile = TILEP_HAND1_MACE;
         break;
+    case WPN_LEIOMANO:
+        tile = TILEP_HAND1_LEIOMANO;
+        break;
     case WPN_GREAT_MACE:
         tile = TILEP_HAND1_GREAT_MACE;
         break;
@@ -402,6 +405,9 @@ tileidx_t tilep_equ_hand2(const item_def &item)
         break;
     case WPN_MACE:
         tile = TILEP_HAND2_MACE;
+        break;
+    case WPN_LEIOMANO:
+        tile = TILEP_HAND2_LEIOMANO;
         break;
     case WPN_GREAT_MACE:
         tile = TILEP_HAND2_GREAT_MACE;
@@ -683,6 +689,9 @@ tileidx_t tilep_equ_weapon(const item_def &item)
         break;
     case WPN_MACE:
         tile = TILEP_HAND1_MACE;
+        break;
+    case WPN_LEIOMANO:
+        tile = TILEP_HAND1_LEIOMANO;
         break;
     case WPN_GREAT_MACE:
         tile = TILEP_HAND1_GREAT_MACE;

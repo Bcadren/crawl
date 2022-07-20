@@ -151,6 +151,8 @@ bool convert2bad(item_def &item);
 int get_vorpal_type(const item_def &item) PURE;
 int get_damage_type(const item_def &item) PURE;
 
+bool weapon_has_flag(const int wpn, const wpn_flags flag);
+
 bool is_blessable_item(const item_def &item);
 bool is_brandable_weapon(const item_def &wpn, bool allow_ranged, bool divine = false);
 

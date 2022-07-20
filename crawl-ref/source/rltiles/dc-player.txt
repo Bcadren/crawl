@@ -803,6 +803,7 @@ enchantress_dagger ENCHANTRESS_DAGGER
 ## blunt
 club CLUB
 club_slant CLUB_SLANT
+leiomano LEIOMANO
 club_two CLUB2
 club_three CLUB3
 stick STICK
@@ -1168,6 +1169,7 @@ enchantress_dagger ENCHANTRESS_DAGGER
 ## blunt
 club CLUB
 club_slant CLUB_SLANT
+leiomano LEIOMANO
 club_two CLUB2
 club_three CLUB3
 stick STICK

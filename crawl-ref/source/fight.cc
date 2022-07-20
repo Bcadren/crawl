@@ -1248,6 +1248,10 @@ int dual_wield_mindelay_skill(const item_def &weap0, const item_def &weap1)
  */
 int weapon_min_delay(const item_def &weapon, bool check_speed)
 {
+    // Short circuit for lightweights
+    if (weapon_has_flag(weapon.sub_type, WPNF_LIGHTWEIGHT))
+        return 3;
+
     int base = 20;
     if (weapon.base_type == OBJ_SHIELDS)
     {
@@ -1255,7 +1259,11 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
             return 5;
         base = property(weapon, PSHD_SPEED);
     }
-    else base = property(weapon, PWPN_SPEED);
+    else
+    {
+        base = property(weapon, PWPN_SPEED);
+    }
+
     int min_delay = base/2;
 
     // Hammers are special cased slightly.
@@ -1266,9 +1274,11 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
         min_delay = 3;
 
     // Short blades and bows can get up to at least unarmed speed.
-    if (item_attack_skill(weapon) == SK_SHORT_BLADES 
+    if (item_attack_skill(weapon) == SK_SHORT_BLADES
         || item_attack_skill(weapon) == SK_BOWS)
+    {
         min_delay = min(5, min_delay);
+    }
 
     // All weapons have min delay 7 or better
     if (min_delay > 7)

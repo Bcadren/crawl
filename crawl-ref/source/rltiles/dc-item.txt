@@ -26,6 +26,9 @@ urand_wyrmbane4 UNRAND_WYRMBANE4
 club WPN_CLUB
 club2
 club3
+leiomano1 WPN_LEIOMANO
+leiomano2
+leiomano3
 mace1 WPN_MACE
 mace2
 mace3
