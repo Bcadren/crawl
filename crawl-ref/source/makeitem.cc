@@ -398,28 +398,33 @@ bool is_weapon_brand_ok(int type, int brand, bool /*strict*/)
     if (brand <= SPWPN_NORMAL)
         return true;
 
-    if (weapon_has_flag(type, WPNF_LIGHTWEIGHT) && brand == SPWPN_SPEED)
-        return false;
-
     switch ((brand_type)brand)
     {
+    case SPWPN_SPEED:
+        if (weapon_has_flag(type, WPNF_LIGHTWEIGHT))
+            return false;
+        break;
+
+    case SPWPN_MOLTEN:
+        if (weapon_has_flag(type, WPNF_WOODEN))
+            return false;
+        break;
+
     // Universal brands.
     case SPWPN_NORMAL:
     case SPWPN_VENOM:
     case SPWPN_PROTECTION:
-    case SPWPN_SPEED:
     case SPWPN_VORPAL:
     case SPWPN_CHAOS:
     case SPWPN_HOLY_WRATH:
     case SPWPN_ELECTROCUTION:
-    case SPWPN_MOLTEN:
     case SPWPN_FREEZING:
     case SPWPN_ACID: // Melee-only, except punk.
     case SPWPN_DRAGON_SLAYING: // Normally polearm-only but Bahamut can put on whatever.
+    case SPWPN_DRAINING: // Rare Brand, only placed by Yred-related things.
         break;
 
     // Melee-only brands.
-    case SPWPN_DRAINING: // Rare Brand, only placed by Yred-related things.
     case SPWPN_VAMPIRISM:
     case SPWPN_PAIN:
     case SPWPN_DISTORTION:
