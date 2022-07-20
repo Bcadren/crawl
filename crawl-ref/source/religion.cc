@@ -1947,6 +1947,8 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
         if (!is_wieldable_weapon(WPN_DAGGER, you.body_size(PSIZE_TORSO, true)))
             return WPN_KRIS;
         return HD < 16 ? WPN_DAGGER : WPN_TANTO;
+    // BCADNOTE: If any wooden weapons are inserted here also update 
+    // _hepliaklqana_weapon_brand to change the molten for that group.
     case MONS_ANCESTOR_KNIGHT:
         if (you.species == SP_MERFOLK || you.char_class == JOB_MERFOLK)
             return HD < 10 ? WPN_SPEAR : WPN_DEMON_TRIDENT;

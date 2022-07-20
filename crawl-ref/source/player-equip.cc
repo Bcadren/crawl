@@ -772,7 +772,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                     if (is_range_weapon(item))
                         mprf("As you unwield %s, your ammo resolidies.", msg.c_str());
                     else
-                    mprf("%s resolidifies.", msg.c_str());
+                        mprf("%s resolidifies.", msg.c_str());
                 break;
 
             case SPWPN_FREEZING:

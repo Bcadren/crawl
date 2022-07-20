@@ -3341,7 +3341,8 @@ static void _rebrand_weapon(item_def& wpn)
     brand_type new_brand = old_brand;
 
     // now try and find an appropriate brand
-    while (old_brand == new_brand || god_hates_brand(new_brand))
+    while (old_brand == new_brand || god_hates_brand(new_brand) 
+            || !is_weapon_brand_ok(wpn.sub_type, new_brand, true))
     {
         if (is_range_weapon(wpn))
         {

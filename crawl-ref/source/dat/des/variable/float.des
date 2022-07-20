@@ -3055,7 +3055,7 @@ TAGS:    transparent patrolling
 DEPTH:   Depths, !Depths:$
 ORIENT:  float
 MONS:    necromancer ; wand of iceblast . \
-         staff of fire w:15 | quarterstaff ego:molten w:15 . \
+         staff of fire w:15 | cleaver ego:molten w:15 . \
          robe ego:fire_resistance w:14 | robe ego:cold_resistance w:15 | \
          robe ego:resistance w:1
 MONS:    necromancer ; wand of iceblast . \

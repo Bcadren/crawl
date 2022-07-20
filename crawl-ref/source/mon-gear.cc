@@ -571,8 +571,8 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
                 { WPN_TRIDENT,          1 },
         }, {}, {}, 3 } },
         { MONS_PIKEL, { { { WPN_WHIP, 1 } }, { 1, 0, 2 }, {
-            { SPWPN_MOLTEN, 2 },
-            { SPWPN_FREEZING, 2 },
+            { SPWPN_FREEZING, 4 },
+            { SPWPN_VENOM, 1 },
             { SPWPN_ELECTROCUTION, 1 },
         } } },
         { MONS_GRUM,
@@ -949,7 +949,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
             { { SPWPN_DRAINING,      13 }, // total 45
               { SPWPN_VORPAL,        7 },
               { SPWPN_FREEZING,      4 },
-              { SPWPN_MOLTEN,       4 },
+              { SPWPN_MOLTEN,        4 },
               { SPWPN_PAIN,          2 },
               { SPWPN_CHAOS,         2 },
               { NUM_SPECIAL_WEAPONS, 15 } }, // 2/3 chance of brand
