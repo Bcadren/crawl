@@ -1572,8 +1572,8 @@ bool monster::wants_weapon(const item_def &weap) const
         return false;
     }
 
-    // Nobody picks up giant clubs. Starting equipment is okay, of course.
-    if (is_giant_club_type(weap.sub_type))
+    // Nobody picks up basic clubs. Starting equipment is okay, of course.
+    if (weapon_has_flag(weap.sub_type, WPNF_HEAVYWEIGHT))
         return false;
 
     if (is_range_weapon(weap) && (mons_itemuse(*this) & MU_WEAPON_RANGED))
@@ -3283,6 +3283,31 @@ static int _zombie_ac_modifier(monster_type type)
             die("invalid zombie type %d (%s)", type,
                 mons_class_name(type));
     }
+}
+
+int monster::weapon_damage(const item_def &item) const
+{
+    int base_dmg = weapon_base_damage(item);
+
+    if (item.base_type != OBJ_WEAPONS
+        || !weapon_has_flag(item.sub_type, WPNF_HEAVYWEIGHT))
+    {
+        return base_dmg;
+    }
+
+    int bonus = div_round_up(get_hit_dice() * 3, 2);
+    if (is_fighter())
+    {
+        bonus *= 3;
+        bonus = div_round_up(bonus, 2);
+    }
+
+    if (item.sub_type == WPN_CLUB)
+        bonus = div_round_up(bonus, 2);
+
+    base_dmg += bonus;
+
+    return base_dmg;
 }
 
 /**

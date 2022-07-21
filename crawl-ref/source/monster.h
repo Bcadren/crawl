@@ -475,6 +475,7 @@ public:
     bool is_silenced() const;
 
     int base_armour_class() const;
+    int weapon_damage(const item_def &item) const override;
     int armour_class(bool calc_unid = true) const override;
     int gdr_perc() const override;
     int base_evasion() const;

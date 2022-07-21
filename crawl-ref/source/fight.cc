@@ -1264,6 +1264,17 @@ int weapon_min_delay(const item_def &weapon, bool check_speed)
         base = property(weapon, PWPN_SPEED);
     }
 
+    if (weapon_has_flag(weapon.sub_type, WPNF_HEAVYWEIGHT))
+    {
+        // RandArt clubs and skullcrusher.
+        if (check_speed && get_weapon_brand(weapon) == SPWPN_SPEED)
+        {
+            base *= 2;
+            base /= 3;
+        }
+        return base;
+    }
+
     int min_delay = base/2;
 
     // Hammers are special cased slightly.

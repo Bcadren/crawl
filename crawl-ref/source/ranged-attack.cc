@@ -566,7 +566,7 @@ int ranged_attack::weapon_damage()
             dam += 2;
     }
     if (using_weapon())
-        dam += property(*weapon, PWPN_DAMAGE);
+        dam += attacker->weapon_damage(*weapon);
     else if (attacker->is_player())
         dam += calc_base_unarmed_damage();
 

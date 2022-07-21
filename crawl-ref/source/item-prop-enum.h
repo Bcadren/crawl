@@ -769,6 +769,12 @@ enum wpn_flags
 
     // Lightweight construction gives an oddly fast mindelay.
     WPNF_LIGHTWEIGHT    = 0x0002,
+
+    // Heavy and awkward weapon doesn't get any faster with skill.
+    WPNF_HEAVYWEIGHT    = 0x0004,
+
+    // Chance to hit with a spike directly and crit for double damage.
+    WPNF_SPIKY          = 0x0008,
 };
 
 enum vorpal_damage_type

@@ -4771,7 +4771,7 @@ int melee_attack::weapon_damage()
     if (!using_weapon())
         return 0;
 
-    int damage = property(*weapon, PWPN_DAMAGE);
+    int damage = attacker->weapon_damage(*weapon);
 
     if (bool(defender->holiness() & MH_CONSTRUCT) && weapon->is_type(OBJ_WEAPONS, WPN_PICKAXE))
         damage = div_rand_round(damage * 3, 2);

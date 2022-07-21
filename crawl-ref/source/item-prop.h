@@ -135,7 +135,6 @@ bool  is_weapon_wieldable(const item_def &item, size_type size) PURE;
 hands_reqd_type basic_hands_reqd(const item_def &item, size_type size) PURE;
 hands_reqd_type hands_reqd(const actor* ac, object_class_type base_type, int sub_type);
 
-bool is_giant_club_type(int wpn_type) IMMUTABLE;
 bool is_ranged_weapon_type(int wpn_type) IMMUTABLE;
 bool is_blessed_weapon_type(int wpn_type) IMMUTABLE;
 bool is_demonic_weapon_type(int wpn_type) IMMUTABLE;
@@ -249,7 +248,7 @@ const char *weapon_base_name(weapon_type subtype) IMMUTABLE;
 weapon_type name_nospace_to_weapon(string name_nospace);
 
 bool is_effectively_light_armour(const item_def *item);
-int weapon_damage(const item_def &item);
+int weapon_base_damage(const item_def &item);
 int weapon_delay(const item_def &item);
 
 void seen_item(const item_def &item);

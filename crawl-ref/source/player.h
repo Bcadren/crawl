@@ -601,6 +601,7 @@ public:
     item_def *slot_item(equipment_type eq, bool include_melded=false) const
         override;
 
+    int weapon_damage(const item_def &item) const override;
     int base_ac_from(const item_def &armour, int scale = 1) const;
 
     int inaccuracy() const override;

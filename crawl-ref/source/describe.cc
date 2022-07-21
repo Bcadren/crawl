@@ -1293,10 +1293,7 @@ static string _dmgtyp_to_str(int dmgtyp, bool terse)
 
 static void _append_weapon_stats(string &description, const item_def &item)
 {
-    const int base_dam = weapon_damage(item);
-    const int ammo_type = fires_ammo_type(item);
-    const int ammo_dam = ammo_type == MI_NONE ? 0 :
-                                                ammo_type_damage(ammo_type);
+    const int base_dam = you.weapon_damage(item);
     const skill_type skill = _item_training_skill(item);
     const int mindelay_skill = _item_training_target(item);
 
@@ -1313,45 +1310,62 @@ static void _append_weapon_stats(string &description, const item_def &item)
     string acc_string = "";
 
     if (current_acc != base_acc)
-        acc_string = make_stringf("\nBase accuracy adjusted by strength: %+.2f", current_acc);
+        acc_string = make_stringf("\nBase accuracy adjusted by strength: %+.1f", current_acc);
 
     int dmgtyp = get_damage_type(item);
     string dmgterse = _dmgtyp_to_str(dmgtyp, true);
     string dmglong = _dmgtyp_to_str(dmgtyp, false);
 
+    string damsubstring ="";
+
+    if (item.is_type(OBJ_WEAPONS, WPN_TRIPLE_CROSSBOW))
+        damsubstring = make_stringf("%d (%d x 3 bolts per shot)\n  ", base_dam * 3, base_dam);
+    else
+        damsubstring = make_stringf("%d", base_dam);
+
+    string dmg_string = "";
+    int bdmg = weapon_base_damage(item);
+    if (base_dam != bdmg)
+    {
+        dmg_string = make_stringf("Base damage: %s [+%d from STR] (%s) ",
+            damsubstring.c_str(), (base_dam - bdmg), dmgterse.c_str());
+    }
+    else
+        dmg_string = make_stringf("Base damage: %s (%s)", damsubstring.c_str(), dmgterse.c_str());
+
+    const int spd = item.base_type == OBJ_SHIELDS ? (int)PSHD_SPEED : (int)PWPN_SPEED;
+    bool heavy = (item.base_type == OBJ_WEAPONS && weapon_has_flag(item.sub_type, WPNF_HEAVYWEIGHT));
+    string delay_str = "";
+    
+    if (heavy)
+    {
+        delay_str = make_stringf("\nAttack delay: %.1f This weapon's attack delay cannot benefit from skill.",
+            (float)property(item, spd) / 10);
+    }
+    else
+    {
+        delay_str = make_stringf("Base attack delay: %.1f\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
+            (float)property(item, spd) / 10, (float)weapon_min_delay(item, item_brand_known(item)) / 10, mindelay_skill / 10);
+    }
+
     if (item.base_type == OBJ_SHIELDS)
     {
         description += make_stringf(
-            "\nBase accuracy: %+d  Base damage: %d (%s) Base attack delay: %.1f"
-            "%s"
-            "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
+            "\nBase accuracy: %+d %s %s%s",
             property(item, PSHD_HIT),
-            base_dam,
-            dmgterse.c_str(),
-            (float)property(item, PSHD_SPEED) / 10,
-            acc_string.c_str(),
-            (float)weapon_min_delay(item, item_brand_known(item)) / 10,
-            mindelay_skill / 10);
+            dmg_string.c_str(),
+            delay_str.c_str(),
+            acc_string.c_str());
     }
 
     if (item.base_type == OBJ_WEAPONS || item.base_type == OBJ_STAVES)
     {
-        string damsubstring;
-        if (item.sub_type == WPN_TRIPLE_CROSSBOW)
-            damsubstring = make_stringf("%d (%d x 3 bolts per shot)\n  ", base_dam * 3, base_dam);
-        else
-            damsubstring = make_stringf("%d", base_dam + ammo_dam);
         description += make_stringf(
-            "\nBase accuracy: %+d  Base damage: %s (%s) Base attack delay: %.1f"
-            "%s"
-            "\nThis weapon's minimum attack delay (%.1f) is reached at skill level %d.",
+            "\nBase accuracy: %+d %s %s%s",
             property(item, PWPN_HIT),
-            damsubstring.c_str(),
-            dmgterse.c_str(),
-            (float)property(item, PWPN_SPEED) / 10,
+            dmg_string.c_str(),
             acc_string.c_str(),
-            (float)weapon_min_delay(item, item_brand_known(item)) / 10,
-            mindelay_skill / 10);
+            delay_str.c_str());
     }
 
     int skill_level = 0;
@@ -1382,7 +1396,6 @@ static void _append_weapon_stats(string &description, const item_def &item)
         }
         else
         {
-
             skill_level  = div_round_up(3 * _item_training_target(*you.weapon(0)), 2);
             skill_level1 = div_round_up(3 * _item_training_target(*you.weapon(1)), 2);
             dual = true;
@@ -1409,7 +1422,7 @@ static void _append_weapon_stats(string &description, const item_def &item)
             description += "\n    " + _your_dual_skill_desc(item_attack_skill(*you.weapon(0)),
                 item_attack_skill(*you.weapon(1)),
                 could_set_dual_target && in_inventory(item), skill_level, skill_level1);
-        else
+        else if (!heavy)
             description += "\n    " + _your_skill_desc(skill,
                 could_set_dual_target || could_set_target && in_inventory(item), max(mindelay_skill, skill_level));
     }
@@ -4456,7 +4469,7 @@ static string _monster_attacks_description(const monster_info& mi)
         const string weapon_name =
               info.weapon ? info.weapon->name(DESC_PLAIN).c_str()
             : ghost_brand_name(special_flavour, mi.type).c_str();
-        const string dmg = info.weapon ? make_stringf(" (%d)", weapon_damage(*info.weapon)) : "";
+        const string dmg = info.weapon ? make_stringf(" (%d)", mi.weapon_damage(*info.weapon)) : "";
         const string weapon_note = weapon_name.size() ?
             make_stringf(" plus %s %s%s",
                         mi.pronoun(PRONOUN_POSSESSIVE), weapon_name.c_str(), dmg.c_str())

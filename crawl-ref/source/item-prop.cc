@@ -467,9 +467,9 @@ static int Weapon_index[NUM_WEAPONS];
 static const weapon_def Weapon_prop[] =
 {
     // Maces & Flails
-    { WPN_CLUB,              "club",                5,  3, 13,
+    { WPN_CLUB,              "club",                5,  3, 10,
         SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, SIZE_BIG, MI_NONE,
-        WPNF_WOODEN, DAMV_CRUSHING, 10, 0, 10, {} },
+        WPNF_WOODEN | WPNF_HEAVYWEIGHT, DAMV_CRUSHING, 10, 0, 10, {} },
 #if TAG_MAJOR_VERSION == 34
     { WPN_SPIKED_FLAIL,      "spiked flail",        5,  3, 13,
         SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, SIZE_BIG, MI_NONE,
@@ -486,10 +486,10 @@ static const weapon_def Weapon_prop[] =
         WPNF_NO_FLAGS, DAMV_CRUSHING, 9, 10, 30, M_AND_F_BRANDS },
     { WPN_FLAIL,             "flail",              10,  0, 14,
         SK_WHIPS_FLAILS, SIZE_LITTLE, SIZE_LITTLE, SIZE_BIG, MI_NONE,
-        WPNF_NO_FLAGS, DAMV_CRUSHING, 8, 10, 35, M_AND_F_BRANDS },
+        WPNF_SPIKY, DAMV_CRUSHING, 8, 10, 35, M_AND_F_BRANDS },
     { WPN_MORNINGSTAR,       "morningstar",        13, -2, 15,
         SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, SIZE_GIANT, MI_NONE,
-        WPNF_NO_FLAGS, DAMV_CRUSHING, 7, 10, 40, {
+        WPNF_SPIKY, DAMV_CRUSHING, 7, 10, 40, {
             { SPWPN_PROTECTION,     30 },
             { SPWPN_NORMAL,         15 },
             { SPWPN_HOLY_WRATH,     15 },
@@ -512,10 +512,10 @@ static const weapon_def Weapon_prop[] =
         WPNF_NO_FLAGS, DAMV_SLASHING, 0, 0, 200, HOLY_BRANDS },
     { WPN_DIRE_FLAIL,        "dire flail",         19, -3, 13,
         SK_WHIPS_FLAILS, SIZE_MEDIUM, SIZE_BIG, SIZE_GIANT, MI_NONE,
-        WPNF_NO_FLAGS, DAMV_CRUSHING, 2, 10, 40, M_AND_F_BRANDS },
+        WPNF_SPIKY, DAMV_CRUSHING, 2, 10, 40, M_AND_F_BRANDS },
     { WPN_EVENINGSTAR,       "eveningstar",        15, -1, 15,
         SK_MACES_STAVES, SIZE_LITTLE, SIZE_LITTLE, SIZE_GIANT, MI_NONE,
-        WPNF_NO_FLAGS, DAMV_CRUSHING, 0, 2, 150, {
+        WPNF_SPIKY, DAMV_CRUSHING, 0, 2, 150, {
             { SPWPN_PROTECTION,     30 },
             { SPWPN_ACID,           17 },
             { SPWPN_HOLY_WRATH,     15 },
@@ -533,12 +533,12 @@ static const weapon_def Weapon_prop[] =
     { WPN_GREAT_MACE,        "great mace",         25, -4, 17,
         SK_MACES_STAVES, SIZE_MEDIUM, SIZE_BIG, SIZE_GIANT, MI_NONE,
         WPNF_NO_FLAGS, DAMV_CRUSHING, 3, 10, 65, M_AND_F_BRANDS },
-    { WPN_GIANT_CLUB,        "giant club",         30, -6, 16,
+    { WPN_GIANT_CLUB,        "giant club",         20, -6, 18,
         SK_MACES_STAVES, SIZE_LARGE, SIZE_GIANT, SIZE_GIANT, MI_NONE,
-        WPNF_NO_FLAGS, DAMV_CRUSHING, 1, 10, 17, {} },
-    { WPN_GIANT_SPIKED_CLUB, "giant spiked club",  34, -7, 18,
+        WPNF_WOODEN | WPNF_HEAVYWEIGHT, DAMV_CRUSHING, 1, 10, 17, {} },
+    { WPN_GIANT_SPIKED_CLUB, "giant spiked club",  16, -7, 18,
         SK_MACES_STAVES, SIZE_LARGE, SIZE_GIANT, SIZE_GIANT, MI_NONE,
-        WPNF_NO_FLAGS, DAMV_CRUSHING, 1, 10, 19, {} },
+        WPNF_WOODEN | WPNF_HEAVYWEIGHT | WPNF_SPIKY, DAMV_CRUSHING, 1, 10, 19, {} },
 
     // Short Blades
     { WPN_DAGGER,            "dagger",              4,  6, 10,
@@ -1928,18 +1928,6 @@ hands_reqd_type hands_reqd(const actor* ac, object_class_type base_type, int sub
 }
 
 /**
- * Is the provided type a kind of giant club?
- *
- * @param wpn_type  The weapon_type under consideration.
- * @return          Whether it's a kind of giant club.
- */
-bool is_giant_club_type(int wpn_type)
-{
-    return wpn_type == WPN_GIANT_CLUB
-           || wpn_type == WPN_GIANT_SPIKED_CLUB;
-}
-
-/**
  * Is the provided type a kind of ranged weapon?
  *
  * @param wpn_type  The weapon_type under consideration.
@@ -2829,7 +2817,7 @@ bool is_effectively_light_armour(const item_def *item)
         || (abs(property(*item, PARM_EVASION)) / 10 < 5);
 }
 
-int weapon_damage(const item_def &item)
+int weapon_base_damage(const item_def &item)
 {
     if (item.base_type == OBJ_SHIELDS)
         return property(item, PSHD_DAMAGE);

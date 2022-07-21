@@ -6971,6 +6971,26 @@ int player::skill(skill_type sk, int scale, bool real, bool drained, bool temp) 
     return level;
 }
 
+int player::weapon_damage(const item_def &weapon) const
+{
+    int base_dmg = weapon_base_damage(weapon);
+
+    if (weapon.base_type != OBJ_WEAPONS
+        || !weapon_has_flag(weapon.sub_type, WPNF_HEAVYWEIGHT))
+    {
+        return base_dmg;
+    }
+
+    int bonus = you.strength();
+
+    if (weapon.sub_type == WPN_CLUB)
+        bonus = div_round_up(bonus, 3);
+
+    base_dmg += bonus;
+
+    return base_dmg;
+}
+
 // BCADDO: Revisit this?
 int player_icemail_armour_class()
 {

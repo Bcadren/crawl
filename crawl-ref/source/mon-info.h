@@ -387,6 +387,7 @@ struct monster_info : public monster_info_base
         return props.exists("priest");
     }
 
+    int weapon_damage(const item_def &weapon) const;
     bool has_spells() const;
     int spell_hd(spell_type spell = SPELL_NO_SPELL) const;
     unsigned colour(bool base_colour = false) const;
