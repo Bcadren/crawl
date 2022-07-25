@@ -197,7 +197,15 @@ size_type player::body_size(size_part_type psize, bool base) const
 int player::damage_type(int attack_number)
 {
     if (const item_def* wp = weapon(attack_number))
+    {
+        if (weapon_has_flag(wp->sub_type, WPNF_SPIKY)
+            && x_chance_in_y(spiky_odds(item_attack_skill(*wp)), 100000))
+        {
+            return DAM_CRIT;
+        }
+
         return get_damage_type(*wp);
+    }
 
     // Thrown items handled elsewhere this is just Unarmed.
     switch (you.form)

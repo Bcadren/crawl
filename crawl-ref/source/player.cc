@@ -6991,6 +6991,18 @@ int player::weapon_damage(const item_def &weapon) const
     return base_dmg;
 }
 
+// 1000x odds of getting a crit (for precise display).
+int player::spiky_odds(skill_type sk) const
+{
+    int odds = 1000;
+
+    odds += skill(sk, 333);
+    odds += dex() * 250;
+    odds += skill(SK_FIGHTING, 200);
+
+    return odds;
+}
+
 // BCADDO: Revisit this?
 int player_icemail_armour_class()
 {

@@ -1646,6 +1646,26 @@ int attack::apply_resists(int damage)
     {
     case DAM_FORCE:
         break;
+    case DAM_CRIT:
+    {
+        const int bludgeon_damage = resist_adjust_damage(defender, BEAM_BLUDGEON, damage, mount_defend);
+        const int pierce_damage = resist_adjust_damage(defender, BEAM_PIERCE, damage, mount_defend);
+
+        if (bludgeon_damage > preresist)
+        {
+            if (pierce_damage > preresist)
+                resist_message = make_stringf(" %s %s impaled and struck rancorously!", uppercase_first(defender_name(false, true)).c_str(), defender->conj_verb("are").c_str());
+            else
+                resist_message = make_stringf(" %s %s struck brutally!", uppercase_first(defender_name(false, true)).c_str(), defender->conj_verb("are").c_str());
+        }
+        else if (pierce_damage > preresist)
+            resist_message = make_stringf(" %s %s perforated ruthlessly!", uppercase_first(defender_name(false, true)).c_str(), defender->conj_verb("are").c_str());
+
+        resist_message += " <red>Critical Hit!</red>";
+
+        damage = bludgeon_damage + pierce_damage;
+        break;
+    }
     default:
     case DAM_BASH:
     case DAM_BLUDGEON:

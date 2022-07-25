@@ -602,6 +602,7 @@ public:
         override;
 
     int weapon_damage(const item_def &item) const override;
+    int spiky_odds(skill_type skill) const override;
     int base_ac_from(const item_def &armour, int scale = 1) const;
 
     int inaccuracy() const override;

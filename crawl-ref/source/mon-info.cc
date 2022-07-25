@@ -923,6 +923,14 @@ int monster_info::weapon_damage(const item_def &weapon) const
     return base_dmg;
 }
 
+int monster_info::spiky_odds() const
+{
+    if (mons_class_flag(type, M_FIGHTER))
+        return 1000 + hd * 1250;
+    else
+        return 1000 + hd * 750;
+}
+
 string monster_info::_apply_adjusted_description(description_level_type desc,
                                                  const string& s) const
 {

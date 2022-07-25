@@ -419,6 +419,12 @@ int monster::damage_type(int which_attack)
         }
     }
 
+    if (weapon_has_flag(mweap->sub_type, WPNF_SPIKY)
+        && x_chance_in_y(spiky_odds(item_attack_skill(*mweap)), 100000))
+    {
+        return DAM_CRIT;
+    }
+
     return get_damage_type(*mweap);
 }
 
@@ -3310,6 +3316,17 @@ int monster::weapon_damage(const item_def &item) const
     return base_dmg;
 }
 
+// 1000x odds of getting a crit (for precise display).
+// BCADNOTE: I would use skill for that small boost to signature weapons
+// but more trouble than its worth to clone the logic to mon-info to display.
+int monster::spiky_odds(skill_type /*sk*/) const
+{
+    if (is_fighter())
+        return 1000 + get_hit_dice() * 1250;
+    else
+        return 1000 + get_hit_dice() * 750;
+}
+
 /**
  * What's the base armour class of this monster?
  *
@@ -4490,7 +4507,7 @@ int monster::skill(skill_type sk, int scale, bool /*real*/, bool /*drained*/, bo
     if (mons_intel(*this) < I_HUMAN && !mons_is_avatar(type))
         return 0;
 
-    int ret;
+    int ret = hd;
     switch (sk)
     {
     case SK_EVOCATIONS:
@@ -4499,6 +4516,7 @@ int monster::skill(skill_type sk, int scale, bool /*real*/, bool /*drained*/, bo
     case SK_NECROMANCY:
         return (has_spell_of_type(spschool::necromancy)) ? hd : hd/2;
 
+    case SK_SPELLCASTING:
     case SK_POISON_MAGIC:
     case SK_FIRE_MAGIC:
     case SK_ICE_MAGIC:
@@ -4508,19 +4526,35 @@ int monster::skill(skill_type sk, int scale, bool /*real*/, bool /*drained*/, bo
         return is_actual_spellcaster() ? hd : hd / 3;
 
     // Weapon skills for spectral weapon
+    case SK_FIGHTING:
     case SK_SHORT_BLADES:
     case SK_LONG_BLADES:
     case SK_AXES_HAMMERS:
     case SK_WHIPS_FLAILS:
     case SK_POLEARMS:
     case SK_MACES_STAVES:
-        ret = hd;
+        if (is_fighter())
+        {
+            ret *= 3;
+            ret /= 2;
+        }
         if (weapon()
             && sk == item_attack_skill(*weapon())
             && _is_signature_weapon(this, *weapon()))
         {
             // generally slightly skilled if it's a signature weapon
-            ret = ret * 5 / 4;
+            ret *= 5;
+            ret /= 4;
+        }
+        return ret;
+
+    case SK_BOWS:
+    case SK_CROSSBOWS:
+    case SK_SLINGS:
+        if (is_archer())
+        {
+            ret *= 3;
+            ret /= 2;
         }
         return ret;
 

@@ -1364,8 +1364,8 @@ static void _append_weapon_stats(string &description, const item_def &item)
             "\nBase accuracy: %+d %s %s%s",
             property(item, PWPN_HIT),
             dmg_string.c_str(),
-            acc_string.c_str(),
-            delay_str.c_str());
+            delay_str.c_str(),
+            acc_string.c_str());
     }
 
     int skill_level = 0;
@@ -1452,6 +1452,16 @@ static void _append_weapon_stats(string &description, const item_def &item)
     }
     else if (could_set_target)
         _append_skill_target_desc(description, skill, mindelay_skill, false);
+
+    if (item.base_type == OBJ_WEAPONS && weapon_has_flag(item.sub_type, WPNF_SPIKY))
+    {
+        description += make_stringf(
+            "\n\nCritical Rate: %.2f%%\nThis weapon is covered in spikes and may hit critically "
+            "dealing bonus piercing damage equal to its normal damage.\nThis crit rate is based on your "
+            "Fighting and %s skills, as well as your Dexterity.",
+            (float)(you.spiky_odds(item_attack_skill(item)) / 1000.0),
+            skill_name(skill));
+    }
 
     description += "\n\nThis weapon deals " + dmglong + " damage.";
 }
@@ -4469,7 +4479,9 @@ static string _monster_attacks_description(const monster_info& mi)
         const string weapon_name =
               info.weapon ? info.weapon->name(DESC_PLAIN).c_str()
             : ghost_brand_name(special_flavour, mi.type).c_str();
-        const string dmg = info.weapon ? make_stringf(" (%d)", mi.weapon_damage(*info.weapon)) : "";
+        const string crit_rate = info.weapon && info.weapon->base_type == OBJ_WEAPONS && weapon_has_flag(info.weapon->sub_type, WPNF_SPIKY) ?
+            make_stringf(", %.2f%% Crit", (float)(mi.spiky_odds() / 1000.0)) : "";
+        const string dmg = info.weapon ? make_stringf(" (%d%s)", mi.weapon_damage(*info.weapon), crit_rate.c_str()) : "";
         const string weapon_note = weapon_name.size() ?
             make_stringf(" plus %s %s%s",
                         mi.pronoun(PRONOUN_POSSESSIVE), weapon_name.c_str(), dmg.c_str())

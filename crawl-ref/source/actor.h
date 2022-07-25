@@ -242,6 +242,7 @@ public:
                                bool intrinsic_only = false) const;
     virtual bool can_sleep(bool holi_only = false) const;
     virtual int weapon_damage(const item_def &item) const = 0;
+    virtual int spiky_odds(skill_type skill) const = 0;
     virtual void check_awaken(int disturbance) = 0;
     virtual void beam_effects(beam_type flavour, int base, int post_res, 
                               bolt *beam = nullptr, bool mt = false) = 0;

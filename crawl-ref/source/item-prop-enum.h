@@ -787,7 +787,8 @@ enum vorpal_damage_type
     DAM_PIERCE          = 0x0004,       // stabbing/piercing
     DAM_WHIP            = 0x0008,       // whip slashing
     DAM_FORCE           = 0x0010,       // used by monster attacks that ignore weapon resistances
-    DAM_MAX_TYPE        = DAM_FORCE,
+    DAM_CRIT            = 0x0020,       // used by critical hits
+    DAM_MAX_TYPE        = DAM_CRIT,
 
     // These are used for vorpal weapon descriptions. You shouldn't set
     // more than one of these.
