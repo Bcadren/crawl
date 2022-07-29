@@ -704,7 +704,7 @@ dragon's fearsome breath was lost in the process.
 bone scorpion
 
 A crude facsimile of a scorpion made out of human finger bones. Packs draining 
-energy instead of venom in its stings; drains both experience and strength.
+energy instead of venom in its stings, which saps knowledge and strength.
 The original was rumoured to be the creation of an inventive necromancer; it's 
 unknown how they reproduce.
 %%%%
@@ -1446,7 +1446,7 @@ and nearly hairless.
 holy flan
 
 A rare heavenly dessert with some rudimentary sentience. Generally results from 
-Jiyva's chaos infecting the servants of The Shining One.
+Jiyva's chaos infecting angelic beings.
 %%%%
 holy swine
 

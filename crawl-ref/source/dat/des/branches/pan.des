@@ -2695,6 +2695,7 @@ KITEM:   O = superb_item / demonic rune of zot mimic
 : else
 KITEM:   O = demonic rune of zot
 : end
+KPROP:   4 = no_tele_into
 KFEAT:   m = iron_grate
 KFEAT:   { = {
 NSUBST:  3 = 6:3 / *:.
