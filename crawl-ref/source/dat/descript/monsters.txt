@@ -68,13 +68,6 @@ Boris
 An ancient and powerful lich. Like all true liches, Boris is immortal, and will
 regenerate his desiccated skeletal remains even if completely disintegrated.
 %%%%
-ceiling crawler
-
-A gigantic relative of amblypygids a.k.a. tailless whip scorpions; ceiling crawlers 
-skulk around on the highest ceilings of the dungeon, so high up that many effects 
-will pass under them unless directly targeted. They reach down and grab prey with 
-astonishing speed to constrict and rip their victims apart. 
-%%%%
 Cerebov
 
 A violent and wrathful demon, Cerebov appears as a giant humanoid covered in
@@ -656,10 +649,6 @@ black bear
 A small black bear. Like all ursines, @subjective@ will become enraged if badly hurt or
 frightened.
 %%%%
-black draconian
-
-A muscular black-scaled humanoid with a reptilian tail and powerful wings.
-%%%%
 black mamba
 
 An astonishingly fast tropical snake whose bite bears a deadly venom.
@@ -758,6 +747,13 @@ caustic shrike
 
 A swift, nightmarish bird whose razor-sharp metallic feathers drip with
 corrosive acid.
+%%%%
+ceiling crawler
+
+A gigantic relative of amblypygids a.k.a. tailless whip scorpions. @Subjective@  
+@verb:skulk@ around on the highest ceilings of the dungeon, so high up that many effects 
+will pass under @objective@ unless directly targeted. @Subjective@ @verb:reach@ down and @verb:grab@ prey with 
+astonishing speed to constrict and rip @possessive@ victims apart. 
 %%%%
 centaur
 
@@ -1335,14 +1331,6 @@ terrifying feats of magic.
 gwyrdd
 
 A bloated form covered in oozing sores and exhaling clouds of lethal poison.
-%%%%
-green draconian
-
-A muscular green-scaled humanoid with a reptilian tail and small wings.
-%%%%
-grey draconian
-
-A muscular grey-scaled humanoid with a reptilian tail and small wings.
 %%%%
 guardian golem
 
@@ -1940,10 +1928,6 @@ pain elemental
 A spirit drawn from the plane of pure suffering; @subjective@ @verb:survive@ on this plane by 
 inhabiting a writhing mass of blood and bone. It hurts just to look at @objective@.
 %%%%
-pale draconian
-
-A muscular humanoid with pale scales, a reptilian tail and small wings.
-%%%%
 pandemonium lord
 
 A formidable demon lord inhabiting the endless halls of Pandemonium. Each one
@@ -2022,10 +2006,6 @@ A cancerous growth given some form of sentience after the host passed. This mass
 blighted tissue wishes only to infect and consume more beings. Contact with @objective@ 
 can cause victims to be corroded or malmutated.
 %%%%
-purple draconian
-
-A muscular purple-scaled humanoid with a reptilian tail and small wings.
-%%%%
 quasit
 
 A cowardly little demon with a long, viciously pointed tail. @Possessive@ sharp claws
@@ -2088,10 +2068,6 @@ cythraul
 A larger cousin of the llaibwca, with a fiendish grin and two short wings
 sprouting from @possessive@ shoulders. @Subjective@ favours barbed tridents, and taunts @possessive@
 victims from afar.
-%%%%
-red draconian
-
-A muscular red-scaled humanoid with a reptilian tail and small wings.
 %%%%
 hornet
 
@@ -2703,10 +2679,6 @@ A capricious nature spirit, deeply bonded with the waters in which @subjective@ 
 Wherever they flow, so may @subjective@, and ponds and rivers surge and leap at @possessive@
 whim.
 %%%%
-white draconian
-
-A muscular white-scaled humanoid with a reptilian tail and small wings.
-%%%%
 gwybwca
 
 A small and mischievous minor demon covered in frost.
@@ -2780,10 +2752,6 @@ yaktaur captain
 
 An exceptionally strong and brutish yaktaur, able to order @possessive@ weaker brethren
 around to do its bidding.
-%%%%
-yellow draconian
-
-A muscular yellow-scaled humanoid with a reptilian tail and small wings.
 %%%%
 ynoxinul
 
