@@ -10,6 +10,7 @@
 #include <cwctype>
 #include <sstream>
 
+#include "english.h"
 #include "libutil.h"
 #include "random.h"
 #include "unicode.h"
@@ -297,6 +298,26 @@ string replace_all(string s, const string &find, const string &repl)
     while ((found = s.find(find, start)) != string::npos)
     {
         s.replace(found, find.length(), repl);
+        start = found + repl.length();
+    }
+
+    return s;
+}
+
+// For conjugating verbs in bestiary entries to match the monster's gender.
+string replace_verb(string s, bool plural)
+{
+    string::size_type start = 0;
+    string::size_type found;
+    string::size_type verb;
+
+    while ((found = s.find("@verb:", start)) != string::npos)
+    {
+        start = found + 6;
+        verb = s.find("@", start);
+        string v = s.substr(start, verb - start);
+        string repl = conjugate_verb(v, plural);
+        s.replace(found, 7 + v.length(), repl);
         start = found + repl.length();
     }
 

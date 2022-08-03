@@ -38,6 +38,7 @@ string make_stringf(PRINTF(0, ));
 bool strip_suffix(string &s, const string &suffix);
 
 string replace_all(string s, const string &tofind, const string &replacement);
+string replace_verb(string s, bool plural);
 
 string replace_all_of(string s, const string &tofind, const string &replacement);
 

@@ -5193,6 +5193,27 @@ static string _replace_speech_tag(string msg, string from, const string &to)
     return msg;
 }
 
+string pronoun_replacements(const string &in_msg, const monster_info mi)
+{
+    string msg = in_msg;
+
+    msg = replace_all(msg, "@Subjective@",
+        uppercase_first(mi.pronoun(PRONOUN_SUBJECTIVE)));
+    msg = replace_all(msg, "@subjective@",
+        mi.pronoun(PRONOUN_SUBJECTIVE));
+    msg = replace_all(msg, "@Possessive@",
+        uppercase_first(mi.pronoun(PRONOUN_POSSESSIVE)));
+    msg = replace_all(msg, "@possessive@",
+        mi.pronoun(PRONOUN_POSSESSIVE));
+    msg = replace_all(msg, "@reflexive@",
+        mi.pronoun(PRONOUN_REFLEXIVE));
+    msg = replace_all(msg, "@objective@",
+        mi.pronoun(PRONOUN_OBJECTIVE));
+    msg = replace_verb(msg, mi.pronoun_plurality());
+
+    return msg;
+}
+
 // Replaces the "@foo@" strings in monster shout and monster speak
 // definitions.
 string do_mon_str_replacements(const string &in_msg, const monster& mons,
@@ -5359,18 +5380,9 @@ string do_mon_str_replacements(const string &in_msg, const monster& mons,
     msg = replace_all(msg, "@A_monster@",   mons.name(DESC_A));
     msg = replace_all(msg, "@The_monster@", mons.name(cap));
 
-    msg = replace_all(msg, "@Subjective@",
-                      mons.pronoun(PRONOUN_SUBJECTIVE));
-    msg = replace_all(msg, "@subjective@",
-                      mons.pronoun(PRONOUN_SUBJECTIVE));
-    msg = replace_all(msg, "@Possessive@",
-                      mons.pronoun(PRONOUN_POSSESSIVE));
-    msg = replace_all(msg, "@possessive@",
-                      mons.pronoun(PRONOUN_POSSESSIVE));
-    msg = replace_all(msg, "@reflexive@",
-                      mons.pronoun(PRONOUN_REFLEXIVE));
-    msg = replace_all(msg, "@objective@",
-                      mons.pronoun(PRONOUN_OBJECTIVE));
+    const monster_info mi = monster_info(&mons);
+
+    msg = pronoun_replacements(msg, mi);
 
     // Body parts.
     bool   can_plural = false;

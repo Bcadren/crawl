@@ -3338,7 +3338,9 @@ int monster::spiky_odds(skill_type /*sk*/) const
  */
 int monster::base_armour_class() const
 {
-    ASSERT(!invalid_monster_type(type));
+    // BCADDO: Restore this assert?
+    if (invalid_monster_type(type))
+        return 0;
 
     // ghost demon struct overrides the monster values.
     if (mons_is_ghost_demon(type))

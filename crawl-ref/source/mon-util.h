@@ -531,6 +531,7 @@ monster_type random_monster_at_grid(const coord_def& p, bool species = false);
 void         init_mon_name_cache();
 monster_type get_monster_by_name(string name, bool substring = false);
 
+string pronoun_replacements(const string &in_msg, const monster_info mi);
 string do_mon_str_replacements(const string &msg, const monster& mons,
                                int s_type = -1);
 

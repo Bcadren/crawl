@@ -767,7 +767,7 @@ static string _describe_demon(const string& name, bool flying)
         "with hooked wings",
         "with strange knobs attached",
         "which hovers in mid-air",
-        "with sacs of gas hanging from its back",
+        "with sacs of gas hanging from @subjective@ back",
     };
 
     const char* head_names[] =
@@ -789,7 +789,7 @@ static string _describe_demon(const string& name, bool flying)
         "the head of a rhino",
         "eerily human features",
         "a gigantic mouth",
-        "a mass of tentacles growing from its neck",
+        "a mass of tentacles growing from @subjective@ neck",
         "a thin, worm-like head",
         "huge, compound eyes",
         "the head of a frog",
@@ -798,59 +798,59 @@ static string _describe_demon(const string& name, bool flying)
         "a skull for a head",
         "a cow's skull for a head",
         "the head of a bird",
-        "a large fungus growing from its neck",
+        "a large fungus growing from @subjective@ neck",
     };
 
     static const char* misc_descs[] =
     {
-        " It seethes with hatred of the living.",
-        " Tiny orange flames dance around it.",
-        " Tiny purple flames dance around it.",
-        " It is surrounded by a weird haze.",
-        " It glows with a malevolent light.",
-        " It looks incredibly angry.",
-        " It oozes with slime.",
-        " It dribbles constantly.",
-        " Mould grows all over it.",
-        " Its body is covered in fungus.",
-        " It is covered with lank hair.",
-        " It looks diseased.",
-        " It looks as frightened of you as you are of it.",
-        " It moves in a series of hideous convulsions.",
-        " It moves with an unearthly grace.",
-        " It leaves a glistening oily trail.",
-        " It shimmers before your eyes.",
-        " It is surrounded by a brilliant glow.",
-        " It radiates an aura of extreme power.",
-        " It seems utterly heartbroken.",
-        " It seems filled with irrepressible glee.",
-        " It constantly shivers and twitches.",
-        " Blue sparks crawl across its body.",
-        " It seems uncertain.",
-        " A cloud of flies swarms around it.",
-        " The air around it ripples with heat.",
-        " Crystalline structures grow on everything near it.",
-        " It appears supremely confident.",
-        " Its skin is covered in a network of cracks.",
-        " Its skin has a disgusting oily sheen.",
-        " It seems somehow familiar.",
-        " It is somehow always in shadow.",
-        " It is difficult to look away.",
-        " It is constantly speaking in tongues.",
-        " It babbles unendingly.",
-        " Its body is scourged by hellfire.",
-        " Its body is extensively scarred.",
+        " @Subjective@ @verb:seethe@ with hatred of the living.",
+        " Tiny orange flames dance around @objective@.",
+        " Tiny purple flames dance around @objective@.",
+        " @Subjective@ @verb:is@ surrounded by a weird haze.",
+        " @Subjective@ @verb:glow@ with a malevolent light.",
+        " @Subjective@ @verb:look@ incredibly angry.",
+        " @Subjective@ @verb:ooze@ with slime.",
+        " @Subjective@ @verb:dribble@ constantly.",
+        " Mould grows all over @objective@.",
+        " @Possessive@ body is covered in fungus.",
+        " @Subjective@ @verb:is@ covered with lank hair.",
+        " @Subjective@ @verb:look@ diseased.",
+        " @Subjective@ @verb:look@ as frightened of you as you are of @objective@.",
+        " @Subjective@ @verb:move@ in a series of hideous convulsions.",
+        " @Subjective@ @verb:move@ with an unearthly grace.",
+        " @Subjective@ @verb:leave@ a glistening oily trail.",
+        " @Subjective@ @verb:shimmer@ before your eyes.",
+        " @Subjective@ @verb:is@ surrounded by a brilliant glow.",
+        " @Subjective@ @verb:radiate@ an aura of extreme power.",
+        " @Subjective@ @verb:seem@ utterly heartbroken.",
+        " @Subjective@ @verb:seem@ filled with irrepressible glee.",
+        " @Subjective@ constantly @verb:shiver@ and @verb:twitch@.",
+        " Blue sparks crawl across @possessive@ body.",
+        " @Subjective@ @verb:seem@ uncertain.",
+        " A cloud of flies swarms around @objective@.",
+        " The air around @objective@ ripples with heat.",
+        " Crystalline structures grow on everything near @objective@.",
+        " @Subjective@ @verb:appear@ supremely confident.",
+        " @Possessive@ skin is covered in a network of cracks.",
+        " @Possessive@ skin has a disgusting oily sheen.",
+        " @Subjective@ @verb:seem@ somehow familiar.",
+        " @Subjective@ @verb:is@ somehow always in shadow.",
+        " @Subjective@ @verb:is@ impossible to look away from.",
+        " @Subjective@ @verb:is@ constantly speaking in tongues.",
+        " @Subjective@ @verb:babble@ unendingly.",
+        " @Possessive@ body is scourged by hellfire.",
+        " @Possessive@ body is extensively scarred.",
         " You find it difficult to look away.",
     };
 
     static const char* smell_descs[] =
     {
-        " It smells of brimstone.",
-        " It is surrounded by a sickening stench.",
-        " It smells of rotting flesh.",
-        " It stinks of death.",
-        " It stinks of decay.",
-        " It smells delicious!",
+        " @Subjective@ @verb:smell@ of brimstone.",
+        " @Subjective@ @verb:is@ surrounded by a sickening stench.",
+        " @Subjective@ @verb:smell@ of rotting flesh.",
+        " @Subjective@ @verb:stink@ of death.",
+        " @Subjective@ @verb:stink@ of decay.",
+        " @Subjective@ @verb:smell@ delicious!",
     };
 
     ostringstream description;
@@ -888,12 +888,12 @@ static string _describe_demon(const string& name, bool flying)
 static string _describe_mutant_beast_tier(int tier)
 {
     static const string tier_descs[] = {
-        "It is of an unusually buggy age.",
-        "It is larval and weak, freshly emerged from its mother's pouch.",
-        "It is a juvenile, no longer larval but below its mature strength.",
-        "It is mature, stronger than a juvenile but weaker than its elders.",
-        "It is an elder, stronger than mature beasts.",
-        "It is a primal beast, the most powerful of its kind.",
+        "@Subjective@ @verb:is@ of an unusually buggy age.",
+        "@Subjective@ @verb:is@ larval and weak, freshly emerged from @possessive@ mother's pouch.",
+        "@Subjective@ @verb:is@ a juvenile, no longer larval but below @possessive@ mature strength.",
+        "@Subjective@ @verb:is@ mature, stronger than a juvenile but weaker than @possessive@ elders.",
+        "@Subjective@ @verb:is@ an elder, stronger than mature beasts.",
+        "@Subjective@ @verb:is@ a primal beast, the most powerful of @possessive@ kind.",
     };
     COMPILE_CHECK(ARRAYSZ(tier_descs) == NUM_BEAST_TIERS);
 
@@ -913,25 +913,25 @@ static string _describe_mutant_beast_tier(int tier)
 static string _describe_mutant_beast_facets(const CrawlVector &facets)
 {
     static const string facet_descs[] = {
-        " seems unusually buggy.",
-        " sports a set of venomous tails",
-        " flies swiftly and unpredictably",
-        "s breath smoulders ominously",
-        " is covered with eyes and tentacles",
-        " flickers and crackles with electricity",
-        " is covered in dense fur and muscle",
+        " @verb:seem@ unusually buggy.",
+        " @verb:sport@ a set of venomous tails",
+        " @verb:fly@ swiftly and unpredictably",
+        " @verb:breathe@ ominous smouldering embers",
+        " @verb:is@ covered with eyes and tentacles",
+        " @verb:flicker@ and @verb:crackle@ with electricity",
+        " @verb:is@ covered in dense fur and muscle",
     };
     COMPILE_CHECK(ARRAYSZ(facet_descs) == NUM_BEAST_FACETS);
 
     if (facets.size() == 0)
         return "";
 
-    return "It" + comma_separated_fn(begin(facets), end(facets),
+    return "@Subjective@" + comma_separated_fn(begin(facets), end(facets),
                       [] (const CrawlStoreValue &sv) -> string {
                           const int facet = sv.get_int();
                           ASSERT_RANGE(facet, 0, NUM_BEAST_FACETS);
                           return facet_descs[facet];
-                      }, ", and it", ", it")
+                      }, ", and @subjective@", ", @subjective@")
            + ".";
 }
 
@@ -952,48 +952,49 @@ static string _describe_abomination(const monster_info &mi)
         switch (facet)
         {
         case FAC_BEAK: 
-            retval += "It has a distended neck ending a deformed horn or beak.";
+            retval += "@Subjective@ @verb:has@ a distended neck ending a deformed horn or beak.";
             break;
         case FAC_CLASSIC:
-            retval += "Part of its body is fashioned into a whiplike tendril, ending in exposed bone. This tendril appears to ground it somewhat.";
+            retval += "Part of @possessive@ body @verb:is@ fashioned into a whiplike tendril, ending in exposed bone. This tendril appears to ground @objective@ somewhat.";
             break;
         case FAC_DRAINBLADE:
-            retval += "A sharped blade of rough bone protrudes from its abdomen; the jagged blade exudes a dark aura.";
+            retval += "A sharped blade of rough bone protrudes from @possessive@ abdomen; the jagged blade exudes a dark aura.";
             break;
         case FAC_EYEBASH:
-            retval += "It seems to have fashioned several eyes, lungs and other organs into a gorey flail. The sight of the teeth sticking from its eyeballs is rather haunting.";
-            retval += " Apparently having these organs on the outside protects it from burns.";
+            retval += "@Subjective@ seems to have fashioned several eyes, lungs and other organs into a gorey flail. The sight of the teeth sticking from @possessive@ eyeballs is rather haunting.";
+            retval += " Apparently having these organs on the outside protects @objective@ from burns.";
             break;
         case FAC_GOOEY:
-            retval += "A gooey mixture of acidic bile and blood coats its flesh.";
+            retval += "A gooey mixture of acidic bile and blood coats @possessive@ flesh.";
             break;
         case FAC_HYDRA:
-            retval += "In the middle of its body; there's a chattering of "; 
+            retval += "In the middle of @possessive@ body; there's a chattering of "; 
             retval += number_in_words(mi.num_heads);
             retval += " partially exposed cracked skulls and deformed faces.";
-            retval += "Somehow; bits of exposed brain on the surface increase its magical resistance.";
+            retval += "Somehow; bits of exposed brain on the surface increase @possessive@ magical resistance.";
             break;
         case FAC_INTESTINES:
-            retval += "It's completely disemboweled, somehow having organs on the outside helps keep it cool.";
-            retval += " It wields a rope made of twisted intestines and senews still pulsating with a foul mockery of life.";
+            retval += "@Subjective@ @verb:is@ completely disemboweled, somehow having organs on the outside helps keep @objective@ cool.";
+            retval += " @Subjective@ @verb:wield@ a rope made of twisted intestines and senews still pulsating with a foul mockery of life.";
             break;
         case FAC_PLATED:
-            retval += "Foul plates; perhaps of former scales or exoskeletons protrude from its 'skin', they are coated in some kind of slime that weakens those that touch it and provide it with some 'shielding' to the abomination.";
+            retval += "Foul plates; perhaps of former scales or exoskeletons protrude from @possessive@ 'skin', they are coated in some kind ";
+            retval += "of slime that weakens those that touch them and provide some shielding to the abomination.";
             break;
         case FAC_SPINY:
-            retval += "Sharp spines of bone protude like bleeding compound fractures all over its flesh. These are rather cold to the touch.";
+            retval += "Sharp spines of bone protude like bleeding compound fractures all over @possessive@ flesh. These are rather cold to the touch.";
             break;
         case FAC_THAGOMIZER:
-            retval += "A spiky ball of various bits of bone is on the end of its 'tail' being struck with this ball will likely lead to bone shards being impaled in the victim's flesh.";
+            retval += "A spiky ball of various bits of bone is on the end of @possessive@ 'tail'. Being struck with this ball will likely lead to bone shards being impaled in the victim's flesh.";
             break;
         case FAC_TRAMPLE:
-            retval += "Bulkier than the average abomination; the sheer amount of fat hanging off of it protect from cold attacks and it can push around foes by striking them with several 'limbs' at once.";
+            retval += "Bulkier than the average abomination; the sheer amount of fat hanging off of @objective@ protects from cold attacks. @Subjective@ can push around foes by striking them with several 'limbs' at once.";
             break;
         case FAC_VILEORIFACE:
-            retval += "Somewhere towards the middle of the pulsing abomination is an open ribcage, which now serves as a giant gaping maw. Bits of rotting flesh drip from the edges; badly poisoning those it clamps down on.";
+            retval += "Somewhere towards the middle of the pulsing abomination is an open ribcage, which now serves as a giant gaping maw. Bits of rotting flesh drip from the edges of this vile orifice; badly poisoning those it clamps down on.";
             break;
         case FAC_WINGS:
-            retval += "Flesh stretched thinly over several limbs has formed a wretched, yet functional pair of wings. As well as providing flight; being raked over by the sharp edges of the wings will drain the speed of those they hit.";
+            retval += "Flesh stretched thinly over several limbs has formed a wretched, yet functional pair of wings. As well as providing flight; these 'wings' drain the speed of those they rake and claw over.";
             break;
         case FAC_NON_FACET:
         default: // Shouldn't happen but...
@@ -4067,97 +4068,101 @@ static string _describe_draconian(const monster_info& mi)
     const int subsp = mi.draco_or_demonspawn_subspecies();
 
     if (subsp != mi.type)
+        description = "It has ";
+    else
+        description = "A slender muscular humanoid with ";
+
+    switch (subsp)
     {
-        description += "It has ";
-
-        switch (subsp)
-        {
-        case MONS_RED_DRACONIAN:            description += "fiery red";                 break;
-        case MONS_WHITE_DRACONIAN:          description += "icy white";                 break;
-        case MONS_GREEN_DRACONIAN:          description += "lurid green";               break;
-        case MONS_CYAN_DRACONIAN:           description += "empereal azure";            break;
-        case MONS_LIME_DRACONIAN:           description += "slimy lime-green";          break;
-        case MONS_SILVER_DRACONIAN:         description += "gleaming silver";           break;
-        case MONS_BLUE_DRACONIAN:           description += "flickering blue";           break;
-        case MONS_PURPLE_DRACONIAN:         description += "rich purple";               break;
-        case MONS_PINK_DRACONIAN:           description += "fierce pink";               break;
-        case MONS_MAGENTA_DRACONIAN:        description += "hazy amethyst";             break;
-        case MONS_BLACK_DRACONIAN:          description += "shadowy dark";              break;
-        case MONS_OLIVE_DRACONIAN:          description += "sickly drab";               break;
-        case MONS_DRACONIAN:                description += "plain brown";               break;
-        case MONS_TEAL_DRACONIAN:           description += "spectral turquoise";        break;
-        case MONS_GOLDEN_DRACONIAN:         description += "imposing gold";             break;
-        case MONS_PEARL_DRACONIAN:          description += "opalescent pearl";          break;
-        case MONS_SCINTILLATING_DRACONIAN:  description += "scintillating rainbow";     break;
-        case MONS_BLOOD_DRACONIAN:          description += "gory crimson";              break;
-        case MONS_PLATINUM_DRACONIAN:       description += "lustrous platinum";         break;
-        default:                                                                        break;
-        }
-
-        description += " scales. ";
-
-        if (subsp == MONS_BONE_DRACONIAN)
-            return "It is a strong animated skeleton. Bits of bone fall from its mouth.";
+    case MONS_RED_DRACONIAN:            description += "fiery red";                 break;
+    case MONS_WHITE_DRACONIAN:          description += "icy white";                 break;
+    case MONS_GREEN_DRACONIAN:          description += "lurid green";               break;
+    case MONS_CYAN_DRACONIAN:           description += "empereal azure";            break;
+    case MONS_LIME_DRACONIAN:           description += "slimy lime-green";          break;
+    case MONS_SILVER_DRACONIAN:         description += "gleaming silver";           break;
+    case MONS_BLUE_DRACONIAN:           description += "flickering blue";           break;
+    case MONS_PURPLE_DRACONIAN:         description += "rich purple";               break;
+    case MONS_PINK_DRACONIAN:           description += "fierce pink";               break;
+    case MONS_MAGENTA_DRACONIAN:        description += "hazy amethyst";             break;
+    case MONS_BLACK_DRACONIAN:          description += "shadowy dark";              break;
+    case MONS_OLIVE_DRACONIAN:          description += "sickly drab";               break;
+    case MONS_DRACONIAN:                description += "plain brown";               break;
+    case MONS_TEAL_DRACONIAN:           description += "spectral turquoise";        break;
+    case MONS_GOLDEN_DRACONIAN:         description += "imposing gold";             break;
+    case MONS_PEARL_DRACONIAN:          description += "opalescent pearl";          break;
+    case MONS_SCINTILLATING_DRACONIAN:  description += "scintillating rainbow";     break;
+    case MONS_BLOOD_DRACONIAN:          description += "gory crimson";              break;
+    case MONS_PLATINUM_DRACONIAN:       description += "lustrous platinum";         break;
+    default:                                                                        break;
     }
+
+
+    if (subsp != mi.type)
+        description += " scales. ";
+    else
+        description += " scales, a reptilian tail, and small wings. ";
+
+    if (subsp == MONS_BONE_DRACONIAN)
+        return "A strong animated skeleton. Bits of bone fall from @possessive@ mouth. ";
 
     switch (subsp)
     {
     case MONS_PLATINUM_DRACONIAN:
-        description += "Its sheen appears to make it somehow faster.";
+        description += "@Possessive@ sheen appears to make @objective@ somehow faster.";
         break;
     case MONS_BLOOD_DRACONIAN:
-        description += "Blood appears to drip from its mouth.";
+        description += "Blood appears to drip from @possessive@ mouth.";
         break;
     case MONS_SCINTILLATING_DRACONIAN:
-        description += "It crackles and sparks random colours.";
+        description += "@Subjective@ @verb:crackle@ and @verb:spark@ random colours.";
         break;
     case MONS_PEARL_DRACONIAN:
-        description += "It radiates holy energy.";
+        description += "@Subjective@ @verb:radiate@ holy energy.";
         break;
     case MONS_GOLDEN_DRACONIAN:
-        description += "It's nostrils seems to be covered in a strange mix of flames and frost.";
+        description += "@Possessive@ nostrils seems to be covered in a paradoxical mix of flames and frost.";
         break;
     case MONS_TEAL_DRACONIAN:
-        description += "It flickers in and out of reality.";
+        description += "@Subjective@ @verb:flicker@ in and out of reality.";
         break;
     case MONS_OLIVE_DRACONIAN:
         if (you.can_smell())
-            description += "A horrid stench of rotten flesh comes from it.";
+            description += "A horrid stench of rotten flesh exudes from @subjective@ flesh.";
         else
-            description += "It seems to attract flies.";
+            description += "@Subjective@ @verb:seem@ to attract flies.";
         break;
     case MONS_BLACK_DRACONIAN:
-        description += "A foreboding aura of negative eminates from it.";
+        description += "A foreboding aura of negative energy eminates from @objective@.";
         break;
     case MONS_PINK_DRACONIAN:
-        description += "Tiny butterflies encircle and land upon it.";
+        description += "Tiny butterflies encircle and land upon @objective@.";
         break;
     case MONS_CYAN_DRACONIAN:           
-        description += "The air seems to bend around it.";            
+        description += "The air seems to bend around @objective@.";            
         break;
     case MONS_BLUE_DRACONIAN:
-        description += "Sparks flare out of its mouth and nostrils.";
+        description += "Sparks flare out of @possessive@ mouth and nostrils.";
         break;
     case MONS_LIME_DRACONIAN:
-        description += "Acidic fumes swirl around it.";
+        description += "Acidic fumes swirl around @objective@.";
         break;
     case MONS_GREEN_DRACONIAN:
-        description += "Venom drips from its jaws.";
+        description += "Venom drips from @possessive@ jaws.";
         break;
     case MONS_PURPLE_DRACONIAN:
-        description += "Its outline shimmers with magical energy.";
+        description += "@Possessive@ outline shimmers with magical energy.";
         break;
     case MONS_RED_DRACONIAN:
-        description += "Smoke pours from its nostrils.";
+        description += "Smoke pours from @possessive@ nostrils.";
         break;
     case MONS_WHITE_DRACONIAN:
-        description += "Frost pours from its nostrils.";
+        description += "Frost pours from @possessive@ nostrils.";
         break;
     case MONS_SILVER_DRACONIAN:
-        description += "It shines with Zin's blessed silver.";
+        description += "@Subjective@ @verb:shine@ with Zin's blessed silver.";
         break;
     case MONS_MAGENTA_DRACONIAN:
-        description += "It is cloaked in a thick magical fog.";
+        description += "@Subjective@ @verb:is@ cloaked in a thick magical fog.";
         break;
     default:
         break;
@@ -4171,16 +4176,16 @@ static string _describe_demonspawn_role(monster_type type)
     switch (type)
     {
     case MONS_BLOOD_SAINT:
-        return "It weaves powerful and unpredictable spells of devastation.";
+        return "@Subjective@ @verb:weave@ powerful and unpredictable spells of devastation.";
     case MONS_WARMONGER:
-        return "It is devoted to combat, disrupting the magic of its foes as "
-               "it battles endlessly.";
+        return "@Subjective@ @verb:is@ devoted to combat, disrupting the magic of @possessive@ foes as "
+               "@subjective@ @verb:battles@ endlessly.";
     case MONS_CORRUPTER:
-        return "It corrupts space around itself, and can twist even the very "
-               "flesh of its opponents.";
+        return "@Subjective@ @verb:corrupt@ space around itself, and can twist even the very "
+               "flesh of @possessive@ opponents.";
     case MONS_BLACK_SUN:
-        return "It shines with an unholy radiance, and wields powers of "
-               "darkness from its devotion to the deities of death.";
+        return "@Subjective@ @verb:shine@ with an unholy radiance, and wields powers of "
+               "darkness from @possessive@ devotion to the deities of death.";
     default:
         return "";
     }
@@ -4191,13 +4196,13 @@ static string _describe_demonspawn_base(int species)
     switch (species)
     {
     case MONS_MONSTROUS_DEMONSPAWN:
-        return "It is more beast now than whatever species it is descended from.";
+        return "@Subjective@ @verb:is@ more beast now than whatever species @subjective@ @verb:is@ descended from.";
     case MONS_GELID_DEMONSPAWN:
-        return "It is covered in icy armour.";
+        return "@Subjective@ @verb:is@ covered in icy armour.";
     case MONS_INFERNAL_DEMONSPAWN:
-        return "It gives off an intense heat.";
+        return "@Subjective@ @verb:give@ off an intense heat.";
     case MONS_TORTUROUS_DEMONSPAWN:
-        return "It menaces with bony spines.";
+        return "@Subjective@ @verb:menace@ with bony spines.";
     }
     return "";
 }
@@ -4284,7 +4289,7 @@ static const char* _special_flavour_prefix(attack_flavour flavour)
         case AF_KITE:
             return "retreat from adjacent foes and ";
         case AF_SWOOP:
-            return "swoop behind its foe and ";
+            return "swoop behind @possessive@ foe and ";
         default:
             return "";
     }
@@ -4511,7 +4516,7 @@ static string _monster_attacks_description(const monster_info& mi)
 
         attack_descs.push_back(
             make_stringf("%s%s%s%s %s%s",
-                         _special_flavour_prefix(attack.flavour),
+                         pronoun_replacements(_special_flavour_prefix(attack.flavour), mi).c_str(),
                          mon_attack_name(attack.type, false).c_str(),
                          _flavour_range_desc(attack.flavour),
                          _heads_desc(attack.type, mi.num_heads).c_str(),
@@ -5161,13 +5166,21 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
     // This is somewhat hackish, but it's a good way of over-riding monsters'
     // descriptions in Lua vaults by using MonPropsMarker. This is also the
     // method used by set_feature_desc_long, etc. {due}
+
+    const string it = mi.pronoun(PRONOUN_SUBJECTIVE);
+    const string it_o = mi.pronoun(PRONOUN_OBJECTIVE);
+    const string It = uppercase_first(it);
+    const string is = conjugate_verb("are", mi.pronoun_plurality());
+
+    ostringstream description;
+
     if (!mi.description.empty())
-        inf.body << mi.description;
+        description << mi.description;
     // Don't get description for player ghosts.
     else if (mi.type != MONS_PLAYER_GHOST
              && mi.type != MONS_PLAYER_ILLUSION)
     {
-        inf.body << getLongDescription(db_name);
+        description << getLongDescription(db_name);
     }
 
     // And quotes {due}
@@ -5194,11 +5207,6 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
     if (!inf.quote.empty() && !quote2.empty())
         inf.quote += "\n";
     inf.quote += quote2;
-
-    const string it = mi.pronoun(PRONOUN_SUBJECTIVE);
-    const string it_o = mi.pronoun(PRONOUN_OBJECTIVE);
-    const string It = uppercase_first(it);
-    const string is = conjugate_verb("are", mi.pronoun_plurality());
 
     switch (mi.type)
     {
@@ -5229,7 +5237,7 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
     case MONS_DRACONIAN_MONK:
     case MONS_DRACONIAN_KNIGHT:
     {
-        inf.body << "\n" << _describe_draconian(mi) << "\n";
+        description << "\n" << _describe_draconian(mi) << "\n";
         break;
     }
 
@@ -5242,47 +5250,47 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
     case MONS_CORRUPTER:
     case MONS_BLACK_SUN:
     {
-        inf.body << "\n" << _describe_demonspawn(mi) << "\n";
+        description << "\n" << _describe_demonspawn(mi) << "\n";
         break;
     }
 
     case MONS_PLAYER_GHOST:
-        inf.body << "The apparition of " << get_ghost_description(mi) << ".\n";
+        description << "The apparition of " << get_ghost_description(mi) << ".\n";
         if (mi.props.exists(MIRRORED_GHOST_KEY))
-            inf.body << "It looks just like you...spooky!\n";
+            description << "It looks just like you...spooky!\n";
         break;
 
     case MONS_PLAYER_ILLUSION:
-        inf.body << "An illusion of " << get_ghost_description(mi) << ".\n";
+        description << "An illusion of " << get_ghost_description(mi) << ".\n";
         break;
 
     case MONS_PANDEMONIUM_LORD:
-        inf.body << _describe_demon(mi.mname, mi.airborne()) << "\n";
+        description << _describe_demon(mi.mname, mi.airborne()) << "\n";
         break;
 
     case MONS_MUTANT_BEAST:
         // vault renames get their own descriptions
         if (mi.mname.empty() || !mi.is(MB_NAME_REPLACE))
-            inf.body << _describe_mutant_beast(mi) << "\n";
+            description << _describe_mutant_beast(mi) << "\n";
         break;
 
     case MONS_ABOMINATION_SMALL:
     case MONS_ABOMINATION_LARGE:
-        inf.body << _describe_abomination(mi) << "\n";
+        description << _describe_abomination(mi) << "\n";
         break;
 
     case MONS_BLOCK_OF_ICE:
         if (mi.is(MB_SLOWLY_DYING))
-            inf.body << "\nIt is quickly melting away.\n";
+            description << "\n@Subjective@ @verb:is@ quickly melting away.\n";
         break;
 
     case MONS_PILLAR_OF_SALT:
         if (mi.is(MB_SLOWLY_DYING))
-            inf.body << "\nIt is quickly crumbling away.\n";
+            description << "\n@Subjective@ @verb:is@ quickly crumbling away.\n";
         break;
 
     case MONS_PROGRAM_BUG:
-        inf.body << "If this monster is a \"program bug\", then it's "
+        description << "If this monster is a \"program bug\", then it's "
                 "recommended that you save your game and reload. Please report "
                 "monsters who masquerade as program bugs or run around the "
                 "dungeon without a proper description to the authorities.\n";
@@ -5302,18 +5310,21 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
                       + getLongDescription(symbol_suffix + "_examine");
 
         if (!suffix.empty())
-            inf.body << "\n" << suffix;
+            description << "\n" << suffix;
     }
 
     const int curse_power = mummy_curse_power(mi.type);
     if (curse_power && !mi.is(MB_SUMMONED))
     {
-        inf.body << "\n" << It << " will inflict a ";
+        description << "\n @Subjective@ will inflict a ";
         if (curse_power > 10)
-            inf.body << "powerful ";
-        inf.body << "necromantic curse on "
-                 << mi.pronoun(PRONOUN_POSSESSIVE) << " foe when destroyed.\n";
+            description << "powerful ";
+        description << "necromantic curse on @possessive@ foe when destroyed.\n";
     }
+
+    string desc = pronoun_replacements(description.str(), mi);
+
+    inf.body << desc;
 
     // Get information on resistances, speed, etc.
     string result = _monster_stat_description(mi);
@@ -5323,50 +5334,51 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
         has_stat_desc = true;
     }
 
+    ostringstream suffix;
+
     bool stair_use = false;
     if (!mons_class_can_use_stairs(mi.type))
     {
-        inf.body << It << " " << is << " incapable of using stairs.\n";
+        suffix << "@Subjective@ @verb:is@ incapable of using stairs.\n";
         stair_use = true;
     }
 
     if (mi.is(MB_SUMMONED))
     {
-        inf.body << "\nThis monster has been summoned, and is thus only "
-                    "temporary. Killing " << it_o << " yields no experience, "
-                    "nutrition or items";
+        suffix << "\nThis monster has been summoned, and is thus only "
+                  "temporary. Killing @objective@ yields no experience, "
+                  "corpse or items";
         if (!stair_use)
-        {
-            inf.body << ", and " << it << " " << is
-                     << " incapable of using stairs";
-        }
-        inf.body << ".\n";
+            suffix << ", and @subjective@ @verb:is@ incapable of using stairs";
+        suffix << ".\n";
     }
     else if (mi.is(MB_PERM_SUMMON))
     {
-        inf.body << "\nThis monster has been summoned in a durable way. "
-                    "Killing " << it_o << " yields no experience, nutrition "
-                    "or items, but " << it << " cannot be abjured.\n";
+        suffix << "\nThis monster has been summoned in a durable way. "
+                  "Killing @objective@ yields no experience, corpse "
+                  "or items, but @subjective@ cannot be abjured.\n";
     }
     else if (mi.is(MB_NO_REWARD))
     {
-        inf.body << "\nKilling this monster yields no experience, nutrition or"
-                    " items.";
+        suffix << "\nKilling this monster yields no experience, nutrition or"
+                  " items.";
     }
     else if (mons_class_leaves_hide(mi.type))
     {
-        inf.body << "\nIf " << it << " " << is <<
-                    " slain, it may be possible to recover "
-                 << mi.pronoun(PRONOUN_POSSESSIVE)
-                 << " hide, which can be used as armour.\n";
+        suffix << "\nIf @subjective@ @verb:is@ slain, it may be possible to "
+                  "recover @possessive@ hide, which can be used as armour.\n";
     }
 
     if (mi.is(MB_SUMMONED_CAPPED))
     {
-        inf.body << "\nYou have summoned too many monsters of this kind to "
-                    "sustain them all, and thus this one will shortly "
-                    "expire.\n";
+        suffix << "\nYou have summoned too many monsters of this kind to "
+                  "sustain them all, and thus this one will shortly "
+                  "expire.\n";
     }
+
+    string suff = pronoun_replacements(suffix.str(), mi);
+
+    inf.body << suff;
 
     if (!inf.quote.empty())
         inf.quote += "\n";
