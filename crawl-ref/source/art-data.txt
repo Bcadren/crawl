@@ -1414,7 +1414,7 @@ VALUE:    800
 
 ENUM:     EMBRACE
 NAME:     Cigotuvi's embrace
-OBJ:      OBJ_ARMOUR/ARM_LEATHER_ARMOUR
+OBJ:      OBJ_ARMOURS/ARM_LEATHER_ARMOUR
 PLUS:     +4 # varies with corpse count
 COLOUR:   ETC_UNHOLY
 # XXX TODO: tiles

@@ -1396,7 +1396,7 @@ static void _JESTER_CAP_unequip(item_def */*item*/, bool */*show_msgs*/)
         leave_xom();
         you.penance[GOD_XOM] = 50;
     }
-
+}
 ////////////////////////////////////////////////////
 
 static const int base_embrace_plus = 4;
