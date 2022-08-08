@@ -1704,8 +1704,7 @@ dragons at once.
 %%%%
 Summon Drakes spell
 
-Summons multiple drakes, and possibly one true dragon of some kind, barring the
-most powerful ones.
+Summons multiple drakes, lindwurms and/or wyverns.
 %%%%
 Summon Earth Elementals spell
 
