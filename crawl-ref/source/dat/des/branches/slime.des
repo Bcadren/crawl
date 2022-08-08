@@ -73,6 +73,7 @@ TAGS:   slime_entry extra
 WEIGHT: 30
 KFEAT:  Z = altar_jiyva
 KFEAT:  O = enter_slime_pits
+KPROP:  OZbaA = no_tele_into
 NSUBST: . = 8:b / *:a
 KFEAT:  b = slimeshroom
 KFEAT:  a = slimy_water
