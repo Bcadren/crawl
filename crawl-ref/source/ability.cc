@@ -2445,7 +2445,7 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
 
         if (empowered)
         {
-            spret local = fire_los_attack_spell(SPELL_EMPOWERED_BREATH, power, &you, nullptr, false);
+            spret local = fire_los_attack_spell(SPELL_EMPOWERED_BREATH, power, &you, false);
             if (local == spret::abort)
                 return spret::abort;
         }
@@ -3010,7 +3010,7 @@ static spret _do_ability(const ability_def& abil, bool fail, bool empowered)
         const spret result =
             fire_los_attack_spell(SPELL_DRAIN_LIFE, apply_invo_enhancer(
                                   you.skill_rdiv(SK_INVOCATIONS), true),
-                                  &you, nullptr, fail, &damage);
+                                  &you, fail, &damage);
         if (result != spret::success)
             return result;
 

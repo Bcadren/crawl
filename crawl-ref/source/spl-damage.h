@@ -18,7 +18,6 @@ spret cast_torment(bool fail);
 spret trace_los_attack_spell(spell_type spell, int pow,
                                   const actor* agent);
 spret fire_los_attack_spell(spell_type spell, int pow, actor* agent,
-                                 actor* defender = nullptr,
                                  bool fail = false,
                                  int* damage_done = nullptr);
 void sonic_damage(bool scream);

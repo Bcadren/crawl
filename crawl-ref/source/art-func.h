@@ -336,7 +336,7 @@ static void _SINGING_SWORD_world_reacts(item_def *item)
 }
 
 static void _SINGING_SWORD_melee_effects(item_def* weapon, actor* attacker,
-                                         actor* defender, bool /*mondied*/,
+                                         actor* /*defender*/, bool /*mondied*/,
                                          int /*dam*/, bool /*hits_mount*/)
 {
     int tier;
@@ -372,7 +372,7 @@ static void _SINGING_SWORD_melee_effects(item_def* weapon, actor* attacker,
         return; // Can't cast when silenced.
 
     const int spellpower = 100 + 13 * (tier - 1) + (tier == 4 ? 36 : 0);
-    fire_los_attack_spell(SPELL_SONIC_WAVE, spellpower, attacker, defender);
+    fire_los_attack_spell(SPELL_SONIC_WAVE, spellpower, attacker);
 }
 ////////////////////////////////////////////////////
 

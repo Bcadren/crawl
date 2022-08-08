@@ -659,10 +659,8 @@ static int _los_spell_damage_monster(actor* agent, monster &target,
 }
 
 
-static spret _cast_los_attack_spell(spell_type spell, int pow,
-                                         actor* agent, actor* /*defender*/,
-                                         bool actual, bool fail,
-                                         int* damage_done)
+static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
+                                         bool actual, bool fail, int* damage_done)
 {
     const monster* mons = agent ? agent->as_monster() : nullptr;
 
@@ -900,15 +898,13 @@ spret trace_los_attack_spell(spell_type spell, int pow, const actor* agent)
 
     actor * bad_agent = actor_by_mid(agent->mid);
 
-    return _cast_los_attack_spell(spell, pow, bad_agent, nullptr, false, false,
-                                  nullptr);
+    return _cast_los_attack_spell(spell, pow, bad_agent, false, false, nullptr);
 }
 
-spret fire_los_attack_spell(spell_type spell, int pow, actor* agent,
-                                 actor *defender, bool fail, int* damage_done)
+spret fire_los_attack_spell(spell_type spell, int pow, actor* agent, 
+                                bool fail, int* damage_done)
 {
-    return _cast_los_attack_spell(spell, pow, agent, defender, true, fail,
-                                  damage_done);
+    return _cast_los_attack_spell(spell, pow, agent, true, fail, damage_done);
 }
 
 spret vampiric_drain(int pow, monster* mons, bool fail)

@@ -300,8 +300,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             const int splpow = _mons_spellpower(slot.spell, caster);
 
             int damage = 0;
-            fire_los_attack_spell(slot.spell, splpow, &caster, nullptr, false,
-                                  &damage);
+            fire_los_attack_spell(slot.spell, splpow, &caster, false, &damage);
             if (damage > 0 && caster.heal(damage))
                 simple_monster_message(caster, " is healed.");
         },
@@ -316,7 +315,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         },
         [](monster &caster, mon_spell_slot slot, bolt&) {
             const int splpow = _mons_spellpower(slot.spell, caster);
-            fire_los_attack_spell(slot.spell, splpow, &caster, nullptr, false);
+            fire_los_attack_spell(slot.spell, splpow, &caster, false);
         },
         nullptr,
         MSPELL_LOGIC_NONE,
