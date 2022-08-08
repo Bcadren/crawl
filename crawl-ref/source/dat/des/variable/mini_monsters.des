@@ -186,7 +186,7 @@ ENDMAP
 # Not Minivault 9 (by Mu.)
 NAME:   not_door_vault_mu
 TAGS:   extra allow_dup luniq
-DEPTH:  D:13-, Elf, Crypt, Depths, Zot, Dis, Geh, Tar, Coc
+DEPTH:  D:7-, Elf, Crypt, Depths, Zot, Dis, Geh, Tar, Coc
 WEIGHT: 1
 KMONS:  12 = butterfly
 : door_vault_setup(_G)
