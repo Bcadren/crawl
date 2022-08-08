@@ -699,7 +699,7 @@ ENDMAP
 # Not Minivault 9 (or, hellephant zoo)
 NAME:    not_door_vault_due
 TAGS:    allow_dup luniq
-DEPTH:   D:13-, Elf, Crypt, Depths, Zot, Dis, Geh
+DEPTH:   D:7-, Elf, Crypt, Depths, Zot, Dis, Geh
 WEIGHT:  4
 # Hellish beasts for Dungeon
 : if you.in_branch("D") then
