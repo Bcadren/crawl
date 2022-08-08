@@ -787,6 +787,17 @@ TILE_EQ:  middle_gray
 STEALTH:  2
 VALUE:    600
 
+ENUM:     HOOD_ASSASSIN
+NAME:     hood of the Assassin
+OBJ:      OBJ_ARMOURS/ARM_HAT
+FB_BRAND: SPARM_IMPROVED_VISION
+INSCRIP:  Detection Stab+
+PLUS:     +2
+COLOUR:   BROWN
+# XXX: needs tiles
+STEALTH:  2
+VALUE:    600
+
 ENUM:    LEAR
 NAME:    Lear's hauberk
 OBJ:     OBJ_ARMOURS/ARM_CHAIN_MAIL

@@ -3250,6 +3250,7 @@ bool melee_attack::player_good_stab()
            || weapon && weapon->is_type(OBJ_WEAPONS, WPN_PICKAXE)
            || you.get_mutation_level(MUT_PAWS) && !weapon
            || player_equip_unrand(UNRAND_BOOTS_ASSASSIN)
+           || player_equip_unrand(UNRAND_HOOD_ASSASSIN)
               && (!weapon || is_melee_weapon(*weapon));
 }
 

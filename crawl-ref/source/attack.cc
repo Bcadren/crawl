@@ -2265,7 +2265,7 @@ int attack::player_stab_weapon_bonus(int damage)
         damage *= 10 + div_rand_round(stab_skill, 100 * stab_bonus);
         damage /= 10;
 
-        // We might be unarmed if we're using the boots of the Assassin.
+        // We might be unarmed if we're using the hood/boots of the Assassin.
         if (using_weapon() && (weapon->is_type(OBJ_WEAPONS, WPN_KATAR)))
         {
             damage *= 10 + div_rand_round(stab_skill, 100 * stab_bonus);

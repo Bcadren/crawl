@@ -9921,8 +9921,11 @@ int player_monster_detect_radius()
 {
     int radius = you.get_mutation_level(MUT_ANTENNAE) * 8;
 
-    if (player_equip_unrand(UNRAND_BOOTS_ASSASSIN))
+    if (player_equip_unrand(UNRAND_BOOTS_ASSASSIN)
+        || player_equip_unrand(UNRAND_HOOD_ASSASSIN))
+    {
         radius = max(radius, 4);
+    }
     if (have_passive(passive_t::detect_montier))
         radius = max(radius, you.piety / 20);
     return min(radius, LOS_DEFAULT_RANGE);
