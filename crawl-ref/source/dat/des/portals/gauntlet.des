@@ -1225,6 +1225,8 @@ SUBVAULT: h : gauntlet_arena_second
 SUBVAULT: i : gauntlet_arena_second
 SUBVAULT: j : gauntlet_arena_second
 SUBVAULT: y : gauntlet_exit
+# Just in case we ever add lava felids, prevent their revival in closets.
+KPROP:    lG = no_tele_into
 : gauntlet_appearance(_G)
 MAP
                ccc ccc ccccccccccccc ccc ccc
@@ -1247,15 +1249,15 @@ MAP
 cccl.....qqqqqqq.qqqqqqq....lGl....qqqqqqq.qqqqqqq.....lccc
 cGq......qJ...........Lq.....l.....qN...........Pq......qGc
 ccc..qqqqqqqqqqqqqqqqqqqqqqq...qqqqqqqqqqqqqqqqqqqqqqq..ccc
-  c..eeeeeeeeeee.fffffffffff...ggggggggggg.hhhhhhhhhhh..c
-ccc..eeeeeeeeeee.fffffffffff...ggggggggggg.hhhhhhhhhhh..ccc
-cGq..eeeeeeeeeee.fffffffffff...ggggggggggg.hhhhhhhhhhh..qGc
-ccc..eeeeeeeeeee.fffffffffff...ggggggggggg.hhhhhhhhhhh..ccc
-  c..eeeeeeeeeee.fffffffffff...ggggggggggg.hhhhhhhhhhh..c
-ccc..eeeeeeeeeee.fffffffffff...ggggggggggg.hhhhhhhhhhh..ccc
-cGq..qeeeeeeeeeq.qfffffffffq...qgggggggggq.qhhhhhhhhhq..qGc
-ccc..qeeeeeeeeeq.qfffffffffq...qgggggggggq.qhhhhhhhhhq..ccc
-  c..qeeeeeeeeeq.qfffffffffq...qgggggggggq.qhhhhhhhhhq..c
+  c..eeeeeeeeeeelfffffffffff...ggggggggggglhhhhhhhhhhh..c
+ccc..eeeeeeeeeeelfffffffffff...ggggggggggglhhhhhhhhhhh..ccc
+cGq..eeeeeeeeeeelfffffffffff...ggggggggggglhhhhhhhhhhh..qGc
+ccc..eeeeeeeeeeelfffffffffff...ggggggggggglhhhhhhhhhhh..ccc
+  c..eeeeeeeeeeeGfffffffffff...gggggggggggGhhhhhhhhhhh..c
+ccc..eeeeeeeeeeelfffffffffff...ggggggggggglhhhhhhhhhhh..ccc
+cGq..qeeeeeeeeeqlqfffffffffq...qgggggggggqlqhhhhhhhhhq..qGc
+ccc..qeeeeeeeeeqlqfffffffffq...qgggggggggqlqhhhhhhhhhq..ccc
+  c..qeeeeeeeeeqlqfffffffffq...qgggggggggqlqhhhhhhhhhq..c
 ccc..qqqqqqqqqqqqqqqqqqqqqqq...qqqqqqqqqqqqqqqqqqqqqqq..ccc
 cGq......qK...........Mq.....l.....qO...........Qq......qGc
 cccl.....qqqqqqq.qqqqqqq....lGl....qqqqqqq.qqqqqqq.....lccc
