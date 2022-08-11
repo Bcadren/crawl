@@ -1697,14 +1697,14 @@ SUBVAULT: a : gauntlet_arena_77_first
 SUBVAULT: p : gauntlet_arena_77_first
 # 50% chance for middle arena to be tier 2 difficulty.
  : if crawl.coinflip() then
-SUBVAULT: q : gauntlet_arena_77_first
+SUBVAULT: ! : gauntlet_arena_77_first
 : gauntlet_arena_set_tier(2)
 # 2 items for tier 2 difficulty
 : gauntlet_arena_custom_extra_items("fg|* / .")
 : else
 : gauntlet_arena_set_tier(2)
 : gauntlet_arena_custom_extra_items("fg|* / .")
-SUBVAULT: q : gauntlet_arena_77_second
+SUBVAULT: ! : gauntlet_arena_77_second
 : end
 SUBVAULT: r : gauntlet_arena_77_second
 SUBVAULT: s : gauntlet_arena_77_second
@@ -1723,19 +1723,19 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 ccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcccwcc
 cwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwcwwwc
 ccw...............................................................wcc
-ccc...naaaaannn...npppppnnn...nqqqqqnnn...nrrrrrnnn...nsssssnnn...ccc
-ccw...naaaaaaan.G.npppppppn.G.nqqqqqqqn.G.nrrrrrrrn.G.nsssssssn...wcc
-cwwA..naaaaaaan...npppppppn...nqqqqqqqn...nrrrrrrrn...nsssssssn...wwc
-ccw...naaaaaaannnnnpppppppnnnnnqqqqqqqnnnnnrrrrrrrnnnnnsssssssn...wcc
-ccc..DnaaaaaaanE.FnpppppppnH.JnqqqqqqqnK.LnrrrrrrrnM.Nnsssssssn...ccc
-ccw...naaaaaaan...npppppppn...nqqqqqqqn...nrrrrrrrn...nsssssssn...wcc
-cww<..naaaaaaan...npppppppn...nqqqqqqqn...nrrrrrrrn...nsssssssn...wwc
-ccw...naaaaaaanGPGnpppppppnGRGnqqqqqqqnGZGnrrrrrrrnGuGnsssssssn...wcc
-ccc...naaaaannnnnnnpppppnnnnnnnqqqqqnnnnnnnrrrrrnnnnnnnsssssnnn...ccc
+ccc...qaaaaaqqq...qpppppqqq...q!!!!!qqq...qrrrrrqqq...qsssssqqq...ccc
+ccw...qaaaaaaaq.G.qpppppppq.G.q!!!!!!!q.G.qrrrrrrrq.G.qsssssssq...wcc
+cwwA..qaaaaaaaq...qpppppppq...q!!!!!!!q...qrrrrrrrq...qsssssssq...wwc
+ccw...qaaaaaaaqqqqqpppppppqqqqq!!!!!!!qqqqqrrrrrrrqqqqqsssssssq...wcc
+ccc..DqaaaaaaaqE.FqpppppppqH.Jq!!!!!!!qK.LqrrrrrrrqM.Nqsssssssq...ccc
+ccw...qaaaaaaaq...qpppppppq...q!!!!!!!q...qrrrrrrrq...qsssssssq...wcc
+cww<..qaaaaaaaq...qpppppppq...q!!!!!!!q...qrrrrrrrq...qsssssssq...wwc
+ccw...qaaaaaaaqGPGqpppppppqGRGq!!!!!!!qGZGqrrrrrrrqGuGqsssssssq...wcc
+ccc...qaaaaaqqqqqqqpppppqqqqqqq!!!!!qqqqqqqrrrrrqqqqqqqsssssqqq...ccc
 ccw...............................................................wcc
 cwwwcwwwcwwwcwwwcwwwcwwwc...GUG..G<G..GUG...cwwwcwwwcwwwcwwwcwwwcwwwc
 ccwcccwcccwcccwcccwcccwccc.................cccwcccwcccwcccwcccwcccwcc
-cccccccccccccccccccccccccvvnnnnnnnnnnnnnnnvvccccccccccccccccccccccccc
+cccccccccccccccccccccccccvvqqqqqqqqqqqqqqqvvccccccccccccccccccccccccc
                         vvw...............wvv
                        vvww..GQGSG-GzGOG..wwvv
                         vvw...............wvv
