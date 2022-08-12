@@ -1909,7 +1909,7 @@ TAGS:   no_item_gen no_monster_gen no_trap_gen
 : gauntlet_setup(_G, "DFJLNPR", "EHKMOQS")
 SUBVAULT: a : gauntlet_arena_77_first
 SUBVAULT: p : gauntlet_arena_77_first
-SUBVAULT: q : gauntlet_arena_77_first
+SUBVAULT: o : gauntlet_arena_77_first
 : if crawl.coinflip() then
 :   gauntlet_arena_set_tier(2)
 SUBVAULT: r : gauntlet_arena_second
@@ -1928,42 +1928,42 @@ MAP
 ccclclclclclc...........clclclclclccc
 cl.............A..G..<.............lc
 cc......D.........F.........J......cc
-cl..nnnnnnnnn.nnnnnnnnn.nnnnnnnnn..lc
-cc..aaaaaaaaa.ppppppppp.qqqqqqqqq..cc
-cl..aaaaaaaaa.ppppppppp.qqqqqqqqq..lc
-cc..aaaaaaaaa.ppppppppp.qqqqqqqqq..cc
-cl..aaaaaaaaa.ppppppppp.qqqqqqqqq..lc
-cc..aaaaaaaaa.ppppppppp.qqqqqqqqq..cc
-cl..naaaaaaan.npppppppn.nqqqqqqqn..lc
-cc..naaaaaaan.npppppppn.nqqqqqqqn..cc
-cl..nnnnnnnnnnnnnnnnnnnnnnnnnnnnn..lc
-ccc...n.E.........H.........K.n...ccc
- cl...n...........L...........n...lc
- ccc..nnnnnnnnnnnnnnnnnnnnnnnnn..ccc
+cl..qqqqqqqqq.qqqqqqqqq.qqqqqqqqq..lc
+cc..aaaaaaaaa.ppppppppp.ooooooooo..cc
+cl..aaaaaaaaa.ppppppppp.ooooooooo..lc
+cc..aaaaaaaaa.ppppppppp.ooooooooo..cc
+cl..aaaaaaaaa.ppppppppp.ooooooooo..lc
+cc..aaaaaaaaa.ppppppppp.ooooooooo..cc
+cl..qaaaaaaaq.qpppppppq.qoooooooq..lc
+cc..qaaaaaaaq.qpppppppq.qoooooooq..cc
+cl..qqqqqqqqqqqqqqqqqqqqqqqqqqqqq..lc
+ccc...q.E.........H.........K.q...ccc
+ cl...q...........L...........q...lc
+ ccc..qqqqqqqqqqqqqqqqqqqqqqqqq..ccc
   cl.........rrrrrrrrrrr.........lc
   ccc........rrrrrrrrrrr........ccc
     clclclc..rrrrrrrrrrr..clclclc
     ccccccc..rrrrrrrrrrr..ccccccc
          cl..rrrrrrrrrrr..lc
     ccccccc..rrrrrrrrrrr..ccccccc
-    clclclc..nrrrrrrrrrn..clclclc
-  ccc........nrrrrrrrrrn........ccc
-  cl.........nrrrrrrrrrn.........lc
- ccc..nnnnnnnnnnnnnnnnnnnnnnnnn..ccc
- cl...n...........M...........n...lc.
-ccc...n.N.........P.........R.n...ccc
-cl..nnnnnnnnnnnnnnnnnnnnnnnnnnnnn..lc
+    clclclc..qrrrrrrrrrq..clclclc
+  ccc........qrrrrrrrrrq........ccc
+  cl.........qrrrrrrrrrq.........lc
+ ccc..qqqqqqqqqqqqqqqqqqqqqqqqq..ccc
+ cl...q...........M...........q...lc 
+ccc...q.N.........P.........R.q...ccc
+cl..qqqqqqqqqqqqqqqqqqqqqqqqqqqqq..lc
 cc..sssssssss.uuuuuuuuu.zzzzzzzzz..cc
 cl..sssssssss.uuuuuuuuu.zzzzzzzzz..lc
 cc..sssssssss.uuuuuuuuu.zzzzzzzzz..cc
 cl..sssssssss.uuuuuuuuu.zzzzzzzzz..lc
 cc..sssssssss.uuuuuuuuu.zzzzzzzzz..cc
-cl..nsssssssn.nuuuuuuun.nzzzzzzzn..lc
-cc..nsssssssn.nuuuuuuun.nzzzzzzzn..cc
-cl..nnnnnnnnn.nnnnnnnnn.nnnnnnnnn..lc
+cl..qsssssssq.quuuuuuuq.qzzzzzzzq..lc
+cc..qsssssssq.quuuuuuuq.qzzzzzzzq..cc
+cl..qqqqqqqqq.qqqqqqqqq.qqqqqqqqq..lc
 cc.................................cc
 cl..............G.<.G..............lc
-ccclclclclclccnnnnnnnnncclclclclclccc
+ccclclclclclccqqqqqqqqqcclclclclclccc
  cccccccccccvv.........vvcccccccccc
            vv...O.Q.S...vv
           vv.............vv
