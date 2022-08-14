@@ -687,7 +687,7 @@ static bool _yredelemnul_retribution()
 
 static bool _trog_retribution()
 {
-    // physical/berserk theme
+    // berserk theme
     const god_type god = GOD_TROG;
 
     if (you.berserk())
@@ -746,8 +746,6 @@ static bool _trog_retribution()
                     slow_player(100);
                 }
             }
-
-            return true;
         }
 
         simple_god_message(count > 1 ? " sends monsters to punish you." :
@@ -768,7 +766,11 @@ static bool _trog_retribution()
     case 0:
     case 1:
     case 2:
-        lose_stat(STAT_STR, 1 + random2(you.max_strength() / 3));
+        if (you.strength() > 0)
+        {
+            lose_stat(STAT_STR, 1 + random2(you.max_strength() / 3));
+            return true;
+        }
         break;
 
     case 3:
@@ -778,10 +780,9 @@ static bool _trog_retribution()
             you.put_to_sleep(nullptr, 30 + random2(20));
             return true;
         }
-        return false;
+        break;
     }
-
-    return true;
+    return false;
 }
 
 static bool _beogh_retribution()
