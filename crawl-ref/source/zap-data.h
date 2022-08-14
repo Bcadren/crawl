@@ -809,6 +809,24 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
 },
 
 {
+    ZAP_ARROW_OF_SPITE,
+    "arrow of spite",
+    200,
+    new calcdice_calculator<9, 15, 3, 4>,
+    new tohit_calculator<14, 1, 5>,
+    new dicedef_calculator<3, 3, 1, 3>,
+    new tohit_calculator<20, 1, 5>,
+    RED,
+    false,
+    BEAM_PIERCE,
+    DCHAR_FIRED_MISSILE,
+    true,
+    false,
+    false,
+    20
+},
+
+{
     ZAP_SILVER_SHOT,
     "silver shot",
     200,

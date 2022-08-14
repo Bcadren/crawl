@@ -31,6 +31,7 @@
 #include "god-conduct.h"
 #include "god-item.h"
 #include "god-passive.h" // passive_t::shadow_spells
+#include "god-wrath.h" // spell retribution
 #include "hints.h"
 #include "item-prop.h"
 #include "item-use.h"
@@ -1844,6 +1845,11 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
 
             // This will cause failure and increase the miscast effect.
             spfl = -you.penance[GOD_SIF_MUNA];
+        }
+        else if (!you_worship(GOD_TROG)
+            && you.penance[GOD_TROG] && one_chance_in(3))
+        {
+            spell_retribution(SPELL_ARROW_OF_SPITE, GOD_TROG, "does not appreciate you dabbling in magic!");
         }
         else if (spell_typematch(spell, spschool::necromancy)
                  && !you_worship(GOD_KIKUBAAQUDGHA)

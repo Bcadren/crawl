@@ -1066,6 +1066,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_ARROW_OF_SPITE, "Arrow of Spite", "",
+    spschool::earth | spschool::evocation,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
+    6,
+    200,
+    4, 4,
+    20, 0,
+    TILEG_STONE_ARROW,
+},
+
+{
     SPELL_STONE_ARROW, "Stone Arrow", "Chaotic Arrow",
     spschool::earth,
     spflag::dir_or_target | spflag::needs_tracer,

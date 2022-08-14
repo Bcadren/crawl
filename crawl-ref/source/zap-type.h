@@ -131,5 +131,6 @@ enum zap_type
     ZAP_CASCADE,
     ZAP_CASCADE_II,
     ZAP_TONGUE_LASH,
+    ZAP_ARROW_OF_SPITE,
     NUM_ZAPS
 };

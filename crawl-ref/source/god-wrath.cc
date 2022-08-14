@@ -400,19 +400,6 @@ static bool _cheibriados_retribution()
     return true;
 }
 
-static void _spell_retribution(monster* avatar, spell_type spell, god_type god,
-                               const char* message = nullptr)
-{
-    simple_god_message(message ? message : " rains destruction down upon you!",
-                       god);
-    bolt beam;
-    beam.source = you.pos();
-    beam.target = you.pos();
-    beam.aimed_at_feet = true;
-    beam.source_name = avatar->mname;
-    mons_cast(avatar, beam, spell, MON_SPELL_PRIEST, false);
-}
-
 /**
  * Choose a type of destruction with which to punish the player.
  *
@@ -454,13 +441,13 @@ static spell_type _makhleb_destruction_type()
 }
 
 /**
- * Create a fake 'avatar' monster representing a god, with which to hurl
- * destructive magic at foolish players.
- *
- * @param god           The god doing the wrath-hurling.
- * @return              An avatar monster, or nullptr if none could be set up.
- */
-static monster* get_avatar(god_type god)
+* Create a fake 'avatar' monster representing a god, with which to hurl
+* destructive magic at foolish players.
+*
+* @param god           The god doing the wrath-hurling.
+* @return              An avatar monster, or nullptr if none could be set up.
+*/
+static monster* _get_avatar(god_type god)
 {
     monster* avatar = shadow_monster(false);
     if (!avatar)
@@ -484,25 +471,26 @@ static void _reset_avatar(monster &avatar)
     shadow_monster_reset(&avatar);
 }
 
-/**
- * Rain down Makhleb's destruction upon the player!
- *
- * @return Whether to take further divine wrath actions afterward.
- */
-static bool _makhleb_call_down_destruction()
+bool spell_retribution(spell_type spell, god_type god, const char* message)
 {
-    const god_type god = GOD_MAKHLEB;
-
-    monster* avatar = get_avatar(god);
+    monster* avatar = _get_avatar(god);
     // can't be const because mons_cast() doesn't accept const monster*
 
-    if (avatar == nullptr)
+    if (avatar == nullptr || spell == SPELL_NO_SPELL)
     {
         simple_god_message(" has no time to deal with you just now.", god);
         return false; // not a very dazzling divine experience...
     }
 
-    _spell_retribution(avatar, _makhleb_destruction_type(), god);
+    simple_god_message(message ? message : " rains destruction down upon you!",
+        god);
+    bolt beam;
+    beam.source = you.pos();
+    beam.target = you.pos();
+    beam.aimed_at_feet = true;
+    beam.source_name = avatar->mname;
+    mons_cast(avatar, beam, spell, MON_SPELL_PRIEST, false);
+
     _reset_avatar(*avatar);
     return true;
 }
@@ -593,7 +581,7 @@ static bool _makhleb_summon_servants()
 static bool _makhleb_retribution()
 {
     if (coinflip())
-        return _makhleb_call_down_destruction();
+        return spell_retribution(_makhleb_destruction_type(), GOD_MAKHLEB);
     else
         return _makhleb_summon_servants();
 }
@@ -702,7 +690,19 @@ static bool _trog_retribution()
     // physical/berserk theme
     const god_type god = GOD_TROG;
 
-    if (coinflip())
+    if (you.berserk())
+    {
+        simple_god_message(" shortens your rage.");
+        you.duration[DUR_BERSERK] = 20;
+    }
+    else if (you.can_go_berserk(true) && coinflip())
+    {
+        simple_god_message(" takes away your ability to berserk.");
+        const int dur = 12 + roll_dice(2, 12);
+        you.increase_duration(DUR_BERSERK_COOLDOWN, dur * 2);
+    }
+
+    if (!one_chance_in(3))
     {
         int count = 0;
         int points = 3 + you.experience_level * 3;
@@ -731,62 +731,54 @@ static bool _trog_retribution()
             }
         }
 
+        if (count > 0)
+        {
+            if (x_chance_in_y(you.experience_level, 30) && coinflip())
+            {
+                if (coinflip() && !you.duration[DUR_WEAK])
+                {
+                    simple_god_message(" saps your strength.", god);
+                    you.weaken(nullptr, 30);
+                }
+                else if (you.duration[DUR_SLOW] < 180 * BASELINE_DELAY)
+                {
+                    mprf(MSGCH_WARN, "You suddenly feel lethargic!");
+                    slow_player(100);
+                }
+            }
+
+            return true;
+        }
+
         simple_god_message(count > 1 ? " sends monsters to punish you." :
                            count > 0 ? " sends a monster to punish you."
                                      : " has no time to punish you... now.",
-                           god);
+                                       god);
+
+        if (count > 0)
+            return true;
+        return false;
     }
-    else if (!one_chance_in(3))
+
+    simple_god_message("'s voice booms out, \"Feel my wrath!\"", god);
+    noisy(40, you.pos());
+
+    switch (random2(4))
     {
-        simple_god_message("'s voice booms out, \"Feel my wrath!\"", god);
+    case 0:
+    case 1:
+    case 2:
+        lose_stat(STAT_STR, 1 + random2(you.max_strength() / 3));
+        break;
 
-        // A collection of physical effects that might be better
-        // suited to Trog than wild fire magic... messages could
-        // be better here... something more along the lines of apathy
-        // or loss of rage to go with the anti-berserk effect-- bwr
-        switch (random2(6))
+    case 3:
+        if (you.can_sleep())
         {
-        case 0:
-        case 1:
-        case 2:
-            lose_stat(STAT_STR, 1 + random2(you.strength() / 5));
-            break;
-
-        case 3:
-            if (!you.duration[DUR_PETRIFIED])
-            {
-                you.petrify(nullptr);
-                break;
-            }
-            return false;
-
-        case 4:
-        case 5:
-            if (you.duration[DUR_SLOW] < 180 * BASELINE_DELAY)
-            {
-                mprf(MSGCH_WARN, "You suddenly feel lethargic!");
-                slow_player(100);
-            }
-            break;
+            mprf(MSGCH_WARN, "You pass out from exhaustion!");
+            you.put_to_sleep(nullptr, 30 + random2(20));
+            return true;
         }
-    }
-    else
-    {
-        // A fireball is magic when used by a mortal but just a manifestation
-        // of pure rage when used by a god. --ebering
-
-        monster* avatar = get_avatar(god);
-        // can't be const because mons_cast() doesn't accept const monster*
-
-        if (avatar == nullptr)
-        {
-            simple_god_message(" has no time to deal with you just now.", god);
-            return false; // not a very dazzling divine experience...
-        }
-
-        _spell_retribution(avatar, SPELL_FIREBALL,
-                           god, " hurls firey rage upon you!");
-        _reset_avatar(*avatar);
+        return false;
     }
 
     return true;
@@ -1119,26 +1111,7 @@ static spell_type _vehumet_wrath_type()
  */
 static bool _vehumet_retribution()
 {
-    const god_type god = GOD_VEHUMET;
-
-    monster* avatar = get_avatar(god);
-    if (!avatar)
-    {
-        simple_god_message(" has no time to deal with you just now.", god);
-        return false;
-    }
-
-    const spell_type spell = _vehumet_wrath_type();
-    if (spell == SPELL_NO_SPELL)
-    {
-        simple_god_message(" has no time to deal with you just now.", god);
-        _reset_avatar(*avatar);
-        return false;
-    }
-
-    _spell_retribution(avatar, spell, god);
-    _reset_avatar(*avatar);
-    return true;
+    return spell_retribution(_vehumet_wrath_type(), GOD_VEHUMET);
 }
 
 static bool _nemelex_retribution()

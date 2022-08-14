@@ -15,3 +15,5 @@ void beogh_idol_revenge();
 void gozag_incite(monster *mon);
 
 bool drain_wands();
+
+bool spell_retribution(spell_type spell, god_type god, const char* message = nullptr);
