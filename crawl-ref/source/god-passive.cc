@@ -413,8 +413,8 @@ static const vector<god_passive> god_passives[] =
     // Wu Jian
     {
         { 0, passive_t::wu_jian_lunge, "perform damaging attacks by moving towards foes." },
-        { 1, passive_t::wu_jian_whirlwind, "lightly attack and pin monsters in place by moving around them." },
-        { 2, passive_t::wu_jian_wall_jump, "perform airborne attacks by moving against a solid obstacle." },
+        { 1, passive_t::wu_jian_whirlwind, "lightly attack monsters by moving around them." },
+        { 2, passive_t::wu_jian_wall_jump, "perform airborne attacks in an area by jumping off a solid obstacle." },
     },
 
     // Bahamut / Tiamat
@@ -1803,14 +1803,6 @@ static bool _wu_jian_whirlwind(const coord_def& old_pos)
 
         if (you.props.exists(WU_JIAN_HEAVENLY_STORM_KEY))
             _wu_jian_increment_heavenly_storm();
-
-        // Pin has a longer duration than one player turn, but gets cleared
-        // before its duration expires by wu_jian_end_of_turn_effects. This is
-        // necessary to make sure it works well with Wall Jump's longer aut
-        // count.
-        mons->del_ench(ENCH_WHIRLWIND_PINNED);
-        mons->add_ench(mon_enchant(ENCH_WHIRLWIND_PINNED, 2, nullptr,
-                                   BASELINE_DELAY * 5));
 
         you.apply_berserk_penalty = false;
 
