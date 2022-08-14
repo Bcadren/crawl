@@ -399,7 +399,7 @@ function arena_sprint_get_monster_set(round, boss)
                 -- Fire, Air, Earth, Water, Death
                 "fire elemental / fire dragon / sturnulos / efreet / hell hound /\
                     hell hog / fire crab / fire giant / w:5 balrug / w:1 margery /\
-                    w:2 azrael",
+                    w:2 Maalik",
                 "storm dragon / air elemental / w:5 wind drake / spriggan air mage /\
                     insubstantial wisp / w:3 titan / w:1 nikola",
                 "earth elemental / w:5 iron golem / stone giant /\

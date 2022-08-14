@@ -1332,7 +1332,7 @@ static bool _is_signature_weapon(const monster* mons, const item_def &weapon)
 
         // Don't switch Azrael away from the customary scimitar of
         // flaming.
-        if (mons->type == MONS_AZRAEL)
+        if (mons->type == MONS_MAALIK)
         {
             return wtype == WPN_SCIMITAR
                    && get_weapon_brand(weapon) == SPWPN_MOLTEN;

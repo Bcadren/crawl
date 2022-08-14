@@ -2083,7 +2083,7 @@ static const mon_spellbook mspell_list[] =
     },
 
     // ('R') Spiritual beings.
-    {  MST_AZRAEL,
+    {  MST_MAALIK,
       {
        { SPELL_BOLT_OF_FIRE, 13, MON_SPELL_MAGICAL },
        { SPELL_STICKY_FLAME_RANGE, 13, MON_SPELL_MAGICAL },

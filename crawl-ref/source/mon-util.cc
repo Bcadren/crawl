@@ -6893,7 +6893,7 @@ bool is_fiery_type(monster_type mc)
     return mc == MONS_FIRE_VORTEX
         || mc == MONS_FIRE_ELEMENTAL
         || mc == MONS_EFREET
-        || mc == MONS_AZRAEL
+        || mc == MONS_MAALIK
         || mc == MONS_LAVA_SNAKE
         || mc == MONS_SALAMANDER
         || mc == MONS_SALAMANDER_MYSTIC

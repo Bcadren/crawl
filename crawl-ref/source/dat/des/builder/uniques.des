@@ -98,9 +98,9 @@ ENDMAP
 # Uniques which can appear in the Dungeon (D):
 ################################################################################
 
-NAME:   uniq_azrael
+NAME:   uniq_maalik
 DEPTH:  D:6-, Orc:$, Elf, !Elf:$, Snake, !Snake:$, Spider, !Spider:$
-: place_unique(_G, "Azrael band")
+: place_unique(_G, "Maalik band")
 
 NAME:   uniq_blork_the_orc
 DEPTH:  D:2-3

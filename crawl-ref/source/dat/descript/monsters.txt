@@ -46,10 +46,6 @@ dreaming of a new kingdom. In his lust for power, the minotaur king turned to
 the worship of Makhleb, and Makhleb has rewarded him with horrifying
 destructive might.
 %%%%
-Azrael
-
-A powerful, belligerent efreet. (Is there any other kind?)
-%%%%
 Bai Suzhen
 
 A weary draconian with foreign and watery scales. She has come to the Dungeon
@@ -301,6 +297,12 @@ hopelessly lost there. Toyed with by some greater power, she was stuck on the
 hostile plane for nearly a decade. When she finally emerged from the Abyss,
 Louise had become powerful indeed, but had also gone fully insane. She now
 wanders the halls of the dungeon, seeking other adventurers to share her fate.
+%%%%
+Maalik
+
+An earthly avatar of Maalik, the ancient angel responsible for hellfire. This 
+avatar is merely a powerful intelligent elemental, deadly and a bit mad with 
+power, but far weaker than the immensity of the divinity.
 %%%%
 Mara
 

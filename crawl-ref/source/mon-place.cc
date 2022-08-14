@@ -2069,7 +2069,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     // yup, scary
     { MONS_LIVARRA,          { {}, {{ BAND_DRACONIAN, {8, 15}, true }}}},
     { MONS_ILSUIW,          { {}, {{ BAND_ILSUIW, {3, 6} }}}},
-    { MONS_AZRAEL,          { {}, {{ BAND_AZRAEL, {4, 9}, true }}}},
+    { MONS_MAALIK,          { {}, {{ BAND_MAALIK, {4, 9}, true }}}},
     { MONS_DUVESSA,         { {}, {{ BAND_DUVESSA, {1, 2} }}}},
     { MONS_KHUFU,           { {}, {{ BAND_KHUFU, {3, 4}, true }}}},
     { MONS_GOLDEN_EYE,      { {}, {{ BAND_GOLDEN_EYE, {1, 6} }}}},
@@ -2414,7 +2414,7 @@ static const map<band_type, vector<member_possibilites>> band_membership = {
                                   {MONS_MERFOLK, 3},
                                   {MONS_MERFOLK_JAVELINEER, 2},
                                   {MONS_MERFOLK_IMPALER, 2}}}},
-    { BAND_AZRAEL,              {{{MONS_FIRE_ELEMENTAL, 1},
+    { BAND_MAALIK,              {{{MONS_FIRE_ELEMENTAL, 1},
                                   {MONS_HELL_HOUND, 1}}}},
     { BAND_KHUFU,               {{{MONS_GREATER_MUMMY, 1},
                                   {MONS_MUMMY, 1}}}},

@@ -107,7 +107,7 @@ function base_monster_setup(e)
            Prince Ribbit")
   e.kmons("I = Erica / Erolcha / Eustachio / Gastronok / Grum band / Harold /\
            Joseph / Josephine band / Maurice / Psyche / Sonja / Urug")
-  e.kmons("J = Agnes / Aizul / Azrael band / Donald / Frances / Circe band /\
+  e.kmons("J = Agnes / Aizul / Maalik band / Donald / Frances / Circe band /\
            Nergalle / Nessos / Ilsuiw band / Arachne / Polyphemus / Rupert /\
            Saint Roka band / Snorg")
   e.kmons("K = Louise / Nikola / Frederick / Boris / Margery band /\

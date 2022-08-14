@@ -768,7 +768,7 @@ enum monster_type                      // menv[].type
     MONS_ROXANNE,
     MONS_SONJA,
     MONS_EUSTACHIO,
-    MONS_AZRAEL,
+    MONS_MAALIK,
     MONS_ILSUIW,
     MONS_PRINCE_RIBBIT,
     MONS_NERGALLE,

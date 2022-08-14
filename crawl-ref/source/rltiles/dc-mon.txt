@@ -427,7 +427,7 @@ mara MONS_MARA
 %sdir mon/demons
 rakshasa MONS_RAKSHASA
 %sdir mon/unique
-azrael MONS_AZRAEL
+azrael MONS_MAALIK
 %sdir mon/demons
 efreet MONS_EFREET
 %sdir mon/nonliving

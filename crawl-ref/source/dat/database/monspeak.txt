@@ -1789,15 +1789,15 @@ You hear demonic laughter.
 
 @The_monster@ screams @at_foe@, "Bow down before your king! Bow! Bow!!" @player_only@
 %%%%
-############ AZRAEL ### efreet
-Azrael
+############ Maalik ### efreet
+Maalik
 
-@_Azrael_common_@
+@_Maalik_common_@
 
 w:2
-@_Azrael_rare_@
+@_Maalik_rare_@
 %%%%
-_Azrael_common_
+_Maalik_common_
 
 @The_monster@ laughs insanely.
 
@@ -1811,7 +1811,7 @@ VISUAL:@The_monster@'s eyes look fiery.
 
 VISUAL:@The_monster@ is momentarily hidden by a cloud of flames.
 %%%%
-_Azrael_rare_
+_Maalik_rare_
 
 @The_monster@ grins and asks @foe,@ "Are you [flammable|inflammable|feeling hot]?"
 
@@ -1846,7 +1846,7 @@ else
     return "arms"
 end
 }}
-## END Azrael ##
+## END Maalik ##
 %%%%
 
 ############ BAI SUZHEN ### Dragon-lady of famed tragic folklore

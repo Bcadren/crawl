@@ -419,7 +419,7 @@ function choose_mset_3(e)
                Eustachio / Gastronok / Grum / Grinder / Harold / Ijyb / Jessica /\
                Joseph / Josephine / Maurice / Menkaure / Pikel /\
                Prince Ribbit / Psyche / Purgy / Sigmund / Sonja / Terence / Urug /\
-               Agnes / Aizul / Azrael / Donald / Frances / Circe / Louise /\
+               Agnes / Aizul / Maalik / Donald / Frances / Circe / Louise /\
                Nergalle / Nessos / Nikola / Polyphemus / Roxanne /\
                Rupert / Saint Roka / Snorg")
 -- Holy
@@ -553,7 +553,7 @@ local rnd = crawl.random2(142)
                Eustachio / Gastronok / Grum / Grinder / Harold / Ijyb / Jessica /\
                Joseph / Josephine / Maurice / Menkaure / Pikel /\
                Prince Ribbit / Psyche / Purgy / Sigmund / Sonja / Terence / Urug /\
-               Agnes / Aizul / Azrael / Donald / Frances / Circe / Louise /\
+               Agnes / Aizul / Maalik / Donald / Frances / Circe / Louise /\
                Nergalle / Nessos / Nikola / Polyphemus / Roxanne /\
                Rupert / Saint Roka / Snorg / Antaeus / Asmodeus /\
                Boris / Cerebov / Dispater / Dissolution / Ereshkigal /\

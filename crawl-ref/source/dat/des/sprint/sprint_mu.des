@@ -841,7 +841,7 @@ KITEM: & = lamp of fire, scroll of acquirement q:1 ident:all, \
  scroll of acquirement q:1 ident:all / w:15 scroll of torment ident:all, \
  scroll of acquirement q:1 ident:all / w:25 scroll of torment ident:all
 NSUBST: L = 1:& / *:l
-KMONS: A = patrolling Azrael
+KMONS: A = patrolling Maalik
 KITEM: " = any weapon, any armour, any wand, gold, ration
 
 MARKER:  ! = lua:fog_machine { \
