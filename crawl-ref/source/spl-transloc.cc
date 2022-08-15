@@ -1327,6 +1327,7 @@ spret cast_gravitas(int pow, const coord_def& where, bool fail)
 static coord_def _beckon_destination(const coord_def &origin, const actor &beckoned, const bolt &path, int pow, const actor &agent)
 {
     if (beckoned.is_stationary()  // don't move statues, etc
+        || beckoned.wearing_ego(EQ_BOOTS, SPARM_STURDY) // ego immunity
         || mons_is_tentacle_or_tentacle_segment(beckoned.type)) // a mess...
     {
         return beckoned.pos();
