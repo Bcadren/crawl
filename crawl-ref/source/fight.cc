@@ -261,8 +261,13 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
         bool attacked = false;
         coord_def pos = defender->pos();
 
-        const bool skip_one = you.weapon(1) && you.weapon(1)->is_type(OBJ_STAVES, STAFF_LIFE);
-        const bool skip_two = you.weapon(0) && you.weapon(0)->is_type(OBJ_STAVES, STAFF_LIFE);
+        const bool life_one = you.weapon(0) && you.weapon(0)->is_type(OBJ_STAVES, STAFF_LIFE);
+        const bool life_two = you.weapon(1) && you.weapon(1)->is_type(OBJ_STAVES, STAFF_LIFE);
+        const bool ally = defender->wont_attack();
+
+        const bool skip_one = life_two && ally || life_one && !ally && !you_worship(GOD_ELYVILON);
+        const bool skip_two = life_one && ally || life_two && !ally && !you_worship(GOD_ELYVILON);
+
 
         bool xtra_atk = (you.form == transformation::scorpion || you.get_mutation_level(MUT_JIBBERING_MAWS));
         bool mount_atk = false;
@@ -282,6 +287,9 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
                 mount_atk = true;
                 you.mount_energy -= 10;
             }
+
+            if (skip_one || skip_two)
+                mount_atk = false;
         }
         
         xtra_atk |= mount_atk;
@@ -298,15 +306,18 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
                 else
                 {
                     local_time = _handle_player_attack(defender, simu, 0, 0, did_hit, wu, wu_num);
-                    if (!defender->alive()
+                    if (defender->wont_attack() && life_one
+                        || !defender->alive()
                         || defender->pos() != pos
-                        || defender->is_banished()
-                        || defender->temp_attitude() // If it's not hostile the melee attack charmed or pacified it.
-                        || skip_two) 
+                        || defender->is_banished())
                     {
-                        local_time |= _handle_maws_attack(defender, simu, did_hit, wu, wu_num);
-                        local_time |= _handle_hydra_attack(defender, simu, did_hit, wu, wu_num);
                         return local_time;
+                    }
+
+                    if (skip_two) 
+                    {
+                        if (ally)
+                            return local_time;
                     }
                     else
                         local_time |= _handle_player_attack(defender, simu, 1, xtra_atk ? 3 : 1, did_hit, wu, wu_num);
@@ -315,7 +326,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             else
                 local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num);
         }
-        else if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)))
+        else if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)) && !skip_two)
         {
             if (!(you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO) && !you.get_mutation_level(MUT_MISSING_HAND))
             {
@@ -336,10 +347,8 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             if (!defender->alive()
                 || defender->pos() != pos
                 || defender->is_banished()
-                || defender->temp_attitude()) // If it's not hostile the melee attack charmed or pacified it.
+                || defender->wont_attack()) // If it's not hostile the melee attack charmed or pacified it.
             {
-                local_time |= _handle_maws_attack(defender, simu, did_hit, wu, wu_num);
-                local_time |= _handle_hydra_attack(defender, simu, did_hit, wu, wu_num);
                 return local_time;
             }
 

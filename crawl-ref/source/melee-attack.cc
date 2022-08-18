@@ -3058,11 +3058,11 @@ bool melee_attack::apply_staff_damage()
         int heal = staff_damage(SK_SUMMONINGS);
         if (attacker->is_player())
         {
-            if (!mons->temp_attitude())
-                behaviour_event(mons, ME_WHACK, attacker, coord_def(), !stab_attempt);
+            if (!mons->wont_attack())
+                behaviour_event(mons, ME_WHACK, attacker, you.pos(), !stab_attempt);
             if (!mons->wont_attack() && !mons->neutral() && you.religion == GOD_ELYVILON)
             {
-                int pacify_amount = staff_damage(SK_SUMMONINGS);
+                int pacify_amount = heal;
                 pacify_amount += staff_damage(SK_SUMMONINGS);
                 pacify_amount += staff_damage(SK_SUMMONINGS);
                 pacify_amount += staff_damage(SK_SUMMONINGS);

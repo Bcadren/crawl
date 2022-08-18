@@ -370,6 +370,13 @@ int attack::calc_to_hit(bool random, bool player_aux)
         return AUTOMATIC_HIT;
     }
 
+    if (mons_aligned(attacker, defender) && using_weapon()
+        && weapon->is_type(OBJ_STAVES, STAFF_LIFE))
+    {
+        return AUTOMATIC_HIT;
+    }
+
+
     float mhit = attacker->is_player() ?
                 calc_player_to_hit(using_weapon() ? weapon : nullptr, 
                     player_aux, attacker_armour_tohit_penalty + attacker_shield_tohit_penalty, true)
@@ -532,8 +539,11 @@ void attack::init_attack(skill_type unarmed_skill, int attk_num)
         attk_flavour    = mon_attk.flavour;
 
         // Don't scale damage for YOU_FAULTLESS etc.
-        if (attacker->get_experience_level() == 0)
+        if (attacker->get_experience_level() == 0
+            || mon_attk.damage == 0)
+        {
             attk_damage = mon_attk.damage;
+        }
         else
         {
             attk_damage = div_rand_round(mon_attk.damage
@@ -1240,8 +1250,7 @@ void attack::stab_message()
 {
     defender->props["helpless"] = true;
 
-    if (weapon && weapon->base_type == OBJ_STAVES 
-               && weapon->sub_type == STAFF_LIFE)
+    if (weapon && weapon->is_type(OBJ_STAVES, STAFF_LIFE))
         return;
 
     switch (stab_bonus)
@@ -1558,6 +1567,10 @@ int attack::calc_damage()
         }
 
         potential_damage += attk_damage;
+
+        if (potential_damage == 0)
+            return 0;
+
         potential_damage = apply_damage_modifiers(potential_damage);
 
         damage     += 1 + random2avg(potential_damage + 1 , 3);
@@ -1772,13 +1785,18 @@ bool attack::attack_shield_blocked(bool verbose)
     if (defender->incapacitated())
         return false;
 
-    // Rare; but causes monster to block without a way of blocking for strange message. Attack will miss in next step anyways.
-    if (to_hit <= 0) 
+    if (mons_aligned(attacker, defender) && using_weapon()
+        && weapon->is_type(OBJ_STAVES, STAFF_LIFE))
+    {
         return false;
+    }
 
     const int con_block = random2(attacker->shield_bypass_ability(to_hit)
                                   + defender->shield_block_penalty());
     int pro_block = defender->shield_bonus();
+
+    if (pro_block == 0)
+        return false;
 
     if (!attacker->visible_to(defender))
         pro_block /= 3;
