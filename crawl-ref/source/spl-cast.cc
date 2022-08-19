@@ -691,6 +691,10 @@ static int _draconian_spell_enhancement(spschools_type typeflags)
         if (typeflags & spschool::hexes)
             return you.get_mutation_level(MUT_DRACONIAN_ENHANCER);
         return 0;
+    case DR_RED:
+        if (typeflags & spschool::fire)
+            return you.get_mutation_level(MUT_DRACONIAN_ENHANCER);
+        return 0;
     case DR_SILVER:
         if (typeflags & spschool::earth)
             return you.get_mutation_level(MUT_DRACONIAN_ENHANCER);
