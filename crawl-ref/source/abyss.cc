@@ -1797,15 +1797,15 @@ struct corrupt_env
     corrupt_env(): rock_colour(BLACK), floor_colour(BLACK) { }
 };
 
-static void _place_corruption_seed(const coord_def &pos, int duration)
+static void _place_corruption_seed(const coord_def &pos, int duration, bool wrath)
 {
-    env.markers.add(new map_corruption_marker(pos, duration));
+    env.markers.add(new map_corruption_marker(pos, duration, wrath));
     // Corruption markers don't need activation, though we might
     // occasionally miss other unactivated markers by clearing.
     env.markers.clear_need_activate();
 }
 
-static void _initialise_level_corrupt_seeds(int power)
+static void _initialise_level_corrupt_seeds(int power, bool wrath)
 {
     const int low = power * 40 / 100, high = power * 140 / 100;
     const int nseeds = random_range(-1, min(2 + power / 110, 4), 2);
@@ -1815,7 +1815,7 @@ static void _initialise_level_corrupt_seeds(int power)
     dprf("Placing %d corruption seeds (power: %d)", nseeds, power);
 
     // The corruption centreed on the player is free.
-    _place_corruption_seed(you.pos(), high + 300);
+    _place_corruption_seed(you.pos(), high + 300, wrath);
 
     for (int i = 0; i < nseeds; ++i)
     {
@@ -1830,19 +1830,21 @@ static void _initialise_level_corrupt_seeds(int power)
         }
 
         if (!where.origin())
-            _place_corruption_seed(where, random_range(low, high, 2) + 300);
+            _place_corruption_seed(where, random_range(low, high, 2) + 300, wrath);
     }
 }
 
 static bool _incorruptible(monster_type mt)
 {
-    return mons_is_abyssal_only(mt) || mons_class_holiness(mt) == MH_HOLY;
+    return mons_is_abyssal_only(mt) || mons_class_holiness(mt) == MH_HOLY 
+        || mt == MONS_ABOMINATION_LARGE || mt == MONS_ABOMINATION_SMALL
+        || mons_class_is_zombified(mt);
 }
 
 // Create a corruption spawn at the given position. Returns false if further
 // monsters should not be placed near this spot (overcrowding), true if
 // more monsters can fit in.
-static bool _spawn_corrupted_servant_near(const coord_def &pos)
+static bool _spawn_corrupted_servant_near(const coord_def &pos, bool hostile)
 {
     // Chance to fail to place a monster (but allow continued attempts).
     if (x_chance_in_y(100, 200 + you.skill(SK_INVOCATIONS, 25)))
@@ -1865,8 +1867,10 @@ static bool _spawn_corrupted_servant_near(const coord_def &pos)
         ASSERT(mons);
         if (!monster_habitable_grid(mons, grd(p)))
             continue;
-        mgen_data mg(mons, BEH_NEUTRAL, p);
-        mg.set_summoned(0, 5, 0).set_non_actor_summoner("Lugonu's corruption");
+        mgen_data mg(mons, hostile ? BEH_HOSTILE : BEH_NEUTRAL, p);
+        mg.set_summoned(0, hostile ? 0 : 5, 0).set_non_actor_summoner("Lugonu's corruption");
+        if (hostile)
+            mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
         mg.place = BRANCH_ABYSS;
         return create_monster(mg);
     }
@@ -1888,7 +1892,7 @@ static void _apply_corruption_effect(map_marker *marker, int duration)
     for (int i = 0; i < neffects; ++i)
     {
         if (x_chance_in_y(cmark->duration, 4000)
-            && !_spawn_corrupted_servant_near(cmark->pos))
+            && !_spawn_corrupted_servant_near(cmark->pos, cmark->wrath))
         {
             break;
         }
@@ -2091,9 +2095,9 @@ static bool _is_level_corrupted()
     return !!env.markers.find(MAT_CORRUPTION_NEXUS);
 }
 
-bool is_level_incorruptible(bool quiet)
+bool is_level_incorruptible(bool quiet, bool wrath)
 {
-    if (_is_level_corrupted())
+    if (_is_level_corrupted() && !wrath)
     {
         if (!quiet)
             mpr("This place is already infused with evil and corruption.");
@@ -2122,19 +2126,20 @@ static void _corrupt_choose_colours(corrupt_env *cenv)
     cenv->floor_colour = colour;
 }
 
-bool lugonu_corrupt_level(int power)
+bool lugonu_corrupt_level(int power, bool wrath)
 {
-    if (is_level_incorruptible())
+    if (is_level_incorruptible(false, wrath))
         return false;
 
     simple_god_message("'s Hand of Corruption reaches out!");
     take_note(Note(NOTE_MESSAGE, 0, 0, make_stringf("Corrupted %s",
               level_id::current().describe().c_str()).c_str()));
-    mark_corrupted_level(level_id::current());
+    if (!_is_level_corrupted())
+        mark_corrupted_level(level_id::current());
 
     flash_view(UA_PLAYER, MAGENTA);
 
-    _initialise_level_corrupt_seeds(power);
+    _initialise_level_corrupt_seeds(power, wrath);
 
     corrupt_env cenv;
     _corrupt_choose_colours(&cenv);

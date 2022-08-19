@@ -101,7 +101,7 @@ class map_corruption_marker : public map_marker
 {
 public:
     map_corruption_marker(const coord_def &pos = coord_def(0, 0),
-                          int dur = 0);
+                          int dur = 0, bool wrath = false);
 
     void write(writer &) const override;
     void read(reader &) override;
@@ -112,6 +112,7 @@ public:
 
 public:
     int duration;
+    bool wrath;
 };
 
 class map_tomb_marker : public map_marker

@@ -579,6 +579,8 @@ bool active_penance(god_type god)
     // Good gods only have active wrath when they hate your current god.
     return player_under_penance(god)
            && !is_unavailable_god(god)
+           && (you.where_are_you != BRANCH_ABYSS
+                || god != GOD_LUGONU)  // Pause Lugonu wrath while you are in the Abyss.
            && god != GOD_ASHENZARI
            && god != GOD_GOZAG
            && god != GOD_RU

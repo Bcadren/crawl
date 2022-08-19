@@ -9,6 +9,7 @@
 
 #include <sstream>
 
+#include "abyss.h" // lugonu_corrupt_level
 #include "act-iter.h"
 #include "areas.h"
 #include "artefact.h"
@@ -951,22 +952,53 @@ static bool _sif_muna_retribution()
 /**
  * Perform translocation-flavored Lugonu retribution.
  *
- * 25% banishment; 50% teleport near monsters.
+ * 50% banishment/corruption; 50% teleport near monsters.
  */
 static void _lugonu_transloc_retribution()
 {
     const god_type god = GOD_LUGONU;
 
+    bool acted = false;
+
     if (coinflip())
     {
-        // Give extra opportunities for embarrassing teleports.
-        simple_god_message("'s wrath scatters you!", god);
-        you_teleport_now(false, true, "Space warps around you!");
+        if (x_chance_in_y(you.experience_level, 30))
+            lugonu_corrupt_level(150 + you.experience_level * 30, true);
+        else
+        {
+            simple_god_message(" draws you home!", god);
+            you.banish(nullptr, "Lugonu's touch", you.get_experience_level(), true);
+        }
+        acted = true;
     }
     else if (coinflip())
     {
-        simple_god_message(" draws you home!", god);
-        you.banish(nullptr, "Lugonu's touch", you.get_experience_level(), true);
+        you_teleport_now(false, true, "Space warps around you!");
+        acted = true;
+    }
+
+    if (one_chance_in(3) && acted)
+    {
+        switch (random2(3))
+        {
+        case 0:
+            mprf(MSGCH_GOD, "You're contaminated by residual distortion.");
+            contaminate_player(random2avg(18000, 3));
+            break;
+        case 1:
+            simple_god_message(" thickens space around you!", god);
+            you.increase_duration(DUR_DIMENSION_ANCHOR, 20 + random2(11), 50);
+            break;
+        case 2:
+            mprf(MSGCH_GOD, "Reality tears apart around you.");
+            ouch(9 + random2avg(17, 2), KILLED_BY_DIVINE_WRATH, MID_NOBODY, "Lugonu's touch");
+            for (int i = 1 + random2(4); i > 0; i++)
+            {
+                create_monster(_wrath_mon_data(x_chance_in_y(you.experience_level, 50) ? 
+                    MONS_SPATIAL_MAELSTROM : MONS_SPATIAL_VORTEX, GOD_LUGONU), false);
+            }
+            break;
+        }
     }
 }
 
@@ -1002,10 +1034,10 @@ static void _lugonu_minion_retribution()
         // higher levels
         const monster_type to_summon =
             random_choose_weighted(
-                15 - (you.experience_level/2),  MONS_ABOMINATION_SMALL,
-                you.experience_level/2,         MONS_ABOMINATION_LARGE,
+                7,                              MONS_RAIJU,
                 6,                              MONS_THRASHING_HORROR,
-                3,                              MONS_ANCIENT_ZYME
+                3,                              MONS_ANCIENT_ZYME,
+                3,                              MONS_APOCALYPSE_CRAB
             );
 
         if (create_monster(_wrath_mon_data(to_summon, god), false))
