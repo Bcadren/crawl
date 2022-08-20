@@ -13,6 +13,7 @@
 #include "act-iter.h"
 #include "areas.h"
 #include "artefact.h"
+#include "attack.h" // attack_strength_punctuation
 #include "attitude-change.h"
 #include "cleansing-flame-source-type.h"
 #include "coordit.h"
@@ -346,11 +347,17 @@ static bool _cheibriados_retribution()
 
     // Determine the level of wrath
     int wrath_type = 0;
-    if (wrath_value < 2)       { wrath_type = 0; }
-    else if (wrath_value < 4)  { wrath_type = 1; }
-    else if (wrath_value < 8)  { wrath_type = 2; }
-    else if (wrath_value < 16) { wrath_type = 3; }
-    else                       { wrath_type = 4; }
+
+    if (wrath_value < 4)       { wrath_type = 1; }
+    else
+    {
+        if (x_chance_in_y(you.experience_level, 90))
+            wrath_type = 4;
+        else if (coinflip())
+            wrath_type = 3;
+        else
+            wrath_type = 2;
+    }
 
     // Strip away extra speed
     dec_haste_player(10000);
@@ -358,17 +365,30 @@ static bool _cheibriados_retribution()
     switch (wrath_type)
     {
     // Very high tension wrath.
-    // Add noise then start sleeping and slow the player with 2/3 chance.
+    // Summon torpor snails or direct (slouch) damage then start sleeping.
     case 4:
-        simple_god_message(" strikes the hour.", god);
-        noisy(40, you.pos());
-        dec_penance(god, 1); // and fall-through.
+        if (coinflip())
+        {
+            simple_god_message(" sends glorious snails to punish you.", god);
+            for (int i = 2 + you.experience_level / 8; i > 0; i++)
+                create_monster(_wrath_mon_data(MONS_TORPOR_SNAIL, GOD_CHEIBRIADOS), false);
+            dec_penance(god, 1); // and fall-through.
+        }
+        else
+        {
+            int dam = 3 + roll_dice(3, you.experience_level);
+            dam *= max(20 - player_movement_speed(), 4);
+            dam /= 10;
+            mprf(MSGCH_WARN, "You feel time thicken around you%s", attack_strength_punctuation(dam).c_str());
+            ouch(dam, KILLED_BY_DIVINE_WRATH, MID_NOBODY, "displeasure of Cheibriados");
+
+        }
     // High tension wrath
     // Sleep the player and slow the player with 50% chance.
     case 3:
         mpr("You lose track of time.");
         you.put_to_sleep(nullptr, 30 + random2(20));
-        if (one_chance_in(wrath_type - 1))
+        if (wrath_type == 4 || coinflip())
             break;
         else
             dec_penance(god, 1); // and fall-through.
@@ -382,9 +402,8 @@ static bool _cheibriados_retribution()
         break;
     // Low/no tension; lose stats.
     case 1:
-    case 0:
-        mpr("Time shudders.");
-        lose_stat(STAT_RANDOM, 1 + random2avg(5, 2));
+        simple_god_message(" obstructs your stats as your blasphemy continues.");
+        lose_stat(STAT_RANDOM, 1 + random2avg(8, 2));
         break;
 
     default:
