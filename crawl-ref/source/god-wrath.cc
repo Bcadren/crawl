@@ -1293,23 +1293,11 @@ static bool _jiyva_retribution()
  */
 static void _fedhas_nature_retribution()
 {
-    const god_type god = GOD_FEDHAS;
-
-    monster* avatar = get_avatar(god);
-    // can't be const because mons_cast() doesn't accept const monster*
-
-    if (avatar == nullptr)
-    {
-        simple_god_message(" has no time to deal with you just now.", god);
-        return;
-    }
-
     spell_type spell = random_choose(SPELL_CORROSIVE_BOLT,
                                      SPELL_PRIMAL_WAVE,
                                      SPELL_THORN_VOLLEY);
 
-    _spell_retribution(avatar, spell, god, " invokes nature against you.");
-    _reset_avatar(*avatar);
+    spell_retribution(spell, GOD_FEDHAS, " invokes nature against you.");
 }
 
 static bool _fedhas_summon_elemental()
