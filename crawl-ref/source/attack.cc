@@ -781,7 +781,8 @@ struct chaos_effect
     function<bool(attack &attack, const bool md)> misc_effect;
 };
 
-// Total Weight: 69 (Arbitrary)
+// BCADDO: Consider restoring some miscast effects as their own thing.
+// Total Weight: 49 (Arbitrary)
 static const vector<chaos_effect> chaos_effects = {
     {
         "clone", 1, [](const actor &d, const bool md) {
@@ -835,29 +836,6 @@ static const vector<chaos_effect> chaos_effects = {
             xom_is_stimulated(64 * friend_factor * glow_factor);
 
             return obvious_effect;
-        },
-    },
-    {
-        "miscast", 20, nullptr, BEAM_NONE, [](attack &attack, const bool /*md*/) {
-
-            // Mount Defend unused; just let miscasts go to the player.
-
-            const int HD = attack.defender->get_hit_dice();
-
-            // At level == 27 there's a 13.9% chance of a level 3 miscast.
-            const int level0_chance = HD;
-            const int level1_chance = max(0, HD - 7);
-            const int level2_chance = max(0, HD - 12);
-            const int level3_chance = max(0, HD - 17);
-
-            attack.miscast_level  = random_choose_weighted(level0_chance, 0,
-                                                           level1_chance, 1,
-                                                           level2_chance, 2,
-                                                           level3_chance, 3);
-            attack.miscast_type   = spschool::random;
-            attack.miscast_target = attack.defender;
-
-            return false;
         },
     },
     {
