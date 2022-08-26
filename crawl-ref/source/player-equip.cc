@@ -8,6 +8,7 @@
 #include "areas.h"
 #include "artefact.h"
 #include "art-enum.h"
+#include "attack.h" // attack_strength_punctuation
 #include "delay.h"
 #include "english.h" // conjugate_verb
 #include "evoke.h"
@@ -23,6 +24,7 @@
 #include "item-use.h"
 #include "libutil.h"
 #include "macro.h" // command_to_string
+#include "mon-place.h"
 #include "monster.h"
 #include "message.h"
 #include "nearby-danger.h"
@@ -912,12 +914,10 @@ static void _wielding_wear_effects(bool unwield, bool unmeld)
                     wpn0.c_str(), have_passive(passive_t::safe_distortion) ? "" : "It is no longer safe to unwield.");
             }
 
-            else
+            else if (!have_passive(passive_t::safe_distortion))
             {
                 mprf("As you don your protective gloves, your %s of distortion lashes out!", wpn0.c_str());
-                MiscastEffect(&you, nullptr, { miscast_source::wield },
-                    spschool::translocation, 9, 90,
-                    "a distortion unwield");
+                unwield_distortion();
             }
         }
 
@@ -929,12 +929,10 @@ static void _wielding_wear_effects(bool unwield, bool unmeld)
                     wpn1.c_str(), have_passive(passive_t::safe_distortion) ? "" : "It is no longer safe to unwield.");
             }
 
-            else
+            else if (!have_passive(passive_t::safe_distortion))
             {
                 mprf("As you don your protective gloves, your %s of distortion lashes out!", wpn1.c_str());
-                MiscastEffect(&you, nullptr, { miscast_source::wield },
-                    spschool::translocation, 9, 90,
-                    "a distortion unwield");
+                unwield_distortion();
             }
         }
 
@@ -1697,6 +1695,11 @@ static void _mark_unseen_monsters()
 // and you can rely on the occasional spatial bonus to mow down
 // some opponents. It's far too powerful without a real risk.
 // -- bwr [ed: ebering]
+// 1/3 Nothing. 
+// 1/6 3-12 Damage + Blink (mostly harmless)
+// 1/6 Banish
+// 1/6 Summon Spatial Vortices
+// 1/6 Contam (Not as random as before, always Yellow).
 void unwield_distortion(bool brand)
 {
     if (have_passive(passive_t::safe_distortion))
@@ -1714,21 +1717,53 @@ void unwield_distortion(bool brand)
         return;
     }
 
-    // Makes no sense to discourage unwielding a temporarily
-    // branded weapon since you can wait it out. This also
-    // fixes problems with unwield prompts (mantis #793).
-    if (coinflip())
-        you_teleport_now(false, true, "Space warps around you!");
-    else if (coinflip())
+    switch (random2(6))
     {
-        you.banish(nullptr,
-                   make_stringf("%sing a weapon of distortion",
-                                brand ? "rebrand" : "unwield").c_str(),
-                   you.get_experience_level(), true);
+    default:
+    case 0:
+    case 1:
+        // BCADDO: More flavourful messages.
+        canned_msg(MSG_NOTHING_HAPPENS);
+        return;
+    case 2:
+    {
+        int dam = 3 + random2(10);
+        mprf("Space twists around you%s", attack_strength_punctuation(dam).c_str());
+        you.blink();
+        return;
     }
-    else
+    case 3:
+        you.banish(nullptr,
+            make_stringf("%sing a weapon of distortion",
+                brand ? "rebrand" : "unwield").c_str(),
+            you.get_experience_level(), true);
+        return;
+    case 4:
     {
+        bool success = false;
+        for (int i = 1 + random2(3); i > 0; --i)
+        {
+            mgen_data data = mgen_data::hostile_at(MONS_SPATIAL_VORTEX, true, you.pos());
+            data.set_summoned(nullptr, 3, SPELL_NO_SPELL, GOD_LUGONU);
+            data.set_non_actor_summoner(make_stringf("%sing a weapon of distortion",
+                brand ? "rebrand" : "unwield").c_str());
+
+            data.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+
+            monster * created = create_monster(data, false);
+            success |= created->defined();
+        }
+
+        if (success)
+        {
+            mpr("Space twists in upon itself!");
+            return;
+        }
+        // else fallthrough
+    }
+    case 5:
         mpr("Space warps into you!");
-        contaminate_player(random2avg(18000, 3), true);
+        contaminate_player(5000 + random2avg(5000, 3), true);
+        return;
     }
 }
