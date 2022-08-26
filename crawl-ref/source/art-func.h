@@ -163,8 +163,9 @@ static void _CURSES_equip(item_def */*item*/, bool *show_msgs, bool unmeld)
         death_curse(you, nullptr, "the scythe of Curses", 0);
 }
 
+// BCADDO: Curse effects for mounts?
 static void _CURSES_melee_effects(item_def* /*weapon*/, actor* attacker,
-                                  actor* defender, bool mondied, int dam)
+                                  actor* defender, bool mondied, int dam, bool /*hits_mount*/)
 {
     if (attacker->is_player())
         did_god_conduct(DID_EVIL, 3);
