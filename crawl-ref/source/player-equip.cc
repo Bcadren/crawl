@@ -1751,7 +1751,7 @@ void unwield_distortion(bool brand)
             data.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
 
             monster * created = create_monster(data, false);
-            success |= created->defined();
+            success |= created && created->defined();
         }
 
         if (success)

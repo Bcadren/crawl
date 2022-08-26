@@ -2163,7 +2163,9 @@ of restoring @possessive@ fallen deity.
 %%%%
 shadow
 
-A wisp of unliving shadow, slipping in and out of the darkness of the dungeon.
+A wisp of unliving shadow, formed of elemental darkness. @Subjective@ @verb:slip@ in and out 
+of the darkness of the dungeon.
+
 @Subjective@ @verb:move@ swiftly and silently from one pool of shade to another, striking
 unerringly from the blind spots of those who cannot see @objective@.
 %%%%
