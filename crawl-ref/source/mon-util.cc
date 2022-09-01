@@ -1783,6 +1783,12 @@ monuse_flags mons_itemuse(const monster& mon)
     if (mons_class_is_zombified(mon.type))
     {
         int retval = mons_class_itemuse(mon.base_monster);
+        
+        if (mon.type == MONS_SIMULACRUM
+            && bool(retval & MU_DOOR))
+        {
+            return MU_DOOR;
+        }
 
         retval |= MU_START_ONLY;
 
