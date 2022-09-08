@@ -1269,7 +1269,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_TONGUE_LASH, "Tongue Lash", "",
-    spschool::evocation,
+    spschool::evocation | spschool::translocation | spschool::earth,
     spflag::dir_or_target | spflag::not_self | spflag::needs_tracer,
     4,
     200,

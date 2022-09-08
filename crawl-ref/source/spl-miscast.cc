@@ -162,11 +162,6 @@ static const map<spschool, miscast_datum> miscast_effects = {
             },
             [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
                 int dam, string /*cause*/) {
-                if (target.is_player())
-                    debuff_player();
-                else
-                    debuff_monster(*target.as_monster());
-
                 target.slow_down(source, dam);
             }
         },
@@ -197,11 +192,6 @@ static const map<spschool, miscast_datum> miscast_effects = {
             },
             [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
                 int dam, string /*cause*/) {
-                if (target.is_player())
-                    debuff_player();
-                else
-                    debuff_monster(*target.as_monster());
-
                 target.slow_down(source, dam);
             }
         },
@@ -585,7 +575,10 @@ void miscast_effect(spell_type spell, int fail)
         if (spell_typematch(spell, bit))
             school_list.push_back(bit);
 
-    spschool school = *random_iterator(school_list);
+    spschool school = spschool::ritual;
+
+    while (school == spschool::ritual)
+        school = *random_iterator(school_list);
 
     if (school == spschool::necromancy
         && have_passive(passive_t::miscast_protection_necromancy))
@@ -616,7 +609,7 @@ void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
         return;
     }
 
-    if (school == spschool::random)
+    while (school == spschool::random || school == spschool::ritual || school == spschool::evocation)
         school = spschools_type::exponent(random2(SPSCHOOL_LAST_EXPONENT + 1));
 
     miscast_datum effect =  miscast_effects.find(school)->second;
