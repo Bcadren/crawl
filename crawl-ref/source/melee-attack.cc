@@ -1267,10 +1267,11 @@ void melee_attack::check_autoberserk()
         for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
         {
             const item_def *item = you.slot_item(static_cast<equipment_type>(i));
+
             if (!item)
                 continue;
 
-            if (!is_artefact(*item))
+            if (!is_artefact(*item) && !item->cursed())
                 continue;
 
             if (you.wearing_ego(EQ_GLOVES, SPARM_WIELDING) && i == EQ_WEAPON0 || i == EQ_WEAPON1)
@@ -1289,10 +1290,11 @@ void melee_attack::check_autoberserk()
         {
             const item_def *item =
                 attacker->as_monster()->mslot_item(static_cast<mon_inv_type>(i));
+
             if (!item)
                 continue;
 
-            if (!is_artefact(*item))
+            if (!is_artefact(*item) && !item->cursed())
                 continue;
 
             if (x_chance_in_y(artefact_property(*item, ARTP_ANGRY), 100))
