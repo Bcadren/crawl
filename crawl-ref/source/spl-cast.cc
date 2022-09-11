@@ -2512,7 +2512,7 @@ int fail_severity(spell_type spell)
     double chance = total_miscast_chance * (1 - miscast_prot);
 
     double expected_damage =
-        total_weighted_scaled_damage / total_miscast_chance;
+        total_weighted_scaled_damage / chance;
 
     for (int i = 0; i < 4; ++i)
         if (expected_damage / (10 * get_real_hp(true)) <= fail_hp_fraction[i])
