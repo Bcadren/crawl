@@ -1857,6 +1857,14 @@ static const mutation_def mut_data[] =
   {"You feel less resistant to acid.", "", ""},
 },
 
+{ MUT_CORRUPTED_CHARM, 0, 1, mutflag::bad | mutflag::miscast, false,
+  "-Charms",
+
+  {"Corrupted charms magic prevents successful use of Charms spells. (-Charms)", "", ""},
+  {"You are suffused with corrupted Charms magic.", "",  ""},
+  {"You are capable of using Charms spells again.", "", ""},
+},
+
 };
 
 static const mutation_category_def category_mut_data[] =

@@ -1533,6 +1533,7 @@ static void tag_construct_you(writer &th)
         marshallByte(th, you.mutation[j]);
         marshallByte(th, you.innate_mutation[j]);
         marshallByte(th, you.temp_mutation[j]);
+        marshallByte(th, you.miscast_mutation[j]);
         marshallByte(th, you.suppressed_mutation[j]);
         marshallByte(th, you.sacrifices[j]);
     }
@@ -1542,6 +1543,13 @@ static void tag_construct_you(writer &th)
     {
         marshallByte(th, you.demonic_traits[j].level_gained);
         marshallShort(th, you.demonic_traits[j].mutation);
+    }
+
+    marshallByte(th, you.miscast_mutation_data.size());
+    for (int j = 0; j < int(you.miscast_mutation_data.size()); ++j)
+    {
+        marshallInt(th, you.miscast_mutation_data[j].xp);
+        marshallShort(th, you.miscast_mutation_data[j].mutation);
     }
 
     marshallByte(th, you.jiyva_mut_set.size());
@@ -2884,6 +2892,10 @@ static void tag_read_you(reader &th)
         you.innate_mutation[j]  = unmarshallUByte(th);
         you.temp_mutation[j]    = unmarshallUByte(th);
 #if TAG_MAJOR_VERSION == 34
+        if (th.getMinorVersion() >= TAG_MINOR_MISCAST_MUTATIONS)
+            you.miscast_mutation[j] = unmarshallUByte(th);
+        else
+            you.miscast_mutation[j] = 0;
         if (th.getMinorVersion() >= TAG_MINOR_JIYVA_REWORK)
             you.suppressed_mutation[j] = unmarshallUByte(th);
         else
@@ -3110,8 +3122,28 @@ static void tag_read_you(reader &th)
         you.demonic_traits.push_back(dt);
     }
 
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_MISCAST_MUTATIONS)
+    {
+#endif
+        count = unmarshallUByte(th);
+        you.miscast_mutation_data.clear();
+        for (int j = 0; j < count; ++j)
+        {
+            player::miscast_mutation_info dt;
+            dt.xp = unmarshallInt(th);
+            dt.mutation = static_cast<mutation_type>(unmarshallShort(th));
+            ASSERT_RANGE(dt.mutation, 0, NUM_MUTATIONS);
+            you.miscast_mutation_data.push_back(dt);
+        }
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
+
+#if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() >= TAG_MINOR_JIYVA_REWORK)
     {
+#endif
         count = unmarshallUByte(th);
         you.jiyva_mut_set.clear();
         for (int j = 0; j < count; ++j)
@@ -3120,22 +3152,27 @@ static void tag_read_you(reader &th)
             you.jiyva_mut_set.push_back(mut);
         }
         you.pseudopod_brand = static_cast<brand_type>(unmarshallShort(th));
+#if TAG_MAJOR_VERSION == 34
     }
     else
     {
         you.pseudopod_brand = SPWPN_NORMAL;
         jiyva_setup();
     }
+#endif
 
     if (species_is_draconian(you.species))
     {
+#if TAG_MAJOR_VERSION == 34
         if (th.getMinorVersion() >= TAG_MINOR_DRACONIAN_REWORK)
         {
+#endif
             you.major_first   = unmarshallBoolean(th);
             you.major_skill   = static_cast<skill_type>(unmarshallInt(th));
             you.minor_skill   = static_cast<skill_type>(unmarshallInt(th));
             you.defence_skill = static_cast<skill_type>(unmarshallInt(th));
             you.drac_colour   = static_cast<draconian_colour>(unmarshallInt(th));
+#if TAG_MAJOR_VERSION == 34
         }
         else // Old save from before the new variables needs them setup.
         {
@@ -3175,6 +3212,7 @@ static void tag_read_you(reader &th)
 
             change_species_to(SP_DRACONIAN);
         }
+#endif
     }
 
     if (you.religion == GOD_YREDELEMNUL)

@@ -49,7 +49,8 @@
 using namespace ui;
 
 static void _skill_rescale();
-static bool _delete_single_mutation_level(mutation_type mutat, const string &reason, bool transient, bool innate = false);
+static bool _delete_single_mutation_level(mutation_type mutat, const string &reason, 
+                                           bool transient, bool innate = false, bool miscast = false);
 static bool _post_loss_effects(mutation_type mutat, bool temp = false);
 static void _transpose_gear();
 static void _return_gear();
@@ -84,10 +85,11 @@ enum class mutflag
     jiyva   = 1 << 2, // jiyva-only muts
     qazlal  = 1 << 3, // qazlal wrath
     xom     = 1 << 4, // xom being xom
+    miscast = 1 << 5, // miscasts...
 
-    last    = xom
+    last    = miscast
 };
-DEF_BITFIELD(mutflags, mutflag, 4);
+DEF_BITFIELD(mutflags, mutflag, 5);
 COMPILE_CHECK(mutflags::exponent(mutflags::last_exponent) == mutflag::last);
 
 #include "mutation-data.h"
@@ -159,6 +161,7 @@ static const int conflict[][3] =
     { MUT_COLD_RESISTANCE,              MUT_COLD_VULNERABILITY,             -1},
     { MUT_SHOCK_RESISTANCE,             MUT_SHOCK_VULNERABILITY,            -1},
     { MUT_MAGIC_RESISTANCE,             MUT_MAGICAL_VULNERABILITY,          -1},
+    { MUT_POISON_RESISTANCE,            MUT_POISON_SUSCEPTIBILITY,          -1},
     { MUT_NO_REGENERATION,              MUT_INHIBITED_REGENERATION,         -1},
     { MUT_NO_REGENERATION,              MUT_REGENERATION,                   -1},
     { MUT_FORLORN,                      MUT_GODS_PITY,                       1},
@@ -408,6 +411,7 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
 static int _num_full_suppressed = 0;
 static int _num_part_suppressed = 0;
 static int _num_transient = 0;
+static int _num_miscast = 0;
 
 static string _annotate_form_based(string desc, bool suppressed)
 {
@@ -428,6 +432,11 @@ static string _annotate_form_based(string desc, bool suppressed)
 bool player::has_temporary_mutation(mutation_type mut) const
 {
     return you.temp_mutation[mut] > 0;
+}
+
+bool player::has_miscast_mutation(mutation_type mut) const
+{
+    return you.miscast_mutation[mut] > 0;
 }
 
 /*
@@ -457,7 +466,10 @@ int player::get_base_mutation_level(mutation_type mut, bool innate, bool temp, b
     // you.mutation stores the total levels of all mutations
     int level = you.mutation[mut];
     if (!temp)
+    {
         level -= you.temp_mutation[mut];
+        level -= you.miscast_mutation[mut];
+    }
     if (!innate)
         level -= you.innate_mutation[mut];
     if (!normal)
@@ -509,7 +521,7 @@ int player::get_mutation_level(mutation_type mut, mutation_activity_type minact)
         return 0;
     if (mutation_activity_level(mut) < minact)
         return 0;
-    return get_base_mutation_level(mut, true, true);
+    return get_base_mutation_level(mut);
 }
 
 /*
@@ -652,6 +664,7 @@ string describe_mutations(bool drop_title)
 
     _num_full_suppressed = _num_part_suppressed = 0;
     _num_transient = 0;
+    _num_miscast = 0;
 
     if (!drop_title)
     {
@@ -814,7 +827,7 @@ string describe_mutations(bool drop_title)
         }
     }
 
-    //Finally, temporary mutations.
+    // Temporary mutations.
     for (int i = 0; i < NUM_MUTATIONS; i++)
     {
         mutation_type mut_type = static_cast<mutation_type>(i);
@@ -822,7 +835,22 @@ string describe_mutations(bool drop_title)
         if (!is_valid_mutation(mut_type))
             continue;
 
-        if (you.has_temporary_mutation(mut_type))
+        if (you.has_temporary_mutation(mut_type) && !you.has_innate_mutation(mut_type))
+        {
+            result += mutation_desc(mut_type, -1, true);
+            result += "\n";
+        }
+    }
+
+    // Miscast mutations.
+    for (int i = 0; i < NUM_MUTATIONS; i++)
+    {
+        mutation_type mut_type = static_cast<mutation_type>(i);
+
+        if (!is_valid_mutation(mut_type))
+            continue;
+
+        if (you.has_miscast_mutation(mut_type))
         {
             result += mutation_desc(mut_type, -1, true);
             result += "\n";
@@ -934,7 +962,9 @@ void display_mutations()
     if (_num_full_suppressed)
         extra += "<darkgrey>(())</darkgrey>: Completely suppressed.\n";
     if (_num_transient)
-        extra += "<magenta>[]</magenta>   : Transient mutations.";
+        extra += "<magenta>[]</magenta>   : Transient mutations.\n";
+    if (_num_miscast)
+        extra += "<yellow>{}</yellow>   : Miscast penalties.\n";
 
     if (!extra.empty())
     {
@@ -2350,7 +2380,7 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
 
     god_gift |= crawl_state.is_god_acting();
 
-    if (mutclass == MUTCLASS_INNATE)
+    if (mutclass == MUTCLASS_INNATE || mutclass == MUTCLASS_MISCAST)
         force_mutation = true;
 
     mutation_type mutat = which_mutation;
@@ -2392,6 +2422,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             mprf(MSGCH_MUTATION, "Your body decomposes!");
             lose_stat(STAT_RANDOM, 1);
             return true;
+        case MUTCLASS_MISCAST:
+            // Magical 'mutations' can't fail.
         case MUTCLASS_INNATE:
             // You can't miss out on innate mutations just because you're
             // temporarily undead.
@@ -2518,6 +2550,8 @@ bool mutate(mutation_type which_mutation, const string &reason, bool failMsg,
             you.temp_mutation[mutat]++;
             you.attribute[ATTR_TEMP_MUTATIONS]++;
         }
+        else if (mutclass == MUTCLASS_MISCAST)
+            you.miscast_mutation[mutat]++;
         else if (mutclass == MUTCLASS_INNATE)
             you.innate_mutation[mutat]++;
 
@@ -2702,7 +2736,8 @@ static bool _post_loss_effects(mutation_type mutat, bool temp)
 static bool _delete_single_mutation_level(mutation_type mutat,
                                           const string &reason,
                                           bool transient,
-                                          bool innate)
+                                          bool innate,
+                                          bool miscast)
 {
     bool was_transient = false;
 
@@ -2716,7 +2751,7 @@ static bool _delete_single_mutation_level(mutation_type mutat,
         {
             if (transient)
                 was_transient = true;
-            else if (you.get_base_mutation_level(mutat, false, false, true) == 0) // there are only temporary mutations to delete
+            else if (!miscast && you.get_base_mutation_level(mutat, false, false, true) == 0) // there are only temporary mutations to delete
                 return false;
 
             // fall through: there is a non-temporary mutation level that can be deleted.
@@ -2725,6 +2760,8 @@ static bool _delete_single_mutation_level(mutation_type mutat,
 
     if (mutat != MUT_STATS)
     {
+        if (miscast)
+            you.miscast_mutation[mutat]--;
         if (innate)
             you.innate_mutation[mutat]--;
         you.mutation[mutat]--;
@@ -2834,6 +2871,9 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
             if (you.get_base_mutation_level(mutat, false, true, true) == 0)
                 continue;
 
+            if (you.get_base_mutation_level(mutat, true, false, true) == 0)
+                continue; // No non-transient mutations in this category to cure
+
             // MUT_ANTENNAE is 0, and you.attribute[] is initialized to 0.
             if (mutat && mutat == you.attribute[ATTR_APPENDAGE])
                 continue;
@@ -2851,9 +2891,6 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
 
             if (mismatch && (disallow_mismatch || !one_chance_in(10)))
                 continue;
-
-            if (you.get_base_mutation_level(mutat, true, false, true) == 0)
-                continue; // No non-transient mutations in this category to cure
 
             break;
         }
@@ -2963,6 +3000,11 @@ bool delete_temp_mutation()
     }
 
     return false;
+}
+
+bool delete_miscast_mutation(mutation_type mut)
+{
+    return _delete_single_mutation_level(mut, "miscast effect expiry", false, false, true);
 }
 
 void display_mutation_name(mutation_type mut, string &name)
@@ -3247,15 +3289,16 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     // Ignore the player's forms, etc.
     const bool ignore_player = (level != -1);
 
-    const int curlvl = you.get_base_mutation_level(mut);
+    const int curlvl = you.get_mutation_level(mut);
 
     const mutation_activity_type active = mutation_activity_level(mut);
     const bool partially_active = (active == mutation_activity_type::PARTIAL)
-        || curlvl != 0 && curlvl < you.get_base_mutation_level(mut, true, true, true, false);
+        || (curlvl > 0) && (curlvl < you.get_base_mutation_level(mut, true, true, true, false));
     const bool fully_inactive = (active == mutation_activity_type::INACTIVE)
-        || curlvl == 0 || mut == MUT_SOFT_FLESH && you.wearing_heavy_manmade_armour();
+        || (curlvl <= 0) || ((mut == MUT_SOFT_FLESH) && you.wearing_heavy_manmade_armour());
 
     const bool temporary = you.has_temporary_mutation(mut);
+    const bool miscast = you.has_miscast_mutation(mut);
 
     // level == -1 means default action of current level
     if (level == -1)
@@ -3418,6 +3461,12 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         ++_num_transient;
     }
 
+    if (miscast)
+    {
+        result = "{" + result + "}";
+        ++_num_miscast;
+    }
+
     if (colour)
     {
         const char* colourname = (MUT_BAD(mdef) ? "red" : "lightgrey");
@@ -3447,7 +3496,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
                 }
             }
 
-            const bool extra = you.get_base_mutation_level(mut, false, true, true, false) > 0;
+            const bool extra = you.get_base_mutation_level(mut, false, true, true) > 0;
 
             if (fully_inactive || (mut == MUT_COLD_BLOODED && player_res_cold(false) > 0)
                 || (mut == MUT_DEFORMED && (you.get_mutation_level(MUT_CORE_MELDING) || you.get_mutation_level(MUT_AMORPHOUS_BODY))))
@@ -3472,8 +3521,10 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         else if (you.form == transformation::appendage && you.attribute[ATTR_APPENDAGE] == mut)
             colourname = "lightgreen";
         else if (temporary)
-            colourname = (you.get_base_mutation_level(mut, true, false, true, false) > 0) ?
+            colourname = (you.get_base_mutation_level(mut, true, false, true) > 0) ?
                          "lightmagenta" : "magenta";
+        else if (miscast)
+            colourname = "yellow";
 
         // Build the result
         ostringstream ostr;
@@ -3832,14 +3883,42 @@ bool perma_mutate(mutation_type which_mut, int how_much, const string &reason)
     return levels > 0;
 }
 
+bool miscast_mutate(mutation_type which_mut, int xp, const string &reason)
+{
+    const int exp = temp_mutation_roll(xp);
+    if (you.has_mutation(which_mut))
+    {
+        for (player::miscast_mutation_info &mut : you.miscast_mutation_data)
+        {
+            if (mut.mutation == which_mut)
+            {
+                mut.xp += exp;
+                return true;
+            }
+        }
+    }
+    else if (mutate(which_mut, reason, false, true, false, false, MUTCLASS_MISCAST))
+    {
+        player::miscast_mutation_info mut;
+        mut.mutation = which_mut;
+        mut.xp = exp;
+        you.miscast_mutation_data.emplace_back(mut);
+
+        return true;
+    }
+
+    mprf(MSGCH_ERROR, "Miscast mutation error!");
+    return false;
+}
+
 bool temp_mutate(mutation_type which_mut, const string &reason)
 {
     return mutate(which_mut, reason, false, false, false, false, MUTCLASS_TEMPORARY);
 }
 
-int temp_mutation_roll()
+int temp_mutation_roll(int base_xp)
 {
-    return min(you.experience_level, 17) * (500 + roll_dice(5, 500)) / 17;
+    return min(you.experience_level, 17) * (base_xp + roll_dice(5, base_xp)) / 17;
 }
 
 bool temp_mutation_wanes()

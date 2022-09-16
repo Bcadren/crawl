@@ -17,23 +17,24 @@
 #include "monster-type.h"
 #include "mon-death.h"
 #include "mon-place.h"
+#include "mutation.h"
 #include "religion.h"
 #include "shout.h"
 #include "spl-goditem.h"
 #include "stringutil.h"
 #include "xom.h"
 
-struct miscast_datum
+struct miscast_struct
 {
-    beam_type flavour;
+    bool           use_dam;
     vector<string> player_messages;
     vector<string> monster_seen_messages;
     vector<string> monster_unseen_messages;
     function<void (actor& target, actor* source, miscast_source_info mc_info,
-                   int dam, string cause)> special;
+                   int dam, string cause)> effect;
 };
 
-static void _do_msg(actor& target, miscast_datum effect, int dam)
+static void _do_msg(actor& target, miscast_struct effect, int dam)
 {
     if (!you.see_cell(target.pos()))
         return;
@@ -134,42 +135,61 @@ static void _ouch(actor& target, actor * source, miscast_source_info mc_info, in
     }
 }
 
-static const map<spschool, miscast_datum> miscast_effects = {
+static const miscast_struct charms_miscasts[] =
+{
     {
-        spschool::charms,
+        false,
         {
-            BEAM_NONE,
-            {
-                "The air around you crackles with energy",
-                "Multicoloured lights dance before your eyes",
-                "You feel a strange surge of energy",
-                "Waves of light ripple over your body",
-                "Strange energies run through your body",
-                "You feel enfeebled",
-                "Magic surges out from your body",
-            },
-            {
-                "The air around @the_monster@ crackles with energy",
-                "Multicoloured lights dance around @the_monster@",
-                "Waves of light ripple over @the_monster@'s body",
-                "@The_monster@ twitches",
-                "@The_monster@'s body glows momentarily",
-                "Magic surges out from @the_monster@",
-            },
-            {
-                "Multicoloured lights dance in the air",
-                "Magic surges out from thin air",
-            },
-            [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
-                int dam, string /*cause*/) {
-                target.slow_down(source, dam);
-            }
+            "The air around you crackles with energy",
+            "Multicoloured lights dance before your eyes",
+            "You feel a strange surge of energy",
+            "Waves of light ripple over your body",
+            "Strange energies run through your body",
+            "You feel enfeebled",
+            "Magic surges out from your body",
         },
+        {
+            "The air around @the_monster@ crackles with energy",
+            "Multicoloured lights dance around @the_monster@",
+            "Waves of light ripple over @the_monster@'s body",
+            "@The_monster@ twitches",
+            "@The_monster@'s body glows momentarily",
+            "Magic surges out from @the_monster@",
+        },
+        {
+            "Multicoloured lights dance in the air",
+            "Magic surges out from thin air",
+        },
+        [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
+            int dam, string cause) 
+        {
+            if (target.is_player())
+            {
+                debuff_player();
+                miscast_mutate(MUT_CORRUPTED_CHARM, dam, cause);
+            }
+            else
+                target.slow_down(source, dam);
+        }
     },
+};
+
+static miscast_struct _charms(spell_type /*spell*/, int /*fail*/, bool /*is_player*/)
+{
+    // 0: Debuff. Inability to use any charm magic for duration (monster) or as a temp bad mutation (player).
+    // 1: Aura that can buff enemies when they hit you (player). Immediately buff the player or an enemy (monster).
+    // 2: Berserkitis (player). Immediate berserk, turn neutral (monster).
+    // 3: Max MP Rot (player). Unused (monster).
+
+    return charms_miscasts[0];
+}
+
+static const map<spschool, miscast_struct> miscast_effects =
+{
     {
         spschool::hexes,
         {
-            BEAM_NONE,
+            false,
             {
                 "You feel off-balance for a moment",
                 "Multicoloured lights dance before your eyes",
@@ -191,7 +211,8 @@ static const map<spschool, miscast_datum> miscast_effects = {
                 "A patch of light dims momentarily",
             },
             [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
-                int dam, string /*cause*/) {
+                int dam, string /*cause*/) 
+            {
                 target.slow_down(source, dam);
             }
         },
@@ -199,7 +220,7 @@ static const map<spschool, miscast_datum> miscast_effects = {
     {
         spschool::summoning,
         {
-            BEAM_NONE,
+            false,
             {
                 "A fistful of eyes flickers past your view",
                 "Distant voices call out in your mind",
@@ -215,8 +236,8 @@ static const map<spschool, miscast_datum> miscast_effects = {
             },
             [] (actor& target, actor* source,
                 miscast_source_info mc_info,
-                int dam, string cause) {
-
+                int dam, string cause) 
+            {
                 mgen_data data = mgen_data::hostile_at(MONS_NAMELESS, true,
                                                        target.pos());
                 data.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
@@ -264,7 +285,7 @@ static const map<spschool, miscast_datum> miscast_effects = {
     {
         spschool::necromancy,
         {
-            BEAM_NEG,
+            true,
             {
                 "You hear strange and distant voices",
                 "The world around you seems to dim momentarily",
@@ -297,14 +318,18 @@ static const map<spschool, miscast_datum> miscast_effects = {
             {
                 "The air has a black tinge for a moment",
                 "Shadows flicker in the thin air",
-            },
-            nullptr,
+            },            
+            [](actor& target, actor* source, miscast_source_info mc_info,
+               int dam, string cause)
+            {
+                _ouch(target, source, mc_info, dam, BEAM_DRAIN, cause);
+            }
         },
     },
     {
         spschool::translocation,
         {
-            BEAM_NONE,
+            false,
             {
                 "You catch a glimpse of the back of your own head",
                 "The air around you crackles with energy",
@@ -352,7 +377,7 @@ static const map<spschool, miscast_datum> miscast_effects = {
     {
         spschool::transmutation,
         {
-            BEAM_NONE,
+            false,
             {
                 "Multicoloured lights dance before your eyes",
                 "You feel a strange surge of energy",
@@ -379,20 +404,19 @@ static const map<spschool, miscast_datum> miscast_effects = {
                 "Waves of light ripple in the air",
             },
             [] (actor& target, actor* /*source*/,
-                miscast_source_info /*mc_info*/, int dam, string cause) {
-
+                miscast_source_info /*mc_info*/, int dam, string cause)
+            {
                 if (target.is_player())
                     you.polymorph(2 * dam);
                 else
                     target.malmutate(cause);
             }
-
         },
     },
     {
         spschool::fire,
         {
-            BEAM_FIRE,
+            true,
             {
                 "Sparks fly from your @hands@",
                 "The air around you burns with energy",
@@ -421,13 +445,17 @@ static const map<spschool, miscast_datum> miscast_effects = {
                 "Fire explodes from out of thin air",
                 "A large flame burns hotly for a moment in the thin air",
             },
-            nullptr,
+            [](actor& target, actor* source, miscast_source_info mc_info,
+               int dam, string cause)
+            {
+                _ouch(target, source, mc_info, dam, BEAM_FIRE, cause);
+            }
         },
     },
     {
         spschool::ice,
         {
-            BEAM_COLD,
+            true,
             {
                 "You shiver with cold",
                 "A chill runs through your body",
@@ -455,13 +483,17 @@ static const map<spschool, miscast_datum> miscast_effects = {
                 "Ice and frost explode from out of thin air",
                 "An unseen figure is encased in ice",
             },
-            nullptr,
+            [](actor& target, actor* source, miscast_source_info mc_info,
+               int dam, string cause)
+            {
+                _ouch(target, source, mc_info, dam, BEAM_COLD, cause);
+            }
         },
     },
     {
         spschool::air,
         {
-            BEAM_ELECTRICITY,
+            true,
             {
                 "Sparks of electricity dance around you",
                 "You are blasted with air",
@@ -487,13 +519,17 @@ static const map<spschool, miscast_datum> miscast_effects = {
                 "Electrical discharges explode from out of thin air",
                 "The air madly twists around a spot",
             },
-            nullptr,
+            [](actor& target, actor* source, miscast_source_info mc_info,
+               int dam, string cause) 
+            {
+                _ouch(target, source, mc_info, dam, BEAM_ELECTRICITY, cause);
+            }
         },
     },
     {
         spschool::earth,
         {
-            BEAM_NONE, // use special effect to check AC
+            true,
             {
                 "Sand pours from your @hands@",
                 "You feel a surge of energy from the ground",
@@ -517,7 +553,8 @@ static const map<spschool, miscast_datum> miscast_effects = {
                 "Flying shrapnel explodes from thin air",
             },
             [] (actor& target, actor* source, miscast_source_info mc_info,
-                int dam, string cause) {
+                int dam, string cause)
+            {
                 dam = target.apply_ac(dam, 0, ac_type::triple);
                 _ouch(target, source, mc_info, dam, BEAM_FRAG, cause);
             }
@@ -526,7 +563,7 @@ static const map<spschool, miscast_datum> miscast_effects = {
     {
         spschool::poison,
         {
-            BEAM_POISON,
+            true,
             {
                 "You feel odd",
                 "You feel rather nauseous for a moment",
@@ -541,8 +578,12 @@ static const map<spschool, miscast_datum> miscast_effects = {
             },
             {
                 "The air has a green tinge for a moment",
-            },
-            nullptr,
+            },            
+            [](actor& target, actor* source, miscast_source_info mc_info,
+               int dam, string cause)
+            {
+                _ouch(target, source, mc_info, dam, BEAM_POISON, cause);
+            }
         },
     },
 };
@@ -592,15 +633,14 @@ void miscast_effect(spell_type spell, int fail)
     }
 
     miscast_effect(you, nullptr, {miscast_source::spell},
-                   school,
-                   spell_difficulty(spell),
-                   fail, string("miscasting ") + spell_title(spell));
+                   school, spell_difficulty(spell), fail, 
+                   string("miscasting ") + spell_title(spell), spell);
 }
 
 // Miscasts from other sources (god wrath, spellbinder melee, wild magic card,
 // wizmode, hell effects)
 void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
-                    spschool school, int level, int fail, string cause)
+                    spschool school, int level, int fail, string cause, spell_type spell)
 {
     if (!target.alive())
     {
@@ -612,23 +652,17 @@ void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
     while (school == spschool::random || school == spschool::ritual || school == spschool::evocation)
         school = spschools_type::exponent(random2(SPSCHOOL_LAST_EXPONENT + 1));
 
-    miscast_datum effect =  miscast_effects.find(school)->second;
-
-    int dam = div_rand_round(roll_dice(level, level * fail), 10);
-
-    if (effect.flavour == BEAM_NONE)
-    {
-        ASSERT(effect.special);
-
-        _do_msg(target, effect, 0);
-        effect.special(target, source, mc_info, dam, cause);
-    }
+    miscast_struct effect;
+    
+    if (school != spschool::charms)
+        effect = miscast_effects.find(school)->second;
     else
-    {
-        _do_msg(target, effect,
-                resist_adjust_damage(&target, effect.flavour, dam));
-        _ouch(target, source, mc_info, dam, effect.flavour, cause);
-    }
+        effect = _charms(spell, fail, target.is_player());
+
+    const int dam = div_rand_round(roll_dice(level, level * fail), 10);
+
+    _do_msg(target, effect, 0);
+    effect.effect(target, source, mc_info, dam, cause);
 
     if (target.is_player())
         xom_is_stimulated( (level / 3) * 50);

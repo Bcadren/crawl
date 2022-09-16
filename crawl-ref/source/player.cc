@@ -3247,6 +3247,21 @@ static void _handle_temp_mutation(int exp)
         temp_mutation_wanes();
 }
 
+static void _handle_miscast_mutation(int exp)
+{
+    vector<player::miscast_mutation_info> temp = you.miscast_mutation_data;
+    you.miscast_mutation_data.clear();
+
+    for (player::miscast_mutation_info mut : temp)
+    {
+        mut.xp -= exp;
+        if (mut.xp <= 0)
+            delete_miscast_mutation(mut.mutation);
+        else
+            you.miscast_mutation_data.emplace_back(mut);
+    }
+}
+
 static void _reduce_soul_bonds(int exp)
 {
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
@@ -3348,6 +3363,7 @@ void gain_exp(unsigned int exp_gained, unsigned int* actual_gain)
     // xp-gated effects that use sprint inflation
     _handle_stat_loss(skill_xp);
     _handle_temp_mutation(skill_xp);
+    _handle_miscast_mutation(skill_xp);
     _recharge_xp_evokers(skill_xp);
     _reduce_abyss_xp_timer(skill_xp);
     _handle_xp_drain(skill_xp);
@@ -6257,8 +6273,10 @@ player::player()
     mutation.init(0);
     innate_mutation.init(0);
     temp_mutation.init(0);
+    miscast_mutation.init(0);
     suppressed_mutation.init(0);
     demonic_traits.clear();
+    miscast_mutation_data.clear();
     sacrifices.init(0);
 
     magic_contamination = 0;

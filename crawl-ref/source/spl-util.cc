@@ -1252,9 +1252,15 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "you can't see any valid targets.";
     }
 
-    // Check for banned schools (Currently just Ru sacrifices)
+    // Check for banned schools.
     if (!fake_spell && cannot_use_schools(get_spell_disciplines(spell)))
         return "you cannot use spells of this school.";
+
+    if (!fake_spell && you.has_mutation(MUT_CORRUPTED_CHARM)
+        && bool(get_spell_disciplines(spell) & spschool::charms))
+    {
+        return "you must wait for your corrupted magic to wear off first.";
+    }
 
     if (spell_is_kiku_ritual(spell) && !you_worship(GOD_KIKUBAAQUDGHA))
         return "you cannot complete the ritual without Kikubaaqudgha.";

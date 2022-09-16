@@ -26,7 +26,9 @@ enum mutation_permanence_class
     // Normal mutations, permanent unless cured
     MUTCLASS_NORMAL,
     // Innate, permanent traits, like draconian breath
-    MUTCLASS_INNATE
+    MUTCLASS_INNATE,
+    // Miscast-caused mutations, longer-lasting temporary
+    MUTCLASS_MISCAST,
 };
 
 void init_mut_index();
@@ -76,7 +78,8 @@ void draconian_setup();
 
 bool perma_mutate(mutation_type which_mut, int how_much, const string &reason);
 bool temp_mutate(mutation_type which_mut, const string &reason);
-int temp_mutation_roll();
+bool miscast_mutate(mutation_type which_mut, int xp, const string &reason);
+int temp_mutation_roll(int base_xp = 500);
 bool temp_mutation_wanes();
 
 void check_demonic_guardian();
@@ -88,3 +91,4 @@ void reset_powered_by_death_duration();
 
 bool delete_all_temp_mutations(const string &reason);
 bool delete_temp_mutation();
+bool delete_miscast_mutation(mutation_type which_mut);

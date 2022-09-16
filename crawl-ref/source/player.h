@@ -283,6 +283,7 @@ public:
     FixedVector<uint8_t, NUM_MUTATIONS> mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> innate_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> temp_mutation;
+    FixedVector<uint8_t, NUM_MUTATIONS> miscast_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> suppressed_mutation;
     FixedVector<uint8_t, NUM_MUTATIONS> sacrifices;
 
@@ -295,6 +296,14 @@ public:
     };
 
     vector<demon_trait> demonic_traits;
+
+    struct miscast_mutation_info
+    {
+        int           xp;
+        mutation_type mutation;
+    };
+
+    vector<miscast_mutation_info> miscast_mutation_data;
 
     // Jiyva Rework Variables
     vector<mutation_type> jiyva_mut_set;
@@ -673,6 +682,7 @@ public:
     bool      set_training_target(const skill_type sk, const int target, bool announce = false);
     void      clear_training_targets();
 
+    bool      has_miscast_mutation(mutation_type mut) const;
     bool      has_temporary_mutation(mutation_type mut) const;
     bool      has_innate_mutation(mutation_type mut) const;
     bool      has_mutation(mutation_type mut, bool check_form = true) const;
