@@ -1,8 +1,10 @@
 %%%%
 Fighting
 
-Fighting skill increases your accuracy and damage in physical combat, and
-also increases your maximum health.
+Fighting skill increases your accuracy and damage in physical combat.
+
+Certain weapon specials are more strongly boosted by fighting than weapon skill; 
+see weapon descriptions for more details.
 %%%%
 Short Blades
 
