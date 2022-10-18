@@ -735,6 +735,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             simple_monster_message(*this, " stops rolling.");
         break;
 
+    case ENCH_NO_CHARMS:
+        if (!quiet && alive())
+            simple_monster_message(*this, " can once again use charms magic.");
+        break;
+
     //The following should never happen, but just in case...
 
     case ENCH_MUTE:
@@ -1529,6 +1534,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_CIGOTUVI:
     case ENCH_WAND_COOLDOWN:
     case ENCH_SEAL:
+    case ENCH_NO_CHARMS:
         decay_enchantment(en);
         break;
 

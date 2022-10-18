@@ -376,6 +376,9 @@ public:
     virtual bool caught() const = 0;
     virtual bool asleep() const { return false; }
 
+    virtual bool debuffable() const { return false; }
+    virtual void debuff() const = 0;
+
     // self_halo: include own halo (actually if self_halo = false
     //            and has a halo, returns false; so if you have a
     //            halo you're not affected by others' halos for this

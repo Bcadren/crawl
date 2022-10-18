@@ -474,7 +474,7 @@ public:
 
     bool effect(bool=true, int=40, bool=true) const override
     {
-        debuff_player();
+        you.debuff();
         mpr("You feel magically purged.");
         const int old_contam_level = get_contamination_level();
         contaminate_player(-1 * (1000 + random2(4000)));

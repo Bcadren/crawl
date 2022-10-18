@@ -52,11 +52,6 @@ const enchant_type dispellable_enchantments[] =
     ENCH_BOUND_SOUL,
 };
 
-bool player_is_debuffable();
-void debuff_player();
-bool monster_is_debuffable(const monster &mon);
-void debuff_monster(monster &mon);
-
 int detect_items(int pow);
 int detect_creatures(int pow, bool telepathic = false);
 bool remove_curse(bool alreadyknown = true, const string &pre_msg = "");

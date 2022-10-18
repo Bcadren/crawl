@@ -1148,7 +1148,7 @@ bool zin_affect(monster * mon, zin_eff effect, int degree, recite_type prayertyp
         if (mon->add_ench(mon_enchant(ENCH_DUMB, degree, &you, INFINITE_DURATION)))
         {
             if (prayertype == RECITE_BREATH)
-                simple_monster_message(*mon, " is driven mad by your blessed silver.");
+                simple_monster_message(*mon, " is left catatonic by your blessed silver.");
             else
                 simple_monster_message(*mon, " is left stupefied by the wrath of Zin!");
             return true;

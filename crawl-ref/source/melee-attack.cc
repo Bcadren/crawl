@@ -16,6 +16,7 @@
 #include "art-enum.h"
 #include "attitude-change.h"
 #include "bloodspatter.h"
+#include "chaos.h"
 #include "chardump.h"
 #include "cloud.h"
 #include "coordit.h"
@@ -1202,6 +1203,9 @@ bool melee_attack::attack()
         {
             // Check for defender Spines
             do_spines();
+
+            if (defender->is_player() && you.has_mutation(MUT_BUFF_AURA) && one_chance_in(3))
+                chaotic_buff(attacker, 10 + random2(20), defender);
 
             // Return early due to mount death.
             if (mount_attack && !you.mounted())
@@ -4060,7 +4064,7 @@ void melee_attack::mons_apply_attack_flavour()
             int healz = roll_dice(3, attacker->get_hit_dice());
             if (defender->is_player())
             {
-                if (player_is_debuffable())
+                if (you.is_debuffable())
                 {
                     heal_monster(*attacker->as_monster(), healz);
                     special_damage = healz;
@@ -4072,12 +4076,12 @@ void melee_attack::mons_apply_attack_flavour()
                             attack_strength_punctuation(healz).c_str());
                     }
 
-                    debuff_player();
+                    you.debuff();
                 }
             }
             else
             {
-                if (monster_is_debuffable(*defender->as_monster()))
+                if (defender->as_monster()->is_debuffable())
                 {
                     heal_monster(*attacker->as_monster(), healz);
                     special_damage = healz;
@@ -4090,7 +4094,7 @@ void melee_attack::mons_apply_attack_flavour()
                             attack_strength_punctuation(healz).c_str());
                     }
 
-                    debuff_monster(*defender->as_monster());
+                    defender->as_monster()->debuff();
                 }
             }
         }

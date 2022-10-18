@@ -132,7 +132,7 @@ void chaotic_buff(actor* act, int dur, actor * attacker)
         else
         {
             act->as_monster()->add_ench(mon_enchant(ENCH_HASTE, 0, attacker, dur * BASELINE_DELAY));
-            mprf(player ? MSGCH_DURATION : MSGCH_MONSTER_ENCHANT, "A spark of chaos speeds %s up.", player ? "you" : act->name(DESC_THE).c_str());
+            mprf(MSGCH_MONSTER_ENCHANT, "A spark of chaos speeds %s up.", act->name(DESC_THE).c_str());
         }
         break;
     case CB_AGIL:

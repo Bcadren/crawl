@@ -6188,6 +6188,16 @@ bool mons_has_attacks(const monster& mon)
     return attk.type != AT_NONE && attk.damage > 0;
 }
 
+bool choose_passive_monster(const monster& mon)
+{
+    return mon.wont_attack();
+}
+
+bool choose_hostile_monster(const monster& mon)
+{
+    return mon.attitude == ATT_HOSTILE;
+}
+
 // The default suitable() function for choose_random_nearby_monster().
 bool choose_any_monster(const monster& mon)
 {

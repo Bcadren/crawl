@@ -9,6 +9,7 @@
 
 #include "attack.h"
 #include "beam-type.h"
+#include "chaos.h"
 #include "fight.h"
 #include "god-passive.h"
 #include "message.h"
@@ -31,7 +32,7 @@ struct miscast_struct
     vector<string> monster_seen_messages;
     vector<string> monster_unseen_messages;
     function<void (actor& target, actor* source, miscast_source_info mc_info,
-                   int dam, string cause)> effect;
+                   int dam, spell_type spell, string cause)> effect;
 };
 
 static void _do_msg(actor& target, miscast_struct effect, int dam)
@@ -135,6 +136,71 @@ static void _ouch(actor& target, actor * source, miscast_source_info mc_info, in
     }
 }
 
+static void _rogue_buff(actor * target, spell_type spell, int dur, actor * caster)
+{
+    const bool player = target->is_player();
+
+    if (one_chance_in(3))
+        spell = SPELL_BATTLESPHERE;
+
+    if (one_chance_in(6))
+        spell = SPELL_NO_SPELL;
+
+    switch (spell)
+    {
+    case SPELL_BERSERKER_RAGE:
+    case SPELL_BERSERK_OTHER:
+        if (target->can_go_berserk())
+        {
+            if (player)
+                you.go_berserk(false, false);
+            else
+                target->go_berserk(false, false);
+            break;
+        }
+        // else fallthrough
+    case SPELL_BATTLECRY:
+    case SPELL_DRUIDS_CALL:
+    case SPELL_MIGHT:
+    case SPELL_MIGHT_OTHER:
+        if (player)
+            you.increase_duration(DUR_MIGHT, dur);
+        else
+            target->as_monster()->add_ench(mon_enchant(ENCH_MIGHT, 0, caster, dur * BASELINE_DELAY));
+        break;
+
+    case SPELL_AURA_OF_BRILLIANCE:
+        if (player)
+            you.increase_duration(DUR_BRILLIANCE, dur);
+        else
+            target->as_monster()->add_ench(mon_enchant(ENCH_EMPOWERED_SPELLS, 0, caster, dur * BASELINE_DELAY));
+        break;
+
+    case SPELL_HASTE:
+    case SPELL_HASTE_OTHER:
+        if (player)
+            haste_player(dur, false, false);
+        else
+            target->as_monster()->add_ench(mon_enchant(ENCH_HASTE, 0, caster, dur * BASELINE_DELAY));
+        break;
+
+    case SPELL_INVISIBILITY:
+    case SPELL_INVISIBILITY_OTHER:
+        if (player)
+            you.increase_duration(DUR_INVIS, dur);
+        else
+            target->as_monster()->add_ench(mon_enchant(ENCH_INVIS, 0, caster, dur * BASELINE_DELAY));
+        break;
+
+    case SPELL_NO_SPELL:
+        chaotic_debuff(target, dur, caster);
+        // intentional fallthrough
+    default:
+        chaotic_buff(target, dur, caster);
+        break;
+    }
+}
+
 static const miscast_struct charms_miscasts[] =
 {
     {
@@ -161,15 +227,66 @@ static const miscast_struct charms_miscasts[] =
             "Magic surges out from thin air",
         },
         [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
-            int dam, string cause) 
+            int dam, spell_type /*spell*/, string cause) 
+        {
+            target->debuff();
+
+            if (target.is_player())
+                miscast_mutate(MUT_CORRUPTED_CHARM, dam, cause);
+            else
+            {
+                monster mon = *target->as_monster();
+
+                simple_monster_message(mon, " loses access to charms magic.");
+                mon.add_ench(mon_enchant(ENCH_NO_CHARMS, 1, source ? source : 0, dam * BASELINE_DELAY));
+                
+            }
+        }
+    },
+
+    {
+        false,
+        {
+            "The air around you crackles with energy",
+            "Multicoloured lights dance before your eyes",
+            "You feel a strange surge of energy",
+            "Waves of light ripple over your body",
+            "Strange energies run through your body",
+            "You feel enfeebled",
+            "Magic surges out from your body",
+        },
+        {
+            "The air around @the_monster@ crackles with energy",
+            "Multicoloured lights dance around @the_monster@",
+            "Waves of light ripple over @the_monster@'s body",
+            "@The_monster@ twitches",
+            "@The_monster@'s body glows momentarily",
+            "Magic surges out from @the_monster@",
+        },
+        {
+            "Multicoloured lights dance in the air",
+            "Magic surges out from thin air",
+        },
+        [](actor& target, actor* source, miscast_source_info /*mc_info*/,
+           int dam, spell_type spell, string cause)
         {
             if (target.is_player())
-            {
-                debuff_player();
-                miscast_mutate(MUT_CORRUPTED_CHARM, dam, cause);
-            }
+                miscast_mutate(MUT_BUFF_AURA, dam, cause);
             else
-                target.slow_down(source, dam);
+            {
+                actor * btarg = nullptr;
+                if (source)
+                    btarg = source;
+                
+                if (!btarg || one_chance_in(4))
+                {
+                    const bool ally = target.as_monster()->wont_attack();
+                    choose_random_nearby_monster(ally ? 0 : 1, ally ? choose_hostile_monster : choose_passive_monster);
+                }
+
+                if (btarg) // Probably 0 circumstances where it won't find a target, but in case.
+                    _rogue_buff(btarg, spell, max(5, random2(dam / 10)), &target);
+            }
         }
     },
 };
@@ -211,7 +328,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "A patch of light dims momentarily",
             },
             [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
-                int dam, string /*cause*/) 
+                int dam, spell_type /*spell*/, string /*cause*/)
             {
                 target.slow_down(source, dam);
             }
@@ -235,8 +352,8 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "Desperate hands claw out at random",
             },
             [] (actor& target, actor* source,
-                miscast_source_info mc_info,
-                int dam, string cause) 
+                miscast_source_info mc_info, int dam,
+                spell_type /*spell*/, string cause)
             {
                 mgen_data data = mgen_data::hostile_at(MONS_NAMELESS, true,
                                                        target.pos());
@@ -320,7 +437,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "Shadows flicker in the thin air",
             },            
             [](actor& target, actor* source, miscast_source_info mc_info,
-               int dam, string cause)
+               int dam, spell_type /*spell*/, string cause)
             {
                 _ouch(target, source, mc_info, dam, BEAM_DRAIN, cause);
             }
@@ -360,7 +477,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "A rift temporarily opens in the fabric of space",
             },
             [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
-                int dam, string /*cause*/) {
+                int dam, spell_type /*spell*/, string /*cause*/) {
 
                 if (target.is_player())
                     you.increase_duration(DUR_DIMENSION_ANCHOR, dam, dam);
@@ -404,7 +521,8 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "Waves of light ripple in the air",
             },
             [] (actor& target, actor* /*source*/,
-                miscast_source_info /*mc_info*/, int dam, string cause)
+                miscast_source_info /*mc_info*/, int dam, 
+                spell_type /*spell*/, string cause)
             {
                 if (target.is_player())
                     you.polymorph(2 * dam);
@@ -446,7 +564,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "A large flame burns hotly for a moment in the thin air",
             },
             [](actor& target, actor* source, miscast_source_info mc_info,
-               int dam, string cause)
+               int dam, spell_type /*spell*/, string cause)
             {
                 _ouch(target, source, mc_info, dam, BEAM_FIRE, cause);
             }
@@ -484,7 +602,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "An unseen figure is encased in ice",
             },
             [](actor& target, actor* source, miscast_source_info mc_info,
-               int dam, string cause)
+               int dam, spell_type /*spell*/, string cause)
             {
                 _ouch(target, source, mc_info, dam, BEAM_COLD, cause);
             }
@@ -520,7 +638,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "The air madly twists around a spot",
             },
             [](actor& target, actor* source, miscast_source_info mc_info,
-               int dam, string cause) 
+               int dam, spell_type /*spell*/, string cause)
             {
                 _ouch(target, source, mc_info, dam, BEAM_ELECTRICITY, cause);
             }
@@ -553,7 +671,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "Flying shrapnel explodes from thin air",
             },
             [] (actor& target, actor* source, miscast_source_info mc_info,
-                int dam, string cause)
+                int dam, spell_type /*spell*/, string cause)
             {
                 dam = target.apply_ac(dam, 0, ac_type::triple);
                 _ouch(target, source, mc_info, dam, BEAM_FRAG, cause);
@@ -580,7 +698,7 @@ static const map<spschool, miscast_struct> miscast_effects =
                 "The air has a green tinge for a moment",
             },            
             [](actor& target, actor* source, miscast_source_info mc_info,
-               int dam, string cause)
+               int dam, spell_type /*spell*/, string cause)
             {
                 _ouch(target, source, mc_info, dam, BEAM_POISON, cause);
             }
@@ -662,7 +780,7 @@ void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
     const int dam = div_rand_round(roll_dice(level, level * fail), 10);
 
     _do_msg(target, effect, 0);
-    effect.effect(target, source, mc_info, dam, cause);
+    effect.effect(target, source, mc_info, dam, spell, cause);
 
     if (target.is_player())
         xom_is_stimulated( (level / 3) * 50);

@@ -88,9 +88,7 @@ enum monster_info_flags
     MB_PERM_SUMMON,
     MB_INNER_FLAME,
     MB_UMBRAED,
-#if TAG_MAJOR_VERSION == 34
-    MB_OLD_ROUSED,
-#endif
+    MB_NO_CHARMS,
     MB_BREATH_WEAPON,
 #if TAG_MAJOR_VERSION == 34
     MB_DEATHS_DOOR,

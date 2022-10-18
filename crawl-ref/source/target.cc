@@ -279,7 +279,7 @@ targeter_unravelling::targeter_unravelling(const actor *act, int r, int pow)
  */
 static bool unravelling_explodes_at(const coord_def c)
 {
-    if (you.pos() == c && player_is_debuffable())
+    if (you.pos() == c && you.is_debuffable())
         return true;
 
     const monster_info* mi = env.map_knowledge(c).monsterinfo();

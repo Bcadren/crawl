@@ -944,7 +944,7 @@ static bool _sif_muna_retribution()
         // This will set all the extendable duration spells to
         // a duration of one round, thus potentially exposing
         // the player to real danger.
-        debuff_player();
+        you.debuff();
         break;
     }
 
@@ -1601,11 +1601,6 @@ static bool _qazlal_retribution()
     return true;
 }
 
-static bool _choose_hostile_monster(const monster& mon)
-{
-    return mon.attitude == ATT_HOSTILE;
-}
-
 static int _wu_jian_summon_weapons()
 {
     god_type god = GOD_WU_JIAN;
@@ -1692,7 +1687,7 @@ static bool _uskayaw_retribution()
 
     // check if we have monsters around
     monster* mon = nullptr;
-    mon = choose_random_nearby_monster(0, _choose_hostile_monster);
+    mon = choose_random_nearby_monster(0, choose_hostile_monster);
 
     switch (random2(5))
     {
@@ -1755,7 +1750,7 @@ static const pop_entry _bahamut_dragons[] =
 static bool _bahamut_retribution()
 {
     monster* mon = nullptr;
-    mon = choose_random_nearby_monster(0, _choose_hostile_monster);
+    mon = choose_random_nearby_monster(0, choose_hostile_monster);
     int x = random2(5);
 
     if (mon && coinflip())

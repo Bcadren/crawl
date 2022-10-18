@@ -1860,9 +1860,17 @@ static const mutation_def mut_data[] =
 { MUT_CORRUPTED_CHARM, 0, 1, mutflag::bad | mutflag::miscast, false,
   "-Charms",
 
-  {"Corrupted charms magic prevents successful use of Charms spells. (-Charms)", "", ""},
+  {"Corrupted Charms magic prevents successful use of Charms spells. (-Charms)", "", ""},
   {"You are suffused with corrupted Charms magic.", "",  ""},
   {"You are capable of using Charms spells again.", "", ""},
+},
+
+{ MUT_BUFF_AURA, 0, 1, mutflag::bad | mutflag::miscast, false,
+  "beguiling aura",
+
+  {"Lingering Charms magic may augment those that attack you.", "", ""},
+  {"Your flesh pulses with an an unnatural beguiling aura.", "",  ""},
+  {"Your beguiling aura wears off.", "", ""},
 },
 
 };

@@ -398,7 +398,7 @@ static void _dispellable_player_buffs(player_debuff_effects &buffs)
  *
  * @return  Whether there are any effects to be dispelled.
  */
-bool player_is_debuffable()
+bool player::is_debuffable()
 {
     player_debuff_effects buffs;
     _dispellable_player_buffs(buffs);
@@ -412,7 +412,7 @@ bool player_is_debuffable()
  * Forms, buffs, debuffs, contamination, probably a few other things.
  * Flight gets an extra 11 aut before going away to minimize instadeaths.
  */
-void debuff_player()
+void player::debuff()
 {
     bool need_msg = false;
 
@@ -498,31 +498,29 @@ static void _dispellable_monster_buffs(const monster &mon,
  *
  * @param mon           The monster in question.
  */
-bool monster_is_debuffable(const monster &mon)
+bool monster::is_debuffable()
 {
     vector<enchant_type> buffs;
-    _dispellable_monster_buffs(mon, buffs);
+    _dispellable_monster_buffs(*this, buffs);
     return !buffs.empty();
 }
 
 /**
  * Remove magical effects from a given monster.
- *
- * @param mon           The monster to be debuffed.
  */
-void debuff_monster(monster &mon)
+void monster::debuff()
 {
-    mon_lose_staff_shield(mon, BEAM_UNRAVELLING, 3);
+    mon_lose_staff_shield(*this, BEAM_UNRAVELLING, 3);
 
     vector<enchant_type> buffs;
-    _dispellable_monster_buffs(mon, buffs);
+    _dispellable_monster_buffs(*this, buffs);
     if (buffs.empty())
         return;
 
     for (enchant_type buff : buffs)
-        mon.del_ench(buff, true, true);
+        del_ench(buff, true, true);
 
-    simple_monster_message(mon, "'s magical effects unravel!");
+    simple_monster_message(*this, "'s magical effects unravel!");
 }
 
 // pow -1 for passive

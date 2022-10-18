@@ -8523,6 +8523,13 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
     if (slot.flags & MON_SPELL_BREATH && mon->has_ench(ENCH_BREATH_WEAPON))
         return true;
 
+    if (spell_typematch(slot.spell, spschool::charms)
+        && bool(slot.flags & (MON_SPELL_WIZARD | MON_SPELL_PRIEST))
+        && mon->has_ench(ENCH_NO_CHARMS))
+    {
+        return true;
+    }
+
     // Don't bother casting a summon spell if we're already at its cap
     if (summons_are_capped(monspell)
         && count_summons(mon, monspell) >= summons_limit(monspell))

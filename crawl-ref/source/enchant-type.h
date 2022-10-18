@@ -88,9 +88,7 @@ enum enchant_type
     ENCH_SILVER_CANDLE,  // Zin's silver light.
     ENCH_RECITE_TIMER,   // Was recited against.
     ENCH_INNER_FLAME,
-#if TAG_MAJOR_VERSION == 34
-    ENCH_OLD_ROUSED,
-#endif
+    ENCH_NO_CHARMS,      // banned from charms via miscast
     ENCH_BREATH_WEAPON,  // timer for breathweapon/similar spam
 #if TAG_MAJOR_VERSION == 34
     ENCH_DEATHS_DOOR,

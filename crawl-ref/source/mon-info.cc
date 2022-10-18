@@ -77,6 +77,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_MUTE,            MB_MUTE },
     { ENCH_BLIND,           MB_BLIND },
     { ENCH_DUMB,            MB_DUMB },
+    { ENCH_NO_CHARMS,       MB_NO_CHARMS },
     { ENCH_MAD,             MB_MAD },
     { ENCH_INNER_FLAME,     MB_INNER_FLAME },
     { ENCH_ENTROPIC_BURST,  MB_ENTROPIC_BURST },
@@ -1219,6 +1220,8 @@ static string _verbose_info0(const monster_info& mi)
         return "chaotically infused";
     if (mi.is(MB_DUMB))
         return "stupefied";
+    if (mi.is(MB_NO_CHARMS))
+        return "charm averse";
     if (mi.is(MB_PARALYSED))
         return "paralysed";
     if (mi.is(MB_CAUGHT))
@@ -1479,6 +1482,8 @@ vector<string> monster_info::attributes() const
         v.emplace_back("blind");
     if (is(MB_DUMB))
         v.emplace_back("stupefied");
+    if (is(MB_NO_CHARMS))
+        v.emplace_back("charm averse");
     if (is(MB_MAD))
         v.emplace_back("lost in madness");
     if (is(MB_REGENERATION))

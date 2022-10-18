@@ -3378,7 +3378,7 @@ void bolt::reflect()
 
 void bolt::tracer_affect_player()
 {
-    if (flavour == BEAM_UNRAVELLING && player_is_debuffable())
+    if (flavour == BEAM_UNRAVELLING && you.is_debuffable())
         is_explosion = true;
 
     // Check whether thrower can see player, unless thrower == player.
@@ -3902,10 +3902,10 @@ void bolt::affect_player_enchantment(bool resistible)
         break;
 
     case BEAM_UNRAVELLING:
-        if (!player_is_debuffable())
+        if (!you.is_debuffable())
             break;
 
-        debuff_player();
+        you.debuff();
         _unravelling_explode(*this);
         obvious_effect = true;
         break;
@@ -4472,7 +4472,7 @@ void bolt::affect_player()
     }
 
     if (origin_spell == SPELL_QUICKSILVER_BOLT && hits_you)
-        debuff_player();
+        you.debuff();
 
     if (origin_spell == SPELL_THROW_PIE && yu_final_dam > 0)
     {
@@ -4834,7 +4834,7 @@ void bolt::tracer_affect_monster(monster* mon)
     if (!agent() || !agent()->can_see(*mon))
         return;
 
-    if (flavour == BEAM_UNRAVELLING && monster_is_debuffable(*mon))
+    if (flavour == BEAM_UNRAVELLING && mon->is_debuffable())
         is_explosion = true;
 
     // Trigger explosion on exploding beams.
@@ -5125,7 +5125,7 @@ void bolt::monster_post_hit(monster* mon, int dmg)
 
     // purple draconian breath
     if (origin_spell == SPELL_QUICKSILVER_BOLT)
-        debuff_monster(*mon);
+        mon->debuff();
 
     if (dmg)
         beogh_follower_convert(mon, true);
@@ -5178,9 +5178,9 @@ void bolt::monster_post_hit(monster* mon, int dmg)
         }
         if (flavour == BEAM_MMISSILE && you.drac_colour != DR_BROWN)
         {
-            if (monster_is_debuffable(*mon))
+            if (mon->is_debuffable())
             {
-                debuff_monster(*mon);
+                mon->debuff();
                 mon->malmutate("unraveling magic");
             }
 
@@ -6578,10 +6578,10 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return MON_AFFECTED;
 
     case BEAM_UNRAVELLING:
-        if (!monster_is_debuffable(*mon))
+        if (!mon->is_debuffable())
             return MON_UNAFFECTED;
 
-        debuff_monster(*mon);
+        mon->debuff();
         _unravelling_explode(*this);
         return MON_AFFECTED;
 
@@ -7147,7 +7147,7 @@ bool bolt::nasty_to(const monster* mon) const
         case BEAM_SNAKES_TO_STICKS:
             return is_snake(*mon);
         case BEAM_UNRAVELLING:
-            return monster_is_debuffable(*mon); // XXX: as tukima's
+            return mon->is_debuffable(); // XXX: as tukima's
         case BEAM_CIGOTUVI:
             return _cig_check(mon);
         default:
