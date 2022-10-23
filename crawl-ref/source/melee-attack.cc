@@ -4064,7 +4064,7 @@ void melee_attack::mons_apply_attack_flavour()
             int healz = roll_dice(3, attacker->get_hit_dice());
             if (defender->is_player())
             {
-                if (you.is_debuffable())
+                if (you.debuffable())
                 {
                     heal_monster(*attacker->as_monster(), healz);
                     special_damage = healz;
@@ -4081,7 +4081,7 @@ void melee_attack::mons_apply_attack_flavour()
             }
             else
             {
-                if (defender->as_monster()->is_debuffable())
+                if (defender->as_monster()->debuffable())
                 {
                     heal_monster(*attacker->as_monster(), healz);
                     special_damage = healz;

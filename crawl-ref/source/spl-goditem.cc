@@ -398,7 +398,7 @@ static void _dispellable_player_buffs(player_debuff_effects &buffs)
  *
  * @return  Whether there are any effects to be dispelled.
  */
-bool player::is_debuffable()
+bool player::debuffable() const
 {
     player_debuff_effects buffs;
     _dispellable_player_buffs(buffs);
@@ -498,7 +498,7 @@ static void _dispellable_monster_buffs(const monster &mon,
  *
  * @param mon           The monster in question.
  */
-bool monster::is_debuffable()
+bool monster::debuffable() const
 {
     vector<enchant_type> buffs;
     _dispellable_monster_buffs(*this, buffs);

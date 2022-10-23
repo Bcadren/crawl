@@ -430,8 +430,8 @@ public:
     reach_type reach_range() const override;
     bool nightvision() const override;
 
-    bool is_debuffable() const override;
-    void debuff() const override;
+    bool debuffable() const override;
+    void debuff() override;
 
     bool is_icy() const override;
     bool is_fiery() const override;

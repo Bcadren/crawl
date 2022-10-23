@@ -229,17 +229,16 @@ static const miscast_struct charms_miscasts[] =
         [] (actor& target, actor* source, miscast_source_info /*mc_info*/,
             int dam, spell_type /*spell*/, string cause) 
         {
-            target->debuff();
+            target.debuff();
 
             if (target.is_player())
                 miscast_mutate(MUT_CORRUPTED_CHARM, dam, cause);
             else
             {
-                monster mon = *target->as_monster();
+                monster *mon = target.as_monster();
 
-                simple_monster_message(mon, " loses access to charms magic.");
-                mon.add_ench(mon_enchant(ENCH_NO_CHARMS, 1, source ? source : 0, dam * BASELINE_DELAY));
-                
+                if (mon->add_ench(mon_enchant(ENCH_NO_CHARMS, 1, source ? source : 0, dam * BASELINE_DELAY)))
+                    simple_monster_message(*mon, " loses access to charms magic.");
             }
         }
     },

@@ -3378,7 +3378,7 @@ void bolt::reflect()
 
 void bolt::tracer_affect_player()
 {
-    if (flavour == BEAM_UNRAVELLING && you.is_debuffable())
+    if (flavour == BEAM_UNRAVELLING && you.debuffable())
         is_explosion = true;
 
     // Check whether thrower can see player, unless thrower == player.
@@ -3902,7 +3902,7 @@ void bolt::affect_player_enchantment(bool resistible)
         break;
 
     case BEAM_UNRAVELLING:
-        if (!you.is_debuffable())
+        if (!you.debuffable())
             break;
 
         you.debuff();
@@ -4834,7 +4834,7 @@ void bolt::tracer_affect_monster(monster* mon)
     if (!agent() || !agent()->can_see(*mon))
         return;
 
-    if (flavour == BEAM_UNRAVELLING && mon->is_debuffable())
+    if (flavour == BEAM_UNRAVELLING && mon->debuffable())
         is_explosion = true;
 
     // Trigger explosion on exploding beams.
@@ -5178,7 +5178,7 @@ void bolt::monster_post_hit(monster* mon, int dmg)
         }
         if (flavour == BEAM_MMISSILE && you.drac_colour != DR_BROWN)
         {
-            if (mon->is_debuffable())
+            if (mon->debuffable())
             {
                 mon->debuff();
                 mon->malmutate("unraveling magic");
@@ -6578,7 +6578,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return MON_AFFECTED;
 
     case BEAM_UNRAVELLING:
-        if (!mon->is_debuffable())
+        if (!mon->debuffable())
             return MON_UNAFFECTED;
 
         mon->debuff();
@@ -7147,7 +7147,7 @@ bool bolt::nasty_to(const monster* mon) const
         case BEAM_SNAKES_TO_STICKS:
             return is_snake(*mon);
         case BEAM_UNRAVELLING:
-            return mon->is_debuffable(); // XXX: as tukima's
+            return mon->debuffable(); // XXX: as tukima's
         case BEAM_CIGOTUVI:
             return _cig_check(mon);
         default:

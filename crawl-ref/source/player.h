@@ -841,8 +841,8 @@ public:
     bool racial_permanent_flight() const;
     int get_noise_perception(bool adjusted = true) const;
 
-    bool is_debuffable() const override;
-    void debuff() const override;
+    bool debuffable() const override;
+    void debuff() override;
 
     bool paralysed() const override;
     bool cannot_move() const override;
