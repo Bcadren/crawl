@@ -428,21 +428,21 @@ void player::debuff()
         need_msg = true;
     }
 
-    for (auto duration : buffs.durations)
+    for (auto dur : buffs.durations)
     {
-        int &len = you.duration[duration];
-        if (duration == DUR_TELEPORT)
+        int &len = you.duration[dur];
+        if (dur == DUR_TELEPORT)
         {
             len = 0;
             mprf(MSGCH_DURATION, "You feel strangely stable.");
         }
-        else if (duration == DUR_PETRIFYING)
+        else if (dur == DUR_PETRIFYING)
         {
             len = 0;
             mprf(MSGCH_DURATION, "You feel limber!");
             you.redraw_evasion = true;
         }
-        else if (duration == DUR_FLAYED)
+        else if (dur == DUR_FLAYED)
         {
             len = 0;
             heal_flayed_effect(&you);
