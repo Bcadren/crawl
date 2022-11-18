@@ -705,7 +705,7 @@ static const map<spschool, miscast_struct> miscast_effects =
     },
 };
 
-spschool _random_school_from_spell(spell_type spell)
+static spschool _random_school_from_spell(spell_type spell)
 {
     vector<spschool> school_list;
     for (const auto bit : spschools_type::range())
@@ -763,7 +763,7 @@ void miscast_effect(spell_type spell, int fail)
 
 
 // Monster miscast for debugging, chaos and toning down purposes. 
-void monster_miscast(monster &mons, mon_spell_slot slot, bolt& pbolt)
+void monster_miscast(monster &mons, mon_spell_slot slot, bolt& /*pbolt*/)
 {
     // Sanity.
     if (!mons.antimagic_susceptible())
