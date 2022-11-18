@@ -2732,18 +2732,16 @@ static const struct spell_desc spelldata[] =
     TILEG_GENERIC_MONSTER_SPELL,
 },
 
-#if TAG_MAJOR_VERSION == 34
 {
-    SPELL_MELEE, "Melee", "",
+    SPELL_MISCAST, "Miscast", "",
     spschool::none,
-    spflag::none,
+    spflag::monster,
     1,
     0,
     -1, -1,
-    1, 0,
-    TILEG_ERROR,
+    2, 0,
+    TILEG_CANTRIP,
 },
-#endif
 
 {
     SPELL_FIRE_SUMMON, "Fire Summon", "",

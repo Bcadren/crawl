@@ -62,6 +62,7 @@
 #include "spl-clouds.h"
 #include "spl-damage.h"
 #include "spl-goditem.h"
+#include "spl-miscast.h"
 #include "spl-monench.h"
 #include "spl-summoning.h"
 #include "spl-transloc.h"
@@ -277,6 +278,12 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_CANTRIP, {
         [](const monster &caster) { return caster.get_foe(); },
         _cast_cantrip,
+        nullptr,
+        MSPELL_NO_AUTO_NOISE,
+    } },
+    { SPELL_MISCAST, {
+        [](const monster &caster) { return caster.get_foe() && caster.antimagic_susceptible(); },
+        monster_miscast,
         nullptr,
         MSPELL_NO_AUTO_NOISE,
     } },
@@ -928,11 +935,7 @@ void init_mons_spells()
         if (!is_valid_spell(spell))
             continue;
 
-        if (
-#if TAG_MAJOR_VERSION == 34
-            spell == SPELL_MELEE ||
-#endif
-            setup_mons_cast(&fake_mon, pbolt, spell, false, true))
+        if (setup_mons_cast(&fake_mon, pbolt, spell, false, true))
         {
             _valid_mon_spells[i] = true;
         }

@@ -705,7 +705,22 @@ static const map<spschool, miscast_struct> miscast_effects =
     },
 };
 
-// Spell miscasts, contamination pluss the miscast effect
+spschool _random_school_from_spell(spell_type spell)
+{
+    vector<spschool> school_list;
+    for (const auto bit : spschools_type::range())
+        if (spell_typematch(spell, bit))
+            school_list.push_back(bit);
+
+    spschool school = spschool::ritual;
+
+    while (school == spschool::ritual)
+        school = *random_iterator(school_list);
+
+    return school;
+}
+
+// Spell miscasts, contamination plus the miscast effect
 // This is only used for the player
 void miscast_effect(spell_type spell, int fail)
 {
@@ -728,15 +743,7 @@ void miscast_effect(spell_type spell, int fail)
         return;
     }
 
-    vector<spschool> school_list;
-    for (const auto bit : spschools_type::range())
-        if (spell_typematch(spell, bit))
-            school_list.push_back(bit);
-
-    spschool school = spschool::ritual;
-
-    while (school == spschool::ritual)
-        school = *random_iterator(school_list);
+    spschool school = _random_school_from_spell(spell);
 
     if (school == spschool::necromancy
         && have_passive(passive_t::miscast_protection_necromancy))
@@ -752,6 +759,40 @@ void miscast_effect(spell_type spell, int fail)
     miscast_effect(you, nullptr, {miscast_source::spell},
                    school, spell_difficulty(spell), fail, 
                    string("miscasting ") + spell_title(spell), spell);
+}
+
+
+// Monster miscast for debugging, chaos and toning down purposes. 
+void monster_miscast(monster &mons, mon_spell_slot slot, bolt& pbolt)
+{
+    // Sanity.
+    if (!mons.antimagic_susceptible())
+        return;
+
+    spell_type spell = SPELL_NO_SPELL;
+
+    if (slot.spell == SPELL_MISCAST)
+    {
+        int x = 0;
+        for (mon_spell_slot slt : mons.spells)
+        {
+            if (bool(slt.flags & MON_SPELL_ANTIMAGIC_MASK)
+                && one_chance_in(++x))
+            {
+                spell = slt.spell;
+            }
+        }
+    }
+
+    // Sanity.
+    if (spell == SPELL_NO_SPELL)
+        return;
+
+    spschool school = _random_school_from_spell(spell);
+
+    miscast_effect(mons, nullptr, { miscast_source::spell },
+        school, spell_difficulty(spell), 25,
+        string("miscasting ") + spell_title(spell), spell);
 }
 
 // Miscasts from other sources (god wrath, spellbinder melee, wild magic card,

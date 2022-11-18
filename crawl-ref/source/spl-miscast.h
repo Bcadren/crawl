@@ -29,6 +29,8 @@ struct miscast_source_info
     god_type god;
 };
 
+void monster_miscast(monster &mons, mon_spell_slot slot, bolt &beam);
+
 void miscast_effect(spell_type spell, int fail);
 void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
                     spschool school, int level, int fail, string cause, 

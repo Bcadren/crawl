@@ -265,9 +265,7 @@ enum spell_type : int
     SPELL_SUMMON_HYDRA,
     SPELL_DARKNESS,
     SPELL_MESMERISE,
-#if TAG_MAJOR_VERSION == 34
-    SPELL_MELEE, // like SPELL_NO_SPELL, but doesn't cause a re-roll
-#endif
+    SPELL_MISCAST,
     SPELL_FIRE_SUMMON,
     SPELL_SHROUD_OF_GOLUBRIA,
     SPELL_INNER_FLAME,
