@@ -126,11 +126,6 @@ void init_perishable_stack(item_def &stack, int age)
     dprf("initializing perishable stack");
 
     // For a newly created stack, all potions/chunks use the same timer.
-#ifdef DEBUG_BLOOD_POTIONS
-    mprf(MSGCH_DIAGNOSTICS,
-         "newly created stack of size %d will time out at aut %d",
-         stack.quantity, max_age);
-#endif
     for (int i = 0; i < stack.quantity; i++)
         timer.push_back(max_age);
 
