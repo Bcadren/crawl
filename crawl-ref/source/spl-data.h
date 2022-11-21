@@ -43,18 +43,7 @@ static const struct spell_desc spelldata[] =
     3, 0,
     TILEG_CAUSE_FEAR,
 },
-#if TAG_MAJOR_VERSION == 34
-{
-    SPELL_MAGIC_DART, "Magic Dart", "",
-    spschool::earth,
-    spflag::dir_or_target | spflag::needs_tracer | spflag::no_ghost,
-    1,
-    25,
-    LOS_RADIUS, LOS_RADIUS,
-    1, 0,
-    TILEG_MAGIC_DART,
-},
-#endif
+
 {
     SPELL_FIREBALL, "Fireball", "Chaos Burst",
     spschool::fire,
@@ -3985,6 +3974,7 @@ AXED_SPELL(SPELL_IGNITE_POISON_SINGLE, "Localized Ignite Poison")
 AXED_SPELL(SPELL_INSULATION, "Insulation")
 AXED_SPELL(SPELL_IRON_ELEMENTALS, "Summon Iron Elementals")
 AXED_SPELL(SPELL_LETHAL_INFUSION, "Lethal Infusion")
+AXED_SPELL(SPELL_MAGIC_DART, "Magic Dart")
 AXED_SPELL(SPELL_MISLEAD, "Mislead")
 AXED_SPELL(SPELL_POISON_WEAPON, "Poison Weapon")
 AXED_SPELL(SPELL_REARRANGE_PIECES, "Rearrange the Pieces")

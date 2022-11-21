@@ -6,7 +6,7 @@ enum zap_type
     ZAP_THROW_FROST,
     ZAP_SLOW,
     ZAP_HASTE,
-    ZAP_MAGIC_DART,
+    ZAP_MAGIC_DART, // Spell removed but used by Battlesphere code.
     ZAP_PARALYSE,
     ZAP_BOLT_OF_FIRE,
     ZAP_BOLT_OF_COLD,

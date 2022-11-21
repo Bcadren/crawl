@@ -409,9 +409,6 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
     { SPELL_EARTH_ELEMENTALS, { _always_worthwhile, _mons_summon_elemental } },
     { SPELL_AIR_ELEMENTALS, { _always_worthwhile, _mons_summon_elemental } },
     { SPELL_FIRE_ELEMENTALS, { _always_worthwhile, _mons_summon_elemental } },
-#if TAG_MAJOR_VERSION == 34
-    { SPELL_IRON_ELEMENTALS, { _always_worthwhile, _mons_summon_elemental } },
-#endif
     { SPELL_HASTE_OTHER, {
         _always_worthwhile,
         _fire_simple_beam,
@@ -1359,7 +1356,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_ORB_OF_ELECTRICITY:
         beam.foe_ratio      = random_range(40, 55); // ...
         // fallthrough to other zaps
-    case SPELL_MAGIC_DART:
     case SPELL_THROW_FLAME:
     case SPELL_THROW_FROST:
     case SPELL_FLAME_TONGUE:
@@ -1715,17 +1711,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.pierce   = true;
         break;
 
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_HOLY_LIGHT:
-        beam.name     = "beam of golden light";
-        beam.damage   = dice_def(3, 8 + power / 11);
-        beam.colour   = ETC_HOLY;
-        beam.flavour  = BEAM_HOLY;
-        beam.hit      = 17 + power / 25;
-        beam.pierce   = true;
-        break;
-#endif
-
     case SPELL_ENSNARE:
         beam.name     = "stream of webbing";
         beam.colour   = WHITE;
@@ -1957,9 +1942,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_MAJOR_HEALING:
     case SPELL_SUMMON_GREATER_UNDEAD:
     case SPELL_SHADOW_CREATURES:       // summon anything appropriate for level
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_FAKE_RAKSHASA_SUMMON:
-#endif
     case SPELL_FAKE_MARA_SUMMON:
     case SPELL_SUMMON_ILLUSION:
     case SPELL_SUMMON_DEMON:
@@ -1969,7 +1951,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
 #endif
     case SPELL_TWISTED_RESURRECTION:
 #if TAG_MAJOR_VERSION == 34
-    case SPELL_CIGOTUVIS_EMBRACE:
     case SPELL_SIMULACRUM:
 #endif
     case SPELL_CALL_IMP:
@@ -1993,10 +1974,9 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_BROTHERS_IN_ARMS:
     case SPELL_BERSERKER_RAGE:
     case SPELL_SPRINT:
+    case SPELL_STONESKIN:
 #if TAG_MAJOR_VERSION == 34
     case SPELL_SWIFTNESS:
-    case SPELL_STONESKIN:
-    case SPELL_SUMMON_ELEMENTAL:
 #endif
     case SPELL_CREATE_TENTACLES:
     case SPELL_BLINK:
@@ -2010,9 +1990,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_LESSER_CHAOS_CHAIN:
     case SPELL_SUMMON_EYEBALLS:
     case SPELL_SUMMON_BUTTERFLIES:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_MISLEAD:
-#endif
     case SPELL_CALL_TIDE:
     case SPELL_INK_CLOUD:
     case SPELL_SILENCE:
@@ -2024,16 +2001,9 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_DRAGON:
     case SPELL_SUMMON_HYDRA:
     case SPELL_FIRE_SUMMON:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_DEATHS_DOOR:
-#endif
     case SPELL_OZOCUBUS_ARMOUR:
     case SPELL_OLGREBS_TOXIC_RADIANCE:
     case SPELL_SHATTER:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_FRENZY:
-    case SPELL_SUMMON_TWISTER:
-#endif
     case SPELL_BATTLESPHERE:
     case SPELL_SPECTRAL_WEAPON:
     case SPELL_WORD_OF_RECALL:
@@ -2042,31 +2012,16 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_BLINK_ALLIES_ENCIRCLE:
     case SPELL_MASS_CONFUSION:
     case SPELL_ENGLACIATION:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_SHAFT_SELF:
-#endif
     case SPELL_AWAKEN_VINES:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_CONTROL_WINDS:
-#endif
     case SPELL_WALL_OF_BRAMBLES:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_HASTE_PLANTS:
-#endif
     case SPELL_WIND_BLAST:
     case SPELL_SUMMON_VERMIN:
     case SPELL_TORNADO:
     case SPELL_VORTEX:
     case SPELL_DISCHARGE:
     case SPELL_IGNITE_POISON:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_EPHEMERAL_INFUSION:
-#endif
     case SPELL_BLACK_MARK:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_GRAND_AVATAR:
     case SPELL_REARRANGE_PIECES:
-#endif
     case SPELL_BLINK_ALLIES_AWAY:
     case SPELL_SHROUD_OF_GOLUBRIA:
     case SPELL_PHANTOM_MIRROR:
@@ -2078,9 +2033,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_BERSERK_OTHER:
     case SPELL_POLYMOTH:
     case SPELL_SPELLFORGED_SERVITOR:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_THROW:
-#endif
     case SPELL_THROW_ALLY:
     case SPELL_CORRUPTING_PULSE:
     case SPELL_SACRED_ORDER:
@@ -2090,9 +2042,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_REPEL_MISSILES:
     case SPELL_DEFLECT_MISSILES:
     case SPELL_SUMMON_SCARABS:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_HUNTING_CRY:
-#endif
     case SPELL_CONDENSATION_SHIELD:
     case SPELL_CLEANSING_FLAME:
     case SPELL_DRAINING_GAZE:
@@ -2104,9 +2053,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_CALL_OF_CHAOS:
     case SPELL_AIRSTRIKE:
     case SPELL_WATERSTRIKE:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_CHANT_FIRE_STORM:
-#endif
     case SPELL_GRAVITAS:
     case SPELL_ENTROPIC_WEAVE:
     case SPELL_SUMMON_EXECUTIONERS:
@@ -4909,9 +4855,6 @@ static void _mons_summon_elemental(monster &mons, mon_spell_slot slot, bolt&)
         { SPELL_FIRE_ELEMENTALS, MONS_FIRE_ELEMENTAL },
         { SPELL_EARTH_ELEMENTALS, MONS_EARTH_ELEMENTAL },
         { SPELL_AIR_ELEMENTALS, MONS_AIR_ELEMENTAL },
-#if TAG_MAJOR_VERSION == 34
-        { SPELL_IRON_ELEMENTALS, MONS_IRON_ELEMENTAL },
-#endif
     };
 
     const monster_type* mtyp = map_find(elemental_types, slot.spell);
@@ -7421,6 +7364,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         return;
 
 #if TAG_MAJOR_VERSION == 34
+    // BCADNOTE: No monster currently has this spell, but I'm keeping it as it's too fun to delete. Just need something it suits.
     case SPELL_REARRANGE_PIECES:
     {
         bool did_message = false;
@@ -9040,25 +8984,13 @@ static bool _ms_waste_of_time(monster* mon, mon_spell_slot slot)
         return no_clouds;
 
 #if TAG_MAJOR_VERSION == 34
-    case SPELL_SUMMON_TWISTER:
-    case SPELL_SHAFT_SELF:
-    case SPELL_MISLEAD:
-    case SPELL_SUMMON_ELEMENTAL:
-    case SPELL_EPHEMERAL_INFUSION:
-    case SPELL_SINGULARITY:
-    case SPELL_GRAND_AVATAR:
     case SPELL_INNER_FLAME:
     case SPELL_ANIMATE_DEAD:
     case SPELL_SIMULACRUM:
-    case SPELL_CHANT_FIRE_STORM:
-    case SPELL_IGNITE_POISON_SINGLE:
     case SPELL_STONESKIN:
-    case SPELL_CONTROL_WINDS:
     case SPELL_DEATHS_DOOR:
     case SPELL_FULMINANT_PRISM:
-    case SPELL_MAGIC_DART:
     case SPELL_SMD:
-    case SPELL_FORCEFUL_DISMISSAL:
 #endif
     case SPELL_NO_SPELL:
         return true;

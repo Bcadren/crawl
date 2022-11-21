@@ -8,7 +8,6 @@
 
 static pair<spell_type, zap_type> _spl_zaps[] =
 {
-    { SPELL_MAGIC_DART,             ZAP_MAGIC_DART },
     { SPELL_FORCE_LANCE,            ZAP_FORCE_LANCE },
     { SPELL_THROW_FLAME,            ZAP_THROW_FLAME },
     { SPELL_THROW_FROST,            ZAP_THROW_FROST },
