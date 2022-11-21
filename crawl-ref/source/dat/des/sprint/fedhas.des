@@ -8,7 +8,7 @@ KMONS:  A = fungus
 KMONS:  B = spriggan hd:3
 KMONS:  C = oklob sapling hp:7
 KMONS:  D = oklob sapling hp:15 name:wizard n_suf \
-            spells:spit_acid.50.natural;magic_dart.36.wizard;cantrip.18.wizard
+            spells:spit_acid.50.natural;sting.36.wizard;cantrip.18.wizard
 KMONS:  E = scorpion
 KMONS:  F = wandering mushroom
 KMONS:  G = burning bush

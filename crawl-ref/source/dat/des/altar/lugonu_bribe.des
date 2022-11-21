@@ -3,6 +3,8 @@
 # The altar will feature an item which your current god forbids to use
 # but which would be useful otherwise (if possible), or an item that is
 # just useless/forbidden/redundant under your current god.
+#
+# BCADDO: Update this some more.
 
 {{
 function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
@@ -30,7 +32,7 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
          Beogh="scroll of fear ident:type q:3-6 /\
               scroll of immolation ident:type q:3-6",
          Cheibriados="potion of haste ident:type q:2-4",
-         Dithmenos="lamp of fire w:5 / rod of ignition w:5 /\
+         Dithmenos="lamp of fire w:5 /\
               good_item " .. weapon .. " ego:flaming ident:type",
          Elyvilon="lantern of shadows / book of Necromancy w:5 /\
               book of Death w:5 / book of Unlife w:5",
@@ -49,7 +51,7 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
               manual of Ice Magic w:5 / manual of Poison Magic w:5 /\
               any magical staff ident:type /\
               ring of wizardry ident:type",
-         Vehumet="randbook owner:Lugonu spells:magic_dart numspells:1",
+         Vehumet="good_item " .. weapon .. " ego:antimagic ident:type",
          Xom="manual of Invocations",
          Yredelemnul= "scroll of holy word ident:type q:2-4 /\
               good_item " .. weapon .. " ego:holy_wrath ident:type",
