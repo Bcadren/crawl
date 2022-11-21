@@ -1462,13 +1462,11 @@ static void tag_construct_you(writer &th)
     for (int i = 0; i < 52; i++)
         marshallShort(th, you.ability_letter_table[i]);
 
-    marshallUByte(th, you.old_vehumet_gifts.size());
-    for (auto spell : you.old_vehumet_gifts)
-        marshallShort(th, spell);
-
-    marshallUByte(th, you.vehumet_gifts.size());
-    for (auto spell : you.vehumet_gifts)
-        marshallShort(th, spell);
+    // Size of two removed lists is always 0, they are removed.
+#if TAG_MAJOR_VERSION == 34
+    marshallUByte(th, 0);
+    marshallUByte(th, 0);
+#endif
 
     CANARY;
 
@@ -2753,27 +2751,15 @@ static void tag_read_you(reader &th)
     }
 
 #if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() >= TAG_MINOR_VEHUMET_SPELL_GIFT
-        && th.getMinorVersion() != TAG_MINOR_0_11)
-    {
-#endif
-        count = unmarshallUByte(th);
-        for (int i = 0; i < count; ++i)
-            you.spell_library.set(unmarshallSpellType(th), true);
+    count = unmarshallUByte(th);
+    for (int i = 0; i < count; ++i)
+        you.spell_library.set(unmarshallSpellType(th), true);
 
-#if TAG_MAJOR_VERSION == 34
-        if (th.getMinorVersion() < TAG_MINOR_VEHUMET_MULTI_GIFTS)
-            you.spell_library.set(unmarshallSpellType(th), true);
-        else
-        {
+    count = unmarshallUByte(th);
+    for (int i = 0; i < count; ++i)
+        you.spell_library.set(unmarshallSpellType(th), true);
 #endif
-            count = unmarshallUByte(th);
-            for (int i = 0; i < count; ++i)
-                you.spell_library.set(unmarshallSpellType(th), true);
-#if TAG_MAJOR_VERSION == 34
-        }
-    }
-#endif
+
     EAT_CANARY;
 
     // how many skills?
