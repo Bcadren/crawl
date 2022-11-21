@@ -1374,7 +1374,7 @@ static bool _give_pakellas_gift()
 }
 #endif
 
-static bool _give_equipment_gift()
+static bool _give_equipment_gift(bool forced)
 {
     // Break early if giving a gift now means it would be lost.
     if (feat_eliminates_items(grd(you.pos())) || grd(you.pos()) == DNGN_TRAP_SHAFT)
@@ -1401,7 +1401,7 @@ static bool _give_equipment_gift()
             gift_type = OBJ_WEAPONS;
     }
 
-    const bool want_equipment = you_worship(GOD_VEHUMUT) || forced
+    const bool want_equipment = you_worship(GOD_VEHUMET) || forced
                                 || (you.piety >= piety_breakpoint(4)
                                     && random2(you.piety) > 120
                                     && one_chance_in(4));
@@ -1575,7 +1575,7 @@ static bool _handle_veh_gift(bool forced)
     if (you.num_total_gifts[you.religion] >= (NUM_VEHUMET_GIFTS + 1) || 
             ((you.num_total_gifts[you.religion] == 9 || you.num_total_gifts[you.religion] == 13)
                 && !(you.species == SP_FELID)))
-        return _give_equipment_gift();
+        return _give_equipment_gift(forced);
     else if (forced ||  (you.piety >= piety_breakpoint(0) && gifts == 0
                       || you.piety >= piety_breakpoint(0) + random2(6) + 18 * gifts && gifts <= 5
                       || you.piety >= piety_breakpoint(4) && gifts <= 11 && one_chance_in(20)
@@ -2140,7 +2140,7 @@ bool do_god_gift(bool forced)
 
         case GOD_OKAWARU:
         case GOD_TROG:
-            success = _give_equipment_gift();
+            success = _give_equipment_gift(forced);
             break;
 
         case GOD_JIYVA:
