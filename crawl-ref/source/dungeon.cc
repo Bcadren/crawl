@@ -2793,10 +2793,13 @@ static void _emergency_tunnel(FixedArray<bool, GXM, GYM > & connectivity_map, co
 
         if (const vault_placement *vp = dgn_vault_at(next_place))
         {
-            string msg = make_stringf("Connectivity tunneler affected %s", vp->map_name_at(next_place).c_str());
-            mprf(MSGCH_ERROR, "%s at (%d, %d) in %s:%d.", msg.c_str(), next_place.x, next_place.y, your_branch().abbrevname, you.depth);
-            msg += ".";
-            take_note(Note(NOTE_MESSAGE, 0, 0, msg));
+            if (!vp->map.has_tag("tunnel_safe"))
+            {
+                string msg = make_stringf("Connectivity tunneler affected %s", vp->map_name_at(next_place).c_str());
+                mprf(MSGCH_ERROR, "%s at (%d, %d) in %s:%d.", msg.c_str(), next_place.x, next_place.y, your_branch().abbrevname, you.depth);
+                msg += ".";
+                take_note(Note(NOTE_MESSAGE, 0, 0, msg));
+            }
         }
     }
 

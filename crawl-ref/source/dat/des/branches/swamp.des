@@ -247,7 +247,7 @@ default-depth: Swamp
 ###############################################################################
 # A series of pools by Jude.
 NAME:   swamp_pool1
-TAGS:   no_pool_fixup allow_dup extra luniq_pool
+TAGS:   no_pool_fixup allow_dup extra luniq_pool tunnel_safe
 WEIGHT: 1000
 {{ smear_map({iterations=5, smear='w', onto='wwt"', boxy=false}) }}
 SUBST:  "=ttw
@@ -263,7 +263,7 @@ MAP
 ENDMAP
 
 NAME:   swamp_pool2
-TAGS:   no_pool_fixup allow_dup extra luniq_pool
+TAGS:   no_pool_fixup allow_dup extra luniq_pool tunnel_safe
 WEIGHT: 500
 SUBST:  "=ttttw
 KFEAT:  t = mangrove
@@ -278,7 +278,7 @@ MAP
 ENDMAP
 
 NAME:   swamp_pool3
-TAGS:   no_pool_fixup allow_dup extra luniq_pool no_exits
+TAGS:   no_pool_fixup allow_dup extra luniq_pool no_exits tunnel_safe
 WEIGHT: 500
 SUBST:  '=Wt, "=wwt
 KFEAT:  t = mangrove
@@ -292,7 +292,7 @@ twwww"t
 ENDMAP
 
 NAME:   swamp_pool4
-TAGS:   no_pool_fixup allow_dup extra luniq_pool
+TAGS:   no_pool_fixup allow_dup extra luniq_pool tunnel_safe
 WEIGHT: 500
 SUBST:  "=ttttw
 KFEAT:  t = mangrove
@@ -307,7 +307,7 @@ MAP
 ENDMAP
 
 NAME:   swamp_pool5
-TAGS:   no_pool_fixup allow_dup extra luniq_pool no_exits
+TAGS:   no_pool_fixup allow_dup extra luniq_pool no_exits tunnel_safe
 KMONS:  1 = patrolling swamp drake
 KFEAT:  1 = deep_water
 WEIGHT: 500
