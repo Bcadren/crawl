@@ -7439,7 +7439,7 @@ KMONS:  1 = poenydio / hellion / balrug / rhuddgoch w:15 / \
 KMONS:  1 = doom hound w:15 / death drake / bone dragon / poenydio / \
             cysgodol / tzitzimitl w:15 / ancient lich / place:Tar:$ w:27
 : elseif you.in_branch("Coc") then
-KMONS:  1 = shard shrike w:15 / titan / cenysus / tormentor / \
+KMONS:  1 = shard shrike w:15 / titan / cenysus / poenydio / \
             Vetrifl w:15 / ancient lich / place:Coc:$ w:24
 : elseif you.in_branch("Zot") then
 KMONS:  1 = nonbase draconian / orb of fire / electric golem / death cob / \
