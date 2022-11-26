@@ -2591,8 +2591,8 @@ static void _tag_read_you(reader &th)
 #endif
 
 #if TAG_MAJOR_VERSION == 34
-    // BCADDO: Minor version this in the future. (Doesn't hurt anything just for efficiency).
-    if (you.equip[EQ_WEAPON0] == you.equip[EQ_WEAPON1] && you.equip[EQ_WEAPON0] != -1)
+    if (th.getMinorVersion() <= TAG_MINOR_MONSTER_TYPE_SIZE &&
+        (you.equip[EQ_WEAPON0] == you.equip[EQ_WEAPON1]) && you.equip[EQ_WEAPON0] != -1)
     {
         you.equip[EQ_WEAPON1] = -1;
         you.melded.set(EQ_WEAPON1, false);
@@ -3065,8 +3065,8 @@ static void _tag_read_you(reader &th)
             you.mutation[MUT_SILENCE_AURA] = you.innate_mutation[MUT_SILENCE_AURA] = 2;
     }
 
-    // BCADDO: Minor version for this:
-    if (you.char_class == JOB_NAGA && you.innate_mutation[MUT_FAST])
+    if (th.getMinorVersion() <= TAG_MINOR_MONSTER_TYPE_SIZE && 
+        you.char_class == JOB_NAGA && you.innate_mutation[MUT_FAST])
     {
         you.mutation[MUT_FAST] -= you.innate_mutation[MUT_FAST];
         you.innate_mutation[MUT_FAST] = 0;
@@ -3137,20 +3137,20 @@ static void _tag_read_you(reader &th)
         }
     }
 
-    // BCADDO: Minor version tag for this.
-    int num_temp = 0;
-    for (int i = 0; i < NUM_MUTATIONS; ++i)
+    if (th.getMinorVersion() <= TAG_MINOR_MONSTER_TYPE_SIZE)
     {
-        if (you.temp_mutation[i])
-            num_temp++;
-    }
-    you.attribute[ATTR_TEMP_MUTATIONS] = num_temp;
+        int num_temp = 0;
+        for (int i = 0; i < NUM_MUTATIONS; ++i)
+        {
+            if (you.temp_mutation[i])
+                num_temp++;
+        }
+        you.attribute[ATTR_TEMP_MUTATIONS] = num_temp;
 
-    // Fixup for Sacrifice XP from XL 27 (#9895). No minor tag, but this
-    // should still be removed on a major bump.
-    const int xl_remaining = you.get_max_xl() - you.experience_level;
-    if (xl_remaining < 0)
-        adjust_level(xl_remaining);
+        const int xl_remaining = you.get_max_xl() - you.experience_level;
+        if (xl_remaining < 0)
+            adjust_level(xl_remaining);
+    }
 #endif
 
     count = unmarshallUByte(th);
@@ -3855,41 +3855,45 @@ static void _tag_read_you_items(reader &th)
             continue;
         }
 
-        // BCADDO: Minor version this.
-        // Unmeld erroneously melded amorph slots.
-        if (item && you.get_mutation_level(MUT_AMORPHOUS_BODY) && get_form()->slot_available(EQ_BODY_ARMOUR)
-            && i >= EQ_FIRST_MORPH)
+#if TAG_MAJOR_VERSION == 34
+        if (th.getMinorVersion() <= TAG_MINOR_MONSTER_TYPE_SIZE)
         {
-            you.melded.set(i, false);
-        }
+            // Unmeld erroneously melded amorph slots.
+            if (item && you.get_mutation_level(MUT_AMORPHOUS_BODY) && get_form()->slot_available(EQ_BODY_ARMOUR)
+                && i >= EQ_FIRST_MORPH)
+            {
+                you.melded.set(i, false);
+            }
 
-        // If wearing non-armour in armour slot, unwear.
-        if (item && i >= EQ_MIN_ARMOUR && i <= EQ_MAX_ARMOUR && item->base_type != OBJ_ARMOURS)
-        {
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-            continue;
-        }
+            // If wearing non-armour in armour slot, unwear.
+            if (item && i >= EQ_MIN_ARMOUR && i <= EQ_MAX_ARMOUR && item->base_type != OBJ_ARMOURS)
+            {
+                you.equip[i] = -1;
+                you.melded.set(i, false);
+                continue;
+            }
 
-        // Unwield anything in weapon1 slot if you have a missing hand.
-        if (item && i == EQ_WEAPON1 && you.get_mutation_level(MUT_MISSING_HAND))
-        {
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-            continue;
-        }
+            // Unwield anything in weapon1 slot if you have a missing hand.
+            if (item && i == EQ_WEAPON1 && you.get_mutation_level(MUT_MISSING_HAND))
+            {
+                you.equip[i] = -1;
+                you.melded.set(i, false);
+                continue;
+            }
 
-        // Unwield a second lantern of shadows if you have two.
-        // Assumes possible slots are WEAPON0, WEAPON1, CYTOPLASM only.
-        if (item && i > EQ_WEAPON0 
-            && (you.slot_item(EQ_WEAPON0) && you.slot_item(EQ_WEAPON0)->is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS)
-            || i > EQ_WEAPON1 && you.slot_item(EQ_WEAPON1) && you.slot_item(EQ_WEAPON1)->is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS))
-            && item->is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS))
-        {
-            you.equip[i] = -1;
-            you.melded.set(i, false);
-            continue;
+            // Unwield a second lantern of shadows if you have two.
+            // Assumes possible slots are WEAPON0, WEAPON1, CYTOPLASM only.
+            if (item && i > EQ_WEAPON0
+                && (you.slot_item(EQ_WEAPON0) && you.slot_item(EQ_WEAPON0)->is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS)
+                    || i > EQ_WEAPON1 && you.slot_item(EQ_WEAPON1) && you.slot_item(EQ_WEAPON1)->is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS))
+                && item->is_type(OBJ_MISCELLANY, MISC_LANTERN_OF_SHADOWS))
+            {
+                you.equip[i] = -1;
+                you.melded.set(i, false);
+                continue;
+            }
         }
+#endif
 
 #if TAG_MAJOR_VERSION == 34
         if (th.getMinorVersion() < TAG_MINOR_GOLDIFY_MANUALS)
@@ -6224,9 +6228,13 @@ void unmarshallMonster(reader &th, monster& m)
 
     m.check_speed();
 
-    // BCADNOTE: This can be permanent or we can tag it doesn't matter.
-    if (m.has_hydra_multi_attack() && m.num_heads == 0)
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() <= TAG_MINOR_MONSTER_TYPE_SIZE &&
+        m.has_hydra_multi_attack() && m.num_heads == 0)
+    {
         m.num_heads = 4 + random2(4);
+    }
+#endif
 }
 
 static void _tag_read_level_monsters(reader &th)
