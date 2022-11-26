@@ -1214,7 +1214,6 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
             return true;
         // deliberate fall-through
     case SPARM_RUNNING:
-    case SPARM_STEALTH:
     case SPARM_STURDY:
         return slot == EQ_BOOTS || slot == EQ_BARDING;
     case SPARM_STEALTH:
@@ -1235,6 +1234,7 @@ bool is_armour_brand_ok(int type, int brand, bool strict)
         if (type == ARM_PLATE_ARMOUR && !strict)
             return true;
         return slot == EQ_CLOAK;
+#endif
 
     case SPARM_SOFT:
         if (type == ARM_ROBE)
