@@ -966,15 +966,15 @@ bool berserk_check_wielded_weapon()
 
 // Looks in equipment "slot" to see if there is an equipped "sub_type".
 // Returns number of matches (in the case of rings, both are checked)
-int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool count_jiyva) const
+int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool count_jiyva, bool check_active) const
 {
     int ret = 0;
 
-    const item_def* item;
+    const item_def* item = slot_item(EQ_CYTOPLASM);
 
     // Count subsumed chaos weapons as chaos amulets.
-    if (slot == EQ_AMULET && sub_type == AMU_CHAOS &&
-        (item = slot_item(EQ_CYTOPLASM)) && get_weapon_brand(*item) == SPWPN_CHAOS)
+    if (item && slot == EQ_AMULET && sub_type == AMU_CHAOS && (you.activated[EQ_CYTOPLASM] || !check_active)
+            && get_weapon_brand(*item) == SPWPN_CHAOS)
     {
         ret++;
     }
@@ -992,19 +992,22 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
         // Like above, but must be magical staff.
         if (weapon(0)
             && weapon(0)->is_type(OBJ_STAVES, sub_type)
-            && (calc_unid || item_type_known(*weapon(0))))
+            && (calc_unid || item_type_known(*weapon(0)))
+            && (you.activated[EQ_WEAPON0] || !check_active))
         {
             ret++;
         }
         if (weapon(1)
             && weapon(1)->is_type(OBJ_STAVES, sub_type)
-            && (calc_unid || item_type_known(*weapon(1))))
+            && (calc_unid || item_type_known(*weapon(1)))
+            && (you.activated[EQ_WEAPON1] || !check_active))
         {
             ret++;
         }
         if ((item = slot_item(EQ_CYTOPLASM))
             && item->is_type(OBJ_STAVES, sub_type)
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[EQ_CYTOPLASM] || !check_active))
         {
             ret++;
         }
@@ -1013,19 +1016,22 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
     case EQ_AMULET:
         if ((item = slot_item(EQ_AMULET))
             && item->sub_type == sub_type
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[EQ_AMULET] || !check_active))
         {
             ret++;
         }
         if ((item = slot_item(EQ_FAIRY_JEWEL))
             && item->sub_type == sub_type
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[EQ_FAIRY_JEWEL] || !check_active))
         {
             ret++;
         }
         if ((item = slot_item(EQ_CYTOPLASM))
             && item->is_type(OBJ_JEWELLERY, sub_type)
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[EQ_CYTOPLASM] || !check_active))
         {
             ret++;
         }
@@ -1037,9 +1043,12 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
             if (slots == EQ_AMULET)
                 continue;
 
-            if ((item = slot_item(static_cast<equipment_type>(slots)))
+            const equipment_type ring_slot = static_cast<equipment_type>(slots);
+
+            if ((item = slot_item(ring_slot))
                 && item->sub_type == sub_type
-                && (calc_unid || item_type_known(*item)))
+                && (calc_unid || item_type_known(*item))
+                && (you.activated[ring_slot] || !check_active))
             {
                 ret++;
             }
@@ -1047,7 +1056,8 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
 
         if ((item = slot_item(EQ_CYTOPLASM))
             && item->is_type(OBJ_JEWELLERY, sub_type)
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[EQ_CYTOPLASM] || !check_active))
         {
             ret++;
         }
@@ -1063,7 +1073,8 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
         // Boots and Bardings share a lot for legacy purposes.
         if ((item = slot_item(EQ_BARDING))
             && item->sub_type == sub_type
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[EQ_BARDING] || !check_active))
         {
             ret++;
         }
@@ -1074,20 +1085,23 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
     case EQ_GLOVES:
     case EQ_HELMET:
         if (count_jiyva)
-
         {
             if ((item = slot_item(EQ_CYTOPLASM))
                 && item->is_type(OBJ_ARMOURS, sub_type)
-                && (calc_unid || item_type_known(*item)))
+                && (calc_unid || item_type_known(*item))
+                && (you.activated[EQ_CYTOPLASM] || !check_active))
             {
                 ret++;
             }
 
             for (int i = EQ_FIRST_MORPH; i <= EQ_LAST_MORPH; i++)
             {
-                if ((item = slot_item(static_cast<equipment_type>(i)))
+                equipment_type item_slot = static_cast<equipment_type>(i);
+
+                if ((item = slot_item(item_slot))
                     && item->sub_type == sub_type
-                    && (calc_unid || item_type_known(*item)))
+                    && (calc_unid || item_type_known(*item))
+                    && (you.activated[item_slot] || !check_active))
                 {
                     ret++;
                 }
@@ -1100,7 +1114,8 @@ int player::wearing(equipment_type slot, int sub_type, bool calc_unid, bool coun
 
         if ((item = slot_item(slot))
             && item->sub_type == sub_type
-            && (calc_unid || item_type_known(*item)))
+            && (calc_unid || item_type_known(*item))
+            && (you.activated[slot] || !check_active))
         {
             ret++;
         }
@@ -1162,6 +1177,7 @@ int player::wearing_ego(equipment_type slot, int special, bool calc_unid) const
         // no ego types for these slots
         break;
 
+    // BCADDO: Should staff facets have their own function?
     case EQ_STAFF:
         if (weapon(0)
             && (weapon(0)->base_type == OBJ_STAVES)
@@ -1420,8 +1436,7 @@ static int _player_bonus_regen()
         rr += 100;
 
     // Jewellery.
-    if (you.activated[EQ_AMULET])
-        rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION);
+    rr += REGEN_PIP * you.wearing(EQ_AMULET, AMU_REGENERATION, true, true, true);
 
     // Artefacts
     rr += REGEN_PIP * you.scan_artefacts(ARTP_REGENERATION);
@@ -4533,13 +4548,14 @@ int player::scan_artefacts(artefact_prop_type which_property,
                            vector<const item_def *> *matches) const
 {
     int retval = 0;
+    const bool needs_active = _property_requires_activation(which_property);
 
     for (int i = EQ_FIRST_EQUIP; i < NUM_EQUIP; ++i)
     {
         if (melded[i] || equip[i] == -1)
             continue;
 
-        if (_property_requires_activation(which_property) && !you.activated[i])
+        if (needs_active && !you.activated[i])
             continue;
 
         const int eq = equip[i];

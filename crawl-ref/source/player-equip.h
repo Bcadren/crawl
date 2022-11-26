@@ -12,6 +12,9 @@ bool unequip_item(equipment_type slot, bool msg=true);
 bool meld_slot(equipment_type slot);
 bool unmeld_slot(equipment_type slot);
 
+void activate_item(int base_type, int sub_type);
+
+// BCADDO: Delete this?
 // XXX: find a better place for this.
 void lose_permafly_source();
 

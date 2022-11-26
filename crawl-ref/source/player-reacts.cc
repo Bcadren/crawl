@@ -5,6 +5,7 @@
 
 #include "AppHdr.h"
 
+#include "player-equip.h" // activate_item
 #include "player-reacts.h"
 
 #include <algorithm>
@@ -898,6 +899,29 @@ static void _rot_ghoul_players()
     }
 }
 
+static bool _activation_loop(int slot, vector<string> *eq_list)
+{
+    bool plural = false;
+    if (you.melded[slot] || you.equip[slot] == -1 || you.activated[slot])
+        return false;
+    const item_def &arm = you.inv[you.equip[slot]];
+    if (armour_type_prop(arm.sub_type, ARMF_REGENERATION)
+        || is_artefact(arm) && artefact_property(arm, ARTP_REGENERATION))
+    {
+        equipment_type base_slot = get_armour_slot(static_cast<armour_type>(arm.sub_type));
+
+        eq_list->push_back(
+            base_slot != EQ_BODY_ARMOUR ?
+            item_slot_name(base_slot) :
+            is_artefact(arm) ? get_artefact_name(arm) : "armour");
+
+        if (base_slot == EQ_GLOVES || base_slot == EQ_BOOTS)
+            plural = true;
+        you.activated.set(slot);
+    }
+    return plural;
+}
+
 // Some equipment only begins to function when some condition is met, e.g., full
 // health is reached.
 static void _update_equipment_attunement_by_health()
@@ -905,18 +929,18 @@ static void _update_equipment_attunement_by_health()
     if (you.hp != you.hp_max)
         return;
 
-    if (!you.activated[EQ_AMULET] && you.wearing(EQ_AMULET, AMU_ACROBAT))
+    if (you.wearing(EQ_AMULET, AMU_ACROBAT, true, true, true) < you.wearing(EQ_AMULET, AMU_ACROBAT))
     {
         mprf("Your amulet attunes itself to your body. You feel like doing "
-             "cartwheels.");
-        you.activated.set(EQ_AMULET);
+            "cartwheels.");
+        activate_item(OBJ_JEWELLERY, AMU_ACROBAT);
     }
 
-    if (!you.activated[EQ_AMULET] && you.wearing(EQ_AMULET, AMU_REFLECTION))
+    if (you.wearing(EQ_AMULET, AMU_REFLECTION, true, true, true) < you.wearing(EQ_AMULET, AMU_REFLECTION))
     {
         mprf("Your amulet attunes itself to your body. You feel a shielding "
-             "aura gather around you.");
-        you.activated.set(EQ_AMULET);
+            "aura gather around you.");
+        activate_item(OBJ_JEWELLERY, AMU_REFLECTION);
         you.redraw_armour_class = true;
     }
 
@@ -926,29 +950,22 @@ static void _update_equipment_attunement_by_health()
     vector<string> eq_list;
     bool plural = false;
 
-    if (!you.activated[EQ_AMULET] && you.wearing(EQ_AMULET, AMU_REGENERATION))
+    if (you.wearing(EQ_AMULET, AMU_REGENERATION, true, true, true) < you.wearing(EQ_AMULET, AMU_REGENERATION))
     {
         eq_list.push_back("amulet");
-        you.activated.set(EQ_AMULET);
+        activate_item(OBJ_JEWELLERY, AMU_REGENERATION);
     }
 
     for (int slot = EQ_MIN_ARMOUR; slot <= EQ_MAX_ARMOUR; ++slot)
-    {
-        if (you.melded[slot] || you.equip[slot] == -1 || you.activated[slot])
-            continue;
-        const item_def &arm = you.inv[you.equip[slot]];
-        if (armour_type_prop(arm.sub_type, ARMF_REGENERATION)
-            || is_artefact(arm) && artefact_property(arm, ARTP_REGENERATION))
-        {
-            eq_list.push_back(
-                slot != EQ_BODY_ARMOUR ?
-                    item_slot_name(static_cast<equipment_type>(slot)) :
-                    is_artefact(arm) ? get_artefact_name(arm) : "armour");
+        plural |= _activation_loop(slot, &eq_list);
 
-            if (slot == EQ_GLOVES || slot == EQ_BOOTS)
-                plural = true;
-            you.activated.set(slot);
-        }
+    if (you.get_mutation_level(MUT_CYTOPLASMIC_SUSPENSION))
+        plural |= _activation_loop(EQ_CYTOPLASM, &eq_list);
+
+    if (you.get_mutation_level(MUT_AMORPHOUS_BODY))
+    {
+        for (int slot = EQ_FIRST_MORPH; slot <= EQ_LAST_MORPH; ++slot)
+            plural |= _activation_loop(slot, &eq_list);
     }
 
     if (eq_list.empty())

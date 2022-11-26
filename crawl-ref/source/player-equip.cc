@@ -82,6 +82,7 @@ bool unequip_item(equipment_type slot, bool msg)
         return false; // Should never get here; but extra security hurts nothing.
     else
     {
+        you.activated.set(item_slot, false);
         you.equip[slot] = -1;
 
         if (!you.melded[slot])
@@ -137,7 +138,6 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
                                       equipment_type slot);
 static void _equip_use_warning(const item_def& item);
 static void _equip_regeneration_item(const item_def& item);
-static void _deactivate_regeneration_item(const item_def& item, bool meld);
 
 static void _assert_valid_slot(equipment_type eq, equipment_type slot)
 {
@@ -474,9 +474,6 @@ static void _unequip_artefact_effect(item_def &item,
     {
         if (proprt[ARTP_IMPROVED_VISION])
             _mark_unseen_monsters();
-
-        if (proprt[ARTP_REGENERATION])
-            _deactivate_regeneration_item(item, meld);
 
         if (is_unrandom_artefact(item))
         {
@@ -1345,9 +1342,6 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         break;
     }
 
-    if (armour_type_prop(item.sub_type, ARMF_REGENERATION))
-        _deactivate_regeneration_item(item, meld);
-
     if (is_artefact(item) || item.cursed())
         _unequip_artefact_effect(item, nullptr, meld, slot, false);
 }
@@ -1398,6 +1392,25 @@ static void _remove_amulet_of_harm()
     drain_player(150, false, true);
 }
 
+// Inefficient, but both not terribly so and called rarely.
+// Assumes we want to activate all copies of the same item at the same type.
+// Fair assumption, but worth noting.
+void activate_item(int base_type, int sub_type)
+{
+    for (int i = EQ_WEAPON0; i < NUM_EQUIP; i++)
+    {
+        equipment_type item_slot = static_cast<equipment_type>(i);
+        item_def * item;
+
+        if ((item = you.slot_item(item_slot))
+            && item->is_type(base_type, sub_type)
+            && !you.activated[item_slot])
+        {
+            you.activated.set(item_slot);
+        }
+    }
+}
+
 static void _equip_regeneration_item(const item_def &item)
 {
     equipment_type eq_slot = item_equip_slot(item);
@@ -1420,12 +1433,11 @@ static void _equip_regeneration_item(const item_def &item)
     {
         mprf("The %s throb%s to your uninjured body.", item_name.c_str(),
              plural ? " as they attune themselves" : "s as it attunes itself");
-        you.activated.set(eq_slot);
+        activate_item(item.base_type, item.sub_type);
         return;
     }
     mprf("The %s cannot attune %s to your injured body.", item_name.c_str(),
          plural ? "themselves" : "itself");
-    you.activated.set(eq_slot, false);
     return;
 }
 
@@ -1433,20 +1445,16 @@ static void _equip_amulet_of_the_acrobat()
 {
     if (you.hp == you.hp_max)
     {
-        you.activated.set(EQ_AMULET);
+        activate_item(OBJ_JEWELLERY, AMU_ACROBAT);
         mpr("You feel ready to tumble and roll out of harm's way.");
     }
     else
-    {
-        you.activated.set(EQ_AMULET, false);
         mpr("Your injuries prevent the amulet from attuning itself.");
-    }
 }
 
 bool acrobat_boost_active()
 {
-    return you.activated[EQ_AMULET]
-           && you.wearing(EQ_AMULET, AMU_ACROBAT)
+    return you.wearing(EQ_AMULET, AMU_ACROBAT, true, true, true)
            && you.duration[DUR_ACROBAT]
            && (!you.caught())
            && (!you.is_constricted());
@@ -1473,15 +1481,12 @@ static void _equip_amulet_of_reflection()
 {
     if (you.hp == you.hp_max)
     {
-        you.activated.set(EQ_AMULET);
+        activate_item(OBJ_JEWELLERY, AMU_REFLECTION);
         you.redraw_armour_class = true;
         mpr("You feel a shielding aura gather around you.");
     }
     else
-    {
-        you.activated.set(EQ_AMULET, false);
         mpr("Your injuries prevent the amulet from attuning itself.");
-    }
 }
 
 static void _equip_jewellery_effect(item_def &item, bool unmeld,
@@ -1625,12 +1630,6 @@ static void _equip_jewellery_effect(item_def &item, bool unmeld,
         auto_assign_item_slot(item);
 }
 
-static void _deactivate_regeneration_item(const item_def &item, bool meld)
-{
-    if (!meld)
-        you.activated.set(get_item_slot(item), false);
-}
-
 static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
                                       equipment_type slot)
 {
@@ -1642,15 +1641,8 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
     case RING_STEALTH:
     case RING_TELEPORTATION:
     case RING_WIZARDRY:
-        break;
-
     case AMU_REGENERATION:
-        _deactivate_regeneration_item(item, meld);
-        break;
-
     case AMU_ACROBAT:
-        if (!meld)
-            you.activated.set(EQ_AMULET, false);
         break;
 
     case RING_FIRE:
@@ -1666,8 +1658,6 @@ static void _unequip_jewellery_effect(item_def &item, bool mesg, bool meld,
         break;
 
     case AMU_REFLECTION:
-        if (!meld)
-            you.activated.set(EQ_AMULET, false);
         you.redraw_armour_class = true;
         break;
 
