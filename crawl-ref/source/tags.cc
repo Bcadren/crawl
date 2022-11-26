@@ -890,19 +890,6 @@ static monster_type unmarshallMonType(reader &th)
 #endif
         x = static_cast<monster_type>(unmarshallUnsigned(th));
 
-    if (x >= MONS_NO_MONSTER)
-        return x;
-
-#if TAG_MAJOR_VERSION == 34
-# define AXED(a) if (x > a) --x
-    if (th.getMinorVersion() == TAG_MINOR_0_11)
-    {
-        AXED(MONS_KILLER_BEE); // killer bee larva
-        AXED(MONS_CYSGOBWCA); // midge
-        AXED(MONS_AGNES);      // Jozef
-    }
-#endif
-
     return x;
 }
 
@@ -910,19 +897,6 @@ static monster_type unmarshallMonType(reader &th)
 static monster_type unmarshallMonType_Info(reader &th)
 {
     monster_type x = static_cast<monster_type>(unmarshallUnsigned(th));
-
-    if (x >= MONS_NO_MONSTER)
-        return x;
-
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() == TAG_MINOR_0_11)
-    {
-        AXED(MONS_KILLER_BEE); // killer bee larva
-        AXED(MONS_CYSGOBWCA); // midge
-        AXED(MONS_AGNES);      // Jozef
-    }
-#endif
-
     return x;
 }
 
