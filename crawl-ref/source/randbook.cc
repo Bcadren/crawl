@@ -981,7 +981,7 @@ void make_book_roxanne_special(item_def *book)
                       forced_book_theme(disc), 5, "Roxanne");
 }
 
-static spell_type _kiku_extra_spell(spell_type ch[RANDBOOK_SIZE])
+static spell_type _kiku_extra_spell(vector<spell_type> ch)
 {
     spell_type extra_spell;
     do
