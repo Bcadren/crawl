@@ -1775,7 +1775,7 @@ void mons_to_string_pane(string& desc, int& desc_colour, bool fullname,
 
 static bool _has_polearm(const monster_info& mi)
 {
-    if (mi.itemuse() & MU_WEAPON_MELEE)
+    if (mi.itemuse() & monuse_flags::MU_WEAPON_MELEE)
     {
         const item_def* weapon = mi.inv[MSLOT_WEAPON].get();
         return weapon && weapon_reach(*weapon) == REACH_TWO;
@@ -1786,7 +1786,7 @@ static bool _has_polearm(const monster_info& mi)
 
 static bool _has_launcher(const monster_info& mi)
 {
-    if (mi.itemuse() & MU_WEAPON_RANGED)
+    if (mi.itemuse() & monuse_flags::MU_WEAPON_RANGED)
     {
         const item_def* weapon = mi.inv[MSLOT_WEAPON].get();
         return weapon && is_ranged_weapon_type(weapon->sub_type);
@@ -1797,7 +1797,7 @@ static bool _has_launcher(const monster_info& mi)
 
 static bool _has_wand(const monster_info& mi)
 {
-     if (mi.itemuse() >= MONUSE_STARTING_EQUIPMENT)
+     if (mi.itemuse() & monuse_flags::MU_WAND)
          return mi.inv[MSLOT_WAND].get();
      return false;
 }
