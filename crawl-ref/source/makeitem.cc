@@ -1048,26 +1048,30 @@ special_armour_type generate_armour_type_ego(armour_type type)
     // TODO: move this into data
     switch (type)
     {
+    // Total weight: 14.
     case ARM_SCARF:
-        return random_choose_weighted(1, SPARM_SPIRIT_SHIELD,
+        return random_choose_weighted(2, SPARM_SPIRIT_SHIELD,
                                       1, SPARM_RESISTANCE,
-                                      1, SPARM_REPULSION,
-                                      1, SPARM_CLOUD_IMMUNE,
+                                      3, SPARM_REPULSION,
+                                      2, SPARM_CLOUD_IMMUNE,
                                       1, SPARM_INVISIBILITY,
-                                      1, SPARM_HARM);
+                                      5, SPARM_HARM);
 
+    // Total weight: 33.
     case ARM_CLOAK:
-        return random_choose(SPARM_POISON_RESISTANCE,
-                             SPARM_STEALTH,
-                             SPARM_PRESERVATION,
-                             SPARM_INVISIBILITY,
-                             SPARM_MAGIC_RESISTANCE,
-                             SPARM_SOFT);
+        return random_choose_weighted(7, SPARM_POISON_RESISTANCE,
+                                      7, SPARM_STEALTH,
+                                      4, SPARM_PRESERVATION,
+                                      2, SPARM_INVISIBILITY,
+                                      4, SPARM_MAGIC_RESISTANCE,
+                                      9, SPARM_SOFT);
 
     case ARM_CAP:
-        if (one_chance_in(4))
+        if (one_chance_in(3))
             return SPARM_COLD_RESISTANCE;
         // fall-through.
+
+    // Total Weight: 12
     case ARM_HAT:
         return random_choose_weighted(5, SPARM_NORMAL,
                                       3, SPARM_MAGIC_RESISTANCE,
@@ -1080,35 +1084,40 @@ special_armour_type generate_armour_type_ego(armour_type type)
     case ARM_CLAW:
         return SPARM_DEXTERITY; // Actual value set with weapon brands.
 
+    // Total Weight: 11.
     case ARM_GLOVES:
         return random_choose_weighted(3, SPARM_DEXTERITY, 
                                       3, SPARM_STRENGTH,
                                       3, SPARM_INSULATION,
                                       1, SPARM_ARCHERY,
                                       1, SPARM_WIELDING);
-
+    // Total Weight: 10.
     case ARM_BOOTS:
         return random_choose_weighted(1, SPARM_RUNNING, 
                                       2, SPARM_STURDY,
                                       3, SPARM_INSULATION,
                                       4, SPARM_STEALTH);
 
+    // Total Weight: 15.
     case ARM_NAGA_BARDING:
     case ARM_CENTAUR_BARDING:
-        return random_choose(SPARM_STEALTH,
-                             SPARM_COLD_RESISTANCE, SPARM_FIRE_RESISTANCE);
+        return random_choose_weighted(5, SPARM_STEALTH,
+                                      3, SPARM_COLD_RESISTANCE, 
+                                      3, SPARM_FIRE_RESISTANCE,
+                                      4, SPARM_POSITIVE_ENERGY);
 
+    // Total Weight: 16.
     case ARM_ROBE:
         return random_choose_weighted(1, SPARM_RESISTANCE,
                                       1, SPARM_ARCHMAGI,
                                       1, SPARM_HIGH_PRIEST,
-                                      2, SPARM_NORMAL,
                                       2, SPARM_SOFT,
                                       2, SPARM_COLD_RESISTANCE,
                                       2, SPARM_FIRE_RESISTANCE,
-                                      2, SPARM_POSITIVE_ENERGY,
+                                      3, SPARM_POSITIVE_ENERGY,
                                       4, SPARM_MAGIC_RESISTANCE);
-
+        
+    // Total Weight: 122. No idea why this one is so high.
     case ARM_PLATE_ARMOUR:
         return random_choose_weighted(26, SPARM_FIRE_RESISTANCE,
                                       26, SPARM_COLD_RESISTANCE,
@@ -1134,11 +1143,13 @@ special_armour_type generate_armour_type_ego(armour_type type)
         return SPARM_NORMAL;
     }
 
+    // Total Weight: 27
     return random_choose_weighted(7, SPARM_FIRE_RESISTANCE,
                                   7, SPARM_COLD_RESISTANCE,
                                   5, SPARM_POISON_RESISTANCE,
                                   4, SPARM_MAGIC_RESISTANCE,
-                                  2, SPARM_POSITIVE_ENERGY);
+                                  2, SPARM_POSITIVE_ENERGY,
+                                  2, SPARM_HARM);
 }
 
 /**
