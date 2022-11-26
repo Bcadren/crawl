@@ -1874,7 +1874,10 @@ int player::res_corr(bool mt) const
 {
     if (mt)
     {
-        int sub = you.submerged(true) ? 1 : 0;
+        const dungeon_feature_type grid = grd(pos());
+        const bool slimy = (grid == DNGN_SLIMY_WATER || grid == DNGN_DEEP_SLIMY_WATER);
+        const int sub = (!slimy && submerged(true)) ? 1 : 0;
+
         switch (you.mount)
         {
         case mount_type::spider:
