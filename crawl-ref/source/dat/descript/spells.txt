@@ -1712,9 +1712,9 @@ Summon Emperor Scorpions spell
 
 Summons multiple noble and monstrous emperor scorpions.
 %%%%
-Summon oxarmordths spell
+Summon oxarmordthar spell
 
-Summons multiple oxarmordths to tear apart foes of the caster.
+Summons several oxarmordthar to tear apart foes of the caster.
 %%%%
 Summon Eyeballs spell
 

@@ -2055,7 +2055,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_WATERSTRIKE:
     case SPELL_GRAVITAS:
     case SPELL_ENTROPIC_WEAVE:
-    case SPELL_SUMMON_EXECUTIONERS:
+    case SPELL_SUMMON_OXARMORDTHAR:
     case SPELL_DOOM_HOWL:
     case SPELL_AURA_OF_BRILLIANCE:
     case SPELL_GREATER_SERVANT_MAKHLEB:
@@ -7587,7 +7587,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         foe->corrode_equipment("the entropic weave");
         return;
 
-    case SPELL_SUMMON_EXECUTIONERS:
+    case SPELL_SUMMON_OXARMORDTHAR:
     {
         const int num_exec = 1 + random2(mons->spell_hd(spell_cast) / 5 + 1);
         duration = min(2 + mons->spell_hd(spell_cast) / 10, 6);
