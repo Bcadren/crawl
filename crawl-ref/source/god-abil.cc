@@ -3568,9 +3568,6 @@ int fedhas_check_corpse_spores(bool quiet)
         unsigned character = mons_char(MONS_BALLISTOMYCETE_SPORE);
         put_colour_ch(colour, character);
 #endif
-#ifdef USE_TILE
-        tiles.add_overlay(si->pos, TILE_SPORE_OVERLAY);
-#endif
     }
 
     if (yesnoquit("Will you create these spores?", true, 'y') <= 0)
