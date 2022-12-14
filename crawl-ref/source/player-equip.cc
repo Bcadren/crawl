@@ -82,7 +82,7 @@ bool unequip_item(equipment_type slot, bool msg)
         return false; // Should never get here; but extra security hurts nothing.
     else
     {
-        you.activated.set(item_slot, false);
+        you.activated.set(slot, false);
         you.equip[slot] = -1;
 
         if (!you.melded[slot])
