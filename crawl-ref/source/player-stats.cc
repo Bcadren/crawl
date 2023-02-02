@@ -110,24 +110,12 @@ bool attribute_increase()
     learned_something_new(HINT_CHOOSE_STAT);
     Menu pop(MF_SINGLESELECT | MF_ANYPRINTABLE);
     MenuEntry * const status = new MenuEntry("", MEL_SUBTITLE);
-<<<<<<< HEAD
     MenuEntry * const s_me = new MenuEntry("Strength", MEL_ITEM, 1, 'S');
-    s_me->add_tile(tile_def(TILEG_FIGHTING_ON, TEX_GUI));
-    MenuEntry * const i_me = new MenuEntry("Intelligence", MEL_ITEM, 1, 'I');
-    i_me->add_tile(tile_def(TILEG_SPELLCASTING_ON, TEX_GUI));
-    MenuEntry * const d_me = new MenuEntry("Dexterity", MEL_ITEM, 1, 'D');
-    d_me->add_tile(tile_def(TILEG_DODGING_ON, TEX_GUI));
-=======
-    MenuEntry * const s_me = new MenuEntry("Strength", MEL_ITEM, 1,
-                                                        need_caps ? 'S' : 's');
     s_me->add_tile(tile_def(TILEG_FIGHTING_ON));
-    MenuEntry * const i_me = new MenuEntry("Intelligence", MEL_ITEM, 1,
-                                                        need_caps ? 'I' : 'i');
+    MenuEntry * const i_me = new MenuEntry("Intelligence", MEL_ITEM, 1, 'I');
     i_me->add_tile(tile_def(TILEG_SPELLCASTING_ON));
-    MenuEntry * const d_me = new MenuEntry("Dexterity", MEL_ITEM, 1,
-                                                        need_caps ? 'D' : 'd');
+    MenuEntry * const d_me = new MenuEntry("Dexterity", MEL_ITEM, 1, 'D');
     d_me->add_tile(tile_def(TILEG_DODGING_ON));
->>>>>>> 9d760929e6 (Remove texture property from tile_def struct)
 
     pop.set_title(new MenuEntry("Increase Attributes", MEL_TITLE));
     pop.add_entry(new MenuEntry(stat_gain_message + " Increase:", MEL_TITLE));

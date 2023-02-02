@@ -222,9 +222,7 @@ it strikes.
 %%%%
 Bolt of Fire spell
 
-<<<<<<< HEAD
-Fires a penetrating bolt of flames. The range of the bolt is decreased by one
-for every creature it strikes. Shares spellslots with the related spell 
+Fires a penetrating bolt of flames. Shares spellslots with the related spell 
 'Starburst'.
 %%%%
 Chaos Bolt spell
@@ -236,9 +234,6 @@ Lesser Chaos Bolt spell
 
 Fires a penetrating bolt of seething chaos; dealing damage of a random type and 
 buffing or debuffing each creature it strikes.
-=======
-Fires a penetrating bolt of flames.
->>>>>>> a5a6b74a87 (Don't reduce beam range on hit)
 %%%%
 Bolt of Magma spell
 
@@ -325,18 +320,13 @@ Exhales a large cloud of fumes filled with the very essence of chaos.
 %%%%
 Chilling Breath spell
 
-<<<<<<< HEAD
-Exhales a blast of frost that slows more than the average cold attack. The range 
-of the blast is decreased by one for every creature it strikes.
+Exhales a blast of frost that slows more than the average cold attack.
 %%%%
 Cigotuvi's Degeneration Spell
 
 Infects a living or corporeal undead target with a malignant cancerous growth. 
 After a relatively short duration, the target will succumb to this cancer and 
 the growth will become a slime-like ally for the player until it loses cohesion.
-=======
-Exhales a blast of frost that may knock back airborne targets.
->>>>>>> a5a6b74a87 (Don't reduce beam range on hit)
 %%%%
 Cleansing Flame spell
 
@@ -1595,16 +1585,11 @@ Causes the caster to move across terrain more rapidly for a short duration.
 Starburst spell
 
 Releases penetrating bolts of fire from the caster in every direction.
-<<<<<<< HEAD
-The range of each bolt is decreased by one for every creature
-it strikes. Shares spellslots with the related spell 'Bolt of Fire'.
+Shares spellslots with the related spell 'Bolt of Fire'.
 %%%%
 Bolt Burst spell
 
 Releasing penetrating bolts of random elements from the caster in every direction.
-The range of each bolt is decreased by one for every creature it strikes.
-=======
->>>>>>> a5a6b74a87 (Don't reduce beam range on hit)
 %%%%
 Static Discharge spell
 
