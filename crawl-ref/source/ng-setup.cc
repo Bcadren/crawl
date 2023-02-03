@@ -329,14 +329,8 @@ static void _give_starting_food()
     if (you_foodless())
         return;
 
-    object_class_type base_type = OBJ_FOOD;
-    int sub_type = FOOD_RATION;
+    int sub_type = you.has_mutation(MUT_ROTTING_BODY) ? FOOD_CHUNK : FOOD_RATION;
     int quantity = 1;
-    if (you.species == SP_VAMPIRE)
-    {
-        base_type = OBJ_POTIONS;
-        sub_type  = POT_BLOOD;
-    }
 
     // Give another one for hungry species.
     if (you.get_mutation_level(MUT_FAST_METABOLISM))
@@ -346,7 +340,7 @@ static void _give_starting_food()
     if (you.char_class == JOB_BERSERKER)
         quantity += 2;
 
-    newgame_make_item(base_type, sub_type, quantity);
+    newgame_make_item(OBJ_FOOD, sub_type, quantity);
 }
 
 static void _setup_tutorial_miscs()

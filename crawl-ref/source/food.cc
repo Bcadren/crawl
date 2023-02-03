@@ -752,6 +752,9 @@ bool can_eat(const item_def &food, bool suppress_msg, bool check_hunger,
     if (is_noxious(food))
         FAIL("It is completely inedible.");
 
+    if (you.has_mutation(MUT_ROTTING_BODY) && !food.is_type(OBJ_FOOD, FOOD_CHUNK))
+        FAIL("You crave only raw flesh!");
+
     if (food.base_type == OBJ_CORPSES)
         return false;
 

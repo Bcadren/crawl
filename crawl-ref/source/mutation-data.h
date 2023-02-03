@@ -202,7 +202,8 @@ static const mutation_def mut_data[] =
 { MUT_ROTTING_BODY, 0, 1, mutflag::bad, true,
   "rotting body",
 
-  {"Your body is slowly rotting away. You can heal your form by consuming rotten meat.", "", ""},
+  {"Your body is slowly rotting away. You can heal your form by consuming rotting meat."
+   "\nPreserved rations offer you no nutrition.", "", ""},
   {"", "", ""},
   {"", "", ""},
 },
