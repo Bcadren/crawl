@@ -2705,7 +2705,7 @@ static int _exper_value(const monster_type mc, const int hd, int maxhp, const in
     int x_val = 0;
 
     // Short circuit this.
-    if (mons_class_flag(mc, M_CANT_SPAWN))
+    if (mc == MONS_NO_MONSTER || mons_class_flag(mc, M_CANT_SPAWN))
         return 0;
 
     bool abom = (mons_genus(mc) == MONS_ABOMINATION_SMALL);

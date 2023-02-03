@@ -2261,6 +2261,10 @@ static bool _mons_is_valid_target(const monster* mon, targ_mode_type mode,
 static bool _want_target_monster(const monster *mon, targ_mode_type mode,
                                  targeter* hitfunc)
 {
+    // Sanity.
+    if (mon->type == MONS_NO_MONSTER || !mon->alive())
+        return false;
+        
     if (hitfunc && !hitfunc->affects_monster(monster_info(mon)))
         return false;
     switch (mode)
