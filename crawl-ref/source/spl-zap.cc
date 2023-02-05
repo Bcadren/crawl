@@ -17,7 +17,6 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_STING,                  ZAP_STING },
     { SPELL_BOLT_OF_FIRE,           ZAP_BOLT_OF_FIRE },
     { SPELL_BOLT_OF_COLD,           ZAP_BOLT_OF_COLD },
-    { SPELL_PRIMAL_WAVE,            ZAP_PRIMAL_WAVE },
     { SPELL_SANDBLAST,              ZAP_SANDBLAST },
     { SPELL_STONE_ARROW,            ZAP_STONE_ARROW },
     { SPELL_POISON_ARROW,           ZAP_POISON_ARROW },

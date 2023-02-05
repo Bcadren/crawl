@@ -2157,6 +2157,17 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_PRIMAL_WAVE, "Primal Wave", "",
+    spschool::fire | spschool::ice,
+    spflag::dir_or_target | spflag::needs_tracer,
+    6,
+    200,
+    6, 6,
+    6, 25,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
+    SPELL_PHIAL_OF_FLOODS, "Primal Wave", "",
     spschool::fire | spschool::ice | spschool::evocation,
     spflag::dir_or_target | spflag::needs_tracer,
     6,

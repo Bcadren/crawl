@@ -811,7 +811,7 @@ static bool _ball_of_energy()
     return ret;
 }
 
-static int _num_evoker_elementals(int surge)
+int num_evoker_elementals(int surge)
 {
     int n = 1;
     const int adjusted_power =
@@ -1024,7 +1024,7 @@ static bool _lamp_of_fire()
         mpr("The flames dance!");
 
         vector<bolt> beams;
-        int num_trails = _num_evoker_elementals(surge);
+        int num_trails = num_evoker_elementals(surge);
 
         _fill_flame_trails(you.pos(), target.target, beams, num_trails);
 
@@ -1321,8 +1321,10 @@ static bool _phial_of_floods()
         return false;
     }
 
+    // BCADDO: Consider this and other elemental evoker power scaling.
     const int base_pow = 10 + you.skill(SK_EVOCATIONS, 4); // placeholder?
     zappy(ZAP_PRIMAL_WAVE, base_pow, false, beam);
+    beam.origin_spell = SPELL_PHIAL_OF_FLOODS;
     beam.range = LOS_RADIUS;
     beam.aimed_at_spot = true;
 
@@ -1344,52 +1346,6 @@ static bool _phial_of_floods()
         // use real power to recalc hit/dam
         zappy(ZAP_PRIMAL_WAVE, power, false, beam);
         beam.fire();
-
-        vector<coord_def> elementals;
-        // Flood the endpoint
-        coord_def center = beam.path_taken.back();
-        const int rnd_factor = random2(7);
-        int num = player_adjust_evoc_power(
-                      5 + you.skill_rdiv(SK_EVOCATIONS, 3, 5) + rnd_factor,
-                      surge);
-        int dur = player_adjust_evoc_power(
-                      40 + you.skill_rdiv(SK_EVOCATIONS, 8, 3),
-                      surge);
-        for (distance_iterator di(center, true, false, 2); di && num > 0; ++di)
-        {
-            const dungeon_feature_type feat = grd(*di);
-            if ((feat == DNGN_FLOOR || feat == DNGN_SHALLOW_WATER)
-                && cell_see_cell(center, *di, LOS_NO_TRANS))
-            {
-                num--;
-                temp_change_terrain(*di, DNGN_SHALLOW_WATER,
-                                    random_range(dur*2, dur*3) - (di.radius()*20),
-                                    TERRAIN_CHANGE_FLOOD);
-                elementals.push_back(*di);
-            }
-        }
-
-        int num_elementals = _num_evoker_elementals(surge);
-
-        bool created = false;
-        num = min(num_elementals,
-                  min((int)elementals.size(), (int)elementals.size() / 5 + 1));
-        beh_type attitude = BEH_FRIENDLY;
-        if (player_will_anger_monster(MONS_WATER_ELEMENTAL))
-            attitude = BEH_HOSTILE;
-        for (int n = 0; n < num; ++n)
-        {
-            mgen_data mg (MONS_WATER_ELEMENTAL, attitude, elementals[n], 0,
-                          MG_FORCE_BEH | MG_FORCE_PLACE);
-            mg.set_summoned(&you, 3, SPELL_NO_SPELL);
-            mg.hd = player_adjust_evoc_power(
-                        6 + you.skill_rdiv(SK_EVOCATIONS, 2, 15), surge);
-            if (create_monster(mg))
-                created = true;
-        }
-        if (created)
-            mpr("The water rises up and takes form.");
-
         return true;
     }
 

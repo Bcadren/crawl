@@ -4622,17 +4622,21 @@ bool handle_mon_spell(monster* mons)
                                        mons->get_ench(ENCH_SAP_MAGIC).agent(),
                                        6 * BASELINE_DELAY));
         }
-        // Wellsprings "cast" from their own hp.
         if (spell_cast == SPELL_PRIMAL_WAVE
             && mons->type == MONS_ELEMENTAL_WELLSPRING)
         {
-            mons->hurt(mons, 5 + random2(15));
-            if (mons->alive())
-                _summon(*mons, MONS_WATER_ELEMENTAL, 3, spell_slot);
+
+            mgen_data mg = mgen_data(MONS_WATER_ELEMENTAL, 
+                SAME_ATTITUDE(mons), mons->pos(), mons->foe)
+                .set_summoned(nullptr, 3, 0)
+                .set_non_actor_summoner("elemental force");
+            mg.extra_flags |= (MF_NO_REWARD | MF_HARD_RESET);
+
+            create_monster(mg);
         }
     }
 
-    // Reflection, fireballs, wellspring self-damage, etc.
+    // Reflection, fireballs, etc.
     if (!mons->alive())
         return true;
 

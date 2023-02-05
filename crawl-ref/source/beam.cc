@@ -32,6 +32,7 @@
 #include "directn.h"
 #include "dungeon.h"
 #include "english.h"
+#include "evoke.h"
 #include "exercise.h"
 #include "fight.h"
 #include "food.h"
@@ -1283,7 +1284,8 @@ bool bolt::need_regress() const
     return (is_explosion && !in_explosion_phase)
            || drop_item
            || cell_is_solid(pos()) && !can_affect_wall(pos())
-           || origin_spell == SPELL_PRIMAL_WAVE;
+           || origin_spell == SPELL_PRIMAL_WAVE
+           || origin_spell == SPELL_PHIAL_OF_FLOODS;
 }
 
 void bolt::affect_cell()
@@ -2103,7 +2105,9 @@ vector<coord_def> create_feat_splash(coord_def center, int radius, int number, i
                 temp_change_terrain(*di, DNGN_OBSIDIAN, time, TERRAIN_CHANGE_FROZEN);
             else
                 temp_change_terrain(*di, feat, time, type);
-            splash_coords.push_back(*di);
+
+            if (!actor_at(*di))
+                splash_coords.push_back(*di);
         }
     }
 
@@ -2509,16 +2513,17 @@ void bolt::affect_endpoint()
     // you like special cases, right?
     switch (origin_spell)
     {
+    case SPELL_PHIAL_OF_FLOODS: // Same effect, save baked in summons
     case SPELL_PRIMAL_WAVE:
     {
         if (you.see_cell(pos()))
         {
             mpr("The wave splashes down.");
-            noisy(spell_effect_noise(SPELL_PRIMAL_WAVE), pos());
+            noisy(spell_effect_noise(origin_spell), pos());
         }
         else
         {
-            noisy(spell_effect_noise(SPELL_PRIMAL_WAVE),
+            noisy(spell_effect_noise(origin_spell),
                   pos(), "You hear a splash.");
         }
 
@@ -2532,10 +2537,36 @@ void bolt::affect_endpoint()
                                                         : random_range(3, 12, 2);
         const int dur = div_rand_round(ench_power * 4, 3) + 66;
 
+        vector<coord_def> locations;
+
         if (flavour == BEAM_ACID_WAVE)
-            create_feat_splash(pos(), 3, num, dur, true);
+            locations = create_feat_splash(pos(), 3, num, dur, true);
         else
-            create_feat_splash(pos(), 2, num, dur);
+            locations = create_feat_splash(pos(), 2, num, dur);
+
+        if (origin_spell == SPELL_PHIAL_OF_FLOODS)
+        {
+            int num_elementals = num_evoker_elementals();
+
+            bool created = false;
+            num_elementals = min(num_elementals,
+                min((int)locations.size(), (int)locations.size() / 5 + 1));
+            beh_type att = BEH_FRIENDLY;
+            if (player_will_anger_monster(MONS_WATER_ELEMENTAL))
+                att = BEH_HOSTILE;
+            for (int n = 0; n < num_elementals; ++n)
+            {
+                mgen_data mg(MONS_WATER_ELEMENTAL, att, locations[n], 0,
+                    MG_FORCE_BEH | MG_FORCE_PLACE);
+                mg.set_summoned(&you, 3, SPELL_NO_SPELL);
+                mg.hd = player_adjust_evoc_power(
+                    6 + you.skill_rdiv(SK_EVOCATIONS, 2, 15), 0);
+                if (create_monster(mg))
+                    created = true;
+            }
+            if (created)
+                mpr("The water rises up and takes form.");
+        }
 
         dprf(DIAG_BEAM, "Creating pool at %d,%d with %d tiles of water for %d auts.", pos().x, pos().y, num, dur);
         break;
@@ -7487,6 +7518,7 @@ bool bolt::can_knockback(const actor &act, int dam) const
         return false;
 
     return origin_spell == SPELL_PRIMAL_WAVE
+           || origin_spell == SPELL_PHIAL_OF_FLOODS
            || origin_spell == SPELL_FORCE_LANCE && dam
            || origin_spell == SPELL_MUSE_OAMS_AIR_BLAST && dam;
 }
