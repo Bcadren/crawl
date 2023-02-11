@@ -95,22 +95,12 @@ enum class abflag
     berserk_only        = 0x00000040, // can only be used while berserk
     silence_ok          = 0x00000080, // can be used while silenced
     conf_ok             = 0x00000100, // can use even if confused
-                        //0x00000200, // was rations
-                        //0x00000400, // was rations_or_piety
-                        //0x00000800, // was variable_mp
-                        //0x00001000,
-                        //0x00002000,
-                        //0x00004000,
-                        //0x00008000,
-                        //0x00010000,
-                        //0x00020000,
-                        //0x00040000, // was remove_curse_scroll
-    skill_drain         = 0x00080000, // drains skill levels
-    gold                = 0x00100000, // costs gold
-    sacrifice           = 0x00200000, // sacrifice (Ru)
-    hostile             = 0x00400000, // failure summons a hostile (Makhleb)
-    starve_ok           = 0x00800000, // can use even if starving
-    berserk_ok          = 0x01000000, // can use even if berserk
+    skill_drain         = 0x00000200, // drains skill levels
+    gold                = 0x00000400, // costs gold
+    sacrifice           = 0x00000800, // sacrifice (Ru)
+    hostile             = 0x00001000, // failure summons a hostile (Makhleb)
+    starve_ok           = 0x00002000, // can use even if starving
+    berserk_ok          = 0x00004000, // can use even if berserk
 };
 DEF_BITFIELD(ability_flags, abflag);
 
