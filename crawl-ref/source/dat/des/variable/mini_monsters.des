@@ -3026,37 +3026,48 @@ TAGS:    no_monster_gen no_item_gen transparent
 DEPTH:   Depths, !Depths:$
 MONS:    large slime creature, great orb of eyes, eye of draining
 KMASK:   %$de = opaque
-KITEM:   R = gold
+KPROP:   %'"! = no_tele_into
+: if crawl.x_chance_in_y(1, 4) then
+KFEAT:   R = altar_jiyva
+: else
+KFEAT:   R = altar_ecumenical
+: end
+KITEM:   R = any weapon ego:acid
 ITEM:    scroll of teleportation q:2 / any wand
 ITEM:    scroll of teleportation q:2 w:20 / any wand / \
          dagger ego:distortion ident:type
 SUBST:   J = 1111111123
+SUBST:   . = ..w
+KFEAT:   , = .
+KFEAT:   wJ = slimy_water
+SUBST:   m = mmmt
+KFEAT:   t = slimeshroom
 SHUFFLE: %!'"
 NSUBST:  % = 1:d / * = %$
 NSUBST:  ! = 1:d / * = %$
 NSUBST:  ' = 1:d / * = %$
 NSUBST:  " = 1:e / * = %$
 MAP
-...................
-..J.............J..
-.JJ...mmmm.mmm...J.
-....mmm%m.Jm'mm....
-...mm%%%m..m''mm...
-...m%%%%m.mm'''mm..
-..mm%%%%mJ.m''''m..
-..m%%%%%mm.m''''m..
-..mmmmmmm..mmmmmm..
-...J..mJm.....mJ...
-..mmm.....R.mJ..m..
-..m!mmmmm...mmmmm..
-..m!!!!!m..mm"""m..
-..mm!!!!m.mm""""m..
-...mm!!!m.Jm"""mm..
-....mm!mmm.m""mm...
-.J...m!mJ..m"mm....
-..J..mmmm.mmmm..J..
-...............JJ..
-...................
+,...,,,,,,,,,,,,.,,
+,.J.......,.....J..
+,JJ...mmmm.mmm...J.
+,...mmm%m.Jm'mm...,
+,..mm%%%m..m''mm..,
+,..m%%%%m.mm'''mm.,
+,.mm%%%%mJ.m''''m.,
+,.m%%%%%mm.m''''m.,
+,.mmmmmmm..mmmmmm.,
+,,.J..mJm.....mJ..,
+,.mmm.....R.mJ..m.,
+,.m!mmmmm...mmmmm.,
+,.m!!!!!m..mm"""m.,
+,.mm!!!!m.mm""""m.,
+,..mm!!!m.Jm"""mm.,
+....mm!mmm.m""mm..,
+.J...m!mJ..m"mm...,
+,.J..mmmm.mmmm..J.,
+,,.......,.....JJ.,
+,,,,,,,,,,,,,,....,
 ENDMAP
 
 NAME:    onia_ninara_cookie
