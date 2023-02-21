@@ -251,12 +251,6 @@ base/fairy SP_RECOMMENDED_FAIRY
 %compose hair/short_black
 %finish SP_RECOMMENDED_CENTAUR
 %start
-%compose bottom/centaur_brown
-%compose base/human_f
-%compose body/animal_skin
-%compose hair/short_black
-%finish SP_RECOMMENDED_ROCK_TROLL
-%start
 %compose bottom/deep_elf_f
 %compose base/deep_elf_f
 %compose body/animal_skin
@@ -363,6 +357,13 @@ base/octopode1 SP_RECOMMENDED_OCTOPODE
 %compose hair/troll
 %compose gloves/claws
 %finish SP_RECOMMENDED_TROLL
+%start
+%compose bottom/rock_troll_f
+%compose base/rock_troll_f
+%compose body/animal_skin
+%compose hair/troll
+%compose gloves/claws
+%finish SP_RECOMMENDED_ROCK_TROLL
 %start
 %compose bottom/vine_stalker_f
 %compose base/vine_stalker_f

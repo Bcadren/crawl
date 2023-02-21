@@ -51,6 +51,8 @@ ogre_m OGRE
 ogre_f
 troll_f TROLL
 troll_m
+rock_troll_f ROCK_TROLL
+rock_troll_m
 djinni_f DJINNI
 djinni_m
 lignifite LIGNIFITE
@@ -201,6 +203,8 @@ ogre_m OGRE
 ogre_f
 troll_f TROLL
 troll_m
+rock_troll_f ROCK_TROLL
+rock_troll_m
 djinni_f DJINNI
 djinni_m
 lignifite LIGNIFITE
