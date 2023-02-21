@@ -588,7 +588,7 @@ spret rolling_charge(bool fail)
     ASSERT(target_mons != nullptr);
     // Are you actually moving forward?
     if (grid_distance(you.pos(), target) > 1 || !target_mons)
-        mpr("You roll forward with a clatter of scales!");
+        mpr("You roll forward with a rough scrape of stone!");
 
     crawl_state.cancel_cmd_again();
     crawl_state.cancel_cmd_repeat();
@@ -634,15 +634,18 @@ spret rolling_charge(bool fail)
     // manually apply noise
     behaviour_event(target_mons, ME_ALERT, &you, you.pos()); // shout + set you as foe
 
+    const int dist = grid_distance(initial_pos, you.pos());
     const int base_delay = you.time_taken;
 
-    melee_attack charge_atk(&you, target_mons);
-    charge_atk.roll_dist = grid_distance(initial_pos, you.pos());
-    charge_atk.attack();
+    fight_melee(&you, target_mons, nullptr, false, WU_JIAN_ATTACK_NONE, 1, grid_distance(initial_pos, you.pos()));
 
-    // Normally this is 10 aut (times haste, etc), but slow weapons
-    // take longer. Most relevant for low-skill players and Dark Maul.
+    you.time_taken += dist * 2;
+
     you.time_taken = max(you.time_taken, base_delay);
+    
+    // Ministun
+    if (target_mons->alive())
+        target_mons->lose_energy(EUT_ATTACK);
 
     return spret::success;
 }

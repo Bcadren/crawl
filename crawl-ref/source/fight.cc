@@ -64,13 +64,15 @@ int melee_confuse_chance(int HD)
 // Quick wrapper for all the logic that follows a player attacking.
 static bool _handle_player_attack(actor * defender, bool simu, int atk_num,
                                   int eff_atk_num, bool * did_hit,
-                                  wu_jian_attack_type wu, int wu_num)
+                                  wu_jian_attack_type wu, int wu_num, 
+                                  int roll_dist = 0)
 {
     melee_attack attk(&you, defender, atk_num, eff_atk_num);
     if (wu != WU_JIAN_ATTACK_NONE)
         attk.wu_jian_attack = wu;
     
     attk.wu_jian_number_of_targets = wu_num;
+    attk.roll_dist = roll_dist;
 
     if (simu)
         attk.simu = true;
@@ -145,7 +147,8 @@ static actor * _hydra_target(actor * original_target)
     return target;
 }
 
-static bool _handle_maws_attack(actor * target, bool simu, bool * did_hit, wu_jian_attack_type wu, int wu_num)
+static bool _handle_maws_attack(actor * target, bool simu, bool * did_hit, 
+                                wu_jian_attack_type wu, int wu_num, int roll_dist)
 {
     const int lvl = you.get_mutation_level(MUT_JIBBERING_MAWS);
 
@@ -162,7 +165,8 @@ static bool _handle_maws_attack(actor * target, bool simu, bool * did_hit, wu_ji
         if (!target)
             return hit;
 
-        hit |= _handle_player_attack(target, simu, -1, i == atks ? 1 : 3, did_hit, wu, wu_num);
+        hit |= _handle_player_attack(target, simu, -1, i == atks ? 1 : 3, 
+                                     did_hit, wu, wu_num, roll_dist);
     }
     return hit;
 }
@@ -182,7 +186,7 @@ static bool _handle_hydra_attack(actor * target, bool simu, bool * did_hit, wu_j
         if (!target)
             return hit;
 
-        hit |= _handle_player_attack(target, simu, 2, i == you.mount_heads ? 1 : 3, did_hit, wu, wu_num);
+        hit |= _handle_player_attack(target, simu, 2, i == you.mount_heads ? 1 : 3, did_hit, wu, wu_num, 0);
 
         if (!you.mounted()) // Spines killed your hydra.
             return hit;
@@ -208,7 +212,7 @@ static bool _handle_hydra_attack(actor * target, bool simu, bool * did_hit, wu_j
  * @return Whether the attack took time (i.e. wasn't cancelled).
  */
 bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
-    bool simu, wu_jian_attack_type wu, int wu_num)
+    bool simu, wu_jian_attack_type wu, int wu_num, int roll_dist)
 {
     ASSERT(attacker); // XXX: change to actor &attacker
     ASSERT(defender); // XXX: change to actor &defender
@@ -299,12 +303,12 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             if ((!you.weapon(1) || is_melee_weapon(*you.weapon(1))) && !you.get_mutation_level(MUT_MISSING_HAND))
             {
                 if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
-                    local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num);
+                    local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
                 else if (you.weapon(1) && you.hands_reqd(*you.weapon(1)) == HANDS_TWO)
-                    local_time = _handle_player_attack(defender, simu, 1, xtra_atk ? 0 : 2, did_hit, wu, wu_num);
+                    local_time = _handle_player_attack(defender, simu, 1, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
                 else
                 {
-                    local_time = _handle_player_attack(defender, simu, 0, 0, did_hit, wu, wu_num);
+                    local_time = _handle_player_attack(defender, simu, 0, 0, did_hit, wu, wu_num, roll_dist);
                     if (defender->wont_attack() && life_one
                         || !defender->alive()
                         || defender->pos() != pos
@@ -319,18 +323,18 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
                             return local_time;
                     }
                     else
-                        local_time |= _handle_player_attack(defender, simu, 1, xtra_atk ? 3 : 1, did_hit, wu, wu_num);
+                        local_time |= _handle_player_attack(defender, simu, 1, xtra_atk ? 3 : 1, did_hit, wu, wu_num, roll_dist);
                 }
             }
             else
-                local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num);
+                local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
         }
         else if (!you.weapon(1) || is_melee_weapon(*you.weapon(1)) && !skip_two)
         {
             if (!(you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO) && !you.get_mutation_level(MUT_MISSING_HAND))
             {
                 attacked = true;
-                local_time = _handle_player_attack(defender, simu, 1, xtra_atk ? 0 : 2, did_hit, wu, wu_num);
+                local_time = _handle_player_attack(defender, simu, 1, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
             }
         }
 
@@ -368,7 +372,7 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             else if (xtra_atk)
             {
                 if (you.get_mutation_level(MUT_JIBBERING_MAWS))
-                    local_time |= _handle_maws_attack(defender, simu, did_hit, wu, wu_num);
+                    local_time |= _handle_maws_attack(defender, simu, did_hit, wu, wu_num, roll_dist);
 
                 if (you.mount == mount_type::hydra)
                     local_time |= _handle_hydra_attack(defender, simu, did_hit, wu, wu_num);

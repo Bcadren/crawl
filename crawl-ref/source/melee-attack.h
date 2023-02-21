@@ -35,7 +35,7 @@ public:
 
     // For player:
     // Attack Number 0: Weapon 0.
-    // Attack Number 1: Weapon 1
+    // Attack Number 1: Weapon 1.
     // Attack Number 2/3: Mount Attacks. Scorpion Form's Bite and Sting.
     // Effective Attack 0: Runs attack delay; doesn't do auxillaries; triggers spectral weapon.
     // Effective Attack 1: Does Auxillaries and prints wounds; doesn't run attack delay.
