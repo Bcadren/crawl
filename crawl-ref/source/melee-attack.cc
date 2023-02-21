@@ -4282,11 +4282,13 @@ void melee_attack::do_spines()
 
     if (defender->is_player())
     {
-        const int mut = you.get_mutation_level(MUT_SPINY) + (you.get_mutation_level(MUT_FROST_BURST) ? 1 : 0);
+        const int mut =      you.get_mutation_level(MUT_SPINY) 
+                          + (you.get_mutation_level(MUT_FROST_BURST) ? 1 : 0)
+                          +  you.get_mutation_level(MUT_CRAGGY_SKIN);
 
         if (mut && attacker->alive() && coinflip())
         {
-            const int maxdmg = max(div_rand_round(you.experience_level * (1 + mut), 3), 1 + mut);
+            const int maxdmg = you.max_spiny_damage();
             const int dmg    = random_range(1 + mut, maxdmg);
             const int hurt   = attacker->apply_ac(dmg, maxdmg, ac_type::half);
 
@@ -4294,9 +4296,13 @@ void melee_attack::do_spines()
 
             if (hurt <= 0)
                 return;
+            
+            const string hide = you.has_mutation(MUT_FROST_BURST) ? "stricken by your icy spines" :
+                                you.has_mutation(MUT_SPINY)       ? "impaled by your spines"
+                                                                  : "rubbed raw by your scabrous hide";
 
             simple_monster_message(*attacker->as_monster(),
-                                   make_stringf(" is struck by your spines%s", attack_strength_punctuation(hurt).c_str()).c_str());
+                                   make_stringf(" is %s%s", hide.c_str(), attack_strength_punctuation(hurt).c_str()).c_str());
 
             attacker->hurt(&you, hurt);
 

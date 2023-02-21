@@ -7173,7 +7173,7 @@ class mutation_ac_changes
         {
             int ac_change = ac_changes * you.get_mutation_level(mut, mutation_activation_threshold);
 
-            if (ac_change && you.char_class == JOB_DEMONSPAWN)
+            if (ac_change && (you.char_class == JOB_DEMONSPAWN || mut == MUT_CRAGGY_SKIN))
             {
                 switch (ac_change)
                 {
@@ -7213,6 +7213,7 @@ vector<mutation_ac_changes> all_mutation_ac_changes = {
     // Preserved behavior from before mutation ac was turned to data.
     ,mutation_ac_changes(MUT_IRIDESCENT_SCALES,      mutation_activity_type::FULL,    5)
     ,mutation_ac_changes(MUT_RUGGED_BROWN_SCALES,    mutation_activity_type::FULL,    2)
+    ,mutation_ac_changes(MUT_CRAGGY_SKIN,            mutation_activity_type::FULL,    5)
     ,mutation_ac_changes(MUT_ICY_BLUE_SCALES,        mutation_activity_type::FULL,    3)
     ,mutation_ac_changes(MUT_MOLTEN_SCALES,          mutation_activity_type::FULL,    3)
     ,mutation_ac_changes(MUT_SLIMY_GREEN_SCALES,     mutation_activity_type::FULL,    3)
@@ -8887,6 +8888,35 @@ int player::has_tentacles(bool allow_tran) const
         return 8;
 
     return 0;
+}
+
+int player::max_spiny_damage(bool allow_tran) const
+{
+    int mut = you.get_mutation_level(MUT_SPINY, !allow_tran) 
+           + (you.get_mutation_level(MUT_FROST_BURST, !allow_tran) ? 1 : 0)
+           +  you.get_mutation_level(MUT_CRAGGY_SKIN, !allow_tran);
+
+    if (!mut)
+        return 0;
+
+    if (you.get_mutation_level(MUT_CRAGGY_SKIN, !allow_tran))
+        mut--;
+
+    int maxdmg = max(div_round_up(you.experience_level * (1 + mut), 3), 1 + mut);
+
+    return maxdmg;
+}
+
+int player::max_ice_spine_damage(bool allow_tran) const
+{
+    int num_dice = you.get_mutation_level(MUT_FROST_BURST, !allow_tran);
+
+    if (!num_dice)
+        return 0;
+
+    int dice_size = div_rand_round(you.experience_level + you.skill(SK_INVOCATIONS), 5);
+
+    return num_dice * dice_size;
 }
 
 int player::branch_SH (bool allow_tran) const

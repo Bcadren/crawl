@@ -737,6 +737,14 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
+{ MUT_CRAGGY_SKIN, 0, 1, mutflag::good, true,
+  "craggy skin",
+
+  {"Your rough stony skin repels attacks and injures those that touch it. (AC +", "", ""},
+  {"Your skin hardens and calcifies into a rough craggy exterior.", "", ""},
+  {"Your skin softens.", "", ""},
+},
+
 { MUT_HIGH_MAGIC, 15, 2, mutflag::good, false,
   "high mp",
 

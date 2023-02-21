@@ -143,7 +143,9 @@ static const int conflict[][3] =
     { MUT_REGENERATION,                 MUT_INHIBITED_REGENERATION,          1},
     { MUT_ACUTE_VISION,                 MUT_IMPAIRED_VISION,                 1},
     { MUT_BERSERK,                      MUT_CLARITY,                         1},
-    { MUT_SILENT_CAST,                  MUT_SHOUTITUS                       -1},
+    { MUT_CRAGGY_SKIN,                  MUT_SPINY,                          -1},
+    { MUT_CRAGGY_SKIN,                  MUT_ARTIFICIAL_FLESH,               -1}, // weirdly redundant
+    { MUT_SILENT_CAST,                  MUT_SHOUTITUS,                      -1},
     { MUT_FAST,                         MUT_SLOW,                            1},
     { MUT_FANGS,                        MUT_BEAK,                           -1},
     { MUT_ANTENNAE,                     MUT_HORNS,                          -1}, // currently overridden by physiology_mutation_conflict
@@ -298,7 +300,7 @@ static const mutation_type _all_scales[] =
     MUT_RUGGED_BROWN_SCALES,        MUT_SLIMY_GREEN_SCALES,
     MUT_THIN_METALLIC_SCALES,       MUT_THIN_SKELETAL_STRUCTURE,
     MUT_YELLOW_SCALES,              MUT_STURDY_FRAME,
-    MUT_SANGUINE_ARMOUR,
+    MUT_SANGUINE_ARMOUR,            MUT_CRAGGY_SKIN,
 };
 
 static bool _is_covering(mutation_type mut)
@@ -824,6 +826,24 @@ string describe_mutations(bool drop_title)
         {
             result += mutation_desc(mut_type, -1, true);
             result += "\n";
+        }
+    }
+
+    if (you.max_spiny_damage(true))
+    {
+        string c = you.max_spiny_damage() ? "lightblue" : "darkgrey";
+        const string hide = you.has_mutation(MUT_FROST_BURST) ? "icy spines" :
+            you.has_mutation(MUT_SPINY) ? "spines"
+            : "craggy hide";
+
+        result += make_stringf("\n<%s>Contact with your %s deals up to %d damage to attackers, which partially ignores AC.</%s>\n",
+            c.c_str(), hide.c_str(), you.max_spiny_damage(true), c.c_str());
+
+        if (you.max_ice_spine_damage(true))
+        {
+            string d = you.max_ice_spine_damage() ? "lightblue" : "darkgrey";
+            result += make_stringf("<%s>If this deals any damage, you also inflict up to %d cold damage, which completely ignores AC.</%s>\n",
+                d.c_str(), you.max_ice_spine_damage(true), d.c_str());
         }
     }
 
@@ -1400,6 +1420,10 @@ bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll)
 
     // Need tentacles to grow something on them.
     if (you.species != SP_OCTOPODE && mutat == MUT_TENTACLE_SPIKE)
+        return true;
+
+    // Duplicates the main list for the sake of Rock Troll Demonspawn.
+    if (mutat == MUT_SPINY && you.has_mutation(MUT_CRAGGY_SKIN))
         return true;
 
     if (mutat == MUT_STRONG_NOSE && !you.can_smell())
@@ -3347,7 +3371,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     else if (mut == MUT_DISTORTION_FIELD || mut == MUT_ICY_BLUE_SCALES || mut == MUT_IRIDESCENT_SCALES
         || mut == MUT_RUGGED_BROWN_SCALES || mut == MUT_MOLTEN_SCALES || mut == MUT_SLIMY_GREEN_SCALES
         || mut == MUT_THIN_METALLIC_SCALES || mut == MUT_YELLOW_SCALES || mut == MUT_ROUGH_BLACK_SCALES
-        || mut == MUT_THIN_SKELETAL_STRUCTURE || mut == MUT_STURDY_FRAME)
+        || mut == MUT_THIN_SKELETAL_STRUCTURE || mut == MUT_STURDY_FRAME || mut == MUT_CRAGGY_SKIN)
     {
         ostringstream ostr;
 
@@ -3585,6 +3609,8 @@ static const facet_def _demon_facets[] =
       { -33, -33, 0 } },
     { 1, { MUT_NON_MUTATION, MUT_NON_MUTATION, MUT_SANGUINE_ARMOUR },
       { -33, -33, 0 } },
+    { 1, { MUT_NON_MUTATION, MUT_NON_MUTATION, MUT_CRAGGY_SKIN },
+      { -33, -33, 0 } },
     // Tier 2 facets
     { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },
       { -33, 0, 0 } },
@@ -3653,6 +3679,12 @@ static bool _slot_is_unique(const mut_array_t &mut,
 static vector<demon_mutation_info> _select_ds_mutations()
 {
     int ct_of_tier[] = { 1, 1, 2, 1 };
+
+    if (you.species == SP_ROCK_TROLL)
+    {
+        ct_of_tier[1] = 0;
+        ct_of_tier[2] = 3;
+    }
 
 try_again:
     vector<demon_mutation_info> ret;

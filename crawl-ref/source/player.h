@@ -568,6 +568,8 @@ public:
 
     bool tengu_flight() const;
     int heads() const override;
+    int max_spiny_damage(bool allow_tran = false) const;
+    int max_ice_spine_damage(bool allow_tran = false) const;
 
     bool spellcasting_unholy() const;
 
