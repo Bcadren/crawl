@@ -2494,6 +2494,9 @@ int max_miscast_damage(spell_type spell)
         return 0;
     }
 
+    if (you.species == SP_FAIRY)
+        return 2; // One, two or three really depending on school, but fair enough for this purpose.
+
     return div_round_up(level * (raw_fail + level), MISCAST_DIVISOR);
 }
 
