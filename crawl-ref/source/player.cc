@@ -8969,14 +8969,13 @@ int player::vision(bool calc_unid) const
     if (wearing_ego(EQ_HELMET, SPARM_IMPROVED_VISION))
         x++;
 
-    if (wearing(EQ_AMULET, AMU_INACCURACY, calc_unid))
-        x--;
+    x -= inaccuracy();
 
     // randart gear
     x += scan_artefacts(ARTP_IMPROVED_VISION, calc_unid);
     x -= scan_artefacts(ARTP_INACCURACY, calc_unid);
 
-    return _clamp(x, have_passive(passive_t::sinv) ? 1 : -1, 3);
+    return _clamp(x, have_passive(passive_t::sinv) ? 1 : -3, 3);
 }
 
 /// Can the player see invisible things without needing items' help?
@@ -10440,6 +10439,8 @@ int player::inaccuracy() const
 {
     int degree = 0;
     if (wearing(EQ_AMULET, AMU_INACCURACY))
+        degree++;
+    if (wearing_ego(EQ_CLOAK, SPARM_SHADOWS))
         degree++;
     if (get_mutation_level(MUT_MISSING_EYE))
         degree++;

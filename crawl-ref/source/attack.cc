@@ -285,7 +285,7 @@ float calc_player_to_hit(const item_def * weapon, bool player_aux, int armour_ma
 
     // +0 for normal vision, +10% for Supernaturally Acute Vision, -10% For Impaired Vision
     mhit *= 10 + you.vision();
-    mhit /= 10;
+    mhit /= 100;
 
     mhit = weapon_bonus(mhit, 0, slay, weapon, random);
 
