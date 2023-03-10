@@ -4573,7 +4573,7 @@ int player::scan_artefacts(artefact_prop_type which_property,
         int val = 0;
 
         // TODO: id check not needed, probably, due to full wear-id?
-        if (is_artefact(item) && (calc_unid || fully_identified(item)))
+        if (calc_unid || fully_identified(item))
             val = artefact_property(item, which_property);
 
         retval += val;
