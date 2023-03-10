@@ -1074,7 +1074,7 @@ static void _regenerate_hp_and_mp(int delay)
 void _handle_spectral_brand()
 {
     const int pow = you.skill(SK_EVOCATIONS, 4);
-    if (you.damage_brand() == SPWPN_SPECTRAL
+    if ((you.damage_brand(0) == SPWPN_SPECTRAL || you.damage_brand(1) == SPWPN_SPECTRAL)
         && you.skill(SK_EVOCATIONS) > 0
         && !find_spectral_weapon(&you)
         && there_are_monsters_nearby(true, true, false))

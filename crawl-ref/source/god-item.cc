@@ -169,7 +169,8 @@ bool is_evil_item(const item_def& item, bool calc_unid)
             return item_brand == SPWPN_DRAINING
                    || item_brand == SPWPN_PAIN
                    || item_brand == SPWPN_VAMPIRISM
-                   || item_brand == SPWPN_REAPING;
+                   || item_brand == SPWPN_REAPING
+                   || item_brand == SPWPN_SPECTRAL;
         }
     }
 

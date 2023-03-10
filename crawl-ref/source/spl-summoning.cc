@@ -3533,8 +3533,11 @@ monster* find_spectral_weapon(const actor* agent)
 // BCADNOTE: Since Mons can't use hybrid shield/weapons properly atm; they can't
 // be spectral weapons. Consider changing this in the future.
 
-bool weapon_can_be_spectral(const item_def *wpn)
+bool weapon_can_be_spectral(const item_def *wpn, bool spell)
 {
+    if (!spell && wpn->brand != SPWPN_SPECTRAL)
+        return false;
+
     return wpn && is_weapon(*wpn) && !is_range_weapon(*wpn)
         && !is_special_unrandom_artefact(*wpn)
         && wpn->base_type != OBJ_SHIELDS;
@@ -3574,9 +3577,9 @@ spret cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail, bool 
             }
         }
 
-        if (you.weapon(0) && weapon_can_be_spectral(you.weapon(0)))
+        if (you.weapon(0) && weapon_can_be_spectral(you.weapon(0), spell))
             wpn = you.weapon(0);
-        else if (you.weapon(1) && weapon_can_be_spectral(you.weapon(1)))
+        else if (you.weapon(1) && weapon_can_be_spectral(you.weapon(1), spell))
             wpn = you.weapon(1);
         else if (you.weapon(0))
             wpn = you.weapon(0);

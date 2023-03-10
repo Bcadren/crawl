@@ -833,6 +833,7 @@ public:
     bool cloud_immune(bool calc_unid = true, bool items = true) const override;
     bool evokable_berserk(bool calc_unid = true) const override;
     int evokable_invis(bool calc_unid = true) const override;
+    int spirit_shield(bool calc_unid = true, bool items = true) const override;
 
     bool airborne() const override;
     bool cancellable_flight() const;

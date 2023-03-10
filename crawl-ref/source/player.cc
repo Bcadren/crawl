@@ -7091,6 +7091,23 @@ int player::evokable_invis(bool calc_unid) const
     return ret + actor::evokable_invis(calc_unid);
 }
 
+int player::spirit_shield(bool calc_unid, bool items) const
+{
+    int ss = 0;
+
+    ss += you.get_mutation_level(MUT_MANA_SHIELD);
+
+    if (items)
+    {
+        const item_def * inside = you.slot_item(EQ_CYTOPLASM);
+
+        if (inside && get_weapon_brand(*inside) == SPWPN_SPECTRAL)
+            ss++;
+    }
+
+    return ss + actor::spirit_shield(calc_unid, items);
+}
+
 /**
  * What bonus AC are you getting from your species?
  *
