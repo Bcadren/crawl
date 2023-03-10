@@ -1276,6 +1276,10 @@ void dungeon_terrain_changed(const coord_def &pos,
                              bool temporary,
                              bool wizmode)
 {
+    // Sanity.
+    if (!in_bounds(pos))
+        return;
+
     if (grd(pos) == nfeat)
         return;
 
@@ -1325,6 +1329,14 @@ void dungeon_terrain_changed(const coord_def &pos,
         mprf(MSGCH_ERROR,
             "Attempting to change terrain to a trap without a corresponding"
             " trap_def!");
+        nfeat = DNGN_FLOOR;
+    }
+
+    // Sanity
+    if (!is_valid_feature_type(nfeat))
+    {
+        mprf(MSGCH_ERROR, "Trying to change terrain to invalid feature. "
+                          "Defaulting to floor . . . ");
         nfeat = DNGN_FLOOR;
     }
 
