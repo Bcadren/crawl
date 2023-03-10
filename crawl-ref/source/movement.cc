@@ -808,9 +808,7 @@ void move_player_action(coord_def move)
         {
             if (you.duration[DUR_NOXIOUS_BOG])
             {
-                if (cell_is_solid(old_pos))
-                    ASSERT(you.wizmode_teleported_into_rock);
-                else
+                if (!cell_is_solid(old_pos))
                 {
                     int x = targ.x - old_pos.x;
                     int y = targ.y - old_pos.y;
@@ -838,9 +836,7 @@ void move_player_action(coord_def move)
 
             if (you.duration[DUR_CLOUD_TRAIL])
             {
-                if (cell_is_solid(old_pos))
-                    ASSERT(you.wizmode_teleported_into_rock);
-                else
+                if (!cell_is_solid(old_pos))
                 {
                     auto cloud = static_cast<cloud_type>(
                         you.props[XOM_CLOUD_TRAIL_TYPE_KEY].get_int());
@@ -852,10 +848,8 @@ void move_player_action(coord_def move)
 
             if (you.get_mutation_level(MUT_MELT) >= 2)
             {
-                if (cell_is_solid(old_pos))
-                    ASSERT(you.wizmode_teleported_into_rock);
                 const dungeon_feature_type feat = grd(old_pos);
-                if (!feat_is_critical(feat) && !feat_is_watery(feat) && !cloud_at(old_pos) && one_chance_in(5))
+                if (!feat_is_critical(feat)  && !cell_is_solid(old_pos) && !feat_is_watery(feat) && one_chance_in(5))
                 {
                     const int dur = random_range(5, 12);
                     temp_change_terrain(old_pos, DNGN_SLIMY_WATER, dur * BASELINE_DELAY, TERRAIN_CHANGE_SLIME);
