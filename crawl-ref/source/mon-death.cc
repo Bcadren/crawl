@@ -2957,7 +2957,9 @@ item_def* monster_die(monster& mons, killer_type killer,
             _maybe_drop_monster_hide(*corpse, silent);
     }
 
-    else if (mons.type == MONS_BONE_DRAGON && !have_passive(passive_t::goldify_corpses) && !one_chance_in(3))
+    else if (!mons.is_summoned() && !(mons.flags & (MF_BANISHED | MF_HARD_RESET))
+              && mons.type == MONS_BONE_DRAGON && !have_passive(passive_t::goldify_corpses) 
+              && !one_chance_in(3))
     {
         // Truncated copy of _maybe_drop_monster_hide since that function requires a corpse.
         int o = items(false, OBJ_ARMOURS, ARM_SKULL, 0);
