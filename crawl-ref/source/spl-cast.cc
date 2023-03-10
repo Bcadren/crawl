@@ -2234,7 +2234,7 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
         return cast_spellforged_servitor(powc, god, fail);
 
     case SPELL_SPECTRAL_WEAPON:
-        return cast_spectral_weapon(&you, powc, god, fail);
+        return cast_spectral_weapon(&you, powc, god, fail, true);
 
     case SPELL_BATTLESPHERE:
         return cast_battlesphere(&you, powc, god, fail);

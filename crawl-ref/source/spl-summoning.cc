@@ -3540,7 +3540,12 @@ bool weapon_can_be_spectral(const item_def *wpn)
         && wpn->base_type != OBJ_SHIELDS;
 }
 
-spret cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
+static bool _is_spectral(const item_def *wpn)
+{
+    return wpn && is_weapon(*wpn) && (wpn->brand == SPWPN_SPECTRAL);
+}
+
+spret cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail, bool spell)
 {
     ASSERT(agent);
 
@@ -3549,6 +3554,25 @@ spret cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail)
 
     if (agent->is_player())
     {
+        // Can't use the spell if either of your weapons is naturally spectral.
+        // BCADDO: Dual spectral weapons?
+        if (spell)
+        {
+            item_def * wpn0 = you.weapon(0);
+            item_def * wpn1 = you.weapon(1);
+
+            if (wpn0 && _is_spectral(wpn0))
+            {
+                mprf("%s resists your attempt to coax out additional spirits.", wpn0->name(DESC_YOUR).c_str());
+                return spret::abort;
+            }
+
+            if (wpn1 && _is_spectral(wpn1))
+            {
+                mprf("%s resists your attempt to coax out additional spirits.", wpn1->name(DESC_YOUR).c_str());
+                return spret::abort;
+            }
+        }
 
         if (you.weapon(0) && weapon_can_be_spectral(you.weapon(0)))
             wpn = you.weapon(0);
