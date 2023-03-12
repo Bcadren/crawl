@@ -495,14 +495,13 @@ static const char *weapon_brands_adj[] =
 #if TAG_MAJOR_VERSION == 34
     "evasive", "confusing",
 #endif
-    "penetrating", "reaping", "buggy-num", "acidic", "spectral",
+    "penetrating", "reaping", "silver", "acidic", "spectral",  "buggy-num"
 #if TAG_MAJOR_VERSION > 34
     "confusing",
 #endif
     "debug",
 };
 
-// TODO: currently only for pghosts...expand?
 static const set<brand_type> brand_prefers_adj =
             { SPWPN_VAMPIRISM, SPWPN_ANTIMAGIC, SPWPN_VORPAL, SPWPN_SPECTRAL, SPWPN_SILVER, SPWPN_MOLTEN };
 
@@ -1606,22 +1605,12 @@ static string _ego_prefix(const item_def &weap, description_level_type desc,
     if (!_know_ego(weap, desc, ident, ignore_flags) || terse)
         return "";
 
-    switch (get_weapon_brand(weap))
-    {
-        case SPWPN_VAMPIRISM:
-            return "vampiric ";
-        case SPWPN_ANTIMAGIC:
-            return "antimagic ";
-        case SPWPN_NORMAL:
-            if (!_know_pluses(weap, desc, ident, ignore_flags)
-                && get_equip_desc(weap))
-            {
-                return "enchanted ";
-            }
-            // fallthrough to default
-        default:
-            return "";
-    }
+    const brand_type brand = get_weapon_brand(weap);
+
+    if (brand_prefers_adj.count(brand))
+        return make_stringf("%s ", brand_type_adj(brand));
+
+    return "";
 }
 
 /**
@@ -1630,6 +1619,9 @@ static string _ego_prefix(const item_def &weap, description_level_type desc,
  */
 static string _ego_suffix(const item_def &weap, bool terse)
 {
+    if (brand_prefers_adj.count(get_weapon_brand(weap)))
+        return "";
+
     const string brand_name = weapon_brand_name(weap, terse);
     if (brand_name.empty())
         return "";
@@ -1722,7 +1714,7 @@ static string _name_weapon(const item_def &weap, description_level_type desc,
     const string cosmetic_text
         = show_cosmetic ? _cosmetic_text(weap, ignore_flags) : "";
     const string ego_prefix
-        = _ego_prefix(weap, desc, terse, ident, ignore_flags);
+        = know_ego ? _ego_prefix(weap, desc, terse, ident, ignore_flags) : "";
     const string ego_suffix = know_ego ? _ego_suffix(weap, terse) : "";
     const string curse_suffix
     = know_curse && weap.cursed() && terse ? " (curse)" : "";
