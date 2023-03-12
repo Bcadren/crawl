@@ -671,9 +671,9 @@ static const mutation_def mut_data[] =
 { MUT_TENTACLE_SPIKE, 30, 1, mutflag::good, true,
   "tentacle spike",
 
-  {"One of your tentacles bears a large vicious spike.", "", ""},
-  {"One of your lower tentacles grows a large vicious spike.", "", ""},
-  {"Your tentacle spike disappears.", "", ""},
+  {"Your tentacles are covered in a vicious spikes.", "", ""},
+  {"Your tentacles grow vicious spikes.", "", ""},
+  {"Your tentacle spikes disappear.", "", ""},
 },
 
 { MUT_CONSTRICTING_TAIL, 0, 1, mutflag::good, true,

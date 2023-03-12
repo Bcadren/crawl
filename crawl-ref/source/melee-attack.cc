@@ -1412,18 +1412,6 @@ public:
     }
 };
 
-class AuxTentacleSpike: public AuxAttackType
-{
-public:
-    AuxTentacleSpike()
-    : AuxAttackType(8, "pierce") { };
-
-    string get_name() const override
-    {
-        return "tentacle spike";
-    }
-};
-
 class AuxHeadbutt: public AuxAttackType
 {
 public:
@@ -1509,8 +1497,17 @@ class AuxTentacles2 : public AuxAttackType
 public:
     AuxTentacles2()
     : AuxAttackType(3, "slap") { };
+
+    string get_name() const override
+    {
+        if (you.get_mutation_level(MUT_TENTACLE_SPIKE))
+            return "slash";
+        return name;
+    }
     
-    int get_damage() const { return damage + div_rand_round(you.experience_level, 4); }
+    int get_damage() const { return damage 
+        + div_rand_round(you.experience_level, 4)
+        + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 3; }
 };
 
 class AuxTentacles3 : public AuxAttackType
@@ -1518,8 +1515,17 @@ class AuxTentacles3 : public AuxAttackType
 public:
     AuxTentacles3()
      : AuxAttackType(3, "smack") { };
+
+    string get_name() const override
+    {
+        if (you.get_mutation_level(MUT_TENTACLE_SPIKE))
+            return "stab";
+        return name;
+    }
     
-    int get_damage() const { return damage + div_rand_round(you.experience_level, 5); }
+    int get_damage() const { return damage 
+        + div_rand_round(you.experience_level, 5)
+        + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 3;}
 };
 
 class AuxTentacles4 : public AuxAttackType
@@ -1528,7 +1534,16 @@ public:
     AuxTentacles4()
      : AuxAttackType(5, "thwack") { };
     
-    int get_damage() const { return damage + div_rand_round(you.experience_level, 3); }
+    string get_name() const override
+    {
+        if (you.get_mutation_level(MUT_TENTACLE_SPIKE))
+            return "spike";
+        return name;
+    }
+
+    int get_damage() const { return damage 
+        + div_rand_round(you.experience_level, 3)
+        + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 5; }
 };
 
 class AuxTendril1 : public AuxAttackType
@@ -1549,7 +1564,6 @@ static const AuxConstrict       AUX_CONSTRICT = AuxConstrict();
 static const AuxStaff           AUX_STAFF = AuxStaff();
 static const AuxStaffSlap       AUX_STAFFSLAP = AuxStaffSlap();
 static const AuxKick            AUX_KICK = AuxKick();
-static const AuxTentacleSpike   AUX_TENTACLE_SPIKE = AuxTentacleSpike();
 static const AuxHeadbutt        AUX_HEADBUTT = AuxHeadbutt();
 static const AuxTailslap        AUX_TAILSLAP = AuxTailslap();
 static const AuxBite            AUX_BITE = AuxBite();
@@ -1567,7 +1581,6 @@ static const AuxAttackType* const aux_attack_types[] =
     &AUX_STAFF,
     &AUX_STAFFSLAP,
     &AUX_KICK,
-    &AUX_TENTACLE_SPIKE,
     &AUX_HEADBUTT,
     &AUX_TAILSLAP,
     &AUX_BITE,
@@ -4712,9 +4725,6 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
     case UNAT_KICK:
         return you.has_hooves() || you.has_talons();
 
-    case UNAT_TENTACLE_SPIKE:
-        return you.get_mutation_level(MUT_TENTACLE_SPIKE) && x_chance_in_y(you.usable_tentacles(), 4);
-
     case UNAT_HEADBUTT:
         return you.get_mutation_level(MUT_HORNS) && !you.wearing(EQ_HELMET, ARM_SKULL, true, false) && !one_chance_in(3);
 
@@ -4732,13 +4742,16 @@ bool melee_attack::_extra_aux_attack(unarmed_attack_type atk)
         return x_chance_in_y(you.usable_tentacles(), 6);
 
     case UNAT_TENTACLES2:
-        return (you.usable_tentacles() > 3) && x_chance_in_y(you.usable_tentacles(), 12);
+        return (you.usable_tentacles() > 3) && 
+            x_chance_in_y(you.usable_tentacles() + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 2, 12);
 
     case UNAT_TENTACLES3:
-        return (you.usable_tentacles() > 2) && x_chance_in_y(you.usable_tentacles(), 18);
+        return (you.usable_tentacles() > 2) 
+            && x_chance_in_y(you.usable_tentacles() + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 3, 18);
         
     case UNAT_TENTACLES4:
-        return (you.usable_tentacles() > 1) && x_chance_in_y(you.usable_tentacles(), 24);
+        return (you.usable_tentacles() > 1) 
+            && x_chance_in_y(you.usable_tentacles() + you.get_mutation_level(MUT_TENTACLE_SPIKE) * 4, 24);
 
     case UNAT_STAFF:
         return you.staff() && you.staff()->sub_type == STAFF_TRANSMUTATION && staff_damage(SK_TRANSMUTATIONS);

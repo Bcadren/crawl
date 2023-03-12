@@ -1272,7 +1272,6 @@ static const char* _aux_attack_names[1 + UNAT_LAST_ATTACK] =
     "Staff Constrict",
     "Staff Tentacle Slap",
     "Kick",
-    "Tentacle Spike",
     "Headbutt",
     "Peck",
     "Tailslap",
