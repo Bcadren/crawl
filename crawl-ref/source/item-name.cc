@@ -3436,12 +3436,7 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
             return true;
         if (!you.could_wield(item, !fully_identified(item), !temp))
             return true;
-<<<<<<< HEAD
-        if (!item_type_known(item))
-=======
-        }
         if (!ident && !item_type_known(item))
->>>>>>> 12be3fcb38 (Don't give Formicids useless starting items)
             return false;
 
         if (you_worship(GOD_TROG))
@@ -3508,24 +3503,7 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
             return you.get_mutation_level(MUT_NO_ARTIFICE) && !is_deck(item);
         }
 
-<<<<<<< HEAD
     case OBJ_MANUALS:
-=======
-    case OBJ_BOOKS:
-        if (!ident && !item_type_known(item))
-            return false;
-        if (item_type_known(item) && item.sub_type != BOOK_MANUAL)
-        {
-            // Spellbooks are useless if all spells are either in the library
-            // already or are uncastable.
-            bool useless = true;
-            for (spell_type st : spells_in_book(item))
-                if (!you.spell_library[st] && you_can_memorise(st))
-                    useless = false;
-            return useless;
-        }
-        // If we're here, it's a manual.
->>>>>>> 12be3fcb38 (Don't give Formicids useless starting items)
         if (you.skills[item.plus] >= 27)
             return true;
         if (is_useless_skill((skill_type)item.plus))
@@ -3534,7 +3512,7 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
 
     case OBJ_BOOKS:
     {
-        if (!item_type_known(item))
+        if (!ident && !item_type_known(item))
             return false;
         // Spellbooks are useless if all spells are either in the library
         // already or are uncastable.
