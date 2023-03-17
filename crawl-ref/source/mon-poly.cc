@@ -636,7 +636,11 @@ void slimify_monster(monster* mon)
     record_monster_defeat(mon, KILL_SLIMIFIED);
     remove_unique_annotation(mon);
 
-    monster_polymorph(mon, target);
+    // Treat as killed for sake of respawning monsters.
+    if (mons_is_unique(mon->type))
+        you.unique_creatures.set(mon->type, true);
+
+    monster_polymorph(mon, target, PPT_SAME, true, true);
 
     mon->attitude = ATT_STRICT_NEUTRAL;
 
