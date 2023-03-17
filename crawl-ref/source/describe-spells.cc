@@ -324,7 +324,10 @@ spellset monster_spellset(const monster_info &mi)
     for (auto book_flag : book_flags)
         _monster_spellbooks(mi, book_flag, books);
 
-    ASSERT(books.size());
+    // BCADNOTE: Loosened Assert.
+    if (!books.size())
+        return {};
+
     return books;
 }
 
