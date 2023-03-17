@@ -3535,7 +3535,7 @@ monster* find_spectral_weapon(const actor* agent)
 
 bool weapon_can_be_spectral(const item_def *wpn, bool spell)
 {
-    if (!spell && wpn->brand != SPWPN_SPECTRAL)
+    if (!spell && bool(wpn->brand != SPWPN_SPECTRAL))
         return false;
 
     return wpn && is_weapon(*wpn) && !is_range_weapon(*wpn)
@@ -3591,7 +3591,7 @@ spret cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail, bool 
             mpr(you.hands_act("twitch", "."));
             return spret::abort;
         }
-        else if (!weapon_can_be_spectral(wpn))
+        else if (!weapon_can_be_spectral(wpn, spell))
         {
             mprf("%s vibrate%s crazily for a second.",
                 wpn->name(DESC_YOUR).c_str(),
@@ -3601,7 +3601,7 @@ spret cast_spectral_weapon(actor *agent, int pow, god_type god, bool fail, bool 
     }
 
     // If the wielded weapon should not be cloned, abort
-    if (!wpn || !weapon_can_be_spectral(wpn))
+    if (!wpn || !weapon_can_be_spectral(wpn, spell))
         return spret::abort;
 
     fail_check();
