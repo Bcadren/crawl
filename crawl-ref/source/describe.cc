@@ -5417,7 +5417,7 @@ void get_monster_db_desc(const monster_info& mi, describe_info &inf,
     const int curse_power = mummy_curse_power(mi.type);
     if (curse_power && !mi.is(MB_SUMMONED))
     {
-        description << "\n @Subjective@ will inflict a ";
+        description << "\n@Subjective@ will inflict a ";
         if (curse_power > 10)
             description << "powerful ";
         description << "necromantic curse on @possessive@ foe when destroyed.\n";
