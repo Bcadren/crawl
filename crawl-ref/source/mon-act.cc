@@ -3720,6 +3720,9 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
     if (!in_bounds(f))
         return false;
 
+    if (cell_is_runed(f)) // sanity
+        return false;
+
     if (f == you.pos())
     {
         fight_melee(&mons, &you);
@@ -3744,8 +3747,6 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
             return true;
         }
     }
-
-    ASSERT(!cell_is_runed(f)); // should be checked in mons_can_traverse
 
     if (feat_is_closed_door(grd(f)))
     {
