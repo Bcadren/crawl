@@ -1836,7 +1836,7 @@ void define_zombie(monster* mon, monster_type ztype, monster_type cs)
     for (const mon_spell_slot &slot : oldspells)
     {
         if (slot.spell == SPELL_CREATE_TENTACLES
-            || slot.spell == SPELL_TONGUE_LASH
+            || (slot.spell == SPELL_TONGUE_LASH && ztype != MONS_SKELETON)
             || slot.spell == SPELL_THROW_ROCK
             || slot.spell == SPELL_THROW_NET
             || slot.spell == SPELL_THROW_JAVELIN
