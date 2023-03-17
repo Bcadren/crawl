@@ -1,0 +1,54 @@
+enum: SP_ROCK_TROLL
+monster: MONS_ROCK_TROLL
+name: "Rock Troll"
+adjective: Trollish
+difficulty: Intermediate
+difficulty_priority: 70
+aptitudes:
+  xp: -1
+  hp: -1
+  mp_mod: -1
+  mr: 3
+  fighting: -1
+  short_blades: -1
+  whips_and_flails: -2
+  polearms: -1
+  slings: 1
+  bows: -1
+  crossbows: -1
+  armour: -2
+  dodging: 1
+  stealth: -1
+  shields: -2
+  spellcasting: -2
+  hexes: -2
+  charms: -2
+  necromancy: -1
+  transmutations: -2
+  fire_magic: -2
+  air_magic: -3
+  earth_magic: 3
+  poison_magic: -2
+  invocations: -1
+  evocations: -2
+str: 11
+int: 8
+dex: 5
+levelup_stat_frequency: 3
+levelup_stats:
+  - str
+mutations:
+  1:
+    MUT_CRAGGY_SKIN: 1
+    MUT_DEFORMED: 1
+    MUT_REGENERATION: 1
+    MUT_CLAWS: 2
+    MUT_GOURMAND: 1
+    MUT_FAST_METABOLISM: 2
+    MUT_ROLL: 1
+recommended_jobs:
+  - JOB_FIGHTER
+  - JOB_BERSERKER
+  - JOB_ABYSSAL_KNIGHT
+  - JOB_WARPER
+  - JOB_WIZARD
