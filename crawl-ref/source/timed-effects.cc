@@ -270,8 +270,8 @@ static void _magic_contamination_effects()
                                        div_rand_round(contam, 15000)));
         beam.ench_power   = div_rand_round(contam, 200);
         beam.is_explosion = true;
-
-        beam.explode();
+        beam.fake_flavour();
+        beam.explode(true, !can_mutate);
     }
 
     if (can_mutate)

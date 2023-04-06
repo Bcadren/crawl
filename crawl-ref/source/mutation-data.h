@@ -1185,9 +1185,13 @@ static const mutation_def mut_data[] =
 { MUT_RADIOSYNTHESIS, 0, 3, mutflag::good | mutflag::jiyva, false,
   "radiosynthesis",
 
-  {"You don't mutate from contamination; you become a little more contaminated while casting spells.", 
-   "You regenerate faster while glowing and aren't malmutated by magical radiation; you become more contaminated while casting spells.", 
-   "You always glow, regenerate faster the more magical radiation you absorb and cannot be malmutated by radiation; you become much more contaminated while casting spells."},
+  {"You no longer mutate from magical radiation.", 
+   "You regenerate faster while glowing from magical radiation and are immune to most its negative effects." 
+   " Explosive outbursts of radiation may still damage your foes." 
+   "\nYou siphon off residual magic while casting, contaminating yourself.", 
+   "You passively glow from magical contamination, regenerate faster the more magical radiation you absorb and are immune to most its negative effects."
+   " Explosive outbursts of radiation may still damage your foes."
+   "\nYou siphon off residual magic while casting, contaminating yourself."},
   {"You feel connected to magical radiation.", 
    "You begin to regenerate faster while glowing.", 
    "You feel like bathing in mutagenic glow."},
