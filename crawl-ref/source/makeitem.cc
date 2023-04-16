@@ -1125,7 +1125,7 @@ special_armour_type generate_armour_type_ego(armour_type type)
     case ARM_BOOTS:
         return random_choose_weighted(1, SPARM_RUNNING, 
                                       2, SPARM_STURDY,
-                                      3, SPARM_LUNGING
+                                      3, SPARM_LUNGING,
                                       3, SPARM_INSULATION,
                                       4, SPARM_STEALTH);
 
