@@ -137,7 +137,9 @@ enum armour_property_type
 
 const int SP_FORBID_EGO   = -1;
 const int SP_FORBID_BRAND = -1;
-const int SP_UNKNOWN_BRAND = 31; // seen_weapon/armour is a 32-bit bitfield
+const int SP_UNKNOWN_BRAND = 31; // seen_weapon is a 32-bit bitfield
+const int SP_UNKNOWN_EGO = 63; // seen_armour is a 64-bit bitfield
+// BCADDO: Seen bitfield for staff facets?
 
 enum facet_type // item_def.special
 {
@@ -538,7 +540,7 @@ enum special_armour_type
     NUM_SPECIAL_ARMOURS,
 };
 // We have space for 32 brands in the bitfield.
-COMPILE_CHECK(NUM_SPECIAL_ARMOURS <= SP_UNKNOWN_BRAND);
+COMPILE_CHECK(NUM_SPECIAL_ARMOURS <= SP_UNKNOWN_EGO);
 
 // Be sure to update _str_to_ego to match.
 enum special_missile_type // to separate from weapons in general {dlb}
