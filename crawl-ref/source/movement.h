@@ -11,6 +11,7 @@ void remove_water_hold();
 void apply_noxious_bog(const coord_def old_pos, const coord_def targ);
 bool apply_cloud_trail(const coord_def old_pos);
 bool apply_slime_trail(const coord_def old_pos);
+void apply_auto_skeleton(coord_def initial_position);
 bool cancel_confused_move(bool stationary);
 void open_door_action(coord_def move = {0,0});
 void close_door_action(coord_def move);

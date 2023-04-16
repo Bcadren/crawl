@@ -629,6 +629,7 @@ spret rolling_charge(bool fail)
     apply_barbs_damage();
 
     apply_noxious_bog(orig_pos, target_path[0]);
+    apply_auto_skeleton(orig_pos);
     _charge_cloud_trail(orig_pos);
     for (int i = 0; i < (int)(target_path.size() - 2); ++i)
     {

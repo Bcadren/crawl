@@ -151,7 +151,7 @@ bool cancel_barbed_move(bool rampaging)
         string prompt = make_stringf("The spiked barbs in your %s will hurt %s if you move.%s Continue?", 
             you.mounted() ? you.mount_name().c_str() : "flesh",
             you.mounted() ? "it" : "you", // BCADDO: Mount pronouns?
-            prompt += rampaging ? " Rampaging like this could really hurt!" : "");
+            rampaging ? " Rampaging like this could really hurt!" : "");
         if (!yesno(prompt.c_str(), false, 'n'))
         {
             canned_msg(MSG_OK);
@@ -172,7 +172,7 @@ void apply_barbs_damage(bool rampaging)
     if (harm_you || harm_mount)
     {
         int dam = roll_dice(2, you.attribute[ATTR_BARBS_POW]);
-        mprf(MSGCH_WARN, "The barbed spikes %s%s as you move%s", 
+        mprf(MSGCH_WARN, "The barbed spikes %s%s as you move%s",
             harm_you ? "dig painfully into your body" : "cut into your ",
             harm_you ? "" : you.mount_name(true).c_str(),
             attack_strength_punctuation(dam).c_str());
@@ -191,12 +191,13 @@ void apply_barbs_damage(bool rampaging)
         if (one_chance_in(3))
             extract_manticore_spikes("The barbed spikes snap loose.", harm_mount);
         // But if that failed to end the effect, duration stays the same.
-    if (!rampaging)
-    {
-        if (harm_you && you.duration[DUR_BARBS])
-            you.duration[DUR_BARBS] += you.time_taken;
-        if (harm_mount && you.duration[DUR_MOUNT_BARBS])
-            you.duration[DUR_MOUNT_BARBS] += you.time_taken;
+        if (!rampaging)
+        {
+            if (harm_you && you.duration[DUR_BARBS])
+                you.duration[DUR_BARBS] += you.time_taken;
+            if (harm_mount && you.duration[DUR_MOUNT_BARBS])
+                you.duration[DUR_MOUNT_BARBS] += you.time_taken;
+        }
     }
 }
 
@@ -222,6 +223,19 @@ static void _clear_constriction_data()
     you.stop_directly_constricting_all(true);
     if (you.is_directly_constricted())
         you.stop_being_constricted();
+}
+
+void apply_auto_skeleton(coord_def initial_position)
+{
+    if (you.attribute[ATTR_SKELETON])
+    {
+        bool fail = x_chance_in_y(failure_rate_to_int(raw_spell_fail(SPELL_SKELETAL_UPRISING)), 100);
+        if (cast_animate_skeleton(you.religion, fail, initial_position))
+        {
+            int spellpower = calc_spell_power(SPELL_SKELETAL_UPRISING, true);
+            dec_mp(div_rand_round(spellpower, 100));
+        }
+    }
 }
 
 void apply_noxious_bog(const coord_def old_pos, const coord_def targ)
@@ -711,7 +725,7 @@ static spret _rampage_forward(coord_def move)
     // exclusion prompt and weapon check prompts;
     // messaging for this is handled by check_moveto().
     if (!check_moveto(beam.target, "rampage")
-        || attacking && !wielded_weapon_check(you.weapon())
+        || attacking && !wielded_weapons_check()
         || !attacking && !check_moveto(rampage_target, "rampage"))
     {
         stop_running();
@@ -745,9 +759,9 @@ static spret _rampage_forward(coord_def move)
 
     // Lastly, apply post-move effects unhandled by move_player_to_grid().
     apply_barbs_damage(true);
-    remove_ice_armour_movement();
-    apply_noxious_bog(old_pos);
+    apply_noxious_bog(old_pos, you.pos());
     apply_cloud_trail(old_pos);
+    apply_auto_skeleton(old_pos);
 
     // If there is somehow an active run delay here, update the travel trail.
     if (you_are_delayed() && current_delay()->is_run())
@@ -1284,15 +1298,7 @@ void move_player_action(coord_def move)
     if (you_worship(GOD_WU_JIAN) && !attacking && !dug && !rampaged)
         did_wu_jian_attack = wu_jian_post_move_effects(did_wall_jump, initial_position);
 
-    if (you.attribute[ATTR_SKELETON])
-    {
-        bool fail = x_chance_in_y(failure_rate_to_int(raw_spell_fail(SPELL_SKELETAL_UPRISING)), 100);
-        if (cast_animate_skeleton(you.religion, fail, initial_position))
-        {
-            int spellpower = calc_spell_power(SPELL_SKELETAL_UPRISING, true);
-            dec_mp(div_rand_round(spellpower, 100));
-        }
-    }
+   apply_auto_skeleton(initial_position);
 
     // If you actually moved you are eligible for amulet of the acrobat.
     if (!attacking && moving && !did_wu_jian_attack && !did_wall_jump)
