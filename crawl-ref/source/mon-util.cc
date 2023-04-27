@@ -2754,7 +2754,6 @@ static int _exper_value(const monster_type mc, const int hd, int maxhp, const in
         {
             switch (slot.spell)
             {
-            case SPELL_PARALYSE:
             case SPELL_SMITING:
             case SPELL_SUMMON_EYEBALLS:
             case SPELL_HELLFIRE_BLAST:
@@ -2780,7 +2779,7 @@ static int _exper_value(const monster_type mc, const int hd, int maxhp, const in
 
             case SPELL_LIGHTNING_BOLT:
             case SPELL_STICKY_FLAME_RANGE:
-            case SPELL_DISINTEGRATE:
+            case SPELL_WAND_DISINTEGRATE:
             case SPELL_BANISHMENT:
             case SPELL_LEHUDIBS_CRYSTAL_SPEAR:
             case SPELL_IRON_SHOT:
@@ -4677,7 +4676,6 @@ bool mons_has_incapacitating_spell(const monster& mon, const actor& foe)
 
         case SPELL_CONFUSE:
         case SPELL_MASS_CONFUSION:
-        case SPELL_PARALYSE:
         case SPELL_PETRIFY:
             return true;
 

@@ -92,7 +92,7 @@ static const map<wand_type, spell_type> _wand_spells =
     { WAND_ENSLAVEMENT,     SPELL_ENSLAVEMENT },
     { WAND_ACID,            SPELL_WAND_ACID },
     { WAND_DRAIN,           SPELL_WAND_DRAIN },
-    { WAND_DISINTEGRATION,  SPELL_DISINTEGRATE },
+    { WAND_DISINTEGRATION,  SPELL_WAND_DISINTEGRATE },
     { WAND_CLOUDS,          SPELL_CLOUD_CONE },
     { WAND_SCATTERSHOT,     SPELL_SCATTERSHOT },
     { WAND_RANDOM_EFFECTS,  SPELL_RANDOM_EFFECTS },
@@ -324,15 +324,26 @@ bool is_player_book_spell(spell_type which_spell)
 // A spell doesn't need to be here if it just the beam type that is used.
 static unordered_set<int> _player_nonbook_spells =
 {
-    // items
+    // misc items
     SPELL_THUNDERBOLT,
     SPELL_PHANTOM_MIRROR, // this isn't cast directly, but the player code at
                           // least uses the enum value
     SPELL_SONIC_WAVE,
+    SPELL_PHIAL_OF_FLOODS,
+    SPELL_ENGLACIATION, // Skin of Zhor
     // religion
     SPELL_SMITING,
     // Ds powers
-    SPELL_HURL_DAMNATION,
+    SPELL_HURL_HELLFIRE,
+    // Wands
+    SPELL_WAND_ACID,
+    SPELL_WAND_DRAIN,
+    SPELL_WAND_DISINTEGRATE,
+    SPELL_WAND_ENSNARE,
+    SPELL_WAND_FLAME,
+    SPELL_WAND_HASTING,
+    SPELL_WAND_HEALING,
+    SPELL_WAND_POLYMORPH,
 };
 
 bool is_player_spell(spell_type which_spell)

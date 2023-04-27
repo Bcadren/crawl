@@ -73,7 +73,6 @@ spret cast_malign_gateway(actor* caster, int pow,
                                god_type god = GOD_NO_GOD, bool fail = false);
 coord_def find_gateway_location(actor* caster);
 spret cast_summon_forest(actor* caster, int pow, coord_def& where, god_type god, bool fail);
-spret cast_summon_guardian_golem(int pow, god_type god, bool fail);
 
 spret cast_dragon_call(int pow, bool fail);
 void do_dragon_call(int time);

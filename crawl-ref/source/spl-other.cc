@@ -488,26 +488,6 @@ static int _intoxicate_monsters(coord_def where, int pow)
     return 0;
 }
 
-spret cast_intoxicate(int pow, bool fail)
-{
-    fail_check();
-    mpr("You attempt to intoxicate your foes!");
-    int count = apply_area_visible([pow] (coord_def where) {
-        return _intoxicate_monsters(where, pow);
-    }, you.pos());
-    if (count > 0)
-    {
-        if (x_chance_in_y(60 - pow/3, 100))
-        {
-            mprf(MSGCH_WARN, "The world spins around you!");
-            you.increase_duration(DUR_VERTIGO, 4 + random2(20 + (100 - pow) / 10));
-            you.redraw_evasion = true;
-        }
-    }
-
-    return spret::success;
-}
-
 spret cast_darkness(int pow, bool fail)
 {
     fail_check();

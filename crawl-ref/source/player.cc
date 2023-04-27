@@ -10579,7 +10579,6 @@ bool player::immune_to_hex(const spell_type hex) const
         if (you.get_mutation_level(MUT_INSUBSTANTIAL))
             return true;
     }   // fallthrough
-    case SPELL_PARALYSE:
     case SPELL_SLOW:
         return stasis();
     case SPELL_CONFUSE:

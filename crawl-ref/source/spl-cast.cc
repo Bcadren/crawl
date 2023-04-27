@@ -2199,9 +2199,6 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_SUMMON_LIGHTNING_SPIRE:
         return cast_summon_lightning_spire(powc, beam.target, god, fail);
 
-    case SPELL_SUMMON_GUARDIAN_GOLEM:
-        return cast_summon_guardian_golem(powc, god, fail);
-
     case SPELL_CALL_IMP:
         return cast_call_imp(powc, god, fail);
 
@@ -2268,9 +2265,6 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
 
     case SPELL_CAUSE_FEAR:
         return mass_enchantment(ENCH_FEAR, powc, fail);
-
-    case SPELL_INTOXICATE:
-        return cast_intoxicate(powc, fail);
 
     case SPELL_DISCORD:
         return mass_enchantment(ENCH_INSANE, powc, fail);

@@ -1296,6 +1296,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_ENGLACIATION, "Metabolic Englaciation", "",
+    spschool::ice,
+    spflag::area,
+    5,
+    200,
+    -1, -1,
+    4, 0,
+    TILEG_METABOLIC_ENGLACIATION,
+},
+
+{
     SPELL_PHASE_SHIFT, "Phase Shift", "",
     spschool::translocation,
     spflag::helpful | spflag::utility,
@@ -1408,7 +1419,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CONDENSATION_SHIELD, "Condensation Shield", "",
     spschool::ice,
-    spflag::helpful | spflag::utility,
+    spflag::helpful | spflag::utility | spflag::monster,
     4,
     200,
     -1, -1,
@@ -1515,18 +1526,6 @@ static const struct spell_desc spelldata[] =
     4, 4,
     4, 0,
     TILEG_FULMINANT_PRISM,
-},
-
-{
-    SPELL_PARALYSE, "Paralyse", "",
-    spschool::hexes,
-    spflag::dir_or_target | spflag::needs_tracer
-        | spflag::MR_check,
-    4,
-    200,
-    LOS_RADIUS, LOS_RADIUS,
-    3, 0,
-    TILEG_PARALYSE,
 },
 
 {
@@ -3026,17 +3025,6 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_SUMMON_GUARDIAN_GOLEM, "Summon Guardian Golem", "",
-    spschool::summoning | spschool::hexes,
-    spflag::none,
-    3,
-    100,
-    -1, -1,
-    3, 0,
-    TILEG_SUMMON_GUARDIAN_GOLEM,
-},
-
-{
     SPELL_SHADOW_SHARD, "Shadow Shard", "",
     spschool::earth | spschool::evocation,
     spflag::dir_or_target | spflag::monster | spflag::needs_tracer,
@@ -3161,7 +3149,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CORROSIVE_BOLT, "Corrosive Bolt", "Chaos Bolt",
     spschool::poison,
-    spflag::dir_or_target | spflag::needs_tracer,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     6,
     200,
     5, 5,
@@ -4001,8 +3989,9 @@ AXED_SPELL(SPELL_MIASMA_CLOUD, "Miasma cloud")
 AXED_SPELL(SPELL_POISON_CLOUD, "Poison cloud")
 AXED_SPELL(SPELL_FIRE_CLOUD, "Fire cloud")
 AXED_SPELL(SPELL_SERPENT_OF_HELL_BREATH_REMOVED, "Old serpent of hell breath")
-AXED_SPELL(SPELL_ENGLACIATION, "Metabolic Englaciation")
 AXED_SPELL(SPELL_INTOXICATE, "Alistair's Intoxication")
+AXED_SPELL(SPELL_PARALYSE, "Paralyse")
+AXED_SPELL(SPELL_SUMMON_GUARDIAN_GOLEM, "Summon Guardian Golem")
 #endif
 
 };
