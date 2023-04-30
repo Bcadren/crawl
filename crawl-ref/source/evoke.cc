@@ -1556,6 +1556,8 @@ bool evoke_item(int slot)
                                                 surge),
                        coord_def());
             expend_xp_evoker(item.sub_type);
+            if (!evoker_charges(item.sub_type))
+                mpr("The fan feels heavy.");
             practise_evoking(3);
             break;
         }
@@ -1569,6 +1571,8 @@ bool evoke_item(int slot)
             if (_lamp_of_fire())
             {
                 expend_xp_evoker(item.sub_type);
+                if (!evoker_charges(item.sub_type))
+                    mpr("The lamp burns out!");
                 practise_evoking(3);
             }
             else
@@ -1591,6 +1595,8 @@ bool evoke_item(int slot)
             if (_phial_of_floods())
             {
                 expend_xp_evoker(item.sub_type);
+                if (!evoker_charges(item.sub_type))
+                    mpr("The phial empties!");
                 practise_evoking(3);
             }
             else
@@ -1606,6 +1612,8 @@ bool evoke_item(int slot)
             if (_evoke_horn_of_geryon())
             {
                 expend_xp_evoker(item.sub_type);
+                if (!evoker_charges(item.sub_type))
+                    mpr("The horn goes quiet!");
                 practise_evoking(3);
             }
             else
