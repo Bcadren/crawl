@@ -261,7 +261,7 @@ void ghost_demon::set_pan_lord_cloud_ring()
 {
     if (brand == SPWPN_ELECTROCUTION)
         cloud_ring_ench = ENCH_RING_OF_THUNDER;
-    else if (brand == SPWPN_FLAMING)
+    else if (brand == SPWPN_MOLTEN)
         cloud_ring_ench = ENCH_RING_OF_FLAMES;
     else if (brand == SPWPN_CHAOS)
         cloud_ring_ench = ENCH_RING_OF_CHAOS;
