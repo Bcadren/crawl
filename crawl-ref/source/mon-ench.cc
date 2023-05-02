@@ -2330,22 +2330,13 @@ static const char *enchant_names[] =
 #endif
     "aura_of_brilliance", "empowered_spells", "gozag_incite", "pain_bond",
     "idealised", "bound_soul", "infestation",
-<<<<<<< HEAD
     "stilling the winds", "thunder_ringed", "pinned_by_whirlwind",
     "vortex", "vortex_cooldown", "vile_clutch", "trapped_in_lava", "stick",
     "elec_vuln", "cold_vuln", "phys_vuln", "staff_shield_down", "entropic_burst",
     "chaotic_infusion", "chaosnado", "sacred_order", "swallowed", "swallowing",
-    "buggy",
-=======
-    "stilling the winds", "thunder_ringed",
-#if TAG_MAJOR_VERSION == 34
-    "pinned_by_whirlwind",
-#endif
-    "vortex", "vortex_cooldown", "vile_clutch", "waterlogged", "ring_of_flames",
-    "ring_chaos", "ring_mutation", "ring_fog", "ring_ice", "ring_neg",
-    "ring_acid", "ring_miasma",
+    "ring_of_flames", "ring_chaos", "ring_mutation", "ring_fog", "ring_ice", 
+    "ring_neg", "ring_acid", "ring_miasma",
     "buggy", // NUM_ENCHANTMENTS
->>>>>>> e3ac2ca022 (Add Ring of X monster enchantments)
 };
 
 static const char *_mons_enchantment_name(enchant_type ench)
