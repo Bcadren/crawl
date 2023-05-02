@@ -48,8 +48,8 @@ mana to transmute the poison in the environment.
 %%%%
 staff of Wucad Mu
 
-A crystal staff overflowing with magical energies. Enhances the wielder's Charms
-and Hex spells.
+A crystal staff overflowing with magical energies. Its energy reduces the mana 
+cost of all spells while wielding it. Enhances the wielder's Charms and Hex spells.
 
 On melee, it deals much weaker damage than other enhancer staves; but drains
 the magical energy of the target making it less able to cast and restoring some 

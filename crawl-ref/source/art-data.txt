@@ -233,7 +233,7 @@ VALUE:   1000
 BOOL:    rCorr, skip_ego
 
 NAME:    staff of Wucad Mu
-INSCRIP: drain magic, channel;
+INSCRIP: energy, drain magic;
 OBJ:     OBJ_STAVES/STAFF_NOTHING
 FALLBACK: OBJ_STAVES/STAFF_EARTH
 FB_BRAND: SPSTF_SHIELD

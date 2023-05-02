@@ -15,6 +15,7 @@
 #include <cstring>
 
 #include "areas.h"
+#include "art-enum.h"
 #include "coordit.h"
 #include "directn.h"
 #include "env.h"
@@ -485,8 +486,11 @@ int spell_mana(spell_type which_spell)
     if (you.species == SP_FAIRY)
         return min(1, base - 1);
     item_def * stf = you.staff();
-    if (stf && staff_enhances_spell(stf, which_spell) && get_staff_facet(*stf) == SPSTF_ENERGY)
+    if (stf && staff_enhances_spell(stf, which_spell) && get_staff_facet(*stf) == SPSTF_ENERGY
+        || player_equip_unrand(UNRAND_WUCAD_MU))
+    {
         return base - 1;
+    }
     return base;
 }
 
