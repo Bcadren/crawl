@@ -4178,15 +4178,6 @@ void read(item_def* scroll)
             canned_msg(MSG_OK);
             return;
         }
-
-        if (scroll->sub_type == SCR_BLINKING
-            && orb_limits_translocation()
-            && !yesno("Your blink will be uncontrolled - continue anyway?",
-                      false, 'n'))
-        {
-            canned_msg(MSG_OK);
-            return;
-        }
     }
 
     if (you.vision() < 0
@@ -4282,16 +4273,8 @@ void read_scroll(item_def& scroll)
             = alreadyknown && (you.vision() >= 0)
              && !you.haloed();
 
-        if (orb_limits_translocation())
-        {
-            mprf(MSGCH_ORB, "The Orb prevents control of your translocation!");
-            uncontrolled_blink();
-        }
-        else
-        {
-            cancel_scroll = (cast_controlled_blink(false, safely_cancellable)
-                             == spret::abort) && alreadyknown;
-        }
+        cancel_scroll = (cast_controlled_blink(false, safely_cancellable)
+                            == spret::abort) && alreadyknown;
 
         if (!cancel_scroll)
             mpr(pre_succ_msg); // ordering is iffy but w/e

@@ -805,24 +805,6 @@ spret cast_controlled_blink(bool fail, bool safe, int power)
         return spret::abort;
     }
 
-    if (orb_limits_translocation())
-    {
-        if (!yesno("Your blink will be uncontrolled - continue anyway?",
-                   false, 'n'))
-        {
-            return spret::abort;
-        }
-
-        if (!you.airborne() && dangerous_terrain_seen() && !yesno("Really make an uncontrolled blink while near dangerous terrain?", false, 'n'))
-        {
-            canned_msg(MSG_OK);
-            return spret::abort;
-        }
-
-        mprf(MSGCH_ORB, "The Orb prevents control of your translocation!");
-        return cast_blink(fail);
-    }
-
     return controlled_blink(fail, safe, power);
 }
 
@@ -847,11 +829,6 @@ void you_teleport()
         {
             mpr("You feel the power of the Abyss delaying your translocation!");
             teleport_delay += 5 + random2(10);
-        }
-        else if (orb_limits_translocation())
-        {
-            mprf(MSGCH_ORB, "You feel the Orb delaying your translocation!");
-            teleport_delay += 5 + random2(5);
         }
 
         you.set_duration(DUR_TELEPORT, teleport_delay);
@@ -1338,12 +1315,6 @@ spret cast_apportation(int pow, bool fail)
 
 spret cast_golubrias_passage(const coord_def& where, bool fail)
 {
-    if (orb_limits_translocation())
-    {
-        mprf(MSGCH_ORB, "The Orb prevents you from opening a passage!");
-        return spret::abort;
-    }
-
     if (player_in_branch(BRANCH_GAUNTLET))
     {
         mprf(MSGCH_ORB, "A magic seal in the Gauntlet prevents you from "
