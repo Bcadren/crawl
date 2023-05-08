@@ -1671,6 +1671,8 @@ int attack::apply_defender_ac(int damage, int damage_max) const
     }
     if (attk_flavour == AF_DECAY)
         local_ac = ac_type::none;
+    if (attk_flavour == AF_SHATTER)
+        local_ac = ac_type::triple;
     if (damage_brand == SPWPN_MOLTEN)
         local_ac = ac_type::half;
     if (attk_flavour == AF_PIERCE_AC)

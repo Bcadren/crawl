@@ -128,6 +128,7 @@ enum attack_flavour
     AF_PURE_PAIN,
     AF_DECAY,
     AF_FROG,
+    AF_SHATTER,
 };
 
 // Non-spell "summoning" types to give to monster::mark_summoned(), or

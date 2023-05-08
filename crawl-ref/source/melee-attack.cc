@@ -2870,20 +2870,19 @@ bool melee_attack::apply_staff_damage()
 
     case STAFF_EARTH:
     {
-        special_damage = staff_damage(SK_EARTH_MAGIC);
-        const int maxdmg = staff_damage(SK_EARTH_MAGIC, true);
-        if (mount_defend)
-            special_damage = apply_mount_ac(special_damage, maxdmg);
-        else
-            special_damage = apply_defender_ac(special_damage, maxdmg);
+        special_damage = staff_damage(SK_EARTH_MAGIC) * 4 / 3;
+        const int maxdmg = staff_damage(SK_EARTH_MAGIC, true) * 4 / 3;
+        attk_flavour = AF_SHATTER;
+
+        special_damage = apply_defender_ac(special_damage, maxdmg);
 
         if (special_damage > 0)
         {
             special_damage_message =
                 make_stringf(
-                    "%s crush%s %s%s%s",
+                    "%s blast%s %s%s%s",
                     attacker->name(DESC_THE).c_str(),
-                    attacker->is_player() ? "" : "es",
+                    attacker->is_player() ? "" : "s",
                     mount_defend ? "your " : "",
                     mount_defend ? you.mount_name(true).c_str() : defender->name(DESC_THE).c_str(),
                     attack_strength_punctuation(special_damage).c_str());

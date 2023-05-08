@@ -4465,6 +4465,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_PAIN,              "cause pain to the living" },
         { AF_PURE_PAIN,         "cause severe pain to the living" },
         { AF_DECAY,             " ignoring the target's armour and causing rotting" },
+        { AF_SHATTER,           " showering with rubble, greatly reduced by armour" },
         { AF_ENSNARE,           "ensnare with webbing" },
         { AF_ENGULF,            "engulf inside $" },
         { AF_FROG,              "attempt to swallow whole" },
