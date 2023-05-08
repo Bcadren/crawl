@@ -189,6 +189,7 @@ void uncontrolled_blink(bool override_stasis, coord_def disp_center)
         canned_msg(MSG_YOU_BLINK);
     const coord_def origin = you.pos();
     move_player_to_grid(target, false);
+    contaminate_player(200 + random2(100));
     _place_tloc_cloud(origin);
 }
 
