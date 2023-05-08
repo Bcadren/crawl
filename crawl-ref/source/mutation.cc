@@ -281,7 +281,7 @@ static const mutation_type _all_scales[] =
     MUT_THIN_METALLIC_SCALES,       MUT_THIN_SKELETAL_STRUCTURE,
     MUT_YELLOW_SCALES,              MUT_STURDY_FRAME,
     MUT_SANGUINE_ARMOUR,            MUT_CRAGGY_SKIN,
-    BIG_BRAIN,
+    MUT_BIG_BRAIN,
 };
 
 static bool _is_covering(mutation_type mut)
@@ -3362,7 +3362,8 @@ string mutation_desc(mutation_type mut, int level, bool colour,
     else if (mut == MUT_DISTORTION_FIELD || mut == MUT_ICY_BLUE_SCALES || mut == MUT_IRIDESCENT_SCALES
         || mut == MUT_RUGGED_BROWN_SCALES || mut == MUT_MOLTEN_SCALES || mut == MUT_SLIMY_GREEN_SCALES
         || mut == MUT_THIN_METALLIC_SCALES || mut == MUT_YELLOW_SCALES || mut == MUT_ROUGH_BLACK_SCALES
-        || mut == MUT_THIN_SKELETAL_STRUCTURE || mut == MUT_STURDY_FRAME || mut == MUT_CRAGGY_SKIN)
+        || mut == MUT_THIN_SKELETAL_STRUCTURE || mut == MUT_STURDY_FRAME || mut == MUT_CRAGGY_SKIN 
+        || mut == MUT_BIG_BRAIN)
     {
         ostringstream ostr;
 
@@ -3602,7 +3603,7 @@ static const facet_def _demon_facets[] =
       { -33, -33, 0 } },
     { 1, { MUT_NON_MUTATION, MUT_NON_MUTATION, MUT_CRAGGY_SKIN },
       { -33, -33, 0 } },
-    { 1, { MUT_BIG_BRAIN, MUT_BIG_BRAIN, MUT_BIG_BRAIN },
+    { 1, { MUT_NON_MUTATION, MUT_NON_MUTATION, MUT_BIG_BRAIN },
       { -33, -33, 0 } },
     // Tier 2 facets
     { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },

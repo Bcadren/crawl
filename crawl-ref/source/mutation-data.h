@@ -1346,7 +1346,6 @@ static const mutation_def mut_data[] =
   {"You feel your blood become quiescent.", "", ""},
 },
 
-<<<<<<< HEAD
 // Draconian rework mutations all the messaging on these is done specially.
 { MUT_MINOR_MARTIAL_APT_BOOST, 0, 1, mutflag::good, false,
    "minor martial skill boost",
@@ -1390,26 +1389,15 @@ static const mutation_def mut_data[] =
   {"", "", ""},
 },
 
-{ MUT_CAMOUFLAGE, 8, 2, mutflag::good, true,
-=======
-{ MUT_BIG_BRAIN, 0, 3, mutflag::good, false,
+{ MUT_BIG_BRAIN, 0, 1, mutflag::good, false,
   "big brain",
 
-  {"You have an unusually large brain. (Int +2)",
-   "You have an extremely huge brain. (Int + 4)",
-   "You have an absolutely massive brain. (Int +6, Wiz)"},
-
-  {"Your brain expands.",
-   "Your brain expands.",
-   "Your brain expands to incredible size."},
-
-  {"Your brain returns to normal size.",
-   "Your brain shrinks.",
-   "Your brain shrinks."},
+  {"You have an unusually large brain. (Int +", "", ""},
+  {"Your brain expands.", "", ""},
+  {"Your brain shrinks to average size.", "", ""},
 },
 
-{ MUT_CAMOUFLAGE, 1, 3, mutflag::good, true,
->>>>>>> 36fcd6fac6 (New "scales" facet, Big Brain.)
+{ MUT_CAMOUFLAGE, 8, 2, mutflag::good, true,
   "camouflage",
 
   {"Your skin changes colour to match your surroundings (Stealth++).",

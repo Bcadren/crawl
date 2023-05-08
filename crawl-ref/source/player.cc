@@ -2891,15 +2891,15 @@ int player_wizardry(spell_type spell)
 
     wiz += you.wearing(EQ_RINGS, RING_WIZARDRY);
 
+    if (you.has_mutation(MUT_BIG_BRAIN))
+        wiz++;
+
     item_def * staff = you.staff();
 
     if (!staff)
         return wiz;
 
     if ((get_staff_facet(*staff) == SPSTF_WIZARD) && staff_enhances_spell(staff, spell))
-        wiz++;
-
-    if (you.get_mutation_level(MUT_BIG_BRAIN) == 3)
         wiz++;
 
     return wiz;

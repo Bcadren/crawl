@@ -454,7 +454,14 @@ static int _int_modifier(bool innate_only)
 
     // mutations
     result += you.mutated_stats[STAT_INT];
-    result += 2 * _mut_level(MUT_BIG_BRAIN, innate_only);
+
+    if (_mut_level(MUT_BIG_BRAIN, innate_only))
+    {
+        if (you.char_class == JOB_DEMONSPAWN)
+            result += you.get_experience_level() / 3;
+        else
+            result += 3;
+    }
 
     return result;
 }
