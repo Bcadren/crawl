@@ -4744,8 +4744,7 @@ void unmarshallItem(reader &th, item_def &item)
 #endif
     // Fixup artefact props to handle reloading items when the new version
     // of Crawl has more artefact props.
-    if (is_artefact(item))
-        artefact_fixup_props(item);
+    artefact_fixup_props(item);
 
 #if TAG_MAJOR_VERSION == 34
     // Remove artefact autoinscriptions from the saved inscription.
@@ -5126,14 +5125,6 @@ void unmarshallItem(reader &th, item_def &item)
     {
         artefact_set_property(item, ARTP_TWISTER, 0);
     }
-
-    // Monsters could zap wands below zero from
-    // 0.17-a0-739-g965e8eb to 0.17-a0-912-g3e33c8f.
-    if (item.base_type == OBJ_WANDS && item.charges < 0)
-        item.charges = 0;
-
-    if (item.base_type == OBJ_RODS && item.cursed())
-        do_uncurse_item(item); // rods can't be cursed anymore
 
     // turn old hides into the corresponding armour
     static const map<int, armour_type> hide_to_armour = {

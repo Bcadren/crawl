@@ -2105,4 +2105,7 @@ void artefact_fixup_props(item_def &item)
 
     if (props.exists(KNOWN_PROPS_KEY))
         artefact_pad_store_vector(props[KNOWN_PROPS_KEY], false);
+
+    if (props.exists(CURSE_PROPS_KEY))
+        artefact_pad_store_vector(props[CURSE_PROPS_KEY], short(0));
 }
