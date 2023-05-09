@@ -8927,10 +8927,12 @@ int player::max_spiny_damage(bool allow_tran) const
     if (!mut)
         return 0;
 
+    const int mmut = mut;
+
     if (you.get_mutation_level(MUT_CRAGGY_SKIN, !allow_tran))
         mut--;
 
-    int maxdmg = max(div_round_up(you.experience_level * (1 + mut), 3), 1 + mut);
+    int maxdmg = max(div_round_up(you.experience_level * (1 + mut), 3), 1 + mmut);
 
     return maxdmg;
 }
