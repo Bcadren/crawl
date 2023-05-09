@@ -141,6 +141,7 @@ void give_job_equipment(job_type job)
         make_item_unrandart(hat, UNRAND_JESTER_CAP);
         origin_set_startequip(hat);
         you.equip[EQ_HELMET] = 10;
+        you.unrand_reacts.set(EQ_HELMET);
 
         item_def * robe = newgame_make_item(OBJ_ARMOURS, ARM_ROBE);
 
