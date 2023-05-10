@@ -3364,7 +3364,7 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         || mut == MUT_RUGGED_BROWN_SCALES || mut == MUT_MOLTEN_SCALES || mut == MUT_SLIMY_GREEN_SCALES
         || mut == MUT_THIN_METALLIC_SCALES || mut == MUT_YELLOW_SCALES || mut == MUT_ROUGH_BLACK_SCALES
         || mut == MUT_THIN_SKELETAL_STRUCTURE || mut == MUT_STURDY_FRAME || mut == MUT_CRAGGY_SKIN 
-        || mut == MUT_BIG_BRAIN)
+        || mut == MUT_BIG_BRAIN || mut == MUT_SHARP_SCALES)
     {
         ostringstream ostr;
 
@@ -3377,9 +3377,13 @@ string mutation_desc(mutation_type mut, int level, bool colour,
             bonus += 3;
 
         if (msg.mutation == MUT_NON_MUTATION)
-            ostr << mdef.have[level - 1] << bonus << ")";
+            ostr << mdef.have[level - 1];
         else
-            ostr << msg.have[level - 1] << bonus << ")";
+            ostr << msg.have[level - 1];
+        ostr << bonus;
+        if (mut == MUT_SHARP_SCALES)
+            ostr << ", Slay +" << bonus;
+        ostr << ")";
         result = ostr.str();
     }
     else if (mut == MUT_LARGE_BONE_PLATES)
@@ -3606,7 +3610,7 @@ static const facet_def _demon_facets[] =
       { -33, -33, 0 } },
     { 1, { MUT_NON_MUTATION, MUT_NON_MUTATION, MUT_BIG_BRAIN },
       { -33, -33, 0 } },
-    { 1, { MUT_SHARP_SCALES, MUT_SHARP_SCALES, MUT_SHARP_SCALES },
+    { 1, { MUT_NON_MUTATION, MUT_NON_MUTATION, MUT_SHARP_SCALES },
       { -33, -33, 0 } },
     // Tier 2 facets
     { 2, { MUT_HEAT_RESISTANCE, MUT_FLAME_CLOUD_IMMUNITY, MUT_IGNITE_BLOOD },

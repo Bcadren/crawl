@@ -1330,20 +1330,12 @@ static const mutation_def mut_data[] =
   {"Your yellow scales disappear.", "", ""},
 },
 
-{ MUT_SHARP_SCALES, 3, 3, mutflag::good, true,
+{ MUT_SHARP_SCALES, 3, 1, mutflag::good, true,
   "sharp scales",
 
-  {"You are partially covered in razor-sharp scales. (AC +1, Slay +1)",
-   "You are mostly covered in razor-sharp scales. (AC +2, Slay +2)",
-   "You are completely covered in razor-sharp scales. (AC +3, Slay + 3)"},
-
-  {"Sharp scales grow over part of your body.",
-   "Sharp scales spread over more of your body.",
-   "Sharp scales cover your body completely."},
-
-  {"Your sharp scales disappear.",
-   "Your sharp scales recede somewhat.",
-   "Your sharp scales recede somewhat."},
+  {"You are covered in razor-sharp scales. (AC +", "", ""},
+  {"Sharp scales spread over your body.", "", ""},
+  {"Your sharp scales disappear.", "", ""},
 },
 
 { MUT_STURDY_FRAME, 9, 1, mutflag::good, true,

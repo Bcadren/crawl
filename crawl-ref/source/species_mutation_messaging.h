@@ -285,6 +285,22 @@ static const species_mutation_message spmu_data[] =
   { "Your yellow bark withers and flakes away.", "", "" },
 },
 
+{ SP_LIGNIFITE, MUT_CRAGGY_SKIN,
+    "craggy bark",
+
+  { "Your rough stony bark repels attacks and injures those that touch it. (AC +", "", "" },
+  { "Your bark hardens and calcifies into a rougher craggier texture.", "", "" },
+  { "Your bark softens.", "", "" },
+},
+
+{ SP_LIGNIFITE, MUT_SHARP_SCALES,
+    "thorny bark",
+
+  { "You are covered in thorns. (AC +", "", ""},
+  { "Your bark grows thicker and sprouts sharp thorns.", "", ""},
+  { "Your thorns wither and flake away.", "", "" },
+},
+
 { SP_LIGNIFITE, MUT_SANGUINE_ARMOUR,
   "sanguine armour",
 

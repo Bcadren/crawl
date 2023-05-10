@@ -4535,7 +4535,9 @@ int slaying_bonus(bool ranged, bool weapon)
     }
 
     ret += 3 * augmentation_amount();
-    ret += you.get_mutation_level(MUT_SHARP_SCALES);
+
+    if (you.has_mutation(MUT_SHARP_SCALES))
+        ret += you.ac_change_from_mutation(MUT_SHARP_SCALES);
 
     if (you.duration[DUR_SONG_OF_SLAYING])
         ret += you.props[SONG_OF_SLAYING_KEY].get_int();
