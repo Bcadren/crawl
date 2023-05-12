@@ -4131,7 +4131,7 @@ int monster::res_water_drowning(bool /*mount*/) const
     if (is_unbreathing())
         return 1;
 
-    habitat_type hab = mons_habitat(*this);
+    habitat_type hab = mons_habitat(*this, true);
     if (hab == HT_WATER || hab == HT_AMPHIBIOUS)
         return 1;
 
