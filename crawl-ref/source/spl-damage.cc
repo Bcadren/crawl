@@ -928,7 +928,8 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     }
 
     // TODO: check known rN instead of holiness
-    if (observable && !actor_is_susceptible_to_vampirism(*mons))
+    if (observable && !actor_is_susceptible_to_vampirism(*mons)
+        && !determine_chaos(&you, SPELL_VAMPIRIC_DRAINING, false))
     {
         mpr("You can't drain life from that!");
         return spret::abort;
@@ -953,7 +954,17 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     if (_is_menacing(&you, SPELL_VAMPIRIC_DRAINING))
         dam *= div_rand_round(3 * dam, 2);
 
-    dam = resist_adjust_damage(mons, BEAM_NEG, dam);
+    beam_type damtype = BEAM_NEG;
+
+    const bool chaos = determine_chaos(&you, SPELL_VAMPIRIC_DRAINING);
+
+    if (chaos)
+        damtype = chaos_damage_type(true);
+
+    if (you.staff() && is_unrandom_artefact(*you.staff(), UNRAND_MAJIN))
+        damtype = eldritch_damage_type();
+
+    dam = resist_adjust_damage(mons, damtype, dam);
 
     if (!dam)
     {
@@ -965,7 +976,18 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     hp_gain = div_rand_round(hp_gain, 2);
     hp_gain = min(you.hp_max - you.hp, hp_gain);
 
-    _player_hurt_monster(*mons, dam, BEAM_NEG);
+    _player_hurt_monster(*mons, dam, damtype);
+
+    mprf("You drain the %s's %s%s", mons->name(DESC_THE).c_str(),
+        chaos ? "magical energy" : "life force",
+        attack_strength_punctuation(dam).c_str());
+
+    if (chaos && x_chance_in_y(pow, 100))
+    {
+        mons->add_ench(mon_enchant(ENCH_ANTIMAGIC, 0,
+            &you, // doesn't matter
+            dam / 2 * BASELINE_DELAY));
+    }
 
     if (hp_gain && !you.duration[DUR_DEATHS_DOOR])
     {

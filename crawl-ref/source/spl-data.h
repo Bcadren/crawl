@@ -667,7 +667,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_VAMPIRIC_DRAINING, "Vampiric Draining", "",
+    SPELL_VAMPIRIC_DRAINING, "Vampiric Draining", "Magical Draining",
     spschool::necromancy,
     spflag::dir_or_target | spflag::not_self | spflag::emergency
         | spflag::selfench,

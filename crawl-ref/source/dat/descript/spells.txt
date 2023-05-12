@@ -1984,6 +1984,11 @@ Vampiric Draining spell
 
 Steals the life of an adjacent living creature and grants it to the caster.
 %%%%
+Magical Draining
+
+Saps magical power from an adjacent creature, possibly disrupting its casting. 
+Grants stolen magical power as health to the caster.
+%%%%
 Venom Bolt spell
 
 Fires a penetrating bolt of poison.
