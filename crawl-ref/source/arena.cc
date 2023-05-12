@@ -1501,7 +1501,7 @@ static void _choose_arena_teams(newgame_def& choice,
     prompt.cprintf("\nExamples:\n");
     prompt.cprintf("  Sigmund v Jessica\n");
     prompt.cprintf("  99 orc v the Royal Jelly\n");
-    prompt.cprintf("  20-headed hydra v 10 kobold ; scimitar ego:flaming");
+    prompt.cprintf("  20-headed hydra v 10 kobold ; scimitar ego:molten");
     vbox->add_child(make_shared<Text>(move(prompt)));
 
     auto popup = make_shared<ui::Popup>(move(vbox));

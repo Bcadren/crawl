@@ -479,7 +479,7 @@ static const char *weapon_brands_verbose[] =
 
 static const char *weapon_brands_adj[] =
 {
-    "", "flaming", "freezing", "holy", "electric",
+    "", "molten", "freezing", "holy", "electric",
 #if TAG_MAJOR_VERSION == 34
     "orc-killing", "dragon-slaying",
 #endif
