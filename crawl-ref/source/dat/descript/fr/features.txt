@@ -280,7 +280,7 @@ A shadowy altar of Dithmenos
 
 Cet autel de Dithmenos le Ténébreux semble absorber la lumière des environs.
 %%%%
-A shattered altar of Ashenzari
+A splintered altar of Ashenzari
 
 Cet autel de cristal s'est brisé lorsque que Ashenzari fut maudit. Néanmoins,
 une force est encore à l'œuvre ici : une sombre aura maintiens les éclats en

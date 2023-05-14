@@ -158,7 +158,7 @@ A shaft
 
 깊은 구멍이다. 이곳에 빠지면 몇 층 아래로 떨어지게 될 것 같다.
 %%%%
-A shattered altar of Ashenzari
+A splintered altar of Ashenzari
 
 한때는 수정 제단이었으나 저주받아 산산이 조각난, 탐험과 저주의 신 아셴자리의
 제단이다. 이곳에 신이 기운이 깃들어있음을 알리기라도 하는 듯, 어두운 기운이
