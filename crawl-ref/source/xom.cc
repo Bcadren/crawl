@@ -63,6 +63,7 @@
 #include "stringutil.h"
 #include "teleport.h"
 #include "terrain.h"
+#include "tile-env.h"
 #include "tilepick.h"
 #include "transform.h"
 #include "traps.h"
