@@ -1737,6 +1737,7 @@ static const struct spell_desc spelldata[] =
     TILEG_METAL_SPLINTERS, // BCADDO: Give own sprite.
 },
 
+{
     SPELL_SPLINTERSPRAY, "Splinterspray", "",
     spschool::earth | spschool::evocation,
     spflag::dir_or_target | spflag::monster | spflag::needs_tracer,
@@ -3918,7 +3919,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_MARSHLIGHT, "Marshlight",
-    spschool::conjuration | spschool::fire,
+    spschool::fire,
     spflag::selfench | spflag::monster,
     4,
     200,
@@ -3950,8 +3951,8 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_HURL_SLUDGE, "Hurl Sludge",
-    spschool::poison | spschool::conjuration | spschool::transmutation,
+    SPELL_HURL_SLUDGE, "Hurl Sludge", "",
+    spschool::poison | spschool::transmutation,
     spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
     6,
     200,

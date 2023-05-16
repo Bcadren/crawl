@@ -300,6 +300,8 @@ static const pop_entry pop_swamp[] =
   {  1,  4,   300, FLAT, MONS_BLOATED_HUSK },
   {  1,  4,   800, FALL, MONS_BOG_BODY },
   {  1,  4,   200, FLAT, MONS_BOG_BODY },
+  {  1,  4,   800, FALL, MONS_SLIME_CREATURE },
+  {  1,  4,   200, FLAT, MONS_SLIME_CREATURE },
   // Harder enemies:
   {  1,  4,   400, FLAT, MONS_SPRIGGAN_DRUID },
   {  1,  4,   500, RISE, MONS_SPRIGGAN_DRUID },
@@ -332,6 +334,8 @@ static const pop_entry pop_swamp[] =
   {  1,  4,   80, RISE, MONS_CHAOS_BUTTERFLY },
   {  1,  4,    5, FLAT, MONS_TENTACLED_MONSTROSITY },
   {  1,  4,    5, RISE, MONS_TENTACLED_MONSTROSITY },
+  {  1,  4,    5, FLAT, MONS_VERY_UGLY_THING },
+  {  1,  4,    5, RISE, MONS_VERY_UGLY_THING },
   // OODs
   {  5,  7, 1000, FLAT, MONS_FENSTRIDER_WITCH },
   {  5,  7, 1500, FLAT, MONS_SHAMBLING_MANGROVE },
