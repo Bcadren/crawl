@@ -1295,7 +1295,7 @@ static void _unequip_armour_effect(item_def& item, bool meld,
         break;
 
     case SPARM_PONDEROUSNESS:
-        mpr("That put a bit of spring back into your step.");
+        mpr("You feel like a heavy weight has been lifted.");
         break;
 
     case SPARM_MAGIC_RESISTANCE:
