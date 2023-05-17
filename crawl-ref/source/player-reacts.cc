@@ -876,7 +876,7 @@ static void _decrement_durations()
         wu_jian_heaven_tick();
     }
 
-    if (you.duration[DUR_ATTRACTIVE])
+    if (you.duration[DUR_GRAVITATION])
         attract_monsters();
 
     // these should be after decr_ambrosia, transforms, liquefying, etc.

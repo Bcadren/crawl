@@ -500,7 +500,6 @@ unsigned int item_value(item_def item, bool ident)
 
             case POT_CURING:
             case POT_LIGNIFY:
-            case POT_ATTRACTION:
                 valued += 30;
                 break;
 
@@ -562,6 +561,7 @@ unsigned int item_value(item_def item, bool ident)
             case SCR_HOLY_WORD:
             case SCR_SILENCE:
             case SCR_VULNERABILITY:
+            case SCR_GRAVITATION:
                 valued += 75;
                 break;
 

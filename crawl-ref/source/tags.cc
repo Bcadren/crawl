@@ -4999,8 +4999,7 @@ void unmarshallItem(reader &th, item_def &item)
     {
         // Combine EW1/EW2/EW3 scrolls into single enchantment scroll.
         if (item.base_type == OBJ_SCROLLS
-            && (item.sub_type == SCR_ENCHANT_WEAPON_II
-                || item.sub_type == SCR_ENCHANT_WEAPON_III))
+            && (item.sub_type == SCR_ENCHANT_WEAPON_III))
         {
             item.sub_type = SCR_ENCHANT_WEAPON;
         }

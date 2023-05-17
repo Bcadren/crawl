@@ -4314,6 +4314,12 @@ void read_scroll(item_def& scroll)
         noisy(25, you.pos(), "You hear a loud clanging noise!");
         break;
 
+    case SCR_GRAVITATION:
+        mprf(MSGCH_DURATION, "You %s gravitational anomaly.",
+            you.duration[DUR_GRAVITATION] > 0 ? "strengthen your" : "create a");
+        you.increase_duration(DUR_GRAVITATION, 20 + random2(40) / 2);
+        break;
+
     case SCR_SUMMONING:
         cast_shadow_creatures(MON_SUMM_SCROLL);
         break;

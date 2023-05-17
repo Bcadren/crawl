@@ -874,9 +874,10 @@ potion of slowing
 
 An accursed beverage which slows the actions of anyone who drinks it.
 %%%%
-potion of attraction
+scroll of gravitation
 
-A potion which makes the drinker attract monsters, pulling them quickly closer.
+A scroll containing a spell that creates a shortlived gravitational 
+anomaly on the caster, pulling other creatures towards them for a time.
 %%%%
 quad damage
 

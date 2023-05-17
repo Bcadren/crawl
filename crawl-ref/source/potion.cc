@@ -380,33 +380,6 @@ public:
     }
 };
 
-class PotionAttraction : public PotionEffect
-{
-private:
-    PotionAttraction() : PotionEffect(POT_ATTRACTION) { }
-    DISALLOW_COPY_AND_ASSIGN(PotionAttraction);
-public:
-    static const PotionAttraction &instance()
-    {
-        static PotionAttraction inst; return inst;
-    }
-
-    // note on uselessness: this potion works by status, so should still be
-    // allowed with no monsters in LOS. Because it is marked as dangerous,
-    // it always prompts. XX maybe add info to the prompt?
-
-    bool effect(bool = true, int pow = 40, bool is_potion = true) const override
-    {
-        const bool was_attractive = you.duration[DUR_ATTRACTIVE] > 0;
-
-        mprf(MSGCH_DURATION, "You feel %sattractive to monsters.",
-            was_attractive ? "more " : "");
-
-        you.increase_duration(DUR_ATTRACTIVE, 20 + random2(pow) / 2);
-        return true;
-    }
-};
-
 class PotionAmnesia : public PotionEffect
 {
 private:

@@ -187,6 +187,6 @@ enum duration_type
     DUR_NOXIOUS_BOG,
     DUR_STAFF,
     DUR_SWALLOWED,
-    DUR_ATTRACTIVE,
+    DUR_GRAVITATION,
     NUM_DURATIONS
 };

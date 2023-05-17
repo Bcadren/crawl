@@ -765,9 +765,7 @@ i-fog SCR_FOG
 %back scroll-cyan
 i-acquirement SCR_ACQUIREMENT
 %back scroll-green
-# start TAG_MAJOR_VERSION == 34
-i-enchant-weapon SCR_ENCHANT_WEAPON_II
-# end TAG_MAJOR_VERSION
+i-attraction SCR_GRAVITATION
 i-brand-weapon SCR_BLESS_ITEM
 # start TAG_MAJOR_VERSION == 34
 i-recharging SCR_RECHARGING
@@ -1014,8 +1012,7 @@ i-blood POT_BLOOD
 i-coagulated-blood POT_BLOOD_COAGULATED
 # end TAG_MAJOR_VERSION
 i-lignify POT_LIGNIFY
-i-good-mutation POT_BENEFICIAL_MUTATION 
-i-attraction POT_ATTRACTION POT_ID_LAST
+i-good-mutation POT_BENEFICIAL_MUTATION POT_ID_LAST
 %back none
 %rim 1
 

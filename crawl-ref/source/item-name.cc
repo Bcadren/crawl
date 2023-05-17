@@ -730,7 +730,6 @@ const char* potion_type_name(int potiontype)
     case POT_HASTE:             return "haste";
     case POT_MIGHT:             return "might";
     case POT_AGILITY:           return "agility";
-    case POT_ATTRACTION:        return "attraction";
     case POT_BRILLIANCE:        return "brilliance";
     case POT_GAIN_STRENGTH:     return "gain strength";
     case POT_GAIN_DEXTERITY:    return "gain dexterity";
@@ -766,7 +765,8 @@ static const char* scroll_type_name(int scrolltype)
     {
     case SCR_TELEPORTATION:      return "teleportation";
     case SCR_FEAR:               return "fear";
-    case SCR_ATTENTION:              return "attention";
+    case SCR_ATTENTION:          return "attention";
+    case SCR_GRAVITATION:        return "gravitation";
     case SCR_SUMMONING:          return "summoning";
     case SCR_ENCHANT:            return "enchantment";
     case SCR_TORMENT:            return "torment";
@@ -3157,6 +3157,7 @@ bool is_dangerous_item(const item_def &item, bool temp)
         case SCR_ATTENTION:
         case SCR_VULNERABILITY:
         case SCR_SILENCE:
+        case SCR_GRAVITATION:
             return true;
         case SCR_TORMENT:
             return !you.get_mutation_level(MUT_TORMENT_RESISTANCE);
@@ -3175,7 +3176,6 @@ bool is_dangerous_item(const item_def &item, bool temp)
         {
         case POT_MUTATION:
         case POT_LIGNIFY:
-        case POT_ATTRACTION:
             return true;
         default:
             return false;
@@ -3369,8 +3369,6 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
             return !you.can_potion_heal();
         case POT_INVISIBILITY:
             return _invisibility_is_useless(temp);
-        case POT_ATTRACTION:
-            return false;
         CASE_REMOVED_POTIONS(item.sub_type)
         }
 
