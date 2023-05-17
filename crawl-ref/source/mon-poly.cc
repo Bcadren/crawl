@@ -437,29 +437,63 @@ void change_monster_type(monster* mons, monster_type targetc)
 static bool _habitat_matches(bool orig_flies, habitat_type orig_hab,
                              monster_type new_type)
 {
+    const habitat_type new_hab = mons_habitat_type(new_type, new_type, false);
+    // Ability to travel through walls needs to be handled before flight.
+    // So does safety around slimy walls.
+    // Due to wall-shielding mechanics, Rock/Steel monsters cannot be polymorphed
+    // while in a wall anyways, thus can be treated as normal land monsters.
+    switch (orig_hab)
+    {
+        case HT_SLIME:
+        case HT_INCORPOREAL:
+            return new_hab == orig_hab;
+
+        case HT_STEEL:
+        case HT_ROCK:
+            if (new_hab == orig_hab
+                || new_hab == HT_INCORPOREAL
+                || new_hab == HT_STEEL)
+            {
+                return true;
+            }
+            orig_hab = HT_LAND;
+        default:
+            break;
+    }
+
     if (monster_class_flies(new_type))
         return true;
     if (orig_flies)
         return false;
 
-    const habitat_type new_hab = mons_habitat_type(new_type, new_type, false);
+    // Other habitat types are handled by flight.
     switch (orig_hab)
     {
         case HT_AMPHIBIOUS:
         case HT_AMPHIBIOUS_LAVA:
             return new_hab == orig_hab;
         case HT_WATER:
-            return new_hab == orig_hab || new_hab == HT_AMPHIBIOUS;
+            return new_hab == orig_hab 
+                || new_hab == HT_AMPHIBIOUS 
+                || new_hab == HT_SLIME;
         case HT_LAVA:
-            return new_hab == orig_hab || new_hab == HT_AMPHIBIOUS_LAVA;
+            return new_hab == orig_hab 
+                || new_hab == HT_AMPHIBIOUS_LAVA;
         case HT_LAND:
             return new_hab == orig_hab
                 || new_hab == HT_AMPHIBIOUS
-                || new_hab == HT_AMPHIBIOUS_LAVA;
-        case NUM_HABITATS:
+                || new_hab == HT_AMPHIBIOUS_LAVA
+                || new_hab == HT_SLIME
+                || new_hab == HT_ROCK
+                || new_hab == HT_STEEL;
+            // Technically it'd be safe for it to turn into Incorporeal.
+            // Excluded on purpose for thematic reasons.
+        default:
             break;
     }
-    return false; // should never happen
+
+    // Shouldn't reach here.
+    return false;
 }
 
 void init_poly_set(monster *mons)
