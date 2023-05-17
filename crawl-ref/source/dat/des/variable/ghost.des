@@ -22,7 +22,7 @@
 : crawl_require("dlua/vault.lua")
 
 {{
--- Set up the non-flaming edged weapon "left" by the ghost in
+-- Set up the non-molten edged weapon "left" by the ghost in
 -- gammafunk_ghost_hydra_chop.
 function setup_hydra_weapon(e)
     -- Possible weapon types with weights. We stick to weapons wieldable by all
@@ -48,10 +48,10 @@ function wrathful_weapon(class, quality)
     -- the more desireable antimagic brand for randarts, which are trying to be
     -- better quality.
     if quality == "good_item" then
-        egos = {["antimagic"] = 10, ["vorpal"] = 10, ["flaming"] = 10}
+        egos = {["antimagic"] = 10, ["vorpal"] = 10, ["molten"] = 10}
     elseif quality == "randart" then
         -- Increased chance for antimagic.
-        egos = {["antimagic"] = 25, ["vorpal"] = 10, ["flaming"] = 10}
+        egos = {["antimagic"] = 25, ["vorpal"] = 10, ["molten"] = 10}
     else
         error("Unknown weapon quality: " .. quality)
     end
