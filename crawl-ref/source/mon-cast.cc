@@ -2029,9 +2029,6 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_BERSERKER_RAGE:
     case SPELL_SPRINT:
     case SPELL_STONESKIN:
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_SWIFTNESS:
-#endif
     case SPELL_CREATE_TENTACLES:
     case SPELL_BLINK:
     case SPELL_BLINK_RANGE:
@@ -6620,10 +6617,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         mons->go_berserk(true);
         return;
 
-#if TAG_MAJOR_VERSION == 34
-    // Replaced with monster-specific version.
-    case SPELL_SWIFTNESS:
-#endif
     case SPELL_SPRINT:
         mons->add_ench(ENCH_SWIFT);
         simple_monster_message(*mons, " puts on a burst of speed!");
@@ -8675,9 +8668,6 @@ static ai_action::goodness _monster_spell_goodness(monster* mon, mon_spell_slot 
     case SPELL_BERSERKER_RAGE:
         return ai_action::good_or_impossible(mon->needs_berserk(false));
 
-#if TAG_MAJOR_VERSION == 34
-    case SPELL_SWIFTNESS:
-#endif
     case SPELL_SPRINT:
         return ai_action::good_or_impossible(!mon->has_ench(ENCH_SWIFT));
 

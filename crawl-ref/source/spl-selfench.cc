@@ -121,12 +121,25 @@ spret cast_revivification(int pow, bool fail)
     return spret::success;
 }
 
+spret cast_gravitation(int power, bool fail)
+{
+    fail_check();
+
+    mprf(MSGCH_DURATION, "You %s gravitational anomaly.",
+        you.duration[DUR_GRAVITATION] > 0 ? "strengthen your" : "create a");
+    you.increase_duration(DUR_GRAVITATION, 20 + random2(power) / 2, 100);
+    you.attribute[ATTR_GRAVITY_POWER] = power;
+
+    return spret::success;
+}
+
 spret cast_swiftness(int power, bool fail)
 {
     fail_check();
 
     if (you.in_liquid())
     {
+        // BCADDO: Case for lava?
         // Hint that the player won't be faster until they leave the liquid.
         mprf("The %s foams!", you.in_water() ? "water"
                                              : "liquid ground");

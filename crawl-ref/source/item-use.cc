@@ -4315,9 +4315,7 @@ void read_scroll(item_def& scroll)
         break;
 
     case SCR_GRAVITATION:
-        mprf(MSGCH_DURATION, "You %s gravitational anomaly.",
-            you.duration[DUR_GRAVITATION] > 0 ? "strengthen your" : "create a");
-        you.increase_duration(DUR_GRAVITATION, 20 + random2(40) / 2);
+        cast_gravitation(20, false);
         break;
 
     case SCR_SUMMONING:

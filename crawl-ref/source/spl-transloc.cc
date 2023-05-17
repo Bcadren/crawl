@@ -1667,6 +1667,8 @@ static bool _can_move_mons_to(const monster &mons, coord_def pos)
  */
 void attract_monsters()
 {
+    const int power = you.attribute[ATTR_GRAVITY_POWER];
+
     for (monster_near_iterator mi(you.pos(), LOS_NO_TRANS); mi; ++mi)
     {
         if (!_can_beckon(**mi))
@@ -1676,11 +1678,20 @@ void attract_monsters()
         if (orig_dist <= 1)
             continue;
 
+        int rand_power = random2avg(power, 3);
+        const int max_range = 2 + div_rand_round(rand_power, 10);
+
+        if (orig_dist > max_range)
+            continue;
+
         ray_def ray;
         if (!find_ray(mi->pos(), you.pos(), ray, opc_solid))
             continue;
 
-        const int max_move = 3;
+        // reroll.
+        rand_power = random2avg(power, 3);
+
+        const int max_move = 2 + div_rand_round(rand_power, 12);
         for (int i = 0; i < max_move && i < orig_dist - 1; i++)
             ray.advance();
 

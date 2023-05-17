@@ -3501,6 +3501,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_GELLS_GRAVITATION, "Gell's Gravitation", "",
+    spschool::translocation | spschool::charms,
+    spflag::helpful | spflag::selfench | spflag::utility,
+    5,
+    100,
+    LOS_RADIUS, LOS_RADIUS,
+    5, 0,
+    TILEG_GRAVITAS, // BCADDO: Tile.
+},
+
+{
     SPELL_VIOLENT_UNRAVELLING, "Yara's Violent Unravelling", "",
     spschool::hexes | spschool::transmutation,
     spflag::dir_or_target | spflag::needs_tracer | spflag::no_ghost
@@ -4026,7 +4037,6 @@ AXED_SPELL(SPELL_SACRIFICE, "Sacrifice")
 AXED_SPELL(SPELL_MIASMA_CLOUD, "Miasma cloud")
 AXED_SPELL(SPELL_POISON_CLOUD, "Poison cloud")
 AXED_SPELL(SPELL_FIRE_CLOUD, "Fire cloud")
-AXED_SPELL(SPELL_SERPENT_OF_HELL_BREATH_REMOVED, "Old serpent of hell breath")
 AXED_SPELL(SPELL_INTOXICATE, "Alistair's Intoxication")
 AXED_SPELL(SPELL_PARALYSE, "Paralyse")
 AXED_SPELL(SPELL_SUMMON_GUARDIAN_GOLEM, "Summon Guardian Golem")

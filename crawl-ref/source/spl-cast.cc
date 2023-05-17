@@ -2343,6 +2343,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_SWIFTNESS:
         return cast_swiftness(powc, fail);
 
+    case SPELL_GELLS_GRAVITATION:
+        return cast_gravitation(powc, fail);
+
     case SPELL_OZOCUBUS_ARMOUR:
         return ice_armour(powc, fail);
 
