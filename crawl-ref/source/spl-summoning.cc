@@ -1751,24 +1751,24 @@ spret cast_summon_forest(actor* caster, int pow, coord_def &where, god_type god,
             mpr("A forested plane collides here with a resounding crunch!");
         noisy(spell_effect_noise(SPELL_SUMMON_FOREST), caster->pos());
 
-        mgen_data dryad_data = _pal_data(MONS_DRYAD, 1, god,
+        mgen_data kael_data = _pal_data(MONS_KAEL, 1, god,
                                          SPELL_SUMMON_FOREST);
-        dryad_data.hd = 5 + div_rand_round(pow, 18);
+        kael_data.hd = 5 + div_rand_round(pow, 18);
 
-        if (monster *dryad = create_monster(dryad_data))
+        if (monster *kael = create_monster(kael_data))
         {
-            mon_enchant abj = dryad->get_ench(ENCH_ABJ);
+            mon_enchant abj = kael->get_ench(ENCH_ABJ);
             abj.duration = duration - 10;
-            dryad->update_ench(abj);
-            dryad->move_to_pos(where);
-            dryad->max_hit_points = dryad->hit_points = div_rand_round(dryad->max_hit_points * dryad->get_experience_level(), 5);
+            kael->update_ench(abj);
+            kael->move_to_pos(where);
+            kael->max_hit_points = kael->hit_points = div_rand_round(kael->max_hit_points * kael->get_experience_level(), 5);
 
-            chaos_summon(SPELL_SUMMON_FOREST, dryad, caster);
+            chaos_summon(SPELL_SUMMON_FOREST, kael, caster);
 
             // Pre-awaken the forest just summoned.
             bolt dummy;
-            mons_cast(dryad, dummy, SPELL_AWAKEN_FOREST,
-                      dryad->spell_slot_flags(SPELL_AWAKEN_FOREST));
+            mons_cast(kael, dummy, SPELL_AWAKEN_FOREST,
+                kael->spell_slot_flags(SPELL_AWAKEN_FOREST));
         }
 
         you.duration[DUR_FORESTED] = duration;

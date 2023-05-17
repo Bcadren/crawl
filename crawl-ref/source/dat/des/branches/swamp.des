@@ -1048,7 +1048,7 @@ ENDMAP
 NAME:    hangedman_swamp_grove
 TAGS:    no_pool_fixup no_monster_gen patrolling transparent
 DEPTH:   Swamp, !Swamp:$
-KMONS:   1 = eleionoma
+KMONS:   1 = dryad
 KMONS:   2 = spriggan druid
 KMONS:   3 = bunyip / alligator
 KFEAT:   12 = shallow_water

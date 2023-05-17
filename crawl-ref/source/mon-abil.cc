@@ -1301,7 +1301,7 @@ bool mon_special_ability(monster* mons)
     }
     break;
 
-    case MONS_ELEIONOMA:
+    case MONS_DRYAD:
     {
         if (!one_chance_in(3))
             break;

@@ -1412,7 +1412,7 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    {  MST_DRYAD,
+    {  MST_KAEL,
       {
        { SPELL_AWAKEN_VINES, 23, MON_SPELL_MAGICAL },
        { SPELL_AWAKEN_FOREST, 23, MON_SPELL_MAGICAL },
@@ -1420,7 +1420,7 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    {  MST_ELEIONOMA,
+    {  MST_DRYAD,
       {
        { SPELL_SPLINTERSPRAY, 50, MON_SPELL_MAGICAL },
        { SPELL_WOODWEAL, 150, MON_SPELL_MAGICAL | MON_SPELL_EMERGENCY },

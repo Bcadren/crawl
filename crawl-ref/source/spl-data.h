@@ -3918,7 +3918,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_MARSHLIGHT, "Marshlight",
+    SPELL_MARSHLIGHT, "Marshlight", "",
     spschool::fire,
     spflag::selfench | spflag::monster,
     4,

@@ -1110,9 +1110,9 @@ merfolk_siren_water MONS_MERFOLK_SIREN_WATER
 merfolk_avatar MONS_MERFOLK_AVATAR
 merfolk_avatar_water MONS_MERFOLK_AVATAR_WATER
 %sdir mon/humanoids
-dryad MONS_DRYAD
+dryad MONS_KAEL
 water_nymph MONS_WATER_NYMPH
-eleionoma MONS_ELEIONOMA
+dryad MONS_DRYAD
 %rim 1
 
 ## Rotting monsters ('n')

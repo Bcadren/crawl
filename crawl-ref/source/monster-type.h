@@ -612,8 +612,8 @@ enum monster_type                      // env.mons[].type
 #if TAG_MAJOR_VERSION == 34
     MONS_RAKSHASA_FAKE,
 #else
+    MONS_KAEL,
     MONS_DRYAD,
-    MONS_ELEIONOMA,
     MONS_SNAPLASHER_VINE,
     MONS_SNAPLASHER_VINE_SEGMENT,
 #endif
@@ -920,7 +920,7 @@ enum monster_type                      // env.mons[].type
     MONS_DJINNI,
     MONS_LAVA_ORC,
 
-    MONS_DRYAD,
+    MONS_KAEL,
     MONS_WIND_DRAKE,
     MONS_FAUN,
     MONS_SATYR,
@@ -1066,7 +1066,7 @@ enum monster_type                      // env.mons[].type
     MONS_BLOATED_HUSK,
     MONS_BUNYIP,
     MONS_GOLIATH_FROG,
-    MONS_ELEIONOMA,
+    MONS_DRYAD,
     MONS_FENSTRIDER_WITCH,
     MONS_WILL_O_THE_WISP,
 #endif

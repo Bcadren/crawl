@@ -3868,7 +3868,6 @@ void melee_attack::mons_apply_attack_flavour()
         break;
     }
 
-    case AF_REACH_TONGUE:
     case AF_ACID:
         defender->splash_with_acid(attacker, 3, true, nullptr, mount_defend);
         break;
