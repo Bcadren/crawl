@@ -3508,7 +3508,7 @@ static const struct spell_desc spelldata[] =
     100,
     LOS_RADIUS, LOS_RADIUS,
     5, 0,
-    TILEG_GRAVITAS, // BCADDO: Tile.
+    TILEG_GRAVITATION,
 },
 
 {
