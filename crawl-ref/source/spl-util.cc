@@ -636,6 +636,9 @@ static const char *_spell_title(spell_type spell, const actor * caster)
 
 bool mi_chaos_chance(spell_type spell, const monster_info * mi)
 {
+    if (!mi)
+        return false;
+
     if (mi->type == MONS_CHAOS_BUTTERFLY)
         return true;
 
