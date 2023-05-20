@@ -434,7 +434,7 @@ static help_file help_files[] =
 {
     { "crawl_manual.txt",  '*', true },
     { "aptitudes.txt",     '%', false },
-    { "quickstart.md",     '^', false },
+    { "quickstart.txt",    '^', false },
     { "macros_guide.txt",  '~', false },
     { "options_guide.txt", '&', false },
 #ifdef USE_TILE_LOCAL
@@ -1143,7 +1143,7 @@ static int _get_help_section(int section, formatted_string &header_out, formatte
     static map<int, int> hotkeys;
     static map<int, formatted_string> page_text;
     static map<int, string> headers = {
-        {'*', "Manual"}, {'%', "Aptitudes"}, {'^', "Quickstart"},
+        {'*', "Manual"}, {'%', "Aptitudes"},
         {'~', "Macros"}, {'&', "Options"}, {'t', "Tiles"},
         {'?', "Key help"}
     };
