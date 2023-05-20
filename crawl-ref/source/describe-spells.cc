@@ -471,7 +471,7 @@ static dice_def _spell_damage(spell_type spell, int hd)
         case SPELL_WATERSTRIKE:
             return waterstrike_damage(hd);
         case SPELL_IOOD:
-            return iood_damage(pow, 5, false);
+            return iood_damage(pow, 8, false);
         default:
             break;
     }
@@ -617,12 +617,26 @@ static void _describe_book(const spellbook_contents &book,
             effect_str = _colourize(effect_str, _spell_colour(spell));
 
         string spell_name = mi_spell_title(spell, mon_owner);
+        const bool chaos = mi_chaos_chance(spell, mon_owner);
 
-        if (spell == SPELL_LEHUDIBS_CRYSTAL_SPEAR
-            && chop_len < (int)spell_name.length())
+        if (chop_len < (int)spell_name.length())
         {
-            // looks nicer than Lehudib's Crystal S
-            spell_name = "Crystal Spear";
+            // Special cases
+            switch (spell)
+            {
+            case SPELL_LEHUDIBS_CRYSTAL_SPEAR:
+                if (!chaos)
+                    spell_name = "Crystal Spear";
+                break;
+            case SPELL_IOOD:
+                if (chaos)
+                    spell_name = "Icy Sphere";
+                else
+                    spell_name = "Chaos Sphere";
+                break;
+            default:
+                break;
+            }
         }
 
         description += formatted_string::parse_string(

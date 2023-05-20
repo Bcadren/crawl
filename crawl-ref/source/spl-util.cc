@@ -634,6 +634,22 @@ static const char *_spell_title(spell_type spell, const actor * caster)
     return _seekspell(spell)->title;
 }
 
+bool mi_chaos_chance(spell_type spell, const monster_info * mi)
+{
+    if (mi->type == MONS_CHAOS_BUTTERFLY)
+        return true;
+
+    const item_def * staff = mi->staff();
+    if (staff && staff_enhances_spell(staff, spell) && get_staff_facet(*staff) == SPSTF_CHAOS)
+        return true;
+
+    const item_def * ring = mi->inv[MSLOT_JEWELLERY].get();
+    if (ring && ring->is_type(OBJ_JEWELLERY, AMU_CHAOS))
+        return true;
+
+    return false;
+}
+
 const char *mi_spell_title(spell_type spell, const monster_info * mi)
 {
     if (!mi)
@@ -643,18 +659,7 @@ const char *mi_spell_title(spell_type spell, const monster_info * mi)
     if (!chaosTitle.size())
         return _seekspell(spell)->title; // No need for chaos check on spells without a chaos name.
 
-    const item_def * staff = mi->staff();
-    bool chaos = staff && staff_enhances_spell(staff, spell) && get_staff_facet(*staff) == SPSTF_CHAOS
-                || mi->type == MONS_CHAOS_BUTTERFLY;
-
-    if (!chaos)
-    {
-        const item_def * ring = mi->inv[MSLOT_JEWELLERY].get();
-        if (ring && ring->is_type(OBJ_JEWELLERY, AMU_CHAOS))
-            chaos = true;
-    }
-
-    if (chaos)
+    if (mi_chaos_chance(spell, mi))
         return _seekspell(spell)->chaosTitle;
     return _seekspell(spell)->title;
 }

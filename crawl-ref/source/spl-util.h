@@ -104,6 +104,8 @@ const char *mi_spell_title(spell_type which_spell, const monster_info * mi);
 const char* spelltype_short_name(spschool which_spelltype);
 const char* spelltype_long_name(spschool which_spelltype);
 
+bool mi_chaos_chance(spell_type spell, const monster_info * mi);
+
 typedef function<int (coord_def where)> cell_func;
 typedef function<int (coord_def where, int pow, int spreadrate,
                        cloud_type type, const actor* agent, int excl_rad)>
