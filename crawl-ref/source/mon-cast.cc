@@ -8452,9 +8452,14 @@ static ai_action::goodness _monster_spell_goodness(monster* mon, mon_spell_slot 
     case SPELL_CONDENSATION_SHIELD:
     {
         item_def * shld = mon->shield();
-        return ai_action::good_or_impossible(!mon->has_ench(ENCH_CONDENSATION_SHIELD) &&
-                !shld || shld->base_type != OBJ_SHIELDS
-                || is_hybrid(shld->sub_type));
+        if (shld && shld->base_type == OBJ_SHIELDS
+            && !is_hybrid(shld->sub_type))
+        {
+            return ai_action::impossible();
+        }
+
+        return ai_action::good_or_impossible(
+            !mon->has_ench(ENCH_CONDENSATION_SHIELD));
     }
 
     case SPELL_CALL_TIDE:
