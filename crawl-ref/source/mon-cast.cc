@@ -1205,22 +1205,11 @@ static int _mons_power_hd_factor(spell_type spell)
  */
 bool mons_spell_is_spell(spell_type spell)
 {
-    switch (spell)
-    {
-        case SPELL_HOLY_BREATH:
-        case SPELL_SPIT_ACID:
-        case SPELL_ACID_SPLASH:
-        case SPELL_CHAOS_BREATH:
-        case SPELL_COLD_BREATH:
-        case SPELL_CHILLING_BREATH:
-        case SPELL_FIRE_BREATH:
-        case SPELL_SEARING_BREATH:
-        case SPELL_ELECTRICAL_BOLT:
-        case SPELL_FLAMING_CLOUD:
-            return false;
-        default:
-            return true;
-    }
+    // spschool::evocation contains both evocable item only spells and
+    // natural abilities. There is currently no reason to separate these.
+    if (spell_typematch(spell, spschool::evocation))
+        return false;
+    return true;
 }
 
 /**

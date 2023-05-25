@@ -3291,7 +3291,7 @@ static const struct spell_desc spelldata[] =
 
 {
     SPELL_FLAMING_CLOUD, "Flaming Cloud", "",
-    spschool::fire,
+    spschool::fire | spschool::evocation,
     spflag::target | spflag::area | spflag::monster | spflag::needs_tracer
         | spflag::cloud,
     5,
