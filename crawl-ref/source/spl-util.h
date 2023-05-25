@@ -78,6 +78,9 @@ int spell_range(spell_type spell, int pow, bool allow_bonus = true);
 int spell_noise(spell_type spell);
 int spell_effect_noise(spell_type spell);
 
+int mi_spell_range(spell_type spell, const monster_info * mon_owner);
+int mon_spell_range(spell_type spell, const monster * mon_owner);
+
 const char *get_spell_target_prompt(spell_type which_spell);
 tileidx_t get_spell_tile(spell_type which_spell);
 

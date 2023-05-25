@@ -52,7 +52,7 @@
 #include "libutil.h"
 #include "macro.h"
 #include "message.h"
-#include "mon-cast.h" // mons_spell_range
+#include "mon-cast.h"
 #include "mon-death.h"
 #include "mon-tentacle.h"
 #include "monuse-flags.h"
@@ -3996,7 +3996,7 @@ static void _get_spell_description(const spell_type spell,
     if (mon_owner)
     {
         const int hd = mon_owner->spell_hd();
-        const int range = spell_range(spell, mons_power_for_hd(spell, hd));
+        const int range = mi_spell_range(spell, mon_owner);
 
         if (spell == SPELL_TONGUE_LASH)
             description += "\nRange : @.--->\n"; // Special case: tongue lash cannot be used on adjacents.

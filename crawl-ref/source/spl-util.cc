@@ -1097,6 +1097,79 @@ int spell_power_cap(spell_type spell)
     }
 }
 
+// BCADDO: Tone down the code duplication
+int mi_spell_range(spell_type spell, const monster_info * mon_owner)
+{
+    if (!mon_owner)
+        return spell_range(spell, 0, false);
+
+    int minrange = _seekspell(spell)->min_range;
+    int maxrange = _seekspell(spell)->max_range;
+    ASSERT(maxrange >= minrange);
+
+    // spells with no range have maxrange == minrange == -1
+    if (maxrange < 0)
+        return maxrange;
+
+    if (mon_owner->staff()
+        && staff_enhances_spell(mon_owner->staff(), spell)
+        && maxrange > 1
+        && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
+    {
+        maxrange++;
+        minrange++;
+    }
+
+    if (minrange == maxrange)
+        return min(minrange, (int)you.current_vision);
+
+    const int pow = mon_owner->spell_hd(spell);
+
+    if (30 <= pow)
+        return min(maxrange, (int)you.current_vision);
+
+    const int range = minrange + (maxrange - minrange) * pow / 30;
+
+    // Round appropriately.
+    return max(1, min((int)you.current_vision, range));
+}
+
+int mon_spell_range(spell_type spell, const monster * mon_owner)
+{
+    if (!mon_owner)
+        return spell_range(spell, 0, false);
+
+    int minrange = _seekspell(spell)->min_range;
+    int maxrange = _seekspell(spell)->max_range;
+    ASSERT(maxrange >= minrange);
+
+    // spells with no range have maxrange == minrange == -1
+    if (maxrange < 0)
+        return maxrange;
+
+    if (mon_owner->staff()
+        && staff_enhances_spell(mon_owner->staff(), spell)
+        && maxrange > 1
+        && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
+    {
+        maxrange++;
+        minrange++;
+    }
+
+    if (minrange == maxrange)
+        return min(minrange, (int)you.current_vision);
+
+    const int pow = mon_owner->spell_hd(spell);
+
+    if (30 <= pow)
+        return min(maxrange, (int)you.current_vision);
+
+    const int range = minrange + (maxrange - minrange) * pow / 30;
+
+    // Round appropriately.
+    return max(1, min((int)you.current_vision, range));
+}
+
 int spell_range(spell_type spell, int pow, bool allow_bonus)
 {
     int minrange = _seekspell(spell)->min_range;
@@ -1140,7 +1213,7 @@ int spell_range(spell_type spell, int pow, bool allow_bonus)
     if (powercap <= pow)
         return min(maxrange, (int)you.current_vision);
 
-    int range = minrange + (maxrange - minrange) * pow / powercap;
+    const int range = minrange + (maxrange - minrange) * pow / powercap;
 
     // Round appropriately.
     return max(1, min((int)you.current_vision, range));

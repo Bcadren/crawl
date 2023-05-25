@@ -444,11 +444,10 @@ vector<pair<spell_type,char>> map_chars_to_spells(const spellset &spells,
     return ret;
 }
 
-static string _range_string(const spell_type &spell, const monster_info *mon_owner, int hd)
+static string _range_string(const spell_type &spell, const monster_info *mon_owner)
 {
     auto flags = get_spell_flags(spell);
-    int pow = mons_power_for_hd(spell, hd);
-    int range = spell_range(spell, pow, false);
+    int range = mi_spell_range(spell, mon_owner);
     const bool has_range = mon_owner
                         && range > 0
                         && !testbits(flags, spflag::selfench);
@@ -464,14 +463,12 @@ static string _range_string(const spell_type &spell, const monster_info *mon_own
 
 static dice_def _spell_damage(spell_type spell, int hd)
 {
-    const int pow = mons_power_for_hd(spell, hd);
-
     switch (spell)
     {
         case SPELL_WATERSTRIKE:
             return waterstrike_damage(hd);
         case SPELL_IOOD:
-            return iood_damage(pow, 8, false);
+            return iood_damage(hd*7, 8, false);
         default:
             break;
     }
@@ -480,7 +477,7 @@ static dice_def _spell_damage(spell_type spell, int hd)
     if (zap == NUM_ZAPS)
         return dice_def(0,0);
 
-    return zap_damage(zap, pow, true);
+    return zap_damage(zap, hd, true);
 }
 
 static int _spell_hd(spell_type spell, const monster_info &mon_owner)
@@ -603,9 +600,7 @@ static void _describe_book(const spellbook_contents &book,
         const char spell_letter = entry != spell_map.end()
                                             ? entry->second : ' ';
 
-        const int hd = mon_owner ? mon_owner->spell_hd(spell) : 0;
-
-        const string range_str = _range_string(spell, mon_owner, hd);
+        const string range_str = _range_string(spell, mon_owner);
         string effect_str = _effect_string(spell, mon_owner);
 
         const int effect_len = effect_str.length();
@@ -724,7 +719,7 @@ static void _write_book(const spellbook_contents &book,
 
         tiles.json_write_string("effect", _effect_string(spell, mon_owner));
 
-        string range_str = _range_string(spell, mon_owner, hd);
+        string range_str = _range_string(spell, mon_owner);
         if (range_str.size() > 0)
             tiles.json_write_string("range_string", range_str);
 
