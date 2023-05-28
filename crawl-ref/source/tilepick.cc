@@ -2646,6 +2646,9 @@ static tileidx_t _tileidx_chunk(const item_def &item)
     if (is_forbidden_food(item))
         return TILE_FOOD_CHUNK_FORBIDDEN;
 
+    if (is_mutagenic(item))
+        return TILE_FOOD_CHUNK_MUTAGENIC;
+
     return TILE_FOOD_CHUNK;
 }
 
@@ -4463,6 +4466,9 @@ tileidx_t tileidx_corpse_brand(const item_def &item)
 
     if (is_forbidden_food(item))
         return TILE_FOOD_FORBIDDEN;
+
+    if (is_mutagenic(item))
+        return TILE_FOOD_MUTAGENIC;
 
     return 0;
 }

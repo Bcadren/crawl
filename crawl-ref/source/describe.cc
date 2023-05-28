@@ -2830,6 +2830,9 @@ string get_item_description(const item_def &item, bool verbose,
             case CE_NOXIOUS:
                 description << "\n\nThis meat is toxic.";
                 break;
+            case CE_MUTAGENIC:
+                description << "\n\nThis meat may mutate those who dare eat it.";
+                break;
             default:
                 break;
             }

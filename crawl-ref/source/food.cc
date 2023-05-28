@@ -35,6 +35,7 @@
 #include "options.h"
 #include "religion.h"
 #include "rot.h"
+#include "prompt.h"
 #include "state.h"
 #include "stepdown.h"
 #include "stringutil.h"
@@ -570,7 +571,7 @@ mon_intel_type corpse_intelligence(const item_def &corpse)
 
 // Never called directly - chunk_effect values must pass
 // through food:determine_chunk_effect() first. {dlb}:
-static void _eat_chunk(item_def& food)
+static bool _eat_chunk(item_def& food)
 {
     const corpse_effect_type chunk_effect = determine_chunk_effect(food);
 
@@ -595,6 +596,27 @@ static void _eat_chunk(item_def& food)
         break;
     }
 
+    case CE_MUTAGENIC:
+    {
+        if (!crawl_state.disables[DIS_CONFIRMATIONS]
+            && !yesno("Really eat mutagenic meat?", true, 0))
+        {
+            canned_msg(MSG_OK);
+            break;
+        }
+
+        mprf("This raw flesh tastes peculiar.");
+        mprf(MSGCH_MUTATION, "You feel strange...");
+        if (!one_chance_in(3))
+        {
+            mutation_type mut = one_chance_in(4) ? RANDOM_BAD_MUTATION
+                                                 : RANDOM_MUTATION;
+            mutate(mut, "mutagenic meat");
+        }
+        do_eat = true;
+        break;
+    }
+
     case CE_DIVINE:
     case CE_NOXIOUS:
     case CE_NOCORPSE:
@@ -609,6 +631,8 @@ static void _eat_chunk(item_def& food)
         if (!suppress_msg)
             _chunk_nutrition_message(nutrition);
     }
+
+    return do_eat;
 }
 
 bool eat_item(item_def &food)
@@ -620,12 +644,17 @@ bool eat_item(item_def &food)
         return false;
     }
 
-    mprf("You eat %s%s.", food.quantity > 1 ? "one of " : "",
-                          food.name(DESC_THE).c_str());
 
     if (food.sub_type == FOOD_CHUNK)
-        _eat_chunk(food);
-    else
+    {
+        if (!_eat_chunk(food))
+            return false;
+    }
+
+    mprf("You eat %s%s.", food.quantity > 1 ? "one of " : "",
+        food.name(DESC_THE).c_str());
+
+    if (food.sub_type != FOOD_CHUNK)
     {
         int value = food_value(food);
         ASSERT(value > 0);
@@ -648,7 +677,7 @@ bool eat_item(item_def &food)
 
 bool is_bad_food(const item_def &food)
 {
-    return is_forbidden_food(food) || is_noxious(food);
+    return is_forbidden_food(food) || is_noxious(food) || is_mutagenic(food);
 }
 
 // Returns true if a food item (or corpse) is totally inedible.
@@ -686,6 +715,23 @@ bool is_inedible(const item_def &item, bool temp)
         chunk.base_type = OBJ_FOOD;
         chunk.sub_type  = FOOD_CHUNK;
         if (is_inedible(chunk, temp))
+            return true;
+    }
+
+    return false;
+}
+
+bool is_mutagenic(const item_def &item)
+{
+    if (item.is_type(OBJ_FOOD, FOOD_CHUNK))
+        return determine_chunk_effect(item) == CE_MUTAGENIC;
+
+    if (item.is_type(OBJ_CORPSES, CORPSE_BODY))
+    {
+        item_def chunk = item;
+        chunk.base_type = OBJ_FOOD;
+        chunk.sub_type = FOOD_CHUNK;
+        if (is_mutagenic(chunk))
             return true;
     }
 
@@ -806,6 +852,7 @@ corpse_effect_type determine_chunk_effect(corpse_effect_type chunktype)
 {
     switch (chunktype)
     {
+    case CE_MUTAGENIC:
     case CE_NOXIOUS:
         if (you.get_mutation_level(MUT_ROTTING_BODY))
             chunktype = CE_CLEAN;

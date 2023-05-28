@@ -2052,6 +2052,8 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
                 case CE_NOXIOUS:
                     buff << "inedible ";
                     break;
+                case CE_MUTAGENIC:
+                    buff << "mutagenic ";
                 default:
                     break;
             }
@@ -3180,6 +3182,15 @@ bool is_dangerous_item(const item_def &item, bool temp)
         default:
             return false;
         }
+
+    case OBJ_FOOD:
+    {
+        if (is_inedible(item))
+            return false;
+        if (is_mutagenic(item))
+            return true;
+        return false;
+    }
 
     case OBJ_ARMOURS:
         if (you.get_mutation_level(MUT_NO_LOVE)

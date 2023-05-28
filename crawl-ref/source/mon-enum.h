@@ -18,6 +18,7 @@ enum corpse_effect_type
     CE_CLEAN,
     CE_NOXIOUS,
     CE_DIVINE,
+    CE_MUTAGENIC,
 };
 
 // TODO: Unify this and a player_equivalent (if applicable)
