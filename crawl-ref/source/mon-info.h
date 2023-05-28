@@ -223,6 +223,7 @@ struct monster_info_base
     string quote;
     mon_holy_type holi;
     mon_intel_type mintel;
+    god_type religion;
     int hd;
     int max_hp;
     int current_hp;

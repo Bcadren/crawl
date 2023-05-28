@@ -30,7 +30,6 @@ void flay(const monster &caster, actor &defender, int damage);
 bool handle_mon_spell(monster* mons);
 
 static const int ENCH_POW_FACTOR = 3;
-bool mons_spell_is_spell(spell_type spell);
 int mons_power_for_hd(spell_type spell, int hd);
 int mons_evokepower(const monster &mons);
 int mons_cause_fear(monster* mons, bool actual = true, bool scroll = false);

@@ -313,6 +313,7 @@ monster_info::monster_info(monster_type p_type, monster_type p_base_type)
     hd = mons_class_hit_dice(type);
     max_hp = mons_avg_hp(type);
     current_hp = mons_avg_hp(type);
+    religion = GOD_NO_GOD;
     ac = get_mons_class_ac(type);
     ev = base_ev = get_mons_class_ev(type);
     sh = 0; // Monster without items is always 0 sh. BCADDO: Is this still true?
@@ -544,6 +545,7 @@ monster_info::monster_info(const monster* m, int milev)
     hd = m->get_hit_dice();
     max_hp = m->max_hit_points;
     current_hp = m->hit_points;
+    religion = m->god;
     ac = m->armour_class(false);
     ev = m->evasion(ev_ignore::unided);
     tohit = calc_mon_to_hit(m, false, -1, false);

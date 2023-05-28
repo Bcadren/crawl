@@ -1077,6 +1077,21 @@ static bool _spell_range_varies(spell_type spell)
     return minrange < maxrange;
 }
 
+/**
+* Does this spell use spell_hd or just hit_dice for damage and accuracy?
+*
+* @param spell The spell in question.
+* @return True if the spell should use spell_hd.
+*/
+bool mons_spell_is_spell(spell_type spell)
+{
+    // spschool::evocation contains both evocable item only spells and
+    // natural abilities. There is currently no reason to separate these.
+    if (spell_typematch(spell, spschool::evocation))
+        return false;
+    return true;
+}
+
 int spell_power_cap(spell_type spell)
 {
     const int scap = _seekspell(spell)->power_cap;
@@ -1097,12 +1112,8 @@ int spell_power_cap(spell_type spell)
     }
 }
 
-// BCADDO: Tone down the code duplication
-int mi_spell_range(spell_type spell, const monster_info * mon_owner)
+static int _base_spell_range(spell_type spell, const int pow, const int power_cap)
 {
-    if (!mon_owner)
-        return spell_range(spell, 0, false);
-
     int minrange = _seekspell(spell)->min_range;
     int maxrange = _seekspell(spell)->max_range;
     ASSERT(maxrange >= minrange);
@@ -1111,24 +1122,40 @@ int mi_spell_range(spell_type spell, const monster_info * mon_owner)
     if (maxrange < 0)
         return maxrange;
 
-    if (mon_owner->staff()
-        && staff_enhances_spell(mon_owner->staff(), spell)
-        && maxrange > 1
-        && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
-    {
-        maxrange++;
-        minrange++;
-    }
+    if (power_cap <= pow)
+        return maxrange;
+    else if (minrange == maxrange)
+        return minrange;
+    
+    return minrange + (maxrange - minrange) * pow / power_cap;
+}
 
-    if (minrange == maxrange)
-        return min(minrange, (int)you.current_vision);
+int mi_spell_range(spell_type spell, const monster_info * mon_owner)
+{
+    if (!mon_owner)
+        return spell_range(spell, 0, false);
 
     const int pow = mon_owner->spell_hd(spell);
+    int range = _base_spell_range(spell, pow, 30);
 
-    if (30 <= pow)
-        return min(maxrange, (int)you.current_vision);
+    if (range < 0)
+        return range;
 
-    const int range = minrange + (maxrange - minrange) * pow / 30;
+    if (range > 1)
+    {
+        if (mon_owner->staff()
+            && staff_enhances_spell(mon_owner->staff(), spell)
+            && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
+        {
+            range++;
+        }
+
+        if (vehumet_supports_spell(spell)
+            && mon_owner->religion == GOD_VEHUMET)
+        {
+            range++;
+        }
+    }
 
     // Round appropriately.
     return max(1, min((int)you.current_vision, range));
@@ -1139,32 +1166,27 @@ int mon_spell_range(spell_type spell, const monster * mon_owner)
     if (!mon_owner)
         return spell_range(spell, 0, false);
 
-    int minrange = _seekspell(spell)->min_range;
-    int maxrange = _seekspell(spell)->max_range;
-    ASSERT(maxrange >= minrange);
-
-    // spells with no range have maxrange == minrange == -1
-    if (maxrange < 0)
-        return maxrange;
-
-    if (mon_owner->staff()
-        && staff_enhances_spell(mon_owner->staff(), spell)
-        && maxrange > 1
-        && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
-    {
-        maxrange++;
-        minrange++;
-    }
-
-    if (minrange == maxrange)
-        return min(minrange, (int)you.current_vision);
-
     const int pow = mon_owner->spell_hd(spell);
+    int range = _base_spell_range(spell, pow, 30);
 
-    if (30 <= pow)
-        return min(maxrange, (int)you.current_vision);
+    if (range < 0)
+        return range;
 
-    const int range = minrange + (maxrange - minrange) * pow / 30;
+    if (range > 1)
+    {
+        if (mon_owner->staff()
+            && staff_enhances_spell(mon_owner->staff(), spell)
+            && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
+        {
+            range++;
+        }
+
+        if (vehumet_supports_spell(spell)
+            && mon_owner->god == GOD_VEHUMET)
+        {
+            range++;
+        }
+    }
 
     // Round appropriately.
     return max(1, min((int)you.current_vision, range));
@@ -1172,48 +1194,29 @@ int mon_spell_range(spell_type spell, const monster * mon_owner)
 
 int spell_range(spell_type spell, int pow, bool allow_bonus)
 {
-    int minrange = _seekspell(spell)->min_range;
-    int maxrange = _seekspell(spell)->max_range;
-    ASSERT(maxrange >= minrange);
-
-    // spells with no range have maxrange == minrange == -1
-    if (maxrange < 0)
-        return maxrange;
-
-    if (allow_bonus
-        && vehumet_supports_spell(spell)
-        && have_passive(passive_t::spells_range)
-        && maxrange > 1
-        && spell != SPELL_THUNDERBOLT) // lightning rod only
-    {
-        if (you.get_mutation_level(MUT_GODS_PITY) > 1)
-        {
-            maxrange++;
-            minrange++;
-        }
-        maxrange++;
-        minrange++;
-    }
-
-    if (allow_bonus
-        && you.staff()
-        && staff_enhances_spell(you.staff(), spell)
-        && maxrange > 1
-        && get_staff_facet(*you.staff()) == SPSTF_SCOPED)
-    {
-        maxrange++;
-        minrange++;
-    }
-
-    if (minrange == maxrange)
-        return min(minrange, (int)you.current_vision);
-
     const int powercap = spell_power_cap(spell);
+    int range = _base_spell_range(spell, pow, powercap);
 
-    if (powercap <= pow)
-        return min(maxrange, (int)you.current_vision);
+    if (range < 0)
+        return range;
 
-    const int range = minrange + (maxrange - minrange) * pow / powercap;
+    if (allow_bonus && range > 1)
+    {
+        if (vehumet_supports_spell(spell)
+            && have_passive(passive_t::spells_range)
+            && spell != SPELL_THUNDERBOLT) // lightning rod only
+        {
+            if (you.get_mutation_level(MUT_GODS_PITY) > 1)
+                range++;
+            range++;
+        }
+
+        if (staff_enhances_spell(you.staff(), spell)
+            && get_staff_facet(*you.staff()) == SPSTF_SCOPED)
+        {
+            range++;
+        }
+    }
 
     // Round appropriately.
     return max(1, min((int)you.current_vision, range));

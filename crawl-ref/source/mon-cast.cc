@@ -1198,21 +1198,6 @@ static int _mons_power_hd_factor(spell_type spell)
 }
 
 /**
- * Does this spell use spell_hd or just hit_dice for damage and accuracy?
- *
- * @param spell The spell in question.
- * @return True iff the spell should use spell_hd.
- */
-bool mons_spell_is_spell(spell_type spell)
-{
-    // spschool::evocation contains both evocable item only spells and
-    // natural abilities. There is currently no reason to separate these.
-    if (spell_typematch(spell, spschool::evocation))
-        return false;
-    return true;
-}
-
-/**
  * What spellpower does a monster with the given spell_hd cast the given spell
  * at?
  *

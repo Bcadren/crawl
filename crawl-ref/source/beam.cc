@@ -4412,7 +4412,7 @@ void bolt::affect_player()
 
     if (origin_spell == SPELL_TONGUE_LASH && you.alive())
     {
-        // Chameleon special damage here.
+        // BCADNOTE/BCADDO: Chameleon special damage here.
 
         if (you.alive() && agent()->alive() && adjacent(you.pos(), agent()->pos()))
             fight_melee(agent(), &you);
