@@ -879,7 +879,6 @@ static void _SPELLBINDER_melee_effects(item_def* /*weapon*/, actor* attacker,
                                        actor* defender, bool mondied,
                                        int dam, bool hits_mount)
 {
-    // BCADDO: Base on spellschools the monster has instead of just random?
     // Only cause miscasts if the target has magic to disrupt.
     if (defender->antimagic_susceptible()
         && !mondied && !hits_mount)

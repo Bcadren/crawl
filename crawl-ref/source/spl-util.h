@@ -30,6 +30,10 @@ enum class spschool
   evocation      = 1<<11,
   ritual         = 1<<12,
   LAST_SCHOOL    = spschool::ritual,
+  valid          = spschool::hexes | spschool::charms | spschool::fire | spschool::ice
+                   | spschool::transmutation | spschool::necromancy | spschool::summoning
+                   | spschool::translocation | spschool::poison | spschool::earth
+                   | spschool::air,
   random         = spschool::LAST_SCHOOL << 1,
 };
 DEF_BITFIELD(spschools_type, spschool, 12);

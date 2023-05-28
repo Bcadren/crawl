@@ -727,7 +727,6 @@ static spschool _random_school_from_spell(spell_type spell)
 // This is only used for the player
 void miscast_effect(spell_type spell, int fail)
 {
-
     // All spell failures give a bit of magical radiation.
     // Failure is a function of power squared multiplied by how
     // badly you missed the spell. High power spells can be
@@ -810,7 +809,29 @@ void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
         return;
     }
 
-    while (school == spschool::random || school == spschool::ritual || school == spschool::evocation)
+    spschools_type schools = spschool::none;
+
+    // Spellbinder
+    if (mc_info.source == miscast_source::melee && school == spschool::random)
+    {
+        if (target.is_player())
+        {
+            for (spell_type spell : you.spells)
+                schools |= get_spell_disciplines(spell);
+        }
+        else // monster
+        {
+            for (mon_spell_slot spell : target.as_monster()->spells)
+            {
+                if (spell.flags & MON_SPELL_ANTIMAGIC_MASK)
+                    schools |= get_spell_disciplines(spell.spell);
+            }
+        }
+    }
+    else // any normal school with miscast works.
+        schools = spschool::valid;
+
+    while (!bool(school & schools))
         school = spschools_type::exponent(random2(SPSCHOOL_LAST_EXPONENT + 1));
 
     miscast_struct effect;
