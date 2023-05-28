@@ -80,6 +80,7 @@ ENDMAP
 
 #########################################
 # Representatives of all player genuses, locked up.
+# BCADDO: Update
 NAME:    kb_arrival_jail
 TAGS:    arrival no_monster_gen no_trap_gen
 ORIENT:  north
@@ -92,7 +93,7 @@ KMONS:   B = elf ; nothing
 KMONS:   C = dwarf ; nothing
 KMONS:   D = orc ; nothing
 KMONS:   E = merfolk ; nothing
-KMONS:   F = halfling ; nothing
+KMONS:   F = nothing
 KMONS:   G = kobold ; nothing
 KMONS:   H = spriggan ; nothing
 KMONS:   I = naga ; nothing

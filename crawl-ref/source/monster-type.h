@@ -231,8 +231,8 @@ enum monster_type                      // env.mons[].type
     MONS_ALLIGATOR_SNAPPING_TURTLE,
 #if TAG_MAJOR_VERSION == 34
     MONS_GNOME,
+    MONS_HALFLING,
 #endif
-    MONS_HALFLING,              // recolouring + single vault.
     MONS_FELID,                 // recolouring + single vault. Miaow!
     MONS_VAMPIRE_BAT,           // recolouring + vaults
     MONS_DEMIGOD,               // recolouring + single vault

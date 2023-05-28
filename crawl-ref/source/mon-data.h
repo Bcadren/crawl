@@ -255,6 +255,7 @@ static monsterentry mondata[] =
     AXED_MON(MONS_BLESSED_TOE, "blessed toe")
     AXED_MON(MONS_LAVA_ORC, "lava orc")
     AXED_MON(MONS_MONSTROUS_FEATURE_MIMIC, "monstrous feature mimic")
+    AXED_MON(MONS_HALFLING, "halfling")
 #endif
 
 // Used for genus monsters (which are used for grouping monsters by how they
@@ -2138,20 +2139,6 @@ DUMMY(MONS_GIANT_LIZARD, 'l', LIGHTGREY, "giant lizard", TILEP_MONS_LEOPARD_GECK
     I_HUMAN, HT_LAND, 10, DEFAULT_ENERGY,
     MU_MELEE, SIZE_MEDIUM, MON_SHAPE_HUMANOID,
     {TILEP_MONS_DEMIGOD}, TILE_CORPSE_HUMAN
-},
-
-// BCADDO: Dummy for a player race mirror enemy of a player race that no longer exists, can delete?
-{ // dummy... literally; single vault
-    MONS_HALFLING, 'p', LIGHTGREY, "halfling",
-    M_WARM_BLOOD | M_SPEAKS | M_NO_POLY_TO | M_GENDERED,
-    MR_VUL_SLASHING,
-    10, MONS_HALFLING, MONS_HALFLING, MH_NATURAL, 10,
-    { {AT_HIT, AF_PLAIN, 6}, {AT_SHIELD, AF_PLAIN, 6}, AT_NO_ATK, AT_NO_ATK },
-    3, 105,
-    2, 12, MST_NO_SPELLS, CE_CLEAN, S_SHOUT,
-    I_HUMAN, HT_LAND, 10, DEFAULT_ENERGY,
-    MU_MELEE, SIZE_SMALL, MON_SHAPE_HUMANOID,
-    {TILEP_MONS_HALFLING}, TILE_CORPSE_HALFLING
 },
 
 // rodents ('r')

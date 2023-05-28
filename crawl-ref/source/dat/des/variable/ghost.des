@@ -1403,7 +1403,7 @@ MARKER:  Q = lua:transp_dest_loc("davey_jones_entry")
 MARKER:  R = lua:transp_loc("davey_jones_exit")
 MARKER:  S = lua:transp_dest_loc("davey_jones_exit")
 {{
-dgn.delayed_decay(_G, "-", "minotaur skeleton / halfling skeleton" ..
+dgn.delayed_decay(_G, "-", "minotaur skeleton / kobold skeleton" ..
   " / dwarf skeleton / human skeleton / kobold skeleton" ..
   " / felid skeleton / orc skeleton / centaur skeleton")
 ghost_setup(_G)
