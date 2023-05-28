@@ -171,17 +171,16 @@ static void _CURSES_equip(item_def */*item*/, bool *show_msgs, bool unmeld)
 {
     _equip_mpr(show_msgs, "A shiver runs down your spine.");
     if (!unmeld)
-        death_curse(you, nullptr, "the scythe of Curses", 0);
+        death_curse(you, nullptr, "the scythe of Curses", 0, false);
 }
 
-// BCADDO: Curse effects for mounts?
 static void _CURSES_melee_effects(item_def* /*weapon*/, actor* attacker,
-                                  actor* defender, bool mondied, int dam, bool /*hits_mount*/)
+                                  actor* defender, bool mondied, int dam, bool hits_mount)
 {
     if (attacker->is_player())
         did_god_conduct(DID_EVIL, 3);
     if (!mondied && defender->holiness() == MH_NATURAL)
-        death_curse(*defender, attacker, "the scythe of Curses", min(dam, 27));
+        death_curse(*defender, attacker, "the scythe of Curses", min(dam, 27), hits_mount);
 }
 
 /////////////////////////////////////////////////////

@@ -33,6 +33,7 @@
 #include "mon-death.h"
 #include "mon-enum.h"
 #include "mon-util.h"
+#include "mount.h"
 #include "mpr.h"
 #include "ouch.h"
 #include "player.h"
@@ -42,11 +43,20 @@
 #include "species-type.h"
 #include "spl-goditem.h"
 #include "stat-type.h"
+#include "stringutil.h"
 
-static void _do_msg(actor& target, string player_msg, string mon_seen_msg,
+static void _do_msg(actor& target, bool mount, string player_msg, string mon_seen_msg,
                     string mon_unseen_msg)
 {
-    if (target.is_player() && !player_msg.empty())
+    if (mount && !mon_seen_msg.empty())
+    {
+        string cap_str = make_stringf("Your %s", you.mount_name(true).c_str());
+        string low_str = make_stringf("your %s", you.mount_name(true).c_str());
+        string msg = replace_all(mon_seen_msg, "@the_monster@", low_str);
+        msg = replace_all(msg, "@The_monster@", cap_str);
+        mpr(msg);
+    }
+    else if (target.is_player() && !player_msg.empty())
         mpr(player_msg);
     else if (you.can_see(target) && !mon_seen_msg.empty())
     {
@@ -62,8 +72,14 @@ static void _do_msg(actor& target, string player_msg, string mon_seen_msg,
 
 // Handle applying damage for death-curse effects
 static void _ouch(actor& target, const actor * source, int dam,
-                  const string cause)
+                  const string cause, bool mt)
 {
+    if (mt)
+    {
+        damage_mount(dam);
+        return;
+    }
+
     killer_type kt;
 
     if (source && source->is_player())
@@ -104,13 +120,13 @@ struct  curse_effect
 {
     string name;
     function<void (actor& target, actor* source,
-             string cause, int severity)> effect;
+             string cause, int severity, bool mount)> effect;
     int trivial_weight; // Weight at severity 0
     int severe_weight;  // Weight at severity 15. Linearly interpolated
 };
 
 static void _curse_message(actor& target, actor* /*source*/,
-                           string /*cause*/, int /*severity*/)
+                           string /*cause*/, int /*severity*/, bool /*mount*/)
 {
     // Avoid message spam
     if (!target.is_player())
@@ -175,10 +191,10 @@ static const vector<curse_effect> curse_effects = {
     },
     {
         "pain",
-        [](actor& target, actor* source, string cause, int severity) {
-            if (target.res_torment() || target.res_negative_energy() >= 3)
+        [](actor& target, actor* source, string cause, int severity, bool mt) {
+            if (target.res_torment(mt) || target.res_negative_energy(mt) >= 3)
             {
-                _do_msg(target, "You feel weird for a moment.",
+                _do_msg(target, mt, "You feel weird for a moment.",
                         "@The_monster@ has a weird expression for a moment.",
                         "Something is bathed in an unholy light.");
                 return;
@@ -186,26 +202,29 @@ static const vector<curse_effect> curse_effects = {
             else
             {
                 int dmg = 8 + random2avg(3*severity,2);
-                dmg = resist_adjust_damage(&target, BEAM_NEG, dmg);
+                dmg = resist_adjust_damage(&target, BEAM_NEG, dmg, mt);
                 string punct = attack_strength_punctuation(dmg);
-                _do_msg(target, "Pain shoots through your body" + punct,
+                _do_msg(target, mt, "Pain shoots through your body" + punct,
                         "@The_monster@ convulses with pain" + punct,
                         "Something is bathed in an unholy light" + punct);
-                _ouch(target, source, dmg, cause);
+                _ouch(target, source, dmg, cause, mt);
             }
         },
         20, 40,
     },
     {
         "rot",
-        [](actor& target, actor* source, string /*cause*/, int severity) {
-            target.rot(source, severity / 3 + random2(severity));
+        [](actor& target, actor* source, string /*cause*/, int severity, bool mount) {
+            if (mount)
+                rot_mount(severity / 3 + random2(severity));
+            else
+                target.rot(source, severity / 3 + random2(severity));
         },
         10, 20,
     },
     {
         "elementals",
-        [](actor& target, actor* source, string cause, int severity) {
+        [](actor& target, actor* source, string cause, int severity, bool mount) {
 
             monster_type type = MONS_REAPER;
 
@@ -254,17 +273,17 @@ static const vector<curse_effect> curse_effects = {
                 {
                 default:
                 case MONS_REAPER:
-                    _do_msg(target, "Death has come for you...", "Death has come for @the_monster@...", "An agent of death appears from thin air...");
+                    _do_msg(target, mount, "Death has come for you...", "Death has come for @the_monster@...", "An agent of death appears from thin air...");
                     break;
                 case MONS_PAIN_ELEMENTAL:
                     noisy(30, target.pos());
                     mpr("Pain screams into solid form...");
                     break;
                 case MONS_ROT_ELEMENTAL:
-                    _do_msg(target, "Decay reaches out for you...", "Decay reaches out for @the_monster@...", "Decay forms out of thin air...");
+                    _do_msg(target, mount, "Decay reaches out for you...", "Decay reaches out for @the_monster@...", "Decay forms out of thin air...");
                     break;
                 case MONS_SHADOW:
-                    _do_msg(target, "A shadow passes over your grave...", "A shadow passes over @the_monster@...", "A shadow flickers into being...");
+                    _do_msg(target, mount, "A shadow passes over your grave...", "A shadow passes over @the_monster@...", "A shadow flickers into being...");
                     break;
                 }
             }
@@ -273,23 +292,28 @@ static const vector<curse_effect> curse_effects = {
     },
     {
         "slow",
-        [](actor& target, actor* source, string /*cause*/, int severity) {
-            _do_msg(target,
+        [](actor& target, actor* source, string /*cause*/, int severity, bool mount) {
+            _do_msg(target, mount,
                     "You feel horribly lethargic.",
                     "@The_monster@ looks incredibly listless.",
                     "");
-            target.slow_down(source, severity);
+            if (mount)
+                slow_mount(severity);
+            else
+                target.slow_down(source, severity);
         },
         0, 40,
     },
     {
         "drain",
-        [](actor& target, actor* source, string /*cause*/, int severity) {
-            _do_msg(target,
+        [](actor& target, actor* source, string /*cause*/, int severity, bool mount) {
+            _do_msg(target, mount,
                     "You are engulfed in negative energy!",
                     "@The_monster@ is engulfed in negative energy!",
                     "Something is engulfed in negative energy!");
-            if (target.is_player() && x_chance_in_y(severity, 27))
+            if (mount)
+                drain_mount(severity);
+            else if (target.is_player() && x_chance_in_y(severity, 27))
                 lose_stat(STAT_RANDOM, 1 + random2avg(severity / 3, 2));
             else
                 target.drain_exp(source, false, ( severity * 100 ) / 27);
@@ -299,16 +323,15 @@ static const vector<curse_effect> curse_effects = {
     {
         "torment",
         [](actor& target, actor* source,
-           string /*cause*/, int /*severity*/) {
+           string /*cause*/, int /*severity*/, bool /*mount*/) {
             torment_cell(target.pos(), source, TORMENT_MISCAST);
         },
         0, 40,
     },
 };
 
-void death_curse(actor& target, actor* source, string cause, int severity)
+void death_curse(actor& target, actor* source, string cause, int severity, bool mount_hit)
 {
-
     if (target.is_player()
         && have_passive(passive_t::miscast_protection_necromancy))
     {
@@ -332,5 +355,5 @@ void death_curse(actor& target, actor* source, string cause, int severity)
         weights.push_back({curse, w});
     }
 
-    random_choose_weighted(weights)->effect(target, source, cause, severity);
+    random_choose_weighted(weights)->effect(target, source, cause, severity, mount_hit);
 }
