@@ -34,7 +34,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_VIOLENT_UNRAVELLING,    ZAP_UNRAVELLING },
     { SPELL_DISPEL_UNDEAD,          ZAP_DISPEL_UNDEAD },
     { SPELL_AGONY,                  ZAP_AGONY },
-    { SPELL_WAND_DISINTEGRATE,           ZAP_DISINTEGRATE },
+    { SPELL_WAND_DISINTEGRATE,      ZAP_DISINTEGRATE },
     { SPELL_THROW_ICICLE,           ZAP_THROW_ICICLE },
     // Wizard mode only.
     { SPELL_PORKALATOR,             ZAP_PORKALATOR },
