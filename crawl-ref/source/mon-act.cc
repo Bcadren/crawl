@@ -1314,11 +1314,9 @@ static bool _handle_wand(monster& mons)
         spell_in_wand(static_cast<wand_type>(wand->sub_type));
     const int power = mons.spell_hd(mon_spell_slot(mzap, 1, MON_SPELL_EVOKE));
 
-    if (!setup_mons_cast(&mons, beem, mzap, true))
+    if (!setup_mons_cast(&mons, beem, mzap))
         return false;
 
-    // This should be redundant with setup_mons_cast, but it keeps losing the range...
-    beem.range      = mon_spell_range(mzap, &mons);
     beem.source     = mons.pos();
     beem.aux_source =
         wand->name(DESC_QUALNAME, false, true, false, false);
