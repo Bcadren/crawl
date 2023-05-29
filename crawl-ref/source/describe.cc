@@ -3998,7 +3998,7 @@ static void _get_spell_description(const spell_type spell,
 
     if (mon_owner)
     {
-        const int hd = mon_owner->spell_hd();
+        const int hd = mon_owner->spell_hd(spell);
         const int range = mi_spell_range(spell, mon_owner);
 
         if (spell == SPELL_TONGUE_LASH)

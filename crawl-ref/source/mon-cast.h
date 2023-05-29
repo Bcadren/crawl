@@ -31,7 +31,6 @@ bool handle_mon_spell(monster* mons);
 
 static const int ENCH_POW_FACTOR = 3;
 int mons_power_for_hd(spell_type spell, int hd);
-int mons_evokepower(const monster &mons);
 int mons_cause_fear(monster* mons, bool actual = true, bool scroll = false);
 bool trace_los(monster* agent, bool(*vulnerable)(const actor*));
 bool torment_vulnerable(const actor* victim);
@@ -42,7 +41,6 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
 void mons_cast_noise(monster* mons, const bolt &pbolt,
                      spell_type spell_cast, mon_spell_slot_flags slot_flags);
 bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
-                     bool evoke = false,
                      bool check_validity = false);
 
 void mons_cast_haunt(monster* mons);

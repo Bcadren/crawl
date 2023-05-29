@@ -7506,6 +7506,10 @@ int monster::spell_hd(mon_spell_slot spell) const
     bool priest = bool(spell.flags & MON_SPELL_PRIEST);
     bool evoked = bool(spell.flags & MON_SPELL_EVOKE);
 
+    // If function is called with no spell, we probably want the wizard general spell_hd.
+    if (spell.spell == SPELL_NO_SPELL)
+        wizard |= true;
+
     int hd = get_hit_dice();
     if (mons_is_hepliaklqana_ancestor(type))
         hd = max(1, hd * 2 / 3);
@@ -7555,6 +7559,10 @@ int monster::spell_hd(mon_spell_slot spell) const
             hd = div_rand_round(5 * hd, 4);
     }
     // If it didn't get a particular check it's a natural ability and unaffected by tag-specific boosts.
+
+    // Special Case
+    if (spell.spell == SPELL_SEARING_BREATH && type == MONS_XTAHUA)
+        return hd * 3 / 2;
 
     return hd;
 }

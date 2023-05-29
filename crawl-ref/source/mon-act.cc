@@ -1312,7 +1312,7 @@ static bool _handle_wand(monster& mons)
 
     const spell_type mzap =
         spell_in_wand(static_cast<wand_type>(wand->sub_type));
-    const int power = mons_evokepower(mons);
+    const int power = mons.spell_hd(mon_spell_slot(mzap, 1, MON_SPELL_EVOKE));
 
     if (!setup_mons_cast(&mons, beem, mzap, true))
         return false;

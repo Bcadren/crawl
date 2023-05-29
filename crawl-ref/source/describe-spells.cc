@@ -480,15 +480,6 @@ static dice_def _spell_damage(spell_type spell, int hd)
     return zap_damage(zap, hd, true);
 }
 
-static int _spell_hd(spell_type spell, const monster_info &mon_owner)
-{
-    if (spell == SPELL_SEARING_BREATH && mon_owner.type == MONS_XTAHUA)
-        return mon_owner.hd * 3 / 2;
-    if (mons_spell_is_spell(spell))
-        return mon_owner.spell_hd();
-    return mon_owner.hd;
-}
-
 static colour_t _spell_colour(spell_type spell)
 {
     const zap_type zap = spell_to_zap(spell);
@@ -521,7 +512,7 @@ static string _effect_string(spell_type spell, const monster_info *mon_owner)
     if (!mon_owner)
         return "";
 
-    const int hd = _spell_hd(spell, *mon_owner);
+    const int hd = mon_owner->spell_hd(spell);
     if (!hd)
         return "";
 

@@ -969,7 +969,7 @@ void init_mons_spells()
         if (!is_valid_spell(spell))
             continue;
 
-        if (setup_mons_cast(&fake_mon, pbolt, spell, false, true))
+        if (setup_mons_cast(&fake_mon, pbolt, spell, true))
         {
             _valid_mon_spells[i] = true;
         }
@@ -1211,14 +1211,6 @@ int mons_power_for_hd(spell_type spell, int hd)
     if (spell == SPELL_PAIN)
         return max(50 * ENCH_POW_FACTOR, power);
     return power;
-}
-
-/**
-* Evocations power for the monster.
-*/
-int mons_evokepower(const monster &mons)
-{
-    return div_rand_round(3 * mons.get_experience_level(), 2);
 }
 
 /**
@@ -1762,7 +1754,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
 
 // Set up bolt structure for monster spell casting.
 bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
-                     bool evoke,
                      bool check_validity)
 {
     // always set these -- used by things other than fire_beam()
@@ -1928,8 +1919,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     }
     }
 
-    const int power = evoke ? mons_evokepower(*mons)
-                            : _mons_spellpower(spell_cast, *mons);
+    const int power = _mons_spellpower(spell_cast, *mons);
 
     bolt theBeam = mons_spell_beam(mons, spell_cast, power);
 
@@ -6179,7 +6169,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     bool evoke {slot_flags & MON_SPELL_EVOKE};
     // Always do setup. It might be done already, but it doesn't hurt
     // to do it again (cheap).
-    setup_mons_cast(mons, pbolt, spell_cast, evoke);
+    setup_mons_cast(mons, pbolt, spell_cast);
 
     // single calculation permissible {dlb}
     const spell_flags flags = get_spell_flags(spell_cast);
@@ -6217,8 +6207,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     }
 
     const god_type god = _find_god(*mons, slot_flags);
-    const int splpow = evoke ? mons_evokepower(*mons)
-                             : _mons_spellpower(spell_cast, *mons);
+    const int splpow = _mons_spellpower(spell_cast, *mons);
     const bool chaos = (determine_chaos(mons, spell_cast) && !evoke);
     const bool eldritch = (mons->staff() && is_unrandom_artefact(*mons->staff(), UNRAND_MAJIN));
     bool mount_defend = false;
