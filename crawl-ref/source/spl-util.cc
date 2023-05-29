@@ -1138,23 +1138,20 @@ int mi_spell_range(spell_type spell, const monster_info * mon_owner)
     const int pow = mon_owner->spell_hd(spell);
     int range = _base_spell_range(spell, pow, 30);
 
-    if (range < 0)
+    if (range <= 1)
         return range;
 
-    if (range > 1)
+    if (mon_owner->staff()
+        && staff_enhances_spell(mon_owner->staff(), spell)
+        && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
     {
-        if (mon_owner->staff()
-            && staff_enhances_spell(mon_owner->staff(), spell)
-            && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
-        {
-            range++;
-        }
+        range++;
+    }
 
-        if (vehumet_supports_spell(spell)
-            && mon_owner->religion == GOD_VEHUMET)
-        {
-            range++;
-        }
+    if (vehumet_supports_spell(spell)
+        && mon_owner->religion == GOD_VEHUMET)
+    {
+        range++;
     }
 
     // Round appropriately.
@@ -1169,23 +1166,20 @@ int mon_spell_range(spell_type spell, const monster * mon_owner)
     const int pow = mon_owner->spell_hd(spell);
     int range = _base_spell_range(spell, pow, 30);
 
-    if (range < 0)
+    if (range <= 1)
         return range;
 
-    if (range > 1)
+    if (mon_owner->staff()
+        && staff_enhances_spell(mon_owner->staff(), spell)
+        && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
     {
-        if (mon_owner->staff()
-            && staff_enhances_spell(mon_owner->staff(), spell)
-            && get_staff_facet(*mon_owner->staff()) == SPSTF_SCOPED)
-        {
-            range++;
-        }
+        range++;
+    }
 
-        if (vehumet_supports_spell(spell)
-            && mon_owner->god == GOD_VEHUMET)
-        {
-            range++;
-        }
+    if (vehumet_supports_spell(spell)
+        && mon_owner->god == GOD_VEHUMET)
+    {
+        range++;
     }
 
     // Round appropriately.
@@ -1197,10 +1191,10 @@ int spell_range(spell_type spell, int pow, bool allow_bonus)
     const int powercap = spell_power_cap(spell);
     int range = _base_spell_range(spell, pow, powercap);
 
-    if (range < 0)
+    if (range <= 1)
         return range;
 
-    if (allow_bonus && range > 1)
+    if (allow_bonus)
     {
         if (vehumet_supports_spell(spell)
             && have_passive(passive_t::spells_range)

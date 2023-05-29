@@ -1317,6 +1317,8 @@ static bool _handle_wand(monster& mons)
     if (!setup_mons_cast(&mons, beem, mzap, true))
         return false;
 
+    // This should be redundant with setup_mons_cast, but it keeps losing the range...
+    beem.range      = mon_spell_range(mzap, &mons);
     beem.source     = mons.pos();
     beem.aux_source =
         wand->name(DESC_QUALNAME, false, true, false, false);
