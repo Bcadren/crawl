@@ -1207,6 +1207,9 @@ static int _mons_power_hd_factor(spell_type spell)
  */
 int mons_power_for_hd(spell_type spell, int hd)
 {
+    if (!bool(get_spell_flags(spell) & (spflag::MR_check | spflag::mons_abjure)))
+        return hd;
+
     const int power = hd * _mons_power_hd_factor(spell);
     if (spell == SPELL_PAIN)
         return max(50 * ENCH_POW_FACTOR, power);
@@ -1342,8 +1345,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     beam.source_id = mons->mid;
     beam.source_name = mons->name(DESC_A, true);
 
-    if (mons_spell_is_spell(real_spell))
-        power = mons_power_for_hd(real_spell, mons->get_hit_dice());
+    power = mons_power_for_hd(real_spell, mons->spell_hd());
 
     const mons_spell_logic* logic = map_find(spell_to_logic, spell_cast);
     if (logic && logic->setup_beam)
