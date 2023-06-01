@@ -1210,6 +1210,9 @@ int mons_power_for_hd(spell_type spell, int hd)
     if (!bool(get_spell_flags(spell) & (spflag::MR_check | spflag::mons_abjure)))
         return hd;
 
+    if (bool(get_spell_disciplines(spell) & spschool::evocation))
+        return hd;
+
     const int power = hd * _mons_power_hd_factor(spell);
     if (spell == SPELL_PAIN)
         return max(50 * ENCH_POW_FACTOR, power);
