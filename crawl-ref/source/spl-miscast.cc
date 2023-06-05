@@ -816,15 +816,15 @@ void miscast_effect(actor& target, actor* source, miscast_source_info mc_info,
     {
         if (target.is_player())
         {
-            for (spell_type spell : you.spells)
-                schools |= get_spell_disciplines(spell);
+            for (spell_type spl : you.spells)
+                schools |= get_spell_disciplines(spl);
         }
         else // monster
         {
-            for (mon_spell_slot spell : target.as_monster()->spells)
+            for (mon_spell_slot slot : target.as_monster()->spells)
             {
-                if (spell.flags & MON_SPELL_ANTIMAGIC_MASK)
-                    schools |= get_spell_disciplines(spell.spell);
+                if (slot.flags & MON_SPELL_ANTIMAGIC_MASK)
+                    schools |= get_spell_disciplines(slot.spell);
             }
         }
     }
