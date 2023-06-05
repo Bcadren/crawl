@@ -179,8 +179,8 @@ string desc_chain_lightning_dam(int pow)
     // bounce hits the player, losing 8 pow on the bounce away and 8 on the
     // bounce back for a total of 16; thus, for n bounces, it's:
     // (46 + pow/6) * n less 16/6 times the (n - 1)th triangular number.
-    int n = (pow + 15) / 16;
-    int max = (46 + (pow / 6)) * n - 4 * n * (n - 1) / 3;
+    int n = (pow + 5) / 6;
+    int max = (46 + (pow * 5 / 4)) * n - 4 * n * (n - 1) / 3;
 
     return make_stringf("%d-%d", min, max);
 }
@@ -235,9 +235,10 @@ spret cast_chain_spell(spell_type spell_cast, int pow,
 
     bool first = true;
     coord_def source, target;
+    int iterant = 3;
 
     for (source = caster->pos(); pow > 0;
-         pow -= 8 + random2(13), source = target)
+         pow -= iterant, source = target)
     {
         // infinity as far as this spell is concerned
         // (Range - 1) is used because the distance is randomised and
@@ -373,13 +374,13 @@ spret cast_chain_spell(spell_type spell_cast, int pow,
                 beam.colour = LIGHTBLUE;
                 beam.damage = caster->is_player()
                     ? calc_dice(5, 10 + pow * 2 / 3)
-                    : calc_dice(5, 46 + pow / 6);
+                    : calc_dice(5, 46 + pow * 5 / 4);
                 break;
             case SPELL_LESSER_CHAOS_CHAIN:
                 beam.colour = ETC_RANDOM;
                 beam.real_flavour = BEAM_CHAOS;
                 beam.flavour = BEAM_CHAOS;
-                beam.damage = calc_dice(3, 5 + pow / 6);
+                beam.damage = calc_dice(3, 5 + pow * 5 / 4);
                 break;
             case SPELL_CHAIN_OF_CHAOS:
                 beam.colour = ETC_JEWEL;
@@ -387,7 +388,7 @@ spret cast_chain_spell(spell_type spell_cast, int pow,
                 beam.flavour = BEAM_CHAOTIC;
                 beam.damage = caster->is_player()
                     ? calc_dice(5, 12 + pow)
-                    : calc_dice(5, 51 + pow / 3);
+                    : calc_dice(5, 51 + pow * 5 / 2);
                 break;
             default:
                 break;
@@ -418,6 +419,11 @@ spret cast_chain_spell(spell_type spell_cast, int pow,
                 beam.flavour      = BEAM_VISUAL;
             }
         }
+
+        // Breaks for RNG.
+        if (caster->is_player())
+            iterant = 8 + random2(13);
+
         beam.fire();
     }
 
