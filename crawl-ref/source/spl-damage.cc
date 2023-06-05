@@ -70,7 +70,8 @@
 void setup_fire_storm(const actor *source, int pow, bolt &beam)
 {
     zappy(ZAP_FIRE_STORM, pow, source->is_monster(), beam);
-    beam.ex_size      = 2 + (random2(1000) < pow);
+    const int gate = source->is_player() ? pow * 1.5 : pow * 10;
+    beam.ex_size      = 2 + (random2(1000) < gate);
     beam.source_id    = source->mid;
     // XXX: Should this be KILL_MON_MISSILE?
     beam.thrower      =
