@@ -5954,8 +5954,9 @@ void fly_player(int pow, bool already_flying)
         float_player();
 }
 
+// BCADDO: Actually using the foe for death message purposes could be nice.
 // Forcing the player to land; via grasping roots or petrification.
-void force_land_player(actor */*foe*/, bool damage)
+void force_land_player(const actor */*foe*/, bool damage)
 {
     if (you.duration[DUR_FLIGHT] || you.attribute[ATTR_PERM_FLIGHT])
     {
@@ -8772,7 +8773,7 @@ void player::petrify(const actor *who, bool force, bool mt)
         mprf(MSGCH_WARN, "You are slowing down.");
 }
 
-bool player::fully_petrify(bool /*quiet*/, bool mt)
+bool player::fully_petrify(const actor *atk, bool /*quiet*/, bool mt)
 {
     duration[mt ? DUR_MOUNT_PETRIFIED : DUR_PETRIFIED] = 60
                         + random2(40);
@@ -8785,7 +8786,7 @@ bool player::fully_petrify(bool /*quiet*/, bool mt)
         mpr("You have turned to stone.");
 
     if (mt && you.mounted() || !mt && !you.mounted())
-        force_land_player(nullptr, true);
+        force_land_player(atk, true);
 
     if (!mt)
         end_searing_ray();

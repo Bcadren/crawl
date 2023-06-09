@@ -230,7 +230,7 @@ static void _decrement_petrification(int delay)
             you.fully_petrify(nullptr, false, true);
         }
         else if (dur < 15 && old_dur >= 15)
-            mpr("You mount is stiffening.");
+            mpr("Your mount is stiffening.");
     }
 }
 

@@ -768,14 +768,15 @@ public:
     bool sicken(int amount) override;
     void paralyse(const actor *, int str, string source = "") override;
     void petrify(const actor *, bool force = false, bool mt = false) override;
-    bool fully_petrify(bool quiet = false, bool mt = false) override;
+    bool fully_petrify(const actor *atk = nullptr, 
+                       bool quiet = false, bool mt = false) override;
     void slow_down(actor *, int str, bool do_msg = true) override;
     void confuse(actor *, int strength) override;
     void weaken(actor *attacker, int pow) override;
     bool heal(int amount, bool force = false) override;
     bool drain_exp(const actor *, bool quiet = false, int pow = 3) override;
-    bool rot(actor *, int amount, bool quiet = false, bool no_cleanup = false, bool bypass_resistance = false)
-        override;
+    bool rot(actor *, int amount, bool quiet = false, bool no_cleanup = false, 
+             bool bypass_resistance = false) override;
     void splash_with_acid(const actor* evildoer, int acid_strength,
                           bool allow_corrosion = true,
                           const char* hurt_msg = nullptr,
@@ -1224,7 +1225,7 @@ bool invis_allowed(bool quiet = false, string *fail_reason = nullptr);
 bool flight_allowed(bool quiet = false, string *fail_reason = nullptr);
 void fly_player(int pow, bool already_flying = false);
 void float_player();
-void force_land_player(actor *foe, bool damage = false);
+void force_land_player(const actor *foe, bool damage = false);
 bool land_player(bool quiet = false);
 void player_open_door(coord_def doorpos);
 void player_close_door(coord_def doorpos);

@@ -237,7 +237,8 @@ public:
     virtual void paralyse(const actor *attacker, int strength,
                           string source = "") = 0;
     virtual void petrify(const actor *attacker, bool force = false, bool mt = false) = 0;
-    virtual bool fully_petrify(bool quiet = false, bool mt = false) = 0;
+    virtual bool fully_petrify(const actor *atk = nullptr, 
+                               bool quiet = false, bool mt = false) = 0;
     virtual void slow_down(actor *attacker, int strength, bool do_msg = true) = 0;
     virtual void confuse(actor *attacker, int strength) = 0;
     virtual void put_to_sleep(actor *attacker, int strength,

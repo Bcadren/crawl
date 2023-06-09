@@ -492,7 +492,8 @@ public:
     bool sicken(int strength) override;
     void paralyse(const actor *, int str, string source = "") override; // BCADDO: Remove Source?
     void petrify(const actor *, bool force = false, bool /*mt*/ = false) override;
-    bool fully_petrify(bool quiet = false, bool /*mt*/ = false) override;
+    bool fully_petrify(const actor *atk = nullptr, bool quiet = false, 
+                       bool /*mt*/ = false) override;
     void slow_down(actor *, int str, bool do_msg = true) override;
     void confuse(actor *, int strength) override;
     bool drain_exp(const actor *, bool quiet = false, int pow = 3) override;

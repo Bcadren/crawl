@@ -1794,6 +1794,9 @@ void bolt::apply_bolt_petrify(monster* mons)
     if (mons->res_petrify())
         return;
 
+    if (mons->stasis())
+        return;
+
     if (mons->petrifying())
     {
         // If the petrifying is not yet finished, we can force it to happen
@@ -6370,9 +6373,6 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
         return MON_AFFECTED;
 
     case BEAM_PETRIFY:
-        if (mon->stasis()) 
-            return MON_UNAFFECTED;
-
         apply_bolt_petrify(mon);
         return MON_AFFECTED;
 
