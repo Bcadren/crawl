@@ -478,15 +478,45 @@ static dice_def _spell_damage(spell_type spell, int hd)
     if (zap == NUM_ZAPS)
         return dice_def(0,0);
 
-    return zap_damage(zap, hd, true);
+    dice_def retval = zap_damage(zap, hd, true);
+
+    switch (spell)
+    {
+    case SPELL_DISPEL_UNDEAD:
+        retval.size = min(40, retval.size);
+        break;
+    default:
+        break;
+    }
+
+    return retval;
 }
 
 static colour_t _spell_colour(spell_type spell)
 {
+    switch (spell)
+    {
+    case SPELL_CHAIN_LIGHTNING:
+        return LIGHTCYAN;
+    default:
+        break;
+    }
+
     const zap_type zap = spell_to_zap(spell);
     if (zap == NUM_ZAPS)
         return COL_UNKNOWN;
-    return zap_colour(zap);
+    colour_t retval = zap_colour(zap);
+
+    switch (retval)
+    {
+    case BLACK:
+    case DARKGRAY:
+        return RED;
+    default:
+        break;
+    }
+
+    return retval;
 }
 
 static string _colourize(string base, colour_t col)
@@ -534,10 +564,7 @@ static string _effect_string(spell_type spell, const monster_info *mon_owner)
     }
 
     if (spell == SPELL_CHAIN_LIGHTNING)
-    {
-        const int pow = mons_power_for_hd(spell, hd);
-        return make_stringf("(%s)", desc_chain_lightning_dam(pow).c_str());
-    }
+        return make_stringf("(%s)", desc_chain_lightning_dam(hd).c_str());
 
     const dice_def dam = _spell_damage(spell, hd);
     if (dam.num == 0 || dam.size == 0)

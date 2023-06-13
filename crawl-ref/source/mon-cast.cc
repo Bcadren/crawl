@@ -1348,8 +1348,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     beam.source_id = mons->mid;
     beam.source_name = mons->name(DESC_A, true);
 
-    power = mons_power_for_hd(real_spell, mons->spell_hd());
-
     const mons_spell_logic* logic = map_find(spell_to_logic, spell_cast);
     if (logic && logic->setup_beam)
         logic->setup_beam(beam, *mons, power);
@@ -1412,6 +1410,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_SPIT_ACID:
     case SPELL_ACID_SPLASH:
     case SPELL_ELECTRICAL_BOLT:
+    case SPELL_MEPHITIC_CLOUD:
+    case SPELL_TRIPLE_BREATH:
 
     // Wands
     case SPELL_WAND_FLAME:
@@ -1447,8 +1447,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         break;
 
     case SPELL_DISPEL_UNDEAD:
-        beam.flavour  = BEAM_DISPEL_UNDEAD;
-        beam.damage   = dice_def(3, min(6 + power * 3 / 4, 40));
+        zappy(spell_to_zap(real_spell), power, true, beam);
+        beam.damage.size = min(40, beam.damage.size);
         break;
 
     case SPELL_MALMUTATE:
@@ -1460,50 +1460,19 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.foe_ratio = random_range(40, 55);
         break;
 
-    case SPELL_MEPHITIC_CLOUD:
-        beam.name     = "stinking cloud";
-        beam.damage   = dice_def(1, 0);
-        beam.colour   = GREEN;
-        beam.flavour  = BEAM_MEPHITIC;
-        beam.hit      = 14 + power / 30;
-        beam.is_explosion = true;
-        break;
-
     case SPELL_BREATHE_VAMPIRIC:
-        beam.name     = "vampiric fog";
+        zappy(spell_to_zap(real_spell), power, true, beam);
         beam.hit_verb = "engulf";
-        beam.damage   = dice_def(3, 4 + power / 24);
-        beam.colour   = RED;
-        beam.flavour  = BEAM_BLOOD;
-        beam.hit      = 17 + power / 20;
+        beam.short_name = "vampiric fog";
         beam.pierce   = true;
         break;
 
+    case SPELL_SILVER_SPLINTERS:
+        beam.short_name = "silver splinters";
     case SPELL_BREATHE_RADIATION:
-        beam.name     = "mutagenic blast";
-        beam.damage   = dice_def(3, 4 + power / 24);
-        beam.colour   = ETC_MUTAGENIC;
-        beam.flavour  = BEAM_IRRADIATE;
-        beam.hit      = 17 + power / 20;
-        beam.pierce   = true;
-        break;
-
-    case SPELL_TRIPLE_BREATH:
-        beam.name     = "elemental breath";
-        beam.damage   = dice_def(3, 4 + power / 24);
-        beam.colour   = ETC_CRYSTAL;
-        beam.flavour  = BEAM_PARADOXICAL;
-        beam.hit      = 17 + power / 20;
-        beam.pierce   = true;
-        break;
-
     case SPELL_BREATHE_CHAOTIC:
-        beam.name     = "chaotic breath";
-        beam.damage   = dice_def(3, 4 + power / 24);
-        beam.colour   = ETC_JEWEL;
-        beam.flavour  = BEAM_CHAOTIC;
-        beam.hit      = 17 + power / 20;
-        beam.pierce   = true;
+        zappy(spell_to_zap(real_spell), power, true, beam);
+        beam.pierce = true;
         break;
 
     case SPELL_METAL_SPLINTERS:
@@ -1511,24 +1480,11 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.short_name = "metal splinters";
         break;
 
-    case SPELL_SILVER_SPLINTERS:
-        beam.name = "spray of silver splinters";
-        beam.short_name = "silver splinters";
-        beam.damage = dice_def(3, 10 + power / 20);
-        beam.colour = ETC_SILVER;
-        beam.flavour = BEAM_SILVER_FRAG;
-        beam.hit = 19 + power / 30;
+    case SPELL_BONE_SHARDS:
+        zappy(spell_to_zap(real_spell), power, true, beam);
+        beam.short_name = "bone shards";
         beam.pierce = true;
         break;
-
-    case SPELL_BONE_SHARDS:
-        beam.name = "spray of bone shards";
-        beam.short_name = "bone shards";
-        beam.damage = dice_def(3, 12 + power / 20);
-        beam.colour = ETC_BONE;
-        beam.flavour = BEAM_FRAG;
-        beam.hit = 19 + power / 30;
-        beam.pierce = true;
 
     case SPELL_SPLINTERSPRAY:
         zappy(spell_to_zap(real_spell), power, true, beam);
@@ -1550,8 +1506,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         break;
 
     case SPELL_SEARING_BREATH:
-        if (mons && mons->type == MONS_XTAHUA)
-            power = power * 3/2;
         zappy(spell_to_zap(real_spell), power, true, beam);
         beam.aux_source  = "blast of searing breath";
         break;
