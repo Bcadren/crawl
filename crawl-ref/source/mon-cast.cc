@@ -1412,6 +1412,8 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_ELECTRICAL_BOLT:
     case SPELL_MEPHITIC_CLOUD:
     case SPELL_TRIPLE_BREATH:
+    case SPELL_ENSNARE:
+    case SPELL_SPECTRAL_CLOUD:
 
     // Wands
     case SPELL_WAND_FLAME:
@@ -1520,15 +1522,10 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.aux_source = "blast of icy breath";
         beam.short_name = "frost";
         break;
-		
-	case SPELL_RADIATION_BREATH:
-        beam.name         = "blast of radiation";
-        beam.aux_source   = "blast of radiation breath";
-        beam.damage       = dice_def(1, 3 * mons->spell_hd(spell_cast) / 2);
-        beam.colour       = LIGHTRED;
-        beam.hit          = 30;
-        beam.flavour      = BEAM_FIRE;
-        beam.pierce       = true;
+
+    case SPELL_RADIATION_BREATH:
+        zappy(spell_to_zap(real_spell), power, true, beam);
+        beam.aux_source = "blast of radiation breath";
         break;
 
     case SPELL_CHILLING_BREATH:
@@ -1565,24 +1562,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.foe_ratio = 30;
         break;
 
-    case SPELL_ENSNARE:
-        beam.name     = "stream of webbing";
-        beam.colour   = WHITE;
-        beam.glyph    = dchar_glyph(DCHAR_FIRED_MISSILE);
-        beam.flavour  = BEAM_ENSNARE;
-        beam.damage   = dice_def(1, div_round_up(power,30));
-        beam.hit      = 22 + power / 20;
-        break;
-
-    case SPELL_SPECTRAL_CLOUD:
-        beam.name     = "spectral mist";
-        beam.damage   = dice_def(0, 1);
-        beam.colour   = CYAN;
-        beam.flavour  = BEAM_MMISSILE;
-        beam.hit      = AUTOMATIC_HIT;
-        beam.pierce   = true;
-        break;
-
     case SPELL_DIMENSION_ANCHOR:
         beam.flavour    = BEAM_DIMENSION_ANCHOR;
         break;
@@ -1593,17 +1572,17 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.flavour    = BEAM_COLD;
         break;
 
+    // BCADDO: Come here to add more Dith mirroring?
     case SPELL_SHADOW_BOLT:
+        zappy(spell_to_zap(SPELL_SHADOW_BOLT), power, true, beam);
         beam.name     = "shadow bolt";
-        beam.pierce   = true;
         // deliberate fall-through
     case SPELL_SHADOW_SHARD:
         if (real_spell == SPELL_SHADOW_SHARD)
-            beam.name  = "shadow shard";
-        beam.damage   = dice_def(3, 8 + power / 11);
-        beam.colour   = MAGENTA;
-        beam.flavour  = BEAM_MMISSILE;
-        beam.hit      = 17 + power / 25;
+        {
+            beam.name = "shadow shard";
+            beam.pierce = false;
+        }
         break;
 
     case SPELL_FLAMING_CLOUD:
@@ -1618,22 +1597,14 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         break;
 
     case SPELL_DEATH_RATTLE:
-        beam.name     = "vile air";
-        beam.colour   = DARKGREY;
-        beam.damage   = dice_def(2, 4);
-        beam.hit      = AUTOMATIC_HIT;
-        beam.flavour  = BEAM_DEATH_RATTLE;
-        beam.foe_ratio = 30;
-        beam.pierce   = true;
+        zappy(spell_to_zap(real_spell), power, true, beam);
+        beam.foe_ratio = 30;        
         break;
 
     // Special behaviour handled in _mons_upheaval
     // Hack so beam.cc allows us to correctly use that function
     case SPELL_UPHEAVAL:
-        beam.flavour     = BEAM_RANDOM;
-        beam.damage      = dice_def(3, 24);
-        beam.hit         = AUTOMATIC_HIT;
-        beam.glyph       = dchar_glyph(DCHAR_EXPLOSION);
+        zappy(spell_to_zap(real_spell), power, true, beam);
         beam.ex_size     = 2;
         break;
 
@@ -5892,18 +5863,13 @@ static void _dream_sheep_sleep(monster& mons, actor& foe)
 // Draconian stormcaller upheaval. Simplified compared to the player version.
 // Noisy! Causes terrain changes. Destroys doors/walls.
 // TODO: Could use further simplification.
-static void _mons_upheaval(monster& mons, actor& /*foe*/)
+static void _mons_upheaval(monster& mons, bolt &beam)
 {
-    bolt beam;
     beam.source_id   = mons.mid;
     beam.source_name = mons.name(DESC_THE).c_str();
     beam.thrower     = KILL_MON_MISSILE;
     beam.range       = LOS_RADIUS;
-    beam.damage      = dice_def(3, 24);
     beam.foe_ratio   = random_range(20, 30);
-    beam.hit         = AUTOMATIC_HIT;
-    beam.glyph       = dchar_glyph(DCHAR_EXPLOSION);
-    beam.loudness    = 10;
 #ifdef USE_TILE
     beam.tile_beam   = -1;
 #endif
@@ -7463,7 +7429,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
     }
 
     case SPELL_UPHEAVAL:
-        _mons_upheaval(*mons, *foe);
+        _mons_upheaval(*mons, pbolt);
         return;
 
     }

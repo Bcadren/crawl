@@ -465,6 +465,23 @@ static const zap_info zap_data[] =
     3
 },
 
+{   // BCADNOTE: This is identical to the wand version. Only exists because spl-zap lookup expects one zap per spell, issue?
+    ZAP_ENSNARE,
+    "stream of webbing",
+    200,
+    new dicedef_calculator<1, 1, 1, 8>,
+    new tohit_calculator<6, 4, 3>,
+    new dicedef_calculator<1, 1, 1, 8>,
+    new tohit_calculator<6, 4, 3>,
+    WHITE,
+    false,
+    BEAM_ENSNARE,
+    DCHAR_FIRED_MISSILE,
+    false,
+    false,
+    0
+},
+
 {
     ZAP_WAND_ENSNARE,
     "stream of webbing",
@@ -478,6 +495,74 @@ static const zap_info zap_data[] =
     BEAM_ENSNARE,
     DCHAR_FIRED_MISSILE,
     false,
+    false,
+    0
+},
+
+{
+    ZAP_SHADOW,
+    "shadow bolt",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<3, 8, 2, 3>,
+    new tohit_calculator<17, 1, 3>,
+    MAGENTA,
+    false,
+    BEAM_MMISSILE,
+    DCHAR_FIRED_ZAP,
+    true,
+    false,
+    0
+},
+  
+{
+    ZAP_DEATH_RATTLE,
+    "vile air",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<2, 4, 0, 1>,
+    new tohit_calculator<AUTOMATIC_HIT>,
+    DARKGREY,
+    false,
+    BEAM_DEATH_RATTLE,
+    DCHAR_FIRED_ZAP,
+    true,
+    false,
+    0
+},
+
+{
+    ZAP_UPHEAVAL,
+    "BUGGY", // Always gets overwritten.
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<3, 20, 1, 3>,
+    new tohit_calculator<AUTOMATIC_HIT>,
+    LIGHTMAGENTA,
+    false,
+    BEAM_RANDOM,
+    DCHAR_EXPLOSION,
+    false,
+    false,
+    10
+},
+
+{
+    ZAP_SPECTRAL_CLOUD,
+    "spectral mist",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<0, 1, 0, 1>,
+    new tohit_calculator<AUTOMATIC_HIT>,
+    CYAN,
+    false,
+    BEAM_MMISSILE,
+    DCHAR_FIRED_ZAP,
+    true,
     false,
     0
 },
@@ -1398,7 +1483,7 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
 },
 
 {
-    ZAP_BREATHE_RADIATION,
+    ZAP_BREATHE_RADIATION, // Draconian
     "mutagenic blast",
     200,
     new dicedef_calculator<4, 4, 1, 3>,
@@ -1410,6 +1495,23 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH, 150),
     BEAM_IRRADIATE,
     DCHAR_FIRED_ZAP,
     false,
+    false,
+    3
+},
+
+{
+    ZAP_RADIATION_BREATH, // Crab
+    "mutagenic blast",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<1, 2, 3, 2>,
+    new tohit_calculator<30>,
+    ETC_MUTAGENIC,
+    false,
+    BEAM_IRRADIATE,
+    DCHAR_FIRED_ZAP,
+    true,
     false,
     3
 },

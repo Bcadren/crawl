@@ -117,6 +117,13 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_BREATHE_CHAOTIC,        ZAP_BREATHE_CHAOS },
     { SPELL_SILVER_SPLINTERS,       ZAP_BREATHE_SILVER },
     { SPELL_BONE_SHARDS,            ZAP_BREATHE_BONE },
+    { SPELL_RADIATION_BREATH,       ZAP_RADIATION_BREATH },
+    { SPELL_ENSNARE,                ZAP_ENSNARE },
+    { SPELL_SHADOW_BOLT,            ZAP_SHADOW },
+    { SPELL_DEATH_RATTLE,           ZAP_DEATH_RATTLE },
+    { SPELL_UPHEAVAL,               ZAP_UPHEAVAL },
+    { SPELL_SPECTRAL_CLOUD,         ZAP_SPECTRAL_CLOUD },
+
 
     // These are all for zap -> spell lookup.
     { SPELL_QUICKSILVER_BOLT,       ZAP_QUICKSILVER_BOLT },
