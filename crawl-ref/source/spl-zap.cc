@@ -116,6 +116,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_TRIPLE_BREATH,          ZAP_BREATHE_TRIPLE },
     { SPELL_BREATHE_CHAOTIC,        ZAP_BREATHE_CHAOS },
     { SPELL_SILVER_SPLINTERS,       ZAP_BREATHE_SILVER },
+    { SPELL_METAL_SPLINTERS,        ZAP_BREATHE_METAL },
     { SPELL_BONE_SHARDS,            ZAP_BREATHE_BONE },
     { SPELL_RADIATION_BREATH,       ZAP_RADIATION_BREATH },
     { SPELL_ENSNARE,                ZAP_ENSNARE },

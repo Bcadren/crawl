@@ -1575,7 +1575,6 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     // BCADDO: Come here to add more Dith mirroring?
     case SPELL_SHADOW_BOLT:
         zappy(spell_to_zap(SPELL_SHADOW_BOLT), power, true, beam);
-        beam.name     = "shadow bolt";
         // deliberate fall-through
     case SPELL_SHADOW_SHARD:
         if (real_spell == SPELL_SHADOW_SHARD)
