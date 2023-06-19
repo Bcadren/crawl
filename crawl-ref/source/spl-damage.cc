@@ -3674,8 +3674,10 @@ spret cast_thunderbolt(actor *caster, int pow, coord_def aim, bool fail)
     else
         charges = 0;
 
-    targeter_thunderbolt hitfunc(caster, spell_range(SPELL_THUNDERBOLT, pow),
-                                 prev);
+    const int range = (!caster || caster->is_player()) ? spell_range(SPELL_THUNDERBOLT, pow)
+                                                       : mon_spell_range(SPELL_THUNDERBOLT, caster->as_monster());
+
+    targeter_thunderbolt hitfunc(caster, range, prev);
     hitfunc.set_aim(aim);
 
     if (caster->is_player()
@@ -4290,7 +4292,8 @@ static bool _player_glaciate_affects(const actor *victim)
 
 spret cast_glaciate(actor *caster, int pow, coord_def aim, bool fail)
 {
-    const int range = spell_range(SPELL_GLACIATE, pow);
+    const int range = (!caster || caster->is_player()) ? spell_range(SPELL_GLACIATE, pow)
+                                                       : mon_spell_range(SPELL_GLACIATE, caster->as_monster());
     targeter_cone hitfunc(caster, range);
     hitfunc.set_aim(aim);
 
@@ -4444,7 +4447,9 @@ size_t shotgun_beam_count(int pow)
 spret cast_scattershot(const actor *caster, int pow, const coord_def &pos,
                             bool fail, zap_type zap, bool empowered)
 {
-    const size_t range = spell_range(SPELL_SCATTERSHOT, pow);
+    const size_t range = (!caster || caster->is_player()) ? spell_range(SPELL_SCATTERSHOT, pow)
+                                                          : mon_spell_range(SPELL_SCATTERSHOT, caster->as_monster());
+
     size_t beam_count = shotgun_beam_count(pow);
 
     if (zap != ZAP_SCATTERSHOT)

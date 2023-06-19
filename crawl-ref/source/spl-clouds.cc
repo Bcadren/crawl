@@ -64,8 +64,11 @@ cloud_type chaos_cloud(bool player)
 spret conjure_flame(const actor *agent, int pow, const coord_def& where,
                          bool fail)
 {
+    const int range = (!agent || agent->is_player()) ? spell_range(SPELL_CONJURE_FLAME, pow)
+                                                     : mon_spell_range(SPELL_CONJURE_FLAME, agent->as_monster());
+
     // FIXME: This would be better handled by a flag to enforce max range.
-    if (grid_distance(where, agent->pos()) > spell_range(SPELL_CONJURE_FLAME, pow)
+    if (grid_distance(where, agent->pos()) > range
         || !in_bounds(where))
     {
         if (agent->is_player())
@@ -654,7 +657,8 @@ spret cast_cloud_cone(const actor *caster, int pow, const coord_def &pos,
         return spret::abort;
     }
 
-    const int range = spell_range(SPELL_CLOUD_CONE, pow);
+    const int range = (!caster || caster->is_player()) ? spell_range(SPELL_CLOUD_CONE, pow)
+                                                       : mon_spell_range(SPELL_CLOUD_CONE, caster->as_monster());
 
     targeter_shotgun hitfunc(caster, CLOUD_CONE_BEAM_COUNT, range);
 

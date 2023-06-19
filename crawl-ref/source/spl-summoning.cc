@@ -3317,8 +3317,11 @@ bool fire_battlesphere(monster* mons)
 spret cast_fulminating_prism(actor* caster, int pow,
                                   const coord_def& where, bool fail)
 {
+    const int range = (!caster || caster->is_player()) ? spell_range(SPELL_FULMINANT_PRISM, pow)
+                                                       : mon_spell_range(SPELL_FULMINANT_PRISM, caster->as_monster());
+
     if (grid_distance(where, caster->pos())
-        > spell_range(SPELL_FULMINANT_PRISM, pow))
+        > range)
     {
         if (caster->is_player())
             mpr("That's too far away.");
