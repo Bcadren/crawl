@@ -1176,6 +1176,13 @@ static int _mons_power_hd_factor(spell_type spell)
         case SPELL_OLGREBS_TOXIC_RADIANCE:
             return 8;
 
+        // 7 is a safe default when player-like scaling is necessary.
+        case SPELL_GRAVITAS:
+        case SPELL_DISCHARGE:
+        case SPELL_IRRADIATE:
+        case SPELL_LRD:
+            return 7;
+
         case SPELL_MONSTROUS_MENAGERIE:
         case SPELL_BATTLESPHERE:
         case SPELL_SPECTRAL_WEAPON:
@@ -1187,14 +1194,18 @@ static int _mons_power_hd_factor(spell_type spell)
         case SPELL_SUMMON_HYDRA:
             return 5;
 
-        case SPELL_CHAIN_LIGHTNING:
-        case SPELL_CHAIN_OF_CHAOS:
-        case SPELL_LESSER_CHAOS_CHAIN:
-            return 4;
-
         default:
-            return 12;
+            break;
     }
+
+
+    if (!bool(get_spell_flags(spell) & (spflag::MR_check | spflag::mons_abjure)))
+        return 1;
+
+    if (bool(get_spell_disciplines(spell) & spschool::evocation))
+        return 1;
+
+    return 12;
 }
 
 /**
@@ -1207,12 +1218,6 @@ static int _mons_power_hd_factor(spell_type spell)
  */
 int mons_power_for_hd(spell_type spell, int hd)
 {
-    if (!bool(get_spell_flags(spell) & (spflag::MR_check | spflag::mons_abjure)))
-        return hd;
-
-    if (bool(get_spell_disciplines(spell) & spschool::evocation))
-        return hd;
-
     const int power = hd * _mons_power_hd_factor(spell);
     if (spell == SPELL_PAIN)
         return max(50 * ENCH_POW_FACTOR, power);

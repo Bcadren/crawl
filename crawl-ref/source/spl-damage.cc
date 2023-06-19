@@ -1933,7 +1933,10 @@ bool mons_shatter(monster* caster, bool actual)
         }
     }
 
-    int pow = 5 + div_rand_round(caster->get_hit_dice() * 9, 2);
+    // Assumes Shatter is only ever cast as a magical spell. 
+    // Change necessary if it's ever a priest or natural ability.
+    const int pow = 5 + div_rand_round(caster->spell_hd(
+                    mon_spell_slot(SPELL_SHATTER,27, MON_SPELL_WIZARD)) * 9, 2);
 
     int dest = 0;
     for (distance_iterator di(caster->pos(), true, true, LOS_RADIUS); di; ++di)

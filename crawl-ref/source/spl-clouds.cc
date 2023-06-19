@@ -67,6 +67,9 @@ spret conjure_flame(const actor *agent, int pow, const coord_def& where,
     const int range = (!agent || agent->is_player()) ? spell_range(SPELL_CONJURE_FLAME, pow)
                                                      : mon_spell_range(SPELL_CONJURE_FLAME, agent->as_monster());
 
+    if (agent->is_monster())
+        pow *= 8;
+
     // FIXME: This would be better handled by a flag to enforce max range.
     if (grid_distance(where, agent->pos()) > range
         || !in_bounds(where))
