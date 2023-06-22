@@ -1228,11 +1228,15 @@ bool mons_eats_items(const monster& mon)
  * Undead actors and summoned, temporary, or ghostified monsters are all not
  * susceptible.
  * @param act The actor.
+ * @param chaos On chaos cast rN isn't checked.
  * @returns True if the actor is susceptible to vampirism, false otherwise.
  */
-bool actor_is_susceptible_to_vampirism(const actor& act)
+bool actor_is_susceptible_to_vampirism(const actor& act, bool chaos)
 {
-    if (!(act.holiness() & MH_NATURAL) || act.is_summoned())
+    if (act.is_summoned())
+        return false;
+
+    if (!chaos && (act.res_negative_energy() >= 3))
         return false;
 
     if (act.is_player())

@@ -940,8 +940,9 @@ spret fire_los_attack_spell(spell_type spell, int pow, actor* agent,
 spret vampiric_drain(int pow, monster* mons, bool fail)
 {
     const bool observable = mons && mons->observable();
+    const bool chaos = determine_chaos(&you, SPELL_VAMPIRIC_DRAINING, false);
     if (!mons
-        || !observable && !actor_is_susceptible_to_vampirism(*mons))
+        || !observable && !actor_is_susceptible_to_vampirism(*mons, chaos))
     {
         fail_check();
 
@@ -951,9 +952,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
         return spret::success;
     }
 
-    // TODO: check known rN instead of holiness
-    if (observable && !actor_is_susceptible_to_vampirism(*mons)
-        && !determine_chaos(&you, SPELL_VAMPIRIC_DRAINING, false))
+    if (observable && !actor_is_susceptible_to_vampirism(*mons, chaos))
     {
         mpr("You can't drain life from that!");
         return spret::abort;
@@ -976,7 +975,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     // The practical maximum of this is about 25 (pow @ 100). - bwr
     int dam = 3 + random2avg(9, 2) + random2(pow) / 7;
     if (_is_menacing(&you, SPELL_VAMPIRIC_DRAINING))
-        dam *= div_rand_round(3 * dam, 2);
+        dam = div_rand_round(3 * dam, 2);
 
     beam_type damtype = BEAM_NEG;
 
@@ -1000,13 +999,13 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
     hp_gain = div_rand_round(hp_gain, 2);
     hp_gain = min(you.hp_max - you.hp, hp_gain);
 
-    _player_hurt_monster(*mons, dam, damtype);
-
     mprf("You drain the %s's %s%s", mons->name(DESC_THE).c_str(),
         chaos ? "magical energy" : "life force",
         attack_strength_punctuation(dam).c_str());
 
-    if (chaos && x_chance_in_y(pow, 100))
+    _player_hurt_monster(*mons, dam, damtype);
+
+    if (chaos && mons->alive() && x_chance_in_y(pow, 100))
     {
         mons->add_ench(mon_enchant(ENCH_ANTIMAGIC, 0,
             &you, // doesn't matter
