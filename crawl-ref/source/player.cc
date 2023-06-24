@@ -4888,7 +4888,7 @@ int get_real_hp(bool trans, bool rotted)
     int hitp;
 
     if (you.species == SP_FAIRY)
-        return (3 + you.experience_level / 3);
+        return (3 + you.experience_level / 6);
 
     hitp  = (you.experience_level + 2) * 9;
     hitp += you.hp_max_adj_perm;
