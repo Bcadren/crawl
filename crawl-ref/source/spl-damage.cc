@@ -940,9 +940,9 @@ spret fire_los_attack_spell(spell_type spell, int pow, actor* agent,
 spret vampiric_drain(int pow, monster* mons, bool fail)
 {
     const bool observable = mons && mons->observable();
-    const bool chaos = determine_chaos(&you, SPELL_VAMPIRIC_DRAINING, false);
+    const bool canchaos = determine_chaos(&you, SPELL_VAMPIRIC_DRAINING, false);
     if (!mons
-        || !observable && !actor_is_susceptible_to_vampirism(*mons, chaos))
+        || !observable && !actor_is_susceptible_to_vampirism(*mons, canchaos))
     {
         fail_check();
 
@@ -952,7 +952,7 @@ spret vampiric_drain(int pow, monster* mons, bool fail)
         return spret::success;
     }
 
-    if (observable && !actor_is_susceptible_to_vampirism(*mons, chaos))
+    if (observable && !actor_is_susceptible_to_vampirism(*mons, canchaos))
     {
         mpr("You can't drain life from that!");
         return spret::abort;

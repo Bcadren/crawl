@@ -385,6 +385,9 @@ mutation_activity_type mutation_activity_level(mutation_type mut)
     if (!form_can_bleed(you.form) && mut == MUT_SANGUINE_ARMOUR)
         return mutation_activity_type::INACTIVE;
 
+    if (mut == MUT_STURDY_FRAME && you.get_mutation_level(MUT_AMORPHOUS_BODY))
+        return mutation_activity_type::INACTIVE;
+
     if (mut == MUT_DEMONIC_GUARDIAN && you.get_mutation_level(MUT_NO_LOVE))
         return mutation_activity_type::INACTIVE;
 
@@ -1457,6 +1460,12 @@ bool physiology_mutation_conflict(mutation_type mutat, bool ds_roll)
             return true;
         }
     }
+
+    if (you.has_innate_mutation(MUT_AMORPHOUS_BODY) && mutat == MUT_STURDY_FRAME)
+        return true;
+
+    if (you.has_innate_mutation(MUT_STURDY_FRAME) && mutat == MUT_AMORPHOUS_BODY)
+        return true;
 
     // Already immune.
     if ((player_res_poison(false, false, false) == 3) && mutat == MUT_POISON_RESISTANCE)
@@ -3376,7 +3385,12 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         int bonus = you.ac_change_from_mutation(mut) / 100;
 
         if (!bonus)
-            bonus = you.char_class == JOB_DEMONSPAWN ? you.get_experience_level() / 3 : 3;
+        {
+            bonus = you.char_class == JOB_DEMONSPAWN ? 
+                             mut == MUT_STURDY_FRAME ? 1 + you.get_experience_level() / 6
+                                                     : you.get_experience_level() / 3 
+                                                     : 3;
+        }
 
         if (mut == MUT_THIN_SKELETAL_STRUCTURE)
             bonus += 3;

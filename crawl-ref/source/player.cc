@@ -6857,12 +6857,26 @@ int player::unadjusted_body_armour_penalty() const
 
     if (you.get_mutation_level(MUT_AMORPHOUS_BODY))
     {
+        int count = 0;
+
         for (int i = EQ_FIRST_MORPH; i <= EQ_LAST_MORPH; i++)
         {
             item_def * worn = slot_item(static_cast<equipment_type>(i));
+            
+            if (worn)
+            {
+                armour_type armtype = static_cast<armour_type>(worn->sub_type);
 
-            if (worn && get_armour_slot(static_cast<armour_type>(worn->sub_type)) == EQ_BODY_ARMOUR)
-                malus += property(*worn, PARM_EVASION);
+                if (worn && get_armour_slot(armtype) == EQ_BODY_ARMOUR
+                         || get_armour_slot(armtype) == EQ_BARDING)
+                {
+                    malus += property(*worn, PARM_EVASION);
+                    malus -= 30 * count;
+                    count++;
+                }
+            }
+
+
         }
     }
 
@@ -6873,7 +6887,7 @@ int player::unadjusted_body_armour_penalty() const
     if (get_mutation_level(MUT_STURDY_FRAME))
     {
         if (you.char_class == JOB_DEMONSPAWN)
-            bonus = you.get_experience_level() / 3;
+            bonus = 1 + you.get_experience_level() / 6;
         else
             bonus = 3;
     }
