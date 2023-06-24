@@ -155,7 +155,8 @@ static void _curse_message(actor& target, actor* /*source*/,
     if (!(you.species == SP_OCTOPODE || you.species == SP_FORMICID
         || you.species == SP_FAIRY || you.species == SP_GARGOYLE
         || you.species == SP_LIGNIFITE || you.species == SP_SILENT_SPECTRE
-        || you.species == SP_OOZOMORPH || you.species == SP_MOLTEN_GARGOYLE))
+        || you.species == SP_MOLTEN_GARGOYLE
+        || you.has_mutation(MUT_AMORPHOUS_BODY)))
     {
         messages.push_back("Your bones ache.");
     }
