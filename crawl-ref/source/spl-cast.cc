@@ -521,7 +521,7 @@ static int _additive_power(spell_type spell)
         return 0;
 
     if (staff_enhances_spell(staff, spell))
-        return (3 * staff->plus);
+        return staff->plus;
     return 0;
 }
 

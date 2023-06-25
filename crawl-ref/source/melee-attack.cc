@@ -2715,17 +2715,23 @@ void melee_attack::attacker_sustain_passive_damage()
 
 int melee_attack::staff_damage(skill_type skill, bool max)
 {
+    // Getting here without a staff is probably nonsense, but for safety's sake . . . 
+    const int plus = attacker->staff() ? attacker->staff()->plus
+                                       : 0;
+
     if (max)
     {
         return div_round_up(attacker->skill(skill, 100)
-            + attacker->skill(SK_EVOCATIONS, 50), 80);
+            + attacker->skill(SK_EVOCATIONS, 50), 80)
+            + plus;
     }
 
     if (x_chance_in_y(attacker->skill(SK_EVOCATIONS, 200)
                     + attacker->skill(skill, 100), 3000))
     {
         return random2((attacker->skill(skill, 100)
-                      + attacker->skill(SK_EVOCATIONS, 50)) / 80);
+                      + attacker->skill(SK_EVOCATIONS, 50)) / 80)
+                      + plus;
     }
     return 0;
 }
