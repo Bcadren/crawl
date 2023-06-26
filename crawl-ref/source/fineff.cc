@@ -489,18 +489,18 @@ void shock_serpent_discharge_fineff::fire()
         oppressor.expose_to_element(BEAM_ELECTRICITY, abs(post_res));
 }
 
-static void _explosion_knockback(monster * mons, coord_def pos, int size, string description, bool do_clouds)
+static void _explosion_knockback(coord_def origin, coord_def pos, int size, string description, bool do_clouds)
 {
     if (actor * act = actor_at(pos))
     {
-        if (!(act->wearing_ego(EQ_BOOTS, SPARM_STURDY) || act->is_stationary()) && pos != mons->pos())
+        if (!(act->wearing_ego(EQ_BOOTS, SPARM_STURDY) || act->is_stationary()) && pos != origin)
         {
             coord_def newpos = coord_def(0, 0);
-            const bool is_left = (mons->pos().x - pos.x) >= 0;
-            const bool is_up = (mons->pos().y - pos.y) >= 0;
+            const bool is_left = (origin.x - pos.x) >= 0;
+            const bool is_up = (origin.y - pos.y) >= 0;
             for (rectangle_iterator sai(pos, size); sai; ++sai)
             {
-                if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos()) && act->is_habitable(*sai)
+                if (in_bounds(*sai) && grid_distance(*sai, origin) > grid_distance(pos, origin) && act->is_habitable(*sai)
                     && !actor_at(*sai) && cell_see_cell(pos, *sai, LOS_SOLID))
                 {
                     const int d0 = grid_distance(pos, *sai);
@@ -523,11 +523,11 @@ static void _explosion_knockback(monster * mons, coord_def pos, int size, string
     if (do_clouds && cloud_at(pos))
     {
         coord_def newpos = coord_def(0, 0);
-        const bool is_left = (mons->pos().x - pos.x) >= 0;
-        const bool is_up = (mons->pos().y - pos.y) >= 0;
+        const bool is_left = (origin.x - pos.x) >= 0;
+        const bool is_up = (origin.y - pos.y) >= 0;
         for (rectangle_iterator sai(pos, size); sai; ++sai)
         {
-            if (in_bounds(*sai) && grid_distance(*sai, mons->pos()) > grid_distance(pos, mons->pos())
+            if (in_bounds(*sai) && grid_distance(*sai, origin) > grid_distance(pos, origin)
                 && !cloud_at(*sai) && !cell_is_solid(*sai) && cell_see_cell(pos, *sai, LOS_NO_TRANS))
             {
                 const int d0 = grid_distance(pos, *sai);
@@ -554,22 +554,21 @@ void explosion_fineff::fire()
 
     if (you.see_cell(beam.target))
         mprf(MSGCH_MONSTER_DAMAGE, MDAM_DEAD, "%s", boom_message.c_str());
-
-    /*
-    else if (mons->type == MONS_LAVA_GLOB)
+    
+    if (beam.flavour == BEAM_LAVA)
     {
-        for (adjacent_iterator ai(mons->pos(), false); ai; ++ai)
+        for (adjacent_iterator ai(beam.target, false); ai; ++ai)
         {
-            _explosion_knockback(mons, *ai, 2, "lava burst", false);
+            _explosion_knockback(beam.target, *ai, 2, "lava burst", false);
             if (!cell_is_solid(*ai) && !feat_is_critical(env.grid(*ai)) && !feat_is_watery(env.grid(*ai)))
                 temp_change_terrain(*ai, DNGN_LAVA, 20 + random2(80), TERRAIN_CHANGE_FLOOD);
         }
     }
-    else if (mons->type == MONS_BALLOON_DOG)
+    else if (beam.flavour == BEAM_FRAG)
     {
-        for (rectangle_iterator ai(mons->pos(), 3); ai; ++ai)
-            _explosion_knockback(mons, *ai, 4, "rushing air", true);
-    } */
+        for (rectangle_iterator ai(beam.target, 3); ai; ++ai)
+            _explosion_knockback(beam.target, *ai, 4, "rushing air", true);
+    }
 
     if (inner_flame != iflame::none)
         for (adjacent_iterator ai(beam.target, false); ai; ++ai)
