@@ -1016,13 +1016,13 @@ radius and damage significantly.
 
 Shares spellslots with the related spell 'Shorn's Methodical Deconstruction'.
 %%%%
-Steve's Chaos Explosion
+Steve's Chaos Explosion spell
 
 Fragments a wall or a suitably brittle visible monster into an explosion of
 deadly shrapnel. It can be used on monsters made of ice, bone, or any wall-like
 substance, as well as those turned to stone by petrification. Chaotic energy 
-makes it pierce armour much better than Lee's Rapid Deconstruction, causing
-it to check random elemental resistances instead.
+makes it pierce armour much better than Lee's Rapid Deconstruction, but it
+checks random elemental resistances instead.
 %%%%
 Legendary Destruction spell
 
@@ -2008,10 +2008,11 @@ Vampiric Draining spell
 
 Steals the life of an adjacent living creature and grants it to the caster.
 %%%%
-Magical Draining
+Magical Draining spell
 
-Saps magical power from an adjacent creature, possibly disrupting its casting. 
-Grants stolen magical power as health to the caster.
+Saps magical power from an adjacent creature, checking a random resist 
+and potentially disrupting its casting. Grants stolen magical power as 
+health to the caster.
 %%%%
 Venom Bolt spell
 
