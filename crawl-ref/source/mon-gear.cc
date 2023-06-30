@@ -681,7 +681,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { MONS_MAGENTA_DRACONIAN,       { NAGA_WEAPONS } },
         { MONS_TENGU,                   { NAGA_WEAPONS } },
         { MONS_GUARDIAN_MUMMY,          { NAGA_WEAPONS } },
-        { MONS_GREATER_MUMMY,           { NAGA_WEAPONS } },
+        { MONS_ROYAL_MUMMY,             { NAGA_WEAPONS } },
         { MONS_MUMMY_PRIEST,            { NAGA_WEAPONS } },
         { MONS_NAGA_RITUALIST,
             { { { WPN_CLEAVER,         12 },
@@ -1595,7 +1595,7 @@ static void _give_shield(monster* mon, int level)
 
     case MONS_FAUN:
     case MONS_MUMMY_PRIEST:
-    case MONS_GREATER_MUMMY:
+    case MONS_ROYAL_MUMMY:
     case MONS_TENGU_CONJURER:
     case MONS_DEEP_ELF_KNIGHT:
         if (one_chance_in(3))
