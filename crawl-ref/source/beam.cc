@@ -2754,7 +2754,7 @@ void bolt::drop_object()
 
     if (!thrown_object_destroyed(item))
     {
-        if (item->sub_type == MI_THROWING_NET)
+        if (item->is_type(OBJ_MISSILES, MI_THROWING_NET))
         {
             monster* m = monster_at(pos());
             // Player or monster at position is caught in net.
