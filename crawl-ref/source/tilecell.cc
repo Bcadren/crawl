@@ -664,9 +664,12 @@ void pack_cell_overlays(const coord_def &gc, crawl_view_buffer &vbuf)
     if (cell.map_knowledge.feat() == DNGN_UNSEEN)
         return; // Don't put overlays on unseen tiles
 
+    if (!in_bounds(gc))
+        return; // Sanity.
+
     bool use_shoals = player_in_branch(BRANCH_SHOALS) || cell.map_knowledge.feat_colour() == CYAN;
 
-    if (!use_shoals && in_bounds(gc))
+    if (!use_shoals)
     {
         for (adjacent_iterator ai(gc, true); ai; ++ai)
         {
