@@ -319,36 +319,21 @@ static int _get_blowgun_chance(const int hd)
 static bool _fire_choose_target(int slot, dist& target,
                                          bool teleport = false)
 {
-    fire_target_behaviour beh;
-    const bool was_chosen = (slot != -1);
-
-    if (was_chosen)
-    {
-        string warn;
-        if (!_fire_validate_item(slot, warn))
-        {
-            mpr(warn);
-            return false;
-        }
-        // Force item to be the prechosen one.
-        beh.action.set_from_slot(slot);
-    }
-
     direction_chooser_args args;
     args.mode = TARG_HOSTILE;
     args.self = confirm_prompt_type::cancel;
     args.needs_path = !teleport;
-    args.top_prompt = make_stringf("Aiming: <white>%s</white>", you.weapon(0) 
-        ? you.weapon(0)->name(DESC_INVENTORY).c_str() : "Throw Junk");
-    args.show_distance = true;
+    args.top_prompt = make_stringf("Aiming: <white>%s</white>%s", 
+            slot != -1 ? you.inv[slot].name(DESC_YOUR, true).c_str() :
+         you.weapon(0) ? you.weapon(0)->name(DESC_INVENTORY).c_str() 
+                       : "Throw Junk", 
+            slot != -1 ? " (Tossing Away)" : "" );
+
+    if (slot == -1)
+        args.show_distance = true;
 
     direction(target, args);
     
-    if (!beh.action.get().is_valid())
-    {
-        canned_msg(MSG_OK);
-        return false;
-    }
     if (!target.isValid)
     {
         if (target.isCancel)
@@ -361,13 +346,6 @@ static bool _fire_choose_target(int slot, dist& target,
         mprf("There is %s there.", article_a(feat).c_str());
         return false;
     }
-
-    you.quiver_action.set(beh.action);
-    you.m_quiver_history.on_item_fired(*beh.active_item(), beh.chosen_ammo);
-    you.redraw_quiver = true;
-    
-    // TODO: refactor to not refer to items
-    slot = beh.action.get().get_item();
 
     return true;
 }

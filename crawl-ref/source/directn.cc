@@ -305,7 +305,7 @@ void direction_chooser::print_top_prompt() const
         else if (loc_ran < 5)
             dam -= ((5-loc_ran) * 25);
         dam = max(25, dam); // just to show it still does damage on self target.
-        mprf(MSGCH_PROMPT, "%s, Range: %d (%d%%)", top_prompt.c_str(), loc_ran, dam);
+        mprf(MSGCH_PROMPT, "%s%sRange: %d (%d%%)", top_prompt.c_str(), top_prompt.length() ? ", " : "", loc_ran, dam);
     }
 }
 
@@ -2156,11 +2156,11 @@ public:
 
             const auto command = m_dc.behaviour->get_command(key);
 
-            string top_prompt;
+            /* string top_prompt;
             m_dc.behaviour->update_top_prompt(&top_prompt);
             if (m_dc.top_prompt != top_prompt)
                 _expose();
-            m_dc.top_prompt = top_prompt;
+            m_dc.top_prompt = top_prompt;*/
 
             process_command(command);
 
