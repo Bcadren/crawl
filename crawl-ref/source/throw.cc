@@ -545,7 +545,7 @@ static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
     beam.aux_source.clear();
 
     beam.name = item.name(DESC_PLAIN, false, false, false);
-    ammo_name = item.name(DESC_PLAIN);
+    ammo_name = item.name(DESC_PLAIN, false, false, false, true);
 
     const unrandart_entry* entry = launcher && is_unrandom_artefact(*launcher)
         ? get_unrand_entry(launcher->unrand_idx) : nullptr;
@@ -598,7 +598,12 @@ static bool _setup_missile_beam(const actor *agent, bolt &beam, item_def &item,
     }
 
     if (!is_artefact(item))
-        ammo_name = article_a(ammo_name, true);
+    {
+        if (item.quantity > 1)
+            ammo_name = make_stringf("one of your %s", ammo_name.c_str());
+        else
+            ammo_name = article_a(ammo_name, true);
+    }
     else
         ammo_name = "the " + ammo_name;
 
