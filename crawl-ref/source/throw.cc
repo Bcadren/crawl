@@ -397,7 +397,7 @@ void throw_item_no_quiver(dist *target)
         && in_bounds(target->target)
         && cell_is_solid(target->target))
     {
-        const char *feat = feat_type_name(grd(target->target));
+        const char *feat = feat_type_name(env.grid(target->target));
         mprf("There is %s there.", article_a(feat).c_str());
         return;
     }
@@ -935,7 +935,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
     if (you.weapon(0) && is_range_weapon(*you.weapon(0)))
         _throw_noise(&you, *thrown, *you.weapon(0));
 
-    // BCAD NOTE: If we ever allow dual wielding ranged weapons this will take some rework.
+    // BCADNOTE: If we ever allow dual wielding ranged weapons this will take some rework.
     // ...any monster nearby can see that something has been thrown, even
     // if it didn't make any noise.
     alert_nearby_monsters();
@@ -950,7 +950,7 @@ bool throw_it(bolt &pbolt, int throw_2, dist *target)
         && thrown->base_type == OBJ_MISSILES)
     {
         mount_drake_breath(&pbolt);
-        dithmenos_shadow_throw(*target, item);
+        dithmenos_shadow_throw(*target, *thrown);
     }
 
     if (throw_2 == -1)

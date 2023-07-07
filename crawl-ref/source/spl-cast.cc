@@ -1559,8 +1559,8 @@ static vector<coord_def> _simple_find_corpses(actor *a, bool allow_skeleton, boo
 
 
 // TODO: refactor into target.cc, move custom classes out of target.h
-static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
-                                              int range, bool warped)
+unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
+                                                int range, bool warped)
 {
     const bool fireball = (spell == SPELL_FIREBALL || spell == SPELL_GHOSTLY_FIREBALL);
 
@@ -1645,7 +1645,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     // untargeted spells -- everything beyond here is a static targeter
     case SPELL_HAILSTORM:
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, range, 0, 2);
-    case SPELL_ISKENDERUNS_MYSTIC_BLAST:
+    case SPELL_MUSE_OAMS_AIR_BLAST:
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, range);
     case SPELL_STARBURST:
         return make_unique<targeter_starburst>(&you, range, pow);
@@ -1654,10 +1654,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     case SPELL_DISCHARGE: // not entirely accurate...maybe should highlight
                           // all potentially affected monsters?
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, 1, 0, 1);
-    case SPELL_DAZZLING_FLASH:
-        return make_unique<targeter_maybe_radius>(&you, LOS_SOLID_SEE, range);
-    case SPELL_ABSOLUTE_ZERO:
-        return make_unique<targeter_absolute_zero>(range);
+    // BCADDO: Blinding spray.
     // TODO: ramparts
 
     // at player's position only (but not a selfench):
@@ -1678,7 +1675,7 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_multiposition>(&you, _simple_find_all_actors(&you), false);
     case SPELL_DISCORD:
         return make_unique<targeter_multiposition>(&you, _simple_find_all_actors(&you), true);
-    case SPELL_IGNITION: // multi-fireball targeter? sort of annoying to implement
+    case SPELL_ICICLE_CASCADE: // multi-fireball targeter? sort of annoying to implement
         return make_unique<targeter_multifireball>(&you, get_ignition_blast_sources(&you));
 
     // Summons. Most summons have a simple range 2 radius, see find_newmons_square
@@ -1707,11 +1704,6 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     case SPELL_SUMMON_FOREST:
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, LOS_RADIUS, 0, 2);
 
-    case SPELL_ANIMATE_SKELETON:
-        // this spell seems (?) to pick the first corpse by radius_iterator, so
-        // just show that one. If this spell were to do something better, e.g.
-        // randomization, this would need to take a different approach
-        return make_unique<targeter_multiposition>(&you, _simple_find_corpses(&you, true, false), true);
     case SPELL_TWISTED_RESURRECTION:
     case SPELL_ANIMATE_DEAD:
         return make_unique<targeter_multiposition>(&you, _simple_find_corpses(&you, false, true), true);
@@ -1923,7 +1915,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
     int intensity = 0;
     beam.range = range;
 
-    unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range);
+    unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range, warped);
     const bool is_targeted = !!(flags & spflag::targeting_mask);
 
     // XXX: This handles only some of the cases where spells need

@@ -2879,24 +2879,12 @@ spret cast_torment(bool fail)
     return spret::success;
 }
 
-spret cast_cascade(const actor *agent, int pow, bool fail)
-{
-    ASSERT(agent->is_player());
-
-    fail_check();
-
-    bool chaos = determine_chaos(agent, SPELL_ICICLE_CASCADE);
-    bool evil = (you.staff() && is_unrandom_artefact(*you.staff(), UNRAND_MAJIN));
-    //targeter_radius hitfunc(agent, LOS_NO_TRANS);
-
 vector<coord_def> get_ignition_blast_sources(const actor *agent)
 {
     // Ignition affects squares that had hostile monsters on them at the time
     // of casting. This way nothing bad happens when monsters die halfway
     // through the spell.
     vector<coord_def> blast_sources;
-    vector<coord_def> blast_areas;
-    vector<int> blast_intensities;
 
     if (!agent)
         return blast_sources;
@@ -2914,18 +2902,23 @@ vector<coord_def> get_ignition_blast_sources(const actor *agent)
     return blast_sources;
 }
 
-spret cast_ignition(const actor *agent, int pow, bool fail)
+
+spret cast_cascade(const actor *agent, int pow, bool fail)
 {
     ASSERT(agent->is_player());
 
     fail_check();
 
+    bool chaos = determine_chaos(agent, SPELL_ICICLE_CASCADE);
+    bool evil = (you.staff() && is_unrandom_artefact(*you.staff(), UNRAND_MAJIN));
     //targeter_radius hitfunc(agent, LOS_NO_TRANS);
 
     // Ignition affects squares that had hostile monsters on them at the time
     // of casting. This way nothing bad happens when monsters die halfway
     // through the spell.
     vector<coord_def> blast_sources = get_ignition_blast_sources(agent);
+    vector<coord_def> blast_areas;
+    vector<int> blast_intensities;
 
     if (blast_sources.empty())
         canned_msg(MSG_NOTHING_HAPPENS);

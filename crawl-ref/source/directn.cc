@@ -1249,7 +1249,7 @@ void direction_chooser::draw_beam(crawl_view_buffer &vbuf)
         {
             aff_type aff = hitfunc->is_affected(*ri);
             if (aff
-                && (!feat_is_solid(grd(*ri)) || hitfunc->can_affect_walls()))
+                && (!feat_is_solid(env.grid(*ri)) || hitfunc->can_affect_walls()))
             {
                 auto& cell = vbuf(grid2view(*ri) - 1);
                 _draw_ray_cell(cell, *ri, *ri == target(), aff);
@@ -2601,7 +2601,7 @@ static bool _mons_is_valid_target(const monster* mon, targ_mode_type mode,
     // Monsters that are no threat to you don't count as monsters.
     if (mode != TARG_EVOLVABLE_PLANTS
         && !mons_is_threatening(*mon)
-        && mon->type != MONS_TEST_STATUE))
+        && mon->type != MONS_TEST_STATUE)
     {
         return false;
     }

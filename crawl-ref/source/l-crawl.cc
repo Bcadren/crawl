@@ -440,7 +440,7 @@ static int crawl_do_targeted_command(lua_State *ls)
     case CMD_EVOKE_WIELDED:
         // BCADNOTE: Not sure this is Bcadren relevant. 
                   // Will need rework to also evoke WEAPON1 if it is.
-        evoke_item(you.equip[EQ_WEAPON0], target);
+        evoke_item(you.equip[EQ_WEAPON0], &target);
         break;
     case CMD_FIRE:
         you.quiver_action.get().trigger(target);

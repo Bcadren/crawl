@@ -151,9 +151,8 @@ namespace quiver
 
     static bool _autoswitch_active()
     {
-        return Options.auto_switch
-                && (you.equip[EQ_WEAPON] == letter_to_index('a')
-                    || you.equip[EQ_WEAPON] == letter_to_index('b'));
+        // BCADDO: Implement or remove.
+        return false;
     }
 
     static bool _autoswitch_ammo_check(const item_def &ammo)
@@ -175,7 +174,7 @@ namespace quiver
             return false;
 
         // validated above
-        const int item_slot = you.equip[EQ_WEAPON] == letter_to_index('a')
+        const int item_slot = you.equip[EQ_WEAPON0] == letter_to_index('a')
                                 ? letter_to_index('b') : letter_to_index('a');
 
         const item_def& launcher = you.inv[item_slot];
@@ -739,10 +738,7 @@ namespace quiver
             {
                 auto w = make_shared<wand_action>(slot);
                 if (w->is_valid()
-                    && (allow_disabled || w->is_enabled())
-                    // skip digging for fire cycling, it seems kind of
-                    // non-useful? Can still be force-quivered from inv
-                    && you.inv[slot].sub_type != WAND_DIGGING)
+                    && (allow_disabled || w->is_enabled()))
                 {
                     result.push_back(move(w));
                 }

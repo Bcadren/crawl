@@ -111,7 +111,8 @@ bool staff_enhances_spell(const item_def * staff, spell_type spell);
 int hex_success_chance(const int mr, int powc, int scale,
                        bool round_up = false);
 class targeter;
-unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow, int range);
+unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow, int range, 
+                                         bool warped = false);
 bool spell_has_targeter(spell_type spell);
 vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
                                    targeter* hitfunc);

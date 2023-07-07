@@ -35,7 +35,6 @@ bool item_is_quivered(const item_def &item);
 bool fire_warn_if_impossible(bool silent = false);
 shared_ptr<quiver::action> aiming_checks(dist &target, bool teleport = false);
 bool is_pproj_active();
-void throw_item_no_quiver();
 void untargeted_fire(shared_ptr<quiver::action> a);
 void throw_item_no_quiver(dist *target=nullptr);
 
