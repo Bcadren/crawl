@@ -1526,20 +1526,10 @@ static vector<coord_def> _simple_find_all_actors(actor *a)
     return result;
 }
 
-// a light wrapper on the code used for casting animate skeleton
-static vector<coord_def> _find_animatable_skeletons(actor *a)
-{
-    vector<coord_def> result;
-    coord_def s = find_animatable_skeleton(a->pos());
-    if (in_bounds(s))
-        result.push_back(s);
-    return result;
-}
-
 static bool _simple_corpse_check(const coord_def &c)
 {
     int motions; // ???
-    return animate_remains(c, CORPSE_BODY, BEH_FRIENDLY, 1, MHITYOU, &you, "",
+    return animate_remains(c, CORPSE_BODY, BEH_FRIENDLY, MHITYOU, &you, "",
                         GOD_NO_GOD, false, true, true, nullptr, &motions) > 0;
 }
 
@@ -1666,15 +1656,15 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
     // BCADDO: Blinding spray.
 
     // at player's position only but not a selfench; most transmut spells go here:
-    case SPELL_SPIDER_FORM:
+    case SPELL_SCORPION_FORM:
     case SPELL_BLADE_HANDS:
     case SPELL_STATUE_FORM:
     case SPELL_ICE_FORM:
     case SPELL_DRAGON_FORM:
-    case SPELL_HYDRA_FORM:
+    case SPELL_SUMMON_SPIDER_MOUNT:
+    case SPELL_SUMMON_HYDRA_MOUNT:
     case SPELL_NECROMUTATION:
     case SPELL_BEASTLY_APPENDAGE:
-    case SPELL_WEREBLOOD:
     case SPELL_SUBLIMATION_OF_BLOOD:
     case SPELL_BORGNJORS_REVIVIFICATION:
     case SPELL_CONJURE_FLAME:
