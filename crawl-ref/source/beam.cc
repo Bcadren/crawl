@@ -4383,32 +4383,32 @@ void bolt::affect_player()
     if (hit_verb.empty())
         hit_verb = engulfs ? "engulfs" : "hits";
 
-    bool harmless = (flavour == BEAM_MAGIC_CANDLE || flavour == BEAM_WAND_HEALING
-        || flavour == BEAM_FOG);
+    const bool harmless = (flavour == BEAM_MAGIC_CANDLE 
+                        || flavour == BEAM_WAND_HEALING || flavour == BEAM_FOG);
+    const bool alive = ((you.hp - yu_final_dam) > 0);
+    const bool mt_alive = ((you.mount_hp - mt_final_dam) > 0);
 
     hit_something = true;
 
     if (hits_you && flavour != BEAM_VISUAL && !is_enchantment())
     {
         mprf("The %s %s you%s%s%s", name.c_str(), hit_verb.c_str(),
-                            you.hp > 0 ? "" : "r lifeless body",
+                                !alive ? "" : "r lifeless body",
             (yu_final_dam || harmless) ? "" : " but does no damage",
-            harmless ? "." : attack_strength_punctuation(yu_final_dam).c_str());
+                             harmless ? "." : attack_strength_punctuation(yu_final_dam).c_str());
     }
 
     if (hits_mount && flavour != BEAM_VISUAL && !is_enchantment())
     {
-        mprf("The %s %s your %s%s%s", name.c_str(), hit_verb.c_str(),
-            you.mount_name(true).c_str(),
+        mprf("The %s %s your %s%s%s%s", name.c_str(), hit_verb.c_str(),
+                                              you.mount_name(true).c_str(),
+                             !mt_alive ? "" : "'s lifeless body",
             (mt_final_dam || harmless) ? "" : " but does no damage",
-            harmless ? "." : attack_strength_punctuation(mt_final_dam).c_str());
+                             harmless ? "." : attack_strength_punctuation(mt_final_dam).c_str());
     }
 
-    if (you.alive() && (origin_spell == SPELL_FORCE_LASSO
-        || origin_spell == SPELL_TONGUE_LASH))
-    {
+    if (origin_spell == SPELL_FORCE_LASSO || origin_spell == SPELL_TONGUE_LASH)
         beckon(source, you, *this, damage.size, *agent());
-    }
 
     // Now print the messages associated with checking resistances, so that
     // these come after the beam actually hitting.
@@ -4428,7 +4428,7 @@ void bolt::affect_player()
     }
 
     if (hits_mount)
-        you.beam_effects(flavour, yu_pre_res_dam, yu_final_dam, this, true);
+        you.beam_effects(flavour, mt_pre_res_dam, mt_final_dam, this, true);
 
     if (origin_spell == SPELL_TONGUE_LASH && you.alive())
     {
