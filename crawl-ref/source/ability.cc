@@ -2277,7 +2277,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         args.mode = TARG_HOSTILE;
         args.hitfunc = &hitfunc;
         args.self = confirm_prompt_type::cancel;
-        if (!spell_direction(abild, beam, &args))
+        if (!spell_direction(*target, beam, &args))
             return spret::abort;
 
         fail_check();
@@ -2321,7 +2321,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         args.top_prompt = "Breath at?";
         args.self = confirm_prompt_type::cancel;
 
-        if (!spell_direction(abild, beam, &args))
+        if (!spell_direction(*target, beam, &args))
             return spret::abort;
 
         fail_check();
@@ -2789,7 +2789,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         args.top_prompt = "Squirt your ooze at?";
         args.self = confirm_prompt_type::cancel;
 
-        if (!spell_direction(abild, beam, &args) || !player_tracer(ZAP_CORROSIVE_WAVE, pow, beam))
+        if (!spell_direction(*target, beam, &args) || !player_tracer(ZAP_CORROSIVE_WAVE, pow, beam))
             return spret::abort;
 
         beam.fire();

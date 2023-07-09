@@ -1208,7 +1208,6 @@ bool cast_a_spell(bool check_range, spell_type spell, dist *_target)
 
     you.last_cast_spell = spell;
     // Silently take MP before the spell.
-    const int cost = spell_mana(spell);
     dec_mp(cost, true);
 
     const spret cast_result = your_spells(spell, 0, true, nullptr, _target);

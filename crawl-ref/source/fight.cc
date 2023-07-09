@@ -1151,10 +1151,10 @@ void get_cleave_targets(const actor &attacker, const coord_def& def,
 
     const item_def* weap = attacker.weapon(which_attack);
 
-    cleave_type cleave = weap ? weapon_cleave(weap)
+    cleave_type cleave = weap ? weapon_cleave(*weap)
                               : CLEAVE_NONE;
 
-    if (cleave == CLEAVE_NONE && attack_cleaves(which_attack))
+    if (cleave == CLEAVE_NONE && attack_cleaves(attacker, which_attack))
         cleave = CLEAVE_ONE;
 
     switch (cleave)

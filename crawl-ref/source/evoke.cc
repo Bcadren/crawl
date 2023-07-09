@@ -1284,6 +1284,7 @@ static bool _phial_of_floods(dist *target)
         return false;
     }
 
+    bolt beam;
     dist target_local;
     if (!target)
         target = &target_local;
@@ -1512,7 +1513,7 @@ bool evoke_check(int slot, bool quiet)
     // BCADNOTE: Assumes ranged weapons are slot EQ_WEAPON0 only.
     // ammo checks are done below, this is the precondition for messaging
     // about ranged failures
-    const bool ranged = wielded && is_range_weapon(*you.weapon());
+    const bool ranged = wielded0 && is_range_weapon(*you.weapon(0));
 
     // BCADNOTE: A form that melds one weapon slot and not the other would need revise here.
     if ((reaching || ranged) && you.melded[EQ_WEAPON0])

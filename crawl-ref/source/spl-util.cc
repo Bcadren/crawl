@@ -527,7 +527,7 @@ bool spell_is_direct_attack(spell_type spell)
     }
 
     // The area harm check has too many false positives to bother with here
-    if (   spell == SPELL_ISKENDERUNS_MYSTIC_BLAST
+    if (   spell == SPELL_MUSE_OAMS_AIR_BLAST
         || spell == SPELL_OZOCUBUS_REFRIGERATION
         || spell == SPELL_SYMBOL_OF_TORMENT
         || spell == SPELL_SHATTER
@@ -536,10 +536,9 @@ bool spell_is_direct_attack(spell_type spell)
         || spell == SPELL_DRAIN_LIFE
         || spell == SPELL_CHAIN_OF_CHAOS
         || spell == SPELL_IRRADIATE
-        || spell == SPELL_IGNITION
+        || spell == SPELL_ICICLE_CASCADE
         || spell == SPELL_STARBURST
-        || spell == SPELL_HAILSTORM
-        || spell == SPELL_ABSOLUTE_ZERO) // n.b. not an area spell
+        || spell == SPELL_HAILSTORM) // n.b. not an area spell
     {
         return true;
     }
@@ -1400,6 +1399,14 @@ string casting_uselessness_reason(spell_type spell, bool temp)
         }
     }
 
+    // Somewhat temp? (XP-gated is longer term than things in temp tho.)
+    // BCADDO: Consider combining with cannot_use_schools.
+    if (you.has_mutation(MUT_CORRUPTED_CHARM)
+        && bool(get_spell_disciplines(spell) & spschool::charms))
+    {
+        return "you must wait for your corrupted magic to wear off first.";
+    }
+
     // Check for banned schools (Currently just Ru sacrifices)
     if (cannot_use_schools(get_spell_disciplines(spell)))
         return "you cannot use spells of this school.";
@@ -1468,12 +1475,6 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
 
     if (!prevent && temp && spell_no_hostile_in_range(spell))
         return "you can't see any targets that would be affected.";
-
-    if (!fake_spell && you.has_mutation(MUT_CORRUPTED_CHARM)
-        && bool(get_spell_disciplines(spell) & spschool::charms))
-    {
-        return "you must wait for your corrupted magic to wear off first.";
-    }
 
     if (spell_is_kiku_ritual(spell) && !you_worship(GOD_KIKUBAAQUDGHA))
         return "you cannot complete the ritual without Kikubaaqudgha.";

@@ -1114,8 +1114,7 @@ void game_options::reset_options()
 
     // TODO: what else?
     force_targeter =
-        { SPELL_HAILSTORM, SPELL_STARBURST, SPELL_FROZEN_RAMPARTS,
-          SPELL_ABSOLUTE_ZERO, SPELL_IGNITION };
+        { SPELL_HAILSTORM, SPELL_STARBURST, SPELL_ICICLE_CASCADE };
 
     // These are only used internally, and only from the commandline:
     // XXX: These need a better place.

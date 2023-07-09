@@ -477,7 +477,7 @@ namespace quiver
             // way this check works, if the player overrides it once it won't
             // give a warning until they switch weapons. UI-wise, if there is
             // going to be a targeter it makes sense to show it first.
-            if (target.needs_targeting() && !wielded_weapon_check(weapon))
+            if (target.needs_targeting() && !wielded_weapons_check())
                 return;
 
             target.isEndpoint = true; // is this needed? imported from autofight code
@@ -641,7 +641,7 @@ namespace quiver
 
         int get_item() const override
         {
-            return you.equip[EQ_WEAPON];
+            return you.equip[EQ_WEAPON0];
         };
 
         vector<shared_ptr<action>> get_fire_order(bool allow_disabled=true, bool=false) const override
@@ -691,7 +691,7 @@ namespace quiver
             const item_def& ammo = you.inv[ammo_slot];
             return action::do_inscription_check()
                 && (!weapon
-                    || is_launched(&you, weapon, ammo) != launch_retval::LAUNCHED
+                    || is_launched(&you, weapon, weapon, ammo) != launch_retval::LAUNCHED
                     || check_warning_inscriptions(*weapon, OPER_FIRE));
         }
 
@@ -1142,8 +1142,6 @@ namespace quiver
         {
         case ABIL_END_TRANSFORMATION:
         case ABIL_CANCEL_PPROJ:
-        case ABIL_EXSANGUINATE:
-        case ABIL_REVIVIFY:
         case ABIL_EVOKE_TURN_VISIBLE:
         case ABIL_ZIN_DONATE_GOLD:
         case ABIL_TSO_BLESS_WEAPON:
@@ -1215,7 +1213,7 @@ namespace quiver
             case ABIL_BREATHE_POWER:
             case ABIL_BREATHE_STEAM:
             case ABIL_BREATHE_MEPHITIC:
-            case ABIL_DAMNATION:
+            case ABIL_HELLFIRE:
             case ABIL_ZIN_IMPRISON:
             case ABIL_MAKHLEB_MINOR_DESTRUCTION:
             case ABIL_MAKHLEB_MAJOR_DESTRUCTION:
@@ -1249,7 +1247,7 @@ namespace quiver
             case ABIL_BREATHE_POWER:
             case ABIL_BREATHE_STEAM:
             case ABIL_BREATHE_MEPHITIC:
-            case ABIL_DAMNATION:
+            case ABIL_HELLFIRE:
             case ABIL_MAKHLEB_MINOR_DESTRUCTION:
             case ABIL_MAKHLEB_MAJOR_DESTRUCTION:
             case ABIL_LUGONU_BANISH:
@@ -1390,10 +1388,9 @@ namespace quiver
 
             switch (you.inv[wand_slot].sub_type)
             {
-            case WAND_DIGGING:     // non-damaging wands
-            case WAND_POLYMORPH:
+            case WAND_POLYMORPH:   // non-damaging wands
             case WAND_ENSLAVEMENT:
-            case WAND_PARALYSIS:
+            case WAND_ENSNARE:
                 return false;
             default:
                 return true;
@@ -1544,8 +1541,6 @@ namespace quiver
             ASSERT(is_valid());
             switch (you.inv[wand_slot].sub_type)
             {
-            case MISC_TIN_OF_TREMORSTONES:
-                return "Throw";
             case MISC_HORN_OF_GERYON:
                 return "Blow";
             case MISC_BOX_OF_BEASTS:
