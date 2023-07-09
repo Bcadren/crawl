@@ -622,17 +622,12 @@ void throw_it(quiver::action &a)
         direction_chooser_args args;
         args.behaviour = &beh;
         args.mode = TARG_HOSTILE;
-        // Makes no sense to aim in a cardinal direction while teleporting
-        // projectiles.
-        args.allow_shift_dir = !teleport;
         direction(a.target, args);
     }
     if (!a.target.isValid || a.target.isCancel)
         return;
 
-    if (teleport
-        && in_bounds(target->target)
-        && cell_is_solid(target->target))
+    if (teleport)
     {
         if (!in_bounds(a.target.target))
         {
@@ -654,8 +649,8 @@ void throw_it(quiver::action &a)
     item_def * thrown = nullptr;
     int t = 0;
 
-    if (throw_2 != -1)
-        thrown = &you.inv[throw_2];
+    if (ammo_slot != -1)
+        thrown = &you.inv[ammo_slot];
     else
     {
         int typ = MI_STONE;
@@ -670,23 +665,18 @@ void throw_it(quiver::action &a)
     ASSERT(thrown);
 
     // Figure out if we're thrown or launched.
-    const launch_retval projected = is_launched(&you, launcher, thrown);
+    const launch_retval projected = is_launched(&you, launcher, *thrown);
 
     const bool tossing = projected == launch_retval::FUMBLED;
-
-    // Making a copy of the item: changed only for venom launchers.
-    item_def item = thrown;
-    item.quantity = 1;
-    item.slot     = index_to_letter(item.link);
 
     string ammo_name;
 
     if (_setup_missile_beam(&you, pbolt, *thrown, ammo_name, returning))
     {
         you.turn_is_over = false;
-        if (throw_2 == -1)
+        if (ammo_slot == -1)
             destroy_item(t);
-        return false;
+        return;
     }
 
     // Get the ammo type. Convenience.
@@ -752,21 +742,21 @@ void throw_it(quiver::action &a)
     if (cancelled)
     {
         you.turn_is_over = false;
-        if (throw_2 == -1)
+        if (ammo_slot == -1)
             destroy_item(t);
-        return false;
+        return;
     }
 
     pbolt.is_tracer = false;
 
     bool unwielded = false;
-    if (throw_2 != -1 && (throw_2 == you.equip[EQ_WEAPON0] || throw_2 == you.equip[EQ_WEAPON1]) && thrown->quantity == 1)
+    if (ammo_slot != -1 && (ammo_slot == you.equip[EQ_WEAPON0] || ammo_slot == you.equip[EQ_WEAPON1]) && thrown->quantity == 1)
     {
-        if (!wield_weapon((throw_2 == you.equip[EQ_WEAPON0]), SLOT_BARE_HANDS, true, false, true, false))
-            return false;
+        if (!wield_weapon((ammo_slot == you.equip[EQ_WEAPON0]), SLOT_BARE_HANDS, true, false, true, false))
+            return;
 
         if (!thrown->quantity)
-            return false; // destroyed when unequipped (fragile)
+            return; // destroyed when unequipped (fragile)
 
         unwielded = true;
     }
@@ -792,7 +782,7 @@ void throw_it(quiver::action &a)
     const int bow_brand = (projected == launch_retval::LAUNCHED)
                           ? get_weapon_brand(*launcher)
                           : SPWPN_NORMAL;
-    const int ammo_brand = get_ammo_brand(item);
+    const int ammo_brand = get_ammo_brand(*thrown);
 
     switch (projected)
     {
@@ -800,7 +790,6 @@ void throw_it(quiver::action &a)
     {
         ASSERT(launcher);
         practise_launching(*launcher);
-        bow_brand = get_weapon_brand(*launcher);
         if (is_unrandom_artefact(*launcher)
             && get_unrand_entry(launcher->unrand_idx)->type_name)
         {
@@ -915,8 +904,8 @@ void throw_it(quiver::action &a)
     if (ammo_brand == SPMSL_FRENZY)
         did_god_conduct(DID_HASTY, 6 + random2(3), true);
 
-    if (throw_2 != -1)
-        dec_inv_item_quantity(throw_2, 1);
+    if (ammo_slot != -1)
+        dec_inv_item_quantity(ammo_slot, 1);
     if (unwielded)
         canned_msg(MSG_EMPTY_HANDED_NOW);
 
@@ -938,7 +927,7 @@ void throw_it(quiver::action &a)
         && thrown->base_type == OBJ_MISSILES)
     {
         mount_drake_breath(&pbolt);
-        dithmenos_shadow_throw(a.target, item);
+        dithmenos_shadow_throw(a.target, *thrown);
     }
 }
 

@@ -2335,7 +2335,7 @@ launch_retval is_launched(const actor *actor, const item_def *launcher,
     if (missile.base_type != OBJ_MISSILES)
         return launch_retval::FUMBLED;
 
-    if (launcher0 && missile.launched_by(*launcher))
+    if (launcher && missile.launched_by(*launcher))
         return launch_retval::LAUNCHED;
 
     return is_throwable(actor, missile) ? launch_retval::THROWN : launch_retval::FUMBLED;
