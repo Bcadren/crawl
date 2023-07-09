@@ -1197,7 +1197,7 @@ namespace quiver
             // temporary uselessness. This way, the player can still activate
             // it from the `a` menu, just not from the quiver. (Does this apply
             // to any other abilities with a limited range?)
-            if (ability == ABIL_ROLLING_CHARGE && !palentonga_charge_possible(true, false))
+            if (ability == ABIL_ROLLING_CHARGE && !rolling_charge_possible(true, false))
                 return false;
 
             // TODO: _check_ability_dangerous?

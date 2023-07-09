@@ -597,7 +597,7 @@ static void _charge_cloud_trail(const coord_def pos)
 bool rolling_charge_possible(bool quiet, bool allow_safe_monsters)
 {
     // general movement conditions are checked in ability.cc:_check_ability_possible
-    targeter_charge tgt(&you, palentonga_charge_range());
+    targeter_charge tgt(&you, rolling_charge_range());
     for (monster_near_iterator mi(&you); mi; ++mi)
         if (tgt.valid_aim(mi->pos())
             && (allow_safe_monsters || !mons_is_safe(*mi, false) || mons_class_is_test(mi->type)))
