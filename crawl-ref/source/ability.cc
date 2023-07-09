@@ -4111,8 +4111,6 @@ bool player_has_ability(ability_type abil, bool include_unusable)
     if (draconian_breath() == abil)
         return true;
 
-    const item_def * inside = you.slot_item(EQ_CYTOPLASM);
-
     switch (abil)
     {
     case ABIL_SHAFT_SELF:
@@ -4223,11 +4221,7 @@ bool player_has_ability(ability_type abil, bool include_unusable)
     case ABIL_EVOKE_FLIGHT:
         return you.evokable_flight()
             // Has no effect on permanently flying species
-            && !you.racial_permanent_flight()
-            // you can still evoke perm flight if you have temporary flight
-            && (!you.airborne()
-                || !you.permanent_flight()
-                   && you.wearing_ego(EQ_ALL_ARMOUR, SPARM_FLYING));
+            && !you.racial_permanent_flight() && !you.airborne();
     default:
         // removed abilities handled here
         return false;
@@ -4251,32 +4245,60 @@ vector<talent> your_talents(bool check_confused, bool include_unusable)
 
     // TODO: can we just iterate over ability_type?
     vector<ability_type> check_order =
-        { ABIL_HEAL_WOUNDS,
+        { 
+            ABIL_SUBSUME,
+            ABIL_EJECT,
             ABIL_DIG,
             ABIL_SHAFT_SELF,
             ABIL_HOP,
             ABIL_ROLLING_CHARGE,
             ABIL_BREATHE_POISON,
             ABIL_SPIT_POISON,
+            ABIL_BREATHE_DART,
+            ABIL_BREATHE_MAGMA,
+            ABIL_BREATHE_METAL,
             ABIL_BREATHE_FIRE,
             ABIL_BREATHE_FROST,
             ABIL_BREATHE_POISON,
             ABIL_BREATHE_LIGHTNING,
             ABIL_BREATHE_POWER,
+            ABIL_BREATHE_FOG,
             ABIL_BREATHE_STEAM,
             ABIL_BREATHE_MEPHITIC,
             ABIL_BREATHE_ACID,
-            ABIL_TRAN_BAT,
-            ABIL_REVIVIFY,
-            ABIL_EXSANGUINATE,
+            ABIL_BREATHE_DRAIN,
+            ABIL_BREATHE_MIASMA,
+            ABIL_BREATHE_SILVER,
+            ABIL_BREATHE_WIND,
+            ABIL_BREATHE_BLOOD,
+            ABIL_BREATHE_HOLY_FLAMES,
+            ABIL_BREATHE_BUTTERFLIES,
+            ABIL_BREATHE_BONE,
+            ABIL_BREATHE_CHAOS,
+            ABIL_BREATHE_GHOSTLY_FLAMES,
+            ABIL_BREATHE_RADIATION,
+            ABIL_BREATHE_TRIPLE,
+            ABIL_TURN_INVISIBLE,
+            ABIL_BUD_EYEBALLS,
+            ABIL_SILENT_SCREAM,
+            ABIL_FROST_BURST,
+            ABIL_CORROSIVE_WAVE,
+            ABIL_SLIME_BOLT,
             ABIL_FLY,
+            ABIL_PLANT_ROOTS,
+            ABIL_DEROOT,
             ABIL_STOP_FLYING,
-            ABIL_DAMNATION,
+            ABIL_HELLFIRE,
+            ABIL_SPIDER_JUMP,
+            ABIL_SPIDER_WEB,
+            ABIL_DISMOUNT,
             ABIL_END_TRANSFORMATION,
+            ABIL_END_UPRISING,
             ABIL_BLINK,
             ABIL_RENOUNCE_RELIGION,
             ABIL_CONVERT_TO_BEOGH,
             ABIL_CANCEL_PPROJ,
+            ABIL_EVOKE_FOG,
             ABIL_EVOKE_BLINK,
             ABIL_EVOKE_THUNDER,
             ABIL_EVOKE_BERSERK,
