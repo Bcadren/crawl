@@ -481,7 +481,7 @@ static void _throw_noise(actor* act, const item_def &ammo, const item_def &launc
     if (launcher.base_type != OBJ_WEAPONS)
         return;
 
-    if (is_launched(act, &launcher, &launcher, ammo) != launch_retval::LAUNCHED)
+    if (is_launched(act, &launcher, ammo) != launch_retval::LAUNCHED)
         return;
 
     // Throwing and blowguns are silent...
@@ -669,7 +669,7 @@ bool throw_it(bolt &pbolt, int throw_2, item_def *launcher, dist *target)
     ASSERT(thrown);
 
     // Figure out if we're thrown or launched.
-    const launch_retval projected = is_launched(&you, launcher, launcher, thrown);
+    const launch_retval projected = is_launched(&you, launcher, thrown);
 
     const bool tossing = projected == launch_retval::FUMBLED;
 
@@ -994,8 +994,7 @@ bool mons_throw(monster* mons, bolt &beam, int msl, bool teleport)
     beam.aimed_at_spot |= returning;
 
     launch_retval projected =
-        is_launched(mons, mons->mslot_item(MSLOT_WEAPON), mons->mslot_item(MSLOT_WEAPON),
-                    env.item[msl]);
+        is_launched(mons, mons->mslot_item(MSLOT_WEAPON), env.item[msl]);
 
     if (projected == launch_retval::THROWN)
         returning = returning && !teleport;

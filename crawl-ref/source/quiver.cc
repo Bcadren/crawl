@@ -258,9 +258,7 @@ namespace quiver
             if (!item.defined())
                 continue;
 
-            // BCADDO: Factor back to only one launcher parameter since we don't allow
-            // ranged dual wield anyways.
-            const auto l = is_launched(&you, launcher, launcher, item);
+            const auto l = is_launched(&you, launcher, item);
 
             // don't swap to throwing when you run out of launcher ammo. (The
             // converse case should be ruled out by _item_matches below.)
@@ -650,7 +648,7 @@ namespace quiver
             const item_def& ammo = you.inv[ammo_slot];
             return action::do_inscription_check()
                 && (!weapon
-                    || is_launched(&you, weapon, weapon, ammo) != launch_retval::LAUNCHED
+                    || is_launched(&you, weapon, ammo) != launch_retval::LAUNCHED
                     || check_warning_inscriptions(*weapon, OPER_FIRE));
         }
 
@@ -736,7 +734,7 @@ namespace quiver
             ASSERT(quiver.link != NON_ITEM);
             // TODO: or just lightgrey?
             qdesc.textcolour(Options.status_caption_colour);
-            const launch_retval projected = is_launched(&you, get_launcher(), get_launcher(),
+            const launch_retval projected = is_launched(&you, get_launcher(),
                                                                     quiver);
             if (!short_desc)
             {
@@ -2715,7 +2713,7 @@ namespace quiver
         }
         else
         {
-            const launch_retval projected = is_launched(&you, you.weapon(0), you.weapon(1), item);
+            const launch_retval projected = is_launched(&you, you.weapon(0), item);
 
             // Don't do anything if this item is not really fit for throwing.
             if (projected == launch_retval::FUMBLED)

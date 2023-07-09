@@ -174,8 +174,8 @@ const char *ammo_name(const weapon_type bow) PURE;
 bool has_launcher(const item_def &ammo) PURE;
 bool is_throwable(const actor *actor, const item_def &wpn,
                   bool force = false) PURE;
-launch_retval is_launched(const actor *actor, const item_def *launcher0,
-                          const item_def *launcher1, const item_def &missile) PURE;
+launch_retval is_launched(const actor *actor, const item_def *launcher,
+                          const item_def &missile) PURE;
 
 int  ammo_type_damage(int missile_type) PURE;
 

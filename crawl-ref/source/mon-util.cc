@@ -4751,7 +4751,7 @@ static bool _mons_has_usable_ranged_weapon(const monster* mon)
     if (!missile)
         return false;
 
-    return is_launched(mon, weapon, weapon, *missile) != launch_retval::FUMBLED;
+    return is_launched(mon, weapon, *missile) != launch_retval::FUMBLED;
 }
 
 static bool _mons_has_attack_wand(const monster& mon)
