@@ -3471,8 +3471,7 @@ bool item_is_equipped(const item_def &item, bool quiver_too)
 {
     return item_equip_slot(item) != EQ_NONE
            || quiver_too
-                && (you.quiver_action.item_is_quivered(item)
-                    || you.launcher_action.item_is_quivered(item));
+                && (you.quiver_action.item_is_quivered(item));
 }
 
 bool item_is_melded(const item_def& item)

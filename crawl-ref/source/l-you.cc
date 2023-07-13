@@ -1188,20 +1188,13 @@ LUAFN(you_status)
 
 LUAFN(you_quiver_valid)
 {
-    // 0 = launcher quiver
-    // 1 = regular quiver
-    // this order is slightly weird but is aimed at forward compatibility
-    const int q_num = luaL_safe_checkint(ls, 1);
-    auto &q = q_num == 0 ? you.launcher_action : you.quiver_action;
+    auto &q = you.quiver_action;
     PLUARET(boolean, !q.is_empty() && q.get()->is_valid());
 }
 
 LUAFN(you_quiver_enabled)
 {
-    // 0 = launcher quiver
-    // 1 = regular quiver
-    const int q_num = luaL_safe_checkint(ls, 1);
-    auto &q = q_num == 0 ? you.launcher_action : you.quiver_action;
+    auto &q = you.quiver_action;
     PLUARET(boolean, !q.is_empty() && q.get()->is_enabled());
 }
 

@@ -1510,13 +1510,8 @@ bool evoke_check(int slot, bool quiet)
     const bool reaching = wielded0 && weapon_reach(*you.weapon(0)) > REACH_NONE 
                        || wielded1 && weapon_reach(*you.weapon(1)) > REACH_NONE;
 
-    // BCADNOTE: Assumes ranged weapons are slot EQ_WEAPON0 only.
-    // ammo checks are done below, this is the precondition for messaging
-    // about ranged failures
-    const bool ranged = wielded0 && is_range_weapon(*you.weapon(0));
-
     // BCADNOTE: A form that melds one weapon slot and not the other would need revise here.
-    if ((reaching || ranged) && you.melded[EQ_WEAPON0])
+    if (reaching && you.melded[EQ_WEAPON0])
     {
         if (!quiet)
             canned_msg(MSG_PRESENT_FORM);
@@ -1529,24 +1524,13 @@ bool evoke_check(int slot, bool quiet)
             canned_msg(MSG_TOO_BERSERK);
         return false;
     }
-    if (you.confused() && !ranged) // attack is ok under confusion, but not reaching
+    if (you.confused())
     {
         if (!quiet)
             canned_msg(MSG_TOO_CONFUSED);
         return false;
     }
-    if (ranged && i && (you.launcher_action.is_empty()
-                    || !you.launcher_action.get()->is_valid()))
-    {
-        if (!quiet)
-        {
-            // XX messaging should be unified with actual launching code
-            mprf("You do not have any ammo quivered for %s.",
-                                    you.weapon()->name(DESC_YOUR).c_str());
-        }
-        return false;
-    }
-    if (reaching || ranged)
+    if (reaching)
         return true;
 
     // is this supposed to be allowed under confusion?

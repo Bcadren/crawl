@@ -6227,7 +6227,6 @@ player::player()
     attribute.init(0);
     // Default to flying the first time you wear boots of flying.
     attribute[ATTR_LAST_FLIGHT_STATUS] = 1;
-    quiver.init(ENDOFPACK);
 
     last_timer_effect.init(0);
     next_timer_effect.init(20 * BASELINE_DELAY);
@@ -6318,7 +6317,6 @@ player::player()
 
     m_quiver_history = quiver::ammo_history();
     quiver_action = quiver::action_cycler();
-    launcher_action = quiver::launcher_action_cycler();
 
     props.clear();
 

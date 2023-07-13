@@ -272,7 +272,6 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
         const bool skip_one = life_two && ally || life_one && !ally && !you_worship(GOD_ELYVILON);
         const bool skip_two = life_one && ally || life_two && !ally && !you_worship(GOD_ELYVILON);
 
-
         bool xtra_atk = (you.form == transformation::scorpion || you.get_mutation_level(MUT_JIBBERING_MAWS));
         bool mount_atk = false;
 
@@ -305,8 +304,6 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             {
                 if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
                     local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
-                else if (you.weapon(1) && you.hands_reqd(*you.weapon(1)) == HANDS_TWO)
-                    local_time = _handle_player_attack(defender, simu, 1, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
                 else
                 {
                     local_time = _handle_player_attack(defender, simu, 0, 0, did_hit, wu, wu_num, roll_dist);

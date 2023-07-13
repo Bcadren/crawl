@@ -1650,13 +1650,23 @@ static void _do_display_map()
 static void _do_cycle_quiver(int dir)
 {
     const bool changed = you.quiver_action.cycle(dir);
-    you.launcher_action.set(you.quiver_action.get());
     quiver::set_needs_redraw();
 
-    if (!changed && you.quiver_action.get()->is_valid())
-        mpr("No other quiver actions available. Use F to throw any item.");
-    else if (!you.quiver_action.get()->is_valid())
-        mpr("No quiver actions available. Use F to throw any item.");
+    const bool valid = you.quiver_action.get()->is_valid();
+
+    if (!changed || !valid)
+    {
+        // `others`: there are quiverable but uncyclable actions.
+        // Things could be excluded from cycling via inscriptions, custom
+        // fire_order, or setting fire_items_start, and still available from
+        // the menu. This messaging still excludes stuff that requires
+        // force-quivering, e.g. zigfigs
+        const bool others = !valid && quiver::anything_to_quiver();
+        mprf("No %squiver actions available for cycling.%s",
+            valid ? "other " : "",
+            others ? " Use [<white>Q</white>] to select from all actions."
+            : "");
+    }
 }
 
 static void _do_list_gold()

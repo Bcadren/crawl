@@ -1044,8 +1044,8 @@ static void _add_tip(string &tip, string text)
 
 bool tile_dungeon_tip(const coord_def &gc, string &tip)
 {
-    const int attack_dist = you.weapon() ?
-        weapon_reach(*you.weapon()) : 1;
+    const int attack_dist = you.weapon(0) ?
+        weapon_reach(*you.weapon(0)) : 1;
 
     vector<command_type> cmd;
     tip = "";
