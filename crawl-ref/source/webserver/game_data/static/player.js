@@ -548,13 +548,6 @@ function ($, comm, enums, map_knowledge, messages, options, util) {
             index_to_letter(player.equip[enums.equip.WEAPON1]) + ")");
         $("#stats_weapon1").html(wielded_weapon(enums.equip.WEAPON1));
 
-        // show launcher ammo to the right of the weapon, if it isn't currently
-        // shown in the regular quiver
-        if (player.launcher_item >= 0 && player.launcher_item != player.quiver_item)
-            $("#stats_launcher_quiver").html(inventory_item_desc(player.launcher_item, true));
-        else
-            $("#stats_launcher_quiver").html("");
-
         $("#stats_quiver").html(quiver());
     }
 
