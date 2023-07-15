@@ -1112,8 +1112,10 @@ bool item_is_selected(const item_def &i, int selector)
     case OBJ_MISSILES:
         return itype == OBJ_MISSILES || itype == OBJ_WEAPONS;
 
+    // Can be fumbled, since throwing is gone.
     case OSEL_THROWABLE:
-        return false;
+        return ((itype == OBJ_WEAPONS || itype == OBJ_SHIELDS) && i.soul_bound())
+            || !item_is_equipped(i);
     case OBJ_WEAPONS:
     case OBJ_SHIELDS:
     case OSEL_WIELD:
