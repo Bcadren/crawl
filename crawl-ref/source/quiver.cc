@@ -305,7 +305,7 @@ namespace quiver
 
         int get_item() const override
         {
-            return you.equip[EQ_WEAPON0];
+            return -1;
         };
 
         string quiver_verb() const override

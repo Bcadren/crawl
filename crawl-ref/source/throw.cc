@@ -929,6 +929,9 @@ void throw_it(quiver::action &a)
         mount_drake_breath(&pbolt);
         dithmenos_shadow_throw(a.target, *thrown);
     }
+
+    if (ammo_slot == -1)
+        destroy_item(t);
 }
 
 void setup_monster_throw_beam(monster* mons, bolt &beam)
