@@ -629,7 +629,7 @@ function ($, comm, enums, map_knowledge, messages, options, util) {
                 piety_rank: 0, piety: 0, penance: false,
                 status: [],
                 inv: {}, equip: {},
-                quiver_item: -1, launcher_item: -1,
+                quiver_item: -1,
                 unarmed_attack: "",
                 pos: {x: 0, y: 0},
                 wizard: 0,
