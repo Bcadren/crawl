@@ -538,7 +538,7 @@ void update_turn_count()
         return;
     }
 
-    CGOTOXY(19+6, you.mounted() ? 9 : 8, GOTO_STAT);
+    CGOTOXY(19+6, 8, GOTO_STAT);
 
     // Show the turn count starting from 1. You can still quit on turn 0.
     textcolour(HUD_VALUE_COLOUR);
@@ -931,14 +931,17 @@ static void _print_resists(int y)
     CPRINTF("rCold:");
     CGOTOXY(31, y, GOTO_STAT);
     CPRINTF("rNeg:");
-    CGOTOXY(1, y + 1, GOTO_STAT);
-    CPRINTF("rAcid:");
-    CGOTOXY(15, y + 1, GOTO_STAT);
-    CPRINTF("rPois:");
-    CGOTOXY(25, y + 1, GOTO_STAT);
-    CPRINTF("rElec:");
-    CGOTOXY(35, y + 1, GOTO_STAT);
-    CPRINTF("MR:");
+    if (!you.mounted())
+    {
+        CGOTOXY(1, y + 1, GOTO_STAT);
+        CPRINTF("rAcid:");
+        CGOTOXY(15, y + 1, GOTO_STAT);
+        CPRINTF("rPois:");
+        CGOTOXY(25, y + 1, GOTO_STAT);
+        CPRINTF("rElec:");
+        CGOTOXY(35, y + 1, GOTO_STAT);
+        CPRINTF("MR:");
+    }
 
     textcolour(_get_resist_colour(rF));
     CGOTOXY(8, y, GOTO_STAT);
@@ -952,24 +955,27 @@ static void _print_resists(int y)
     CGOTOXY(37, y, GOTO_STAT);
     CPRINTF("%s", _itosym(rN, 3).c_str());
 
-    textcolour(_get_resist_colour(rA));
-    CGOTOXY(8, y + 1, GOTO_STAT);
-    CPRINTF("%s", _itosym(rA, 3).c_str());
+    if (!you.mounted())
+    {
+        textcolour(_get_resist_colour(rA));
+        CGOTOXY(8, y + 1, GOTO_STAT);
+        CPRINTF("%s", _itosym(rA, 3).c_str());
 
-    textcolour(_get_resist_colour(rP));
-    CGOTOXY(22, y + 1, GOTO_STAT);
-    if (rP == 3)
-        CPRINTF(" ∞ ");
-    else
-        CPRINTF("%s", _itosym(rP).c_str());
+        textcolour(_get_resist_colour(rP));
+        CGOTOXY(22, y + 1, GOTO_STAT);
+        if (rP == 3)
+            CPRINTF(" ∞ ");
+        else
+            CPRINTF("%s", _itosym(rP).c_str());
 
-    textcolour(_get_resist_colour(rE));
-    CGOTOXY(32, y + 1, GOTO_STAT);
-    CPRINTF("%s", _itosym(rE).c_str());
+        textcolour(_get_resist_colour(rE));
+        CGOTOXY(32, y + 1, GOTO_STAT);
+        CPRINTF("%s", _itosym(rE).c_str());
 
-    textcolour(_MR_colour(MR));
-    CGOTOXY(40, y + 1, GOTO_STAT);
-    CPRINTF("%d", MR);
+        textcolour(_MR_colour(MR));
+        CGOTOXY(40, y + 1, GOTO_STAT);
+        CPRINTF("%d", MR);
+    }
 }
 
 static void _print_stats_ac(int x, int y)
@@ -1411,12 +1417,13 @@ void print_stats()
         you.redraw_status_lights = true;
     }
 
+    int y = you.mounted() ? 6 : 5;
+
     if (you.redraw_title)
     {
         you.redraw_title = false;
         _redraw_title();
     }
-    int y = you.mounted() ? 6 : 5;
     if (you.redraw_hit_points)
     {
         you.redraw_hit_points = false;
@@ -1435,12 +1442,18 @@ void print_stats()
         if (you.wield_change || you.redraw_evasion)
             _print_stats_ev(1, y);
 
-        _print_stat(STAT_STR, 1, y + 1);
-        _print_stat(STAT_INT, 16, y + 1);
-        _print_stat(STAT_DEX, 31, y + 1);
+        if (!you.mounted())
+        {
+            _print_stat(STAT_STR, 1, y + 1);
+            _print_stat(STAT_INT, 16, y + 1);
+            _print_stat(STAT_DEX, 31, y + 1);
+        }
     }
     else if (you.redraw_resists || you.wield_change)
          _print_resists(y);
+
+    if (you.mounted())
+        y--;
 
     you.redraw_armour_class = false;
     you.redraw_evasion = false;
@@ -1466,7 +1479,7 @@ void print_stats()
         you.redraw_experience = false;
     }
 
-    int yhack = you.mounted() ? 1 : 0;
+    int yhack = 0;
 
     // Line 9 is Noise and Turns
 #ifdef USE_TILE_LOCAL
@@ -1528,7 +1541,7 @@ static string _level_description_string_hud()
 
 void print_stats_level()
 {
-    int ypos = you.mounted() ? 8 : 7;
+    int ypos = 7;
     cgotoxy(19, ypos, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF("Place: ");
@@ -1559,7 +1572,6 @@ void draw_border()
         mp_pos++;
         line1++;
         line2++;
-        time++;
     }
 
     //CGOTOXY(1, 3, GOTO_STAT); CPRINTF("Hp:");
@@ -1570,9 +1582,12 @@ void draw_border()
         CGOTOXY(16, line1, GOTO_STAT); CPRINTF("EV:");
         CGOTOXY(31, line1, GOTO_STAT); CPRINTF("SH:");
 
-        CGOTOXY(1, line2, GOTO_STAT); CPRINTF("Str:");
-        CGOTOXY(16, line2, GOTO_STAT); CPRINTF("Int:");
-        CGOTOXY(31, line2, GOTO_STAT); CPRINTF("Dex:");
+        if (!you.mounted())
+        {
+            CGOTOXY(1, line2, GOTO_STAT); CPRINTF("Str:");
+            CGOTOXY(16, line2, GOTO_STAT); CPRINTF("Int:");
+            CGOTOXY(31, line2, GOTO_STAT); CPRINTF("Dex:");
+        }
     }
 
     CGOTOXY(19, time, GOTO_STAT);
