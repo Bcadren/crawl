@@ -82,6 +82,7 @@ size_t shotgun_beam_count(int pow);
 spret cast_scattershot(const actor *caster, int pow, const coord_def &pos,
                             bool fail = false, zap_type zap = ZAP_SCATTERSHOT,
                             bool empowered = false);
+vector<coord_def> get_ignition_blast_sources(const actor *agent);
 
 spret cast_cascade(const actor *caster, int pow, bool fail);
 spret cast_dash(int pow, bool fail);

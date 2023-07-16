@@ -185,7 +185,7 @@ static void _CURSES_melee_effects(item_def* /*weapon*/, actor* attacker,
 
 /////////////////////////////////////////////////////
 
-static bool _DISPATER_evoke(item_def */*item*/, bool* did_work, bool* unevokable)
+static bool _DISPATER_targeted_evoke(item_def */*item*/, bool* did_work, bool* unevokable, dist* target)
 {
     if (!enough_hp(14, true))
     {
@@ -203,7 +203,7 @@ static bool _DISPATER_evoke(item_def */*item*/, bool* did_work, bool* unevokable
     *did_work = true;
     int power = you.skill(SK_EVOCATIONS, 8);
 
-    if (your_spells(SPELL_HURL_HELLFIRE, power, false) == spret::abort)
+    if (your_spells(SPELL_HURL_HELLFIRE, power, false, nullptr, target) == spret::abort)
     {
         *unevokable = true;
         return false;

@@ -270,6 +270,7 @@ public:
     bool        easy_quit_item_prompts; // make item prompts quitable on space
     confirm_prompt_type allow_self_target;      // yes, no, prompt
     bool        simple_targeting; // disable smart spell targeting
+    bool        always_use_static_targeters; // whether to use static targeters even in `z`
 
     int         colour[16];      // macro fg colours to other colours
     unsigned    background_colour; // select default background colour
@@ -301,6 +302,10 @@ public:
 
     int         fire_items_start; // index of first item for fire command
     vector<unsigned> fire_order;  // missile search order for 'f' command
+    bool        launcher_autoquiver; // whether to autoquiver launcher ammo on wield
+
+    unordered_set<int> force_targeter; // spell types to always use a
+                                       // targeter for
 
     bool        flush_input[NUM_FLUSH_REASONS]; // when to flush input buff
 
@@ -503,6 +508,7 @@ public:
 
     // -1 and 0 mean no confirmation, other possible values are 1,2,3 (see fail_severity())
     int         fail_severity_to_confirm;
+    int         fail_severity_to_quiver;
 #ifdef WIZARD
     // Parameters for fight simulations.
     string      fsim_mode;
@@ -675,6 +681,7 @@ private:
     void set_fake_langs(const string &input);
     void set_player_tile(const string &s);
     void set_tile_offsets(const string &s, bool set_shield);
+    void add_force_targeter(const string &s, bool prepend);
 
     static const string interrupt_prefix;
 

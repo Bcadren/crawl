@@ -991,8 +991,8 @@ wall_jump_prompt = false
 
 auto_switch = false
         This option will allow you to automatically switch to an appropriate
-        weapon when firing or attacking in melee, as long as the one you are
-        wielding and the one you switch to are both in slot 'a' or 'b'.
+        weapon when attacking in melee, as long as the one you are wielding
+        and the one you switch to are both in slot 'a' or 'b'.
 
 travel_open_doors = true
         If this is set to false, autoexplore/travel will not open doors,
@@ -1027,11 +1027,45 @@ simple_targeting = false
         If set to true, disables smart targeting for explosion and bouncing
         bolt spells, making them automatically target the closest monster in
         range rather than trying to find a spot that affects multiple monsters
-        while avoiding the player.
+        while avoiding the player. This applies to target selection when
+        zapping as well as autotarget selection for quivered spells.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 allow_self_target = (yes | no | prompt)
         Allow targeting yourself with risky magic (e.g., the spell Bolt of Fire
         or a wand of paralysis.)
+=======
+=======
+always_use_static_targeters = false
+<<<<<<< HEAD
+        If set to true, shows static targeters when casting via `z`. When false,
+        they are visible only via `Z` and via the fire interface. Targeters are
+        never shown when firing via AUTOFIRE and other autoattack commands.
+=======
+        A static targeter shows the possible area of effect for a spell that
+        does not have controllable targeting. If this option is set to true,
+        static targeters are shown when casting via `z` and `Z`. When false,
+        they are shown only via `Z` and via the fire interface. Targeters are
+        never shown when firing via AUTOFIRE (shift-tab, `p`) and other
+        autoattack commands.
+>>>>>>> 49005422be (Don't show static targeters for `Z`)
+
+<<<<<<< HEAD
+>>>>>>> 0fdd853446 (Add static targeters for most untargeted spells)
+=======
+force_targeter = hailstorm, starburst, frozen ramparts, absolute zero, ignition
+        Force showing a targeter for the listed spells when casting normally
+        even if the spell isn't targeted. This for practical purposes only has
+        an effect on statically targeted spells, such as the ones in the
+        default value. It is overridden by `always_use_static_targeters = true`,
+        which amounts to listing every spell here.
+
+>>>>>>> 2bc0b21477 (Add fine-grained rc control over static targeters)
+allow_self_target = prompt
+        Allow targeting yourself with risky magic (e.g., the spell Bolt of Magma
+        or a wand of paralysis.) Values: (yes | no | prompt).
+>>>>>>> 413aeb54f4 (Improve autotargeting for various quivered spells)
         When set to 'yes', you are a valid target. When set to 'no', you cannot
         target yourself with such spells. When set to 'prompt' (the default),
         you will be required to confirm self-targeting. This option has no
@@ -1256,9 +1290,8 @@ ability_slot ^= <regex>:<ability letters>
 
 autofight_stop = 50
         Autofight will not act if your HP is at or lower than this
-        percentage of your max HP. For example, to remove this stop
-        you would want:
-            autofight_stop = 0
+        percentage of your max HP. Disabled when set to 0. This setting applies
+        both to autofight and to autofire.
 
 autofight_warning = 0
         Enforce a minimum time (in milliseconds) between autofight commands.
@@ -1302,9 +1335,20 @@ autofight_hunger_stop_undead = false
           : end
 
 autofight_throw = false
+<<<<<<< HEAD
         If your quiver contains a throwable item, autofight will throw it
         at enemies out of melee range. Without this option, only a wielded
         launcher (a bow, crossbow, sling or blowgun) will be considered.
+=======
+        If your quiver contains contains a fireable action that does direct
+        damage to the enemy, regular CMD_AUTOFIGHT (i.e., tab on the default
+        binding) will trigger it at enemies out of melee range. Without this
+        option, only a wielded launcher (a bow, crossbow or sling) will be
+        triggered by CMD_AUTOFIGHT. If an action that does direct damage is
+        quivered but out of range, you will move towards the enemy. If an
+        action is quivered that does not do direct damage, CMD_AUTOFIGHT will
+        ignore it entirely.
+>>>>>>> 006ef2cfcc (Improve autofight_throw and CMD_AUTOFIGHT_NOMOVE)
 
 autofight_throw_nomove = true
         This works same as above, except only for ===hit_closest_nomove rather
@@ -1348,8 +1392,8 @@ automagic_fight = false
 
 automagic_stop = 0
         Similar to autofight_stop, if magic points are below this number
-        (percentage of total), casting is prevented. What happens depends
-        on automagic_fight setting.
+        (percentage of total), casting via autofight/autofire is prevented.
+        Disabled when set to 0.
 
 fail_severity_to_confirm = 3
         Ask for confirmation when attempting to cast a spell where a miscast
@@ -1759,26 +1803,38 @@ message_colour ^= <colour>:<channel>:<regex>, <colour>:<regex>, ...
         If you don't want to see a message at all, you can mute it:
              message_colour += mute:You start resting
 
-3-j     Missiles.
------------------
+3-j     Quivers, firing, and ammo.
+----------------------------------
 
 fire_items_start = a
         Sets the first inventory item to consider when selecting
         missiles to fire. The default is a.
 
+<<<<<<< HEAD
 fire_order  = launcher, return
 fire_order += javelin / tomahawk / stone / rock / net
 fire_order += inscribed
+=======
+fire_order  = launcher, throwing, inscribed, spell, evokable, ability
+>>>>>>> d376ed14c5 (Add a bit more control to fire_order)
         (Ordered list option)
-        Controls the order of items autoselected for firing. Items
+        Controls the order of items when cycling the quiver. Types
         should be separated by commas and items that appear first get
-        higher priority.
+        higher priority. Absent action types are not used when cycling
+        the quiver. This option also affects autoquivering on game start.
 
-        Items in any position may be slash-separated to indicate that
-        these are of equal priority. If this is the case, the first item
-        in your inventory that fits one of these will be picked for
-        firing.
+        'launcher' refers to firing the appropriate missile for a
+        wielded weapon (i.e. crossbow, bow, sling). 'throwing' refers to
+        all throwing ammo. Specific throwing ammo types can be refered to
+        by name ('javelin', 'boomerang', 'stone', 'rock', 'net', 'dart'),
+        but order of these only affects order internal to throwing ammo
+        types; 'inscribed' can also be used to control the order of ammo
+        that has been inscribed with "+f". See the "Inscriptions" section of
+        Crawl's manual for more information about inscriptions. Ammo types
+        can be separated with a "/" to indicate that inventory order should
+        determine cycle order.
 
+<<<<<<< HEAD
         'launcher' refers to firing the appropriate missile for the
         wielded weapon (i.e. crossbow, bow, sling, blowgun). You'll almost
         certainly want it first, as it'll be ignored when you're not
@@ -1790,6 +1846,20 @@ fire_order += inscribed
         about inscriptions.
 
 (See also pickup_thrown in 3-a.)
+=======
+fail_severity_to_quiver = 2
+        Exclude spells with this miscast level or higher from quiver cycling
+        and automatic quivering. -1 can be used to exclude spells entirely from
+        automatic quivering.
+>>>>>>> d376ed14c5 (Add a bit more control to fire_order)
+
+launcher_autoquiver = true
+        If set to true, change the main quiver to launcher ammo on wielding
+        that launcher; if set to false, the main quiver is unaffaceted by
+        wielding a launcher. (Firing via tab or `v` still work.). This also
+        affects rare artefacts that may be evoked.
+
+(See also pickup_thrown in 3-a, and the various autofight settings in 3-g.)
 
 3-k     Message Channels.
 -------------------------

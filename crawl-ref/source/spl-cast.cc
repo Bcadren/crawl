@@ -11,6 +11,7 @@
 #include <sstream>
 #include <cmath>
 
+#include "act-iter.h"
 #include "areas.h"
 #include "artefact.h"
 #include "art-enum.h"
@@ -18,6 +19,7 @@
 #include "chardump.h"
 #include "cloud.h"
 #include "colour.h"
+#include "coordit.h"
 #include "database.h"
 #include "describe.h"
 #include "directn.h"
@@ -33,6 +35,7 @@
 #include "god-passive.h" // passive_t::shadow_spells
 #include "god-wrath.h" // spell retribution
 #include "hints.h"
+#include "items.h"
 #include "item-prop.h"
 #include "item-use.h"
 #include "libutil.h"
@@ -223,6 +226,8 @@ int list_spells(bool toggle_with_I, bool viewing, bool allow_preselect,
         // Preselect the first spell if it's only spell applicable.
         preselect_first = (count == 1);
     }
+    // TODO: maybe fill this from the quiver if there's a quivered spell and
+    // no last cast one?
     if (allow_preselect || preselect_first
                            && you.last_cast_spell != SPELL_NO_SPELL)
     {
@@ -964,7 +969,7 @@ static void _handle_wucad_mu(int cost)
  * @param spell         The type of spell to be cast.
  * @return              Whether the spell was successfully cast.
  **/
-bool cast_a_spell(bool check_range, spell_type spell)
+bool cast_a_spell(bool check_range, spell_type spell, dist *_target)
 {
     if (!can_cast_spells())
     {
@@ -1102,6 +1107,15 @@ bool cast_a_spell(bool check_range, spell_type spell)
         return false;
     }
 
+    // MP, confusion, Ru sacs
+    const auto reason = casting_uselessness_reason(spell, true);
+    if (!reason.empty())
+    {
+        mpr(reason);
+        crawl_state.zero_turns_taken();
+        return false;
+    }
+
     int cost = spell_mana(spell);
 
     int sifcast_amount = 0;
@@ -1112,9 +1126,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
             sifcast_amount = cost - you.magic_points;
             cost = you.magic_points;
         }
-        else if (have_passive(passive_t::power_of_blood) && !you.is_fairy()
-            && you.can_bleed() && you.hp > ((cost - you.magic_points) * 2)
-            && !you.duration[DUR_DEATHS_DOOR])
+        else if (you.can_blood_cast(cost))
         {
             mprf(MSGCH_GOD, "Kikubaaqudgha frees the power of your blood!");
             spret loop = spret::success;
@@ -1130,12 +1142,6 @@ bool cast_a_spell(bool check_range, spell_type spell)
                 crawl_state.zero_turns_taken();
                 return false;
             }
-        }
-        else
-        {
-            mpr("You don't have enough magic to cast that spell.");
-            crawl_state.zero_turns_taken();
-            return false;
         }
     }
 
@@ -1204,7 +1210,7 @@ bool cast_a_spell(bool check_range, spell_type spell)
     // Silently take MP before the spell.
     dec_mp(cost, true);
 
-    const spret cast_result = your_spells(spell, 0, true);
+    const spret cast_result = your_spells(spell, 0, true, nullptr, _target);
     if (cast_result == spret::abort)
     {
         crawl_state.zero_turns_taken();
@@ -1434,17 +1440,8 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
 {
     string msg;
 
-    {
-        // FIXME: we might be called in a situation ([a]bilities, Xom) that
-        // isn't evoked but still doesn't use the spell's MP. your_spells,
-        // this function, and spell_uselessness_reason should take a flag
-        // indicating whether MP should be checked (or should never check).
-        const int rest_mp = fake_spell ? 0 : spell_mana(spell);
-
-        // Temporarily restore MP so that we're not uncastable for lack of MP.
-        unwind_var<int> fake_mp(you.magic_points, you.magic_points + rest_mp);
-        msg = spell_uselessness_reason(spell, true, true, fake_spell);
-    }
+    // casting-general checks (MP etc) are not carried out here
+    msg = spell_uselessness_reason(spell, true, true, true);
 
     if (!msg.empty())
     {
@@ -1505,8 +1502,55 @@ static bool _spellcasting_aborted(spell_type spell, bool fake_spell)
     return false;
 }
 
-static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
-                                              int range, bool warped)
+// this is a crude approximation intended for UI-oriented targeters. Some day
+// it might be nice if the targeter code were actually unified with how
+// enemies are chosen for these various spells...
+// note that this is substantially filtered when used by targeter_multiposition
+static vector<coord_def> _simple_find_all_actors(actor *a)
+{
+    vector<coord_def> result;
+    if (!a)
+        return result;
+
+    for (actor_near_iterator ai(a->pos(), LOS_NO_TRANS); ai; ++ai)
+        result.push_back((*ai)->pos());
+
+    return result;
+}
+
+static bool _simple_corpse_check(const coord_def &c)
+{
+    int motions; // ???
+    return animate_remains(c, CORPSE_BODY, BEH_FRIENDLY, MHITYOU, &you, "",
+                        GOD_NO_GOD, false, true, true, nullptr, &motions) > 0;
+}
+
+// XX unify with animate dead code for finding corpses
+static vector<coord_def> _simple_find_corpses(actor *a)
+{
+    vector<coord_def> result;
+    if (!a)
+        return result;
+
+    for (radius_iterator ri(a->pos(), LOS_NO_TRANS); ri; ++ri)
+        if (_simple_corpse_check(*ri))
+            result.push_back(*ri);
+
+    return result;
+}
+
+// wrapper around the simulacrum corpse check
+static vector<coord_def> _find_simulacrable_corpses(const coord_def &c)
+{
+    vector<coord_def> result;
+    if (find_simulacrable_corpse(c) >= 0)
+        result.push_back(c);
+    return result;
+}
+
+// TODO: refactor into target.cc, move custom classes out of target.h
+unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
+                                                int range, bool warped)
 {
     const bool fireball = (spell == SPELL_FIREBALL || spell == SPELL_GHOSTLY_FIREBALL);
 
@@ -1587,6 +1631,87 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_passwall>(range);
     case SPELL_DIG:
         return make_unique<targeter_dig>(range);
+
+    // untargeted spells -- everything beyond here is a static targeter
+    // TODO ignite poison
+    case SPELL_HAILSTORM:
+        return make_unique<targeter_radius>(&you, LOS_NO_TRANS, range, 0, 2);
+    case SPELL_MUSE_OAMS_AIR_BLAST:
+        return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, range);
+    case SPELL_STARBURST:
+        return make_unique<targeter_starburst>(&you, range, pow);
+    case SPELL_CORPSE_ROT: // maybe should also highlight affected corpses? # of clouds depends on them
+    case SPELL_IRRADIATE:
+    case SPELL_DISCHARGE: // not entirely accurate...maybe should highlight
+                          // all potentially affected monsters?
+        return make_unique<targeter_maybe_radius>(&you, LOS_NO_TRANS, 1, 0, 1);
+    // BCADDO: Blinding spray.
+
+    // at player's position only but not a selfench; most transmut spells go here:
+    case SPELL_SCORPION_FORM:
+    case SPELL_BLADE_HANDS:
+    case SPELL_STATUE_FORM:
+    case SPELL_ICE_FORM:
+    case SPELL_DRAGON_FORM:
+    case SPELL_SUMMON_SPIDER_MOUNT:
+    case SPELL_SUMMON_HYDRA_MOUNT:
+    case SPELL_NECROMUTATION:
+    case SPELL_BEASTLY_APPENDAGE:
+    case SPELL_SUBLIMATION_OF_BLOOD:
+    case SPELL_BORGNJORS_REVIVIFICATION:
+    case SPELL_CONJURE_FLAME:
+        return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
+
+    // LOS radius:
+    case SPELL_OZOCUBUS_REFRIGERATION:
+    case SPELL_OLGREBS_TOXIC_RADIANCE:
+        return make_unique<targeter_maybe_radius>(&you, LOS_NO_TRANS);
+    case SPELL_TORNADO:
+        return make_unique<targeter_radius>(&you, LOS_NO_TRANS, TORNADO_RADIUS);
+    case SPELL_SHATTER:
+        return make_unique<targeter_shatter>(&you); // special version that affects walls
+    case SPELL_INTOXICATE: // for these, we just mark the monsters
+    case SPELL_CAUSE_FEAR:
+    case SPELL_DRAIN_LIFE: // pseudo-spell. TODO: ignore undead for this one
+        return make_unique<targeter_multiposition>(&you, _simple_find_all_actors(&you), false);
+    case SPELL_DISCORD:
+        return make_unique<targeter_multiposition>(&you, _simple_find_all_actors(&you), true, AFF_MAYBE);
+    case SPELL_ICICLE_CASCADE:
+        return make_unique<targeter_multifireball>(&you, get_ignition_blast_sources(&you));
+
+    // Summons. Most summons have a simple range 2 radius, see find_newmons_square
+    case SPELL_SUMMON_SMALL_MAMMAL:
+    case SPELL_CALL_CANINE_FAMILIAR:
+    case SPELL_SUMMON_ICE_BEAST:
+    case SPELL_MONSTROUS_MENAGERIE:
+    case SPELL_SUMMON_HYDRA:
+    case SPELL_SUMMON_MANA_VIPER:
+    case SPELL_CONJURE_BALL_LIGHTNING:
+    case SPELL_SUMMON_GUARDIAN_GOLEM:
+    case SPELL_CALL_IMP:
+    case SPELL_SUMMON_DEMON:
+    case SPELL_SUMMON_GREATER_DEMON:
+    case SPELL_SHADOW_CREATURES: // TODO: dbl check packs
+    case SPELL_SUMMON_HORRIBLE_THINGS:
+    case SPELL_SPELLFORGED_SERVITOR:
+        return make_unique<targeter_maybe_radius>(&you, LOS_SOLID_SEE, 2);
+    case SPELL_FOXFIRE:
+        return make_unique<targeter_maybe_radius>(&you, LOS_SOLID_SEE, 1);
+    case SPELL_BATTLESPHERE:
+        return make_unique<targeter_maybe_radius>(&you, LOS_SOLID_SEE, 3);
+    // TODO: these two actually have pretty wtf positioning that uses compass
+    // directions, so this targeter is not entirely accurate.
+    case SPELL_MALIGN_GATEWAY:
+    case SPELL_SUMMON_FOREST:
+        return make_unique<targeter_radius>(&you, LOS_NO_TRANS, LOS_RADIUS, 0, 2);
+    case SPELL_TWISTED_RESURRECTION:
+    case SPELL_ANIMATE_DEAD:
+        return make_unique<targeter_multiposition>(&you, _simple_find_corpses(&you), true, AFF_YES);
+    case SPELL_SIMULACRUM:
+        return make_unique<targeter_multiposition>(&you, _find_simulacrable_corpses(you.pos()), true, AFF_YES);
+    case SPELL_DRAGON_CALL: // this is just convenience: you can start the spell with no enemies in sight
+        return make_unique<targeter_multifireball>(&you, _simple_find_all_actors(&you));
+
     default:
         break;
     }
@@ -1595,6 +1720,17 @@ static unique_ptr<targeter> _spell_targeter(spell_type spell, int pow,
     {
         return make_unique<targeter_beam>(&you, range, spell_to_zap(spell),
                                           pow, 0, 0);
+    }
+
+    // selfench is used mainly for monster AI, so it is a bit over-applied in
+    // the spell data
+    if (get_spell_flags(spell) & spflag::selfench
+        && !spell_typematch(spell, spschool::summoning) // all summoning spells are selfench
+        && !spell_typematch(spell, spschool::translocation) // blink, passage
+        && spell != SPELL_VAMPIRIC_DRAINING
+        && spell != SPELL_PHANTOM_MIRROR) // ??
+    {
+        return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
     }
 
     return nullptr;
@@ -1608,6 +1744,11 @@ static double _chance_miscast_prot()
         miscast_prot = (double) apply_pity(you.piety)/piety_breakpoint(5);
 
     return min(1.0, miscast_prot);
+}
+
+bool spell_has_targeter(spell_type spell)
+{
+    return bool(find_spell_targeter(spell, 1, 1));
 }
 
 // Returns the nth triangular number.
@@ -1696,6 +1837,32 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
     return descs;
 }
 
+class spell_targeting_behaviour : public targeting_behaviour
+{
+public:
+    spell_targeting_behaviour(spell_type _spell)
+        : targeting_behaviour(false), spell(_spell),
+          err(spell_uselessness_reason(spell, true, false, true))
+    {
+    }
+
+    bool targeted() override
+    {
+        return !!(get_spell_flags(spell) & spflag::targeting_mask);
+    }
+
+    string get_error() override
+    {
+        return err;
+    }
+
+    // TODO: provide useful errors for specific targets via get_monster_desc?
+
+private:
+    spell_type spell;
+    string err;
+};
+
 /**
  * Targets and fires player-cast spells & spell-like effects.
  *
@@ -1715,14 +1882,16 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
  * the casting.
  **/
 spret your_spells(spell_type spell, int powc, bool allow_fail,
-                       const item_def* const evoked_item)
+                       const item_def* const evoked_item, dist *target)
 {
     ASSERT(!crawl_state.game_is_arena());
     ASSERT(!evoked_item || evoked_item->base_type == OBJ_WANDS);
 
     const bool wiz_cast = (crawl_state.prev_cmd == CMD_WIZARD && !allow_fail);
 
-    dist spd;
+    dist target_local;
+    if (!target)
+        target = &target_local;
     bolt beam;
     beam.origin_spell = spell;
 
@@ -1754,11 +1923,20 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
     int intensity = 0;
     beam.range = range;
 
+    unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range, warped);
+    const bool is_targeted = !!(flags & spflag::targeting_mask);
+
     // XXX: This handles only some of the cases where spells need
     // targeting. There are others that do their own that will be
     // missed by this (and thus will not properly ESC without cost
     // because of it). Hopefully, those will eventually be fixed. - bwr
-    if (flags & spflag::targeting_mask)
+    // TODO: what's the status of the above comment in 2020+?
+    const bool use_targeter = is_targeted
+        || hitfunc && (target->fire_context // force static targeters when called in "fire" mode
+                       || Options.always_use_static_targeters
+                       || Options.force_targeter.count(spell) > 0);
+
+    if (use_targeter)
     {
         const targ_mode_type targ =
               testbits(flags, spflag::neutral)    ? TARG_ANY :
@@ -1769,13 +1947,13 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         const targeting_type dir =
              testbits(flags, spflag::target) ? DIR_TARGET : DIR_NONE;
 
+        // TODO: it's extremely inconsistent when this prompt shows up, not
+        // sure why
         const char *prompt = get_spell_target_prompt(spell);
 
         bool needs_path;
         if (warped) { needs_path = false; }
         else { needs_path = !testbits(flags, spflag::target); }
-
-        unique_ptr<targeter> hitfunc = _spell_targeter(spell, powc, range, warped);
 
         // Add success chance to targeted spells checking monster MR
         const bool mr_check = testbits(flags, spflag::MR_check)
@@ -1831,16 +2009,24 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
             }
         }
 
-        string title = make_stringf("Aiming: <w>%s</w>", spell == SPELL_PROJECTED_NOISE ? (intensity == 0 ? "whisper" : 
-                                                                                           intensity == 1 ? "speech" : 
-                                                                                           intensity == 2 ? you.shout_verb(false, 0).c_str() 
-                                                                                                          : you.shout_verb(false, 2).c_str()) : spell_title(spell));
+        // `true` on fourth param skips MP check and a few others that have
+        // already been carried out
+        const bool useless = spell_is_useless(spell, true, false, true);
+        const char *spell_title_color = useless ? "darkgrey" : "w";
+        string title = make_stringf("%s: <%s>%s</%s>", is_targeted ? "Aiming" : "Casting", spell_title_color,
+                                    spell == SPELL_PROJECTED_NOISE ? (intensity == 0 ? "whisper" : 
+                                                    intensity == 1 ? "speech" : 
+                                                    intensity == 2 ? you.shout_verb(false, 0).c_str() 
+                                                                   : you.shout_verb(false, 2).c_str()) 
+                                                                   : spell_title(spell), spell_title_color);
 
         if (allow_fail)
         {
             title += make_stringf(" <lightgrey>(%s)</lightgrey>",
                 _spell_failure_rate_description(spell).c_str());
         }
+
+        spell_targeting_behaviour beh(spell);
 
         direction_chooser_args args;
         args.hitfunc = hitfunc.get();
@@ -1850,6 +2036,16 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         args.needs_path = needs_path;
         args.target_prefix = prompt;
         args.top_prompt = title;
+        args.behaviour = &beh;
+
+        // if the spell is useless and we have somehow gotten this far, it's
+        // a forced cast. Setting this prevents the direction chooser from
+        // looking for selecting a default target (which doesn't factor in
+        // the spell's capabilities).
+        // Also ensure we don't look for a target for static targeters. It might
+        // be better to move to an affected position if any?
+        if (useless || !is_targeted)
+            args.default_place = you.pos();
         if (hitfunc && hitfunc->can_affect_walls())
         {
             args.show_floor_desc = true;
@@ -1860,7 +2056,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         else
             args.self = confirm_prompt_type::none;
         args.get_desc_func = additional_desc;
-        if (!spell_direction(spd, beam, &args))
+        if (!spell_direction(*target, beam, &args))
             return spret::abort;
 
         beam.range = range;
@@ -1868,7 +2064,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         if (warped)
             beam.aimed_at_spot = true;
 
-        if (testbits(flags, spflag::not_self) && spd.isMe())
+        if (testbits(flags, spflag::not_self) && target->isMe())
         {
             if (spell == SPELL_TELEPORT_OTHER)
                 mpr("Sorry, this spell works on others only.");
@@ -1878,7 +2074,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
             return spret::abort;
         }
 
-        if (spd.isMe() && spell == SPELL_INVISIBILITY && !invis_allowed())
+        if (target->isMe() && spell == SPELL_INVISIBILITY && !invis_allowed())
             return spret::abort;
     }
 
@@ -1999,7 +2195,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
     const bool self_target = you.pos() == beam.target;
     const bool had_tele = orig_target && orig_target->has_ench(ENCH_TP);
 
-    spret cast_result = _do_cast(spell, powc, spd, beam, god, fail, warped, intensity);
+    spret cast_result = _do_cast(spell, powc, *target, beam, god, fail, warped, intensity);
 
     if (cast_result == spret::fail && !fail)
         antimagic = true;
@@ -2066,7 +2262,7 @@ spret your_spells(spell_type spell, int powc, bool allow_fail,
         if (you.wizard && !allow_fail && is_valid_spell(spell)
             && (flags & spflag::monster))
         {
-            _try_monster_cast(spell, powc, spd, beam);
+            _try_monster_cast(spell, powc, *target, beam);
             return spret::success;
         }
 #endif

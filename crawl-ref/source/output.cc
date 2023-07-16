@@ -538,7 +538,7 @@ void update_turn_count()
         return;
     }
 
-    CGOTOXY(19+6, you.mounted() ? 9 : 8, GOTO_STAT);
+    CGOTOXY(19+6, 8, GOTO_STAT);
 
     // Show the turn count starting from 1. You can still quit on turn 0.
     textcolour(HUD_VALUE_COLOUR);
@@ -607,9 +607,15 @@ static void _print_stats_equip(int x, int y)
  */
 static void _print_stats_noise(int x, int y)
 {
+    CGOTOXY(x, y, GOTO_STAT);
+    if (mouse_control::current_mode() == MOUSE_MODE_NORMAL
+        && (you.running > 0 || you.running < 0 && Options.travel_delay == -1))
+    {
+        return;
+    }
+
     bool silence = silenced(you.pos());
     int level = silence ? 0 : you.get_noise_perception(true);
-    CGOTOXY(x, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
     cprintf("Noise: ");
     colour_t noisecolour;
@@ -925,14 +931,17 @@ static void _print_resists(int y)
     CPRINTF("rCold:");
     CGOTOXY(31, y, GOTO_STAT);
     CPRINTF("rNeg:");
-    CGOTOXY(1, y + 1, GOTO_STAT);
-    CPRINTF("rAcid:");
-    CGOTOXY(15, y + 1, GOTO_STAT);
-    CPRINTF("rPois:");
-    CGOTOXY(25, y + 1, GOTO_STAT);
-    CPRINTF("rElec:");
-    CGOTOXY(35, y + 1, GOTO_STAT);
-    CPRINTF("MR:");
+    if (!you.mounted())
+    {
+        CGOTOXY(1, y + 1, GOTO_STAT);
+        CPRINTF("rAcid:");
+        CGOTOXY(15, y + 1, GOTO_STAT);
+        CPRINTF("rPois:");
+        CGOTOXY(25, y + 1, GOTO_STAT);
+        CPRINTF("rElec:");
+        CGOTOXY(35, y + 1, GOTO_STAT);
+        CPRINTF("MR:");
+    }
 
     textcolour(_get_resist_colour(rF));
     CGOTOXY(8, y, GOTO_STAT);
@@ -946,24 +955,27 @@ static void _print_resists(int y)
     CGOTOXY(37, y, GOTO_STAT);
     CPRINTF("%s", _itosym(rN, 3).c_str());
 
-    textcolour(_get_resist_colour(rA));
-    CGOTOXY(8, y + 1, GOTO_STAT);
-    CPRINTF("%s", _itosym(rA, 3).c_str());
+    if (!you.mounted())
+    {
+        textcolour(_get_resist_colour(rA));
+        CGOTOXY(8, y + 1, GOTO_STAT);
+        CPRINTF("%s", _itosym(rA, 3).c_str());
 
-    textcolour(_get_resist_colour(rP));
-    CGOTOXY(22, y + 1, GOTO_STAT);
-    if (rP == 3)
-        CPRINTF(" ∞ ");
-    else
-        CPRINTF("%s", _itosym(rP).c_str());
+        textcolour(_get_resist_colour(rP));
+        CGOTOXY(22, y + 1, GOTO_STAT);
+        if (rP == 3)
+            CPRINTF(" ∞ ");
+        else
+            CPRINTF("%s", _itosym(rP).c_str());
 
-    textcolour(_get_resist_colour(rE));
-    CGOTOXY(32, y + 1, GOTO_STAT);
-    CPRINTF("%s", _itosym(rE).c_str());
+        textcolour(_get_resist_colour(rE));
+        CGOTOXY(32, y + 1, GOTO_STAT);
+        CPRINTF("%s", _itosym(rE).c_str());
 
-    textcolour(_MR_colour(MR));
-    CGOTOXY(40, y + 1, GOTO_STAT);
-    CPRINTF("%d", MR);
+        textcolour(_MR_colour(MR));
+        CGOTOXY(40, y + 1, GOTO_STAT);
+        CPRINTF("%d", MR);
+    }
 }
 
 static void _print_stats_ac(int x, int y)
@@ -1047,6 +1059,15 @@ static int _wpn_name_colour(int hand)
 static void _print_stats_wp(int hand, int y)
 {
     string text;
+
+    if (mouse_control::current_mode() == MOUSE_MODE_NORMAL
+        && (you.running > 0 || you.running < 0 && Options.travel_delay == -1))
+    {
+        return;
+    }
+
+    CGOTOXY(1, y, GOTO_STAT);
+
     if (hand == 1 && you.get_mutation_level(MUT_MISSING_HAND))
         text = "(unavailable)";
     else if (you.weapon(hand))
@@ -1063,7 +1084,6 @@ static void _print_stats_wp(int hand, int y)
     else
         text = you.unarmed_attack_name();
 
-    CGOTOXY(1, y, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
     const char slot_letter = you.weapon(hand) ? index_to_letter(you.weapon(hand)->link)
                                           : '-';
@@ -1071,15 +1091,21 @@ static void _print_stats_wp(int hand, int y)
     CPRINTF("%s", slot_name.c_str());
     textcolour(_wpn_name_colour(hand));
     const int max_name_width = crawl_view.hudsz.x - slot_name.size();
+
     CPRINTF("%s", chop_string(text, max_name_width).c_str());
     textcolour(LIGHTGREY);
 }
 
-/*
 static void _print_stats_qv(int y)
 {
     CGOTOXY(1, y, GOTO_STAT);
-    formatted_string qdesc = you.quiver_action.get().quiver_description();
+    if (mouse_control::current_mode() == MOUSE_MODE_NORMAL
+        && (you.running > 0 || you.running < 0 && Options.travel_delay == -1))
+    {
+        return;
+    }
+
+    formatted_string qdesc = quiver::get_secondary_action()->quiver_description();
 #ifdef USE_TILE_LOCAL
     const int max_width = crawl_view.hudsz.x - (tiles.is_using_small_layout() ? 0 : 4);
 #else
@@ -1087,7 +1113,6 @@ static void _print_stats_qv(int y)
 #endif
     qdesc.chop(max_width, true).display();
 }
-*/
 
 struct status_light
 {
@@ -1123,6 +1148,8 @@ static void _add_status_light_to_out(int i, vector<status_light>& out)
 static void _get_status_lights(vector<status_light>& out)
 {
 #ifdef DEBUG_DIAGNOSTICS
+    if (mouse_control::current_mode() != MOUSE_MODE_NORMAL
+        || !(you.running > 0 || you.running < 0 && Options.travel_delay == -1))
     {
         static char static_pos_buf[80];
         snprintf(static_pos_buf, sizeof(static_pos_buf),
@@ -1390,12 +1417,13 @@ void print_stats()
         you.redraw_status_lights = true;
     }
 
+    int y = you.mounted() ? 6 : 5;
+
     if (you.redraw_title)
     {
         you.redraw_title = false;
         _redraw_title();
     }
-    int y = you.mounted() ? 6 : 5;
     if (you.redraw_hit_points)
     {
         you.redraw_hit_points = false;
@@ -1414,12 +1442,18 @@ void print_stats()
         if (you.wield_change || you.redraw_evasion)
             _print_stats_ev(1, y);
 
-        _print_stat(STAT_STR, 1, y + 1);
-        _print_stat(STAT_INT, 16, y + 1);
-        _print_stat(STAT_DEX, 31, y + 1);
+        if (!you.mounted())
+        {
+            _print_stat(STAT_STR, 1, y + 1);
+            _print_stat(STAT_INT, 16, y + 1);
+            _print_stat(STAT_DEX, 31, y + 1);
+        }
     }
     else if (you.redraw_resists || you.wield_change)
          _print_resists(y);
+
+    if (you.mounted())
+        y--;
 
     you.redraw_armour_class = false;
     you.redraw_evasion = false;
@@ -1445,7 +1479,7 @@ void print_stats()
         you.redraw_experience = false;
     }
 
-    int yhack = you.mounted() ? 1 : 0;
+    int yhack = 0;
 
     // Line 9 is Noise and Turns
 #ifdef USE_TILE_LOCAL
@@ -1470,17 +1504,14 @@ void print_stats()
 
     you.wield_change  = false;
 
-    /*
-    else if (you.redraw_quiver || you.wield_change)
-        _print_stats_qv(11 + yhack);
-    */
+    _print_stats_qv(10 + yhack);
 
     you.redraw_quiver = false;
 
     if (you.redraw_status_lights)
     {
         you.redraw_status_lights = false;
-        _print_status_lights(10 + yhack);
+        _print_status_lights(11 + yhack);
     }
 
 #ifndef USE_TILE_LOCAL
@@ -1510,7 +1541,7 @@ static string _level_description_string_hud()
 
 void print_stats_level()
 {
-    int ypos = you.mounted() ? 8 : 7;
+    int ypos = 7;
     cgotoxy(19, ypos, GOTO_STAT);
     textcolour(HUD_CAPTION_COLOUR);
     CPRINTF("Place: ");
@@ -1541,7 +1572,6 @@ void draw_border()
         mp_pos++;
         line1++;
         line2++;
-        time++;
     }
 
     //CGOTOXY(1, 3, GOTO_STAT); CPRINTF("Hp:");
@@ -1552,9 +1582,12 @@ void draw_border()
         CGOTOXY(16, line1, GOTO_STAT); CPRINTF("EV:");
         CGOTOXY(31, line1, GOTO_STAT); CPRINTF("SH:");
 
-        CGOTOXY(1, line2, GOTO_STAT); CPRINTF("Str:");
-        CGOTOXY(16, line2, GOTO_STAT); CPRINTF("Int:");
-        CGOTOXY(31, line2, GOTO_STAT); CPRINTF("Dex:");
+        if (!you.mounted())
+        {
+            CGOTOXY(1, line2, GOTO_STAT); CPRINTF("Str:");
+            CGOTOXY(16, line2, GOTO_STAT); CPRINTF("Int:");
+            CGOTOXY(31, line2, GOTO_STAT); CPRINTF("Dex:");
+        }
     }
 
     CGOTOXY(19, time, GOTO_STAT);

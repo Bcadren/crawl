@@ -450,7 +450,7 @@ bool dec_inv_item_quantity(int obj, int amount)
     else
         you.inv[obj].quantity -= amount;
 
-    you.m_quiver_history.on_inv_quantity_changed(obj);
+    quiver::on_actions_changed();
 
     return ret;
 }
@@ -485,7 +485,7 @@ void inc_inv_item_quantity(int obj, int amount)
         you.wield_change = true;
 
     you.inv[obj].quantity += amount;
-    you.m_quiver_history.on_inv_quantity_changed(obj);
+    quiver::on_actions_changed();
 }
 
 void inc_mitm_item_quantity(int obj, int amount)
@@ -1641,15 +1641,11 @@ void merge_item_stacks(const item_def &source, item_def &dest, int quant)
 
 static int _userdef_find_free_slot(const item_def &i)
 {
-#ifdef CLUA_BINDINGS
     int slot = -1;
     if (!clua.callfn("c_assign_invletter", "i>d", &i, &slot))
         return -1;
 
     return slot;
-#else
-    return -1;
-#endif
 }
 
 int find_free_slot(const item_def &i)
@@ -2176,7 +2172,7 @@ static int _place_item_in_free_slot(item_def &it, int quant_got,
     }
 
     you.last_pickup[item.link] = quant_got;
-    you.m_quiver_history.on_inv_quantity_changed(freeslot);
+    quiver::on_actions_changed();
     item_skills(item, you.skills_to_show);
 
     if (const item_def* newitem = auto_assign_item_slot(item))
@@ -2691,6 +2687,7 @@ bool drop_item(int item_dropped, int quant_drop)
     }
 
     dec_inv_item_quantity(item_dropped, quant_drop);
+
     you.turn_is_over = true;
 
     you.last_pickup.erase(item_dropped);
@@ -3027,7 +3024,6 @@ static bool _is_option_autopickup(const item_def &item, bool ignore_force)
                                                 ? "{gold}"
                                                 : _autopickup_item_name(item);
 
-#ifdef CLUA_BINDINGS
     maybe_bool res = clua.callmaybefn("ch_force_autopickup", "is",
                                       &item, iname.c_str());
     if (!clua.error.empty())
@@ -3041,7 +3037,6 @@ static bool _is_option_autopickup(const item_def &item, bool ignore_force)
 
     if (res == MB_FALSE)
         return false;
-#endif
 
     // Check for initial settings
     for (const pair<text_pattern, bool>& option : Options.force_autopickup)
@@ -3475,7 +3470,8 @@ equipment_type item_equip_slot(const item_def& item)
 bool item_is_equipped(const item_def &item, bool quiver_too)
 {
     return item_equip_slot(item) != EQ_NONE
-           || quiver_too && item_is_quivered(item);
+           || quiver_too
+                && (you.quiver_action.item_is_quivered(item));
 }
 
 bool item_is_melded(const item_def& item)

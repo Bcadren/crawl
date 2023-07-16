@@ -272,7 +272,6 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
         const bool skip_one = life_two && ally || life_one && !ally && !you_worship(GOD_ELYVILON);
         const bool skip_two = life_one && ally || life_two && !ally && !you_worship(GOD_ELYVILON);
 
-
         bool xtra_atk = (you.form == transformation::scorpion || you.get_mutation_level(MUT_JIBBERING_MAWS));
         bool mount_atk = false;
 
@@ -305,8 +304,6 @@ bool fight_melee(actor *attacker, actor *defender, bool *did_hit,
             {
                 if (you.weapon(0) && you.hands_reqd(*you.weapon(0)) == HANDS_TWO)
                     local_time = _handle_player_attack(defender, simu, 0, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
-                else if (you.weapon(1) && you.hands_reqd(*you.weapon(1)) == HANDS_TWO)
-                    local_time = _handle_player_attack(defender, simu, 1, xtra_atk ? 0 : 2, did_hit, wu, wu_num, roll_dist);
                 else
                 {
                     local_time = _handle_player_attack(defender, simu, 0, 0, did_hit, wu, wu_num, roll_dist);
@@ -992,7 +989,7 @@ int apply_chunked_AC(int dam, int ac)
 
 ///////////////////////////////////////////////////////////////////////////
 
-bool wielded_weapons_check()
+bool wielded_weapons_check(string attack_verb)
 {
     const item_def * weap0 = you.weapon(0);
     const item_def * weap1 = you.weapon(1);
@@ -1038,10 +1035,11 @@ bool wielded_weapons_check()
 
     string prompt;
     if (unarmed_warning)
-        prompt = "Really attack unarmed?";
+        prompt = make_stringf("Really %s unarmed?", attack_verb.c_str());
     else
     {
-        prompt = make_stringf("Really attack while wielding %s%s%s?",
+        prompt = make_stringf("Really %s while wielding %s%s%s?",
+            attack_verb.c_str(),
             warn0 ? weap0->name(DESC_YOUR).c_str() : "",
             warn0 && warn1 ? " and " : "",
             warn1 ? weap1->name(DESC_YOUR).c_str() : "");
@@ -1090,6 +1088,45 @@ static bool _dont_harm(const actor &attacker, const actor &defender)
 }
 
 /**
+ * Force cleave attacks. Used for melee actions that don't have targets, e.g.
+ * attacking empty space (otherwise, cleaving is handled in melee_attack).
+ *
+ * @param target the nominal target of the original attack.
+ * @return whether there were cleave targets relative to the player and `target`.
+ */
+bool force_player_cleave(coord_def target)
+{
+    list<actor*> cleave_targets;
+    get_cleave_targets(you, target, cleave_targets);
+
+    if (!cleave_targets.empty())
+    {
+        targeter_cleave hitfunc(&you, target);
+        if (stop_attack_prompt(hitfunc, "attack"))
+            return true;
+
+        if (!you.fumbles_attack())
+            attack_cleave_targets(you, cleave_targets);
+        return true;
+    }
+
+    return false;
+}
+
+bool attack_cleaves(const actor &attacker, int which_attack)
+{
+    if (attacker.is_player()
+        && (you.form == transformation::hydra && you.heads() > 1
+            || you.duration[DUR_CLEAVE]))
+    {
+        return true;
+    }
+
+    const item_def* weap = attacker.weapon(which_attack);
+    return weap && (weapon_cleave(*weap) > CLEAVE_NONE);
+}
+
+/**
  * List potential cleave targets (adjacent hostile creatures), including the
  * defender itself.
  *
@@ -1111,7 +1148,15 @@ void get_cleave_targets(const actor &attacker, const coord_def& def,
 
     const item_def* weap = attacker.weapon(which_attack);
 
-    if (weap && weap->is_type(OBJ_WEAPONS, WPN_SCYTHE))
+    cleave_type cleave = weap ? weapon_cleave(*weap)
+                              : CLEAVE_NONE;
+
+    if (cleave == CLEAVE_NONE && attack_cleaves(attacker, which_attack))
+        cleave = CLEAVE_ONE;
+
+    switch (cleave)
+    {
+    case CLEAVE_TWO:
     {
         for (rectangle_iterator ri(attacker.pos(), 2); ri; ++ri)
         {
@@ -1120,12 +1165,9 @@ void get_cleave_targets(const actor &attacker, const coord_def& def,
                     !_dont_harm(attacker, *target) && (*ri != def))
                 targets.push_back(target);
         }
+        break;
     }
-
-    else if (weap && (item_attack_skill(*weap) == SK_AXES_HAMMERS || weap->is_type(OBJ_WEAPONS, WPN_CLEAVER))
-            || attacker.is_player()
-               && (you.form == transformation::hydra && you.heads() > 1
-                   || you.duration[DUR_CLEAVE]))
+    case CLEAVE_ONE:
     {
         const coord_def atk = attacker.pos();
         coord_def atk_vector = def - atk;
@@ -1139,6 +1181,11 @@ void get_cleave_targets(const actor &attacker, const coord_def& def,
             if (target && !_dont_harm(attacker, *target))
                 targets.push_back(target);
         }
+        break;
+    }
+    case CLEAVE_NONE:
+    default:
+        break;
     }
 }
 

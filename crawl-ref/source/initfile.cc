@@ -152,6 +152,7 @@ const vector<GameOption*> game_options::build_options_list()
         new BoolGameOption(SIMPLE_NAME(read_persist_options), false),
         new BoolGameOption(SIMPLE_NAME(suppress_startup_errors), false),
         new BoolGameOption(SIMPLE_NAME(simple_targeting), false),
+        new BoolGameOption(SIMPLE_NAME(always_use_static_targeters), false),
         new BoolGameOption(easy_quit_item_prompts,
                            { "easy_quit_item_prompts", "easy_quit_item_lists" },
                            true),
@@ -234,6 +235,7 @@ const vector<GameOption*> game_options::build_options_list()
         new BoolGameOption(SIMPLE_NAME(default_manual_training), false),
         new BoolGameOption(SIMPLE_NAME(one_SDL_sound_channel), false),
         new BoolGameOption(SIMPLE_NAME(sounds_on), true),
+        new BoolGameOption(SIMPLE_NAME(launcher_autoquiver), true),
         new ColourGameOption(SIMPLE_NAME(tc_reachable), BLUE),
         new ColourGameOption(SIMPLE_NAME(tc_excluded), LIGHTMAGENTA),
         new ColourGameOption(SIMPLE_NAME(tc_exclude_circle), RED),
@@ -278,6 +280,7 @@ const vector<GameOption*> game_options::build_options_list()
         new IntGameOption(SIMPLE_NAME(pickup_menu_limit), 1),
         new IntGameOption(SIMPLE_NAME(view_delay), DEFAULT_VIEW_DELAY, 0),
         new IntGameOption(SIMPLE_NAME(fail_severity_to_confirm), 3, -1, 3),
+        new IntGameOption(SIMPLE_NAME(fail_severity_to_quiver), 3, -1, 1),
         new IntGameOption(SIMPLE_NAME(travel_delay), USING_DGL ? -1 : 20,
                           -1, 2000),
         new IntGameOption(SIMPLE_NAME(rest_delay), USING_DGL ? -1 : 0,
@@ -648,8 +651,18 @@ static fire_type _str_to_fire_types(const string &str)
         return FIRE_NET;
     else if (str == "return" || str == "returning")
         return FIRE_RETURNING;
+    else if (str == "throwing")
+        return FIRE_THROWING;
+    else if (str == "ammo")
+        return FIRE_AMMO;
     else if (str == "inscribed")
         return FIRE_INSCRIBED;
+    else if (str == "spell")
+        return FIRE_SPELL;
+    else if (str == "evokable" || str == "evocable")
+        return FIRE_EVOKABLE;
+    else if (str == "ability")
+        return FIRE_ABILITY;
 
     return FIRE_NONE;
 }
@@ -1003,6 +1016,7 @@ void game_options::reset_options()
 
 #ifdef DEBUG_DIAGNOSTICS
     quiet_debug_messages.reset();
+    quiet_debug_messages.set(DIAG_BEAM);
 #ifdef DEBUG_MONSPEAK
     quiet_debug_messages.set(DIAG_SPEECH);
 #endif
@@ -1103,10 +1117,12 @@ void game_options::reset_options()
     fire_items_start       = 0;           // start at slot 'a'
 
     // Clear fire_order and set up the defaults.
-    set_fire_order("launcher, return, "
-                   "javelin / tomahawk / stone / rock / net, "
-                   "inscribed",
+    set_fire_order("launcher, throwing, inscribed, spell, evokable, ability",
                    false, false);
+
+    // TODO: what else?
+    force_targeter =
+        { SPELL_HAILSTORM, SPELL_STARBURST, SPELL_ICICLE_CASCADE };
 
     // These are only used internally, and only from the commandline:
     // XXX: These need a better place.
@@ -1314,6 +1330,15 @@ void game_options::add_fire_order_slot(const string &s, bool prepend)
         else
             fire_order.push_back(flags);
     }
+}
+
+void game_options::add_force_targeter(const string &s, bool)
+{
+    auto spell = spell_by_name(s, true);
+    if (is_valid_spell(spell))
+        force_targeter.insert(spell);
+    else
+        report_error("Unknown spell '%s'\n", s.c_str());
 }
 
 static monster_type _mons_class_by_string(const string &name)
@@ -1609,7 +1634,6 @@ void read_init_file(bool runscript)
     Options.read_option_line("center_on_scroll := centre_on_scroll"); // alias
 
     // Load Lua builtins.
-#ifdef CLUA_BINDINGS
     if (runscript)
     {
         for (const char *builtin : lua_builtins)
@@ -1623,10 +1647,6 @@ void read_init_file(bool runscript)
     // Load default options.
     for (const char *def_file : config_defaults)
         Options.include(datafile_path(def_file), false, runscript);
-#else
-    UNUSED(lua_builtins);
-    UNUSED(config_defaults);
-#endif
 
     // Load early binding extra options from the command line BEFORE init.txt.
     Options.filename     = "extra opts first";
@@ -1855,6 +1875,10 @@ void game_options::read_options(LineInput &il, bool runscript,
     dlua_chunk luacond(filename);
     dlua_chunk luacode(filename);
 
+#ifndef CLUA_BINDINGS
+    bool clua_error_printed = false;
+#endif
+
     while (!il.eof())
     {
         line_num++;
@@ -1956,6 +1980,12 @@ void game_options::read_options(LineInput &il, bool runscript,
                          luacode.orig_error().c_str());
                 }
                 luacode.clear();
+#else
+                if (!clua_error_printed)
+                {
+                    mprf(MSGCH_ERROR, "User lua is disabled in this build! `%s`", str.c_str());
+                    clua_error_printed = true;
+                }
 #endif
             }
 
@@ -1972,6 +2002,12 @@ void game_options::read_options(LineInput &il, bool runscript,
                     mprf(MSGCH_ERROR, "Lua error: %s",
                          luacode.orig_error().c_str());
                 }
+            }
+#else
+            if (!clua_error_printed)
+            {
+                mprf(MSGCH_ERROR, "User lua is disabled in this build! `%s`", str.c_str());
+                clua_error_printed = true;
             }
 #endif
             luacode.clear();
@@ -1998,15 +2034,22 @@ void game_options::read_options(LineInput &il, bool runscript,
         read_option_line(str, runscript);
     }
 
-#ifdef CLUA_BINDINGS
     if (runscript && !luacond.empty())
     {
+#ifdef CLUA_BINDINGS
         if (l_init)
             luacond.add(line, "]])");
         if (luacond.run(clua))
             mprf(MSGCH_ERROR, "Lua error: %s", luacond.orig_error().c_str());
-    }
+#else
+        if (!clua_error_printed)
+        {
+            mprf(MSGCH_ERROR, "User lua is disabled in this build! (file: %s)", filename.c_str());
+            clua_error_printed = true;
+        }
 #endif
+    }
+
 }
 
 void game_options::fixup_options()
@@ -2476,6 +2519,17 @@ static void _bindkey(string field)
 
         key = CONTROL(wchars[1]);
     }
+    else if (wchars[0] == '\\')
+    {
+        // does this need to validate non-widechars?
+        keyseq ks = parse_keyseq(key_str);
+        if (ks.size() != 1)
+        {
+            mprf(MSGCH_ERROR, "Invalid keyseq '%s' in bindkey directive '%s'",
+                key_str.c_str(), field.c_str());
+        }
+        key = ks[0];
+    }
     else
     {
         mprf(MSGCH_ERROR, "Invalid key '%s' in bindkey directive '%s'",
@@ -2763,6 +2817,8 @@ void game_options::read_option_line(const string &str, bool runscript)
         clua.execfile(field.c_str(), false, false);
         if (!clua.error.empty())
             mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+#else
+        mprf(MSGCH_ERROR, "lua_file failed: clua not enabled on this build!");
 #endif
     }
     else if (key == "terp_file" && runscript)
@@ -3182,6 +3238,18 @@ void game_options::read_option_line(const string &str, bool runscript)
             }
         }
     }
+    else if (key == "force_targeter")
+    {
+        // first pass through the rc file happens before the spell name cache
+        // is initialized, just skip it
+        if (spell_data_initialized())
+        {
+            if (plain)
+                force_targeter.clear();
+
+            split_parse(field, ",", &game_options::add_force_targeter);
+        }
+    }
     else if (key == "spell_slot"
              || key == "item_slot"
              || key == "ability_slot")
@@ -3576,7 +3644,6 @@ void game_options::read_option_line(const string &str, bool runscript)
     // Catch-all else, copies option into map
     else if (runscript)
     {
-#ifdef CLUA_BINDINGS
         int setmode = 0;
         if (plus_equal)
             setmode = 1;
@@ -3587,12 +3654,9 @@ void game_options::read_option_line(const string &str, bool runscript)
 
         if (!clua.callbooleanfn(false, "c_process_lua_option", "ssd",
                         key.c_str(), orig_field.c_str(), setmode))
-#endif
         {
-#ifdef CLUA_BINDINGS
             if (!clua.error.empty())
                 mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
-#endif
             named_options[key] = orig_field;
         }
     }

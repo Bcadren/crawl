@@ -77,6 +77,7 @@
 #include "notes.h"
 #include "place.h"
 #include "prompt.h"
+#include "skills.h"
 #include "species.h"
 #include "spl-summoning.h"
 #include "stairs.h"
@@ -487,9 +488,7 @@ void validate_basedirs()
     // there are a few others, but this should be enough to minimally run something
     const vector<string> data_subfolders =
     {
-#ifdef CLUA_BINDINGS
         "clua",
-#endif
         "database",
         "defaults",
         "des",
@@ -1725,9 +1724,9 @@ bool generate_level(const level_id &l)
         _restore_tagged_chunk(you.save, save_name, TAG_LEVEL,
             "Level file is invalid.");
     }
-    // ensure that there is a way of checking whether the generation process
-    // effectively left us in an excursion. This shouldn't happen normally, but
-    // is needed for sanity checking.
+    // Did the generation process actually manage to place the player? This is
+    // a useful sanity check, and also is necessary for the initial loading
+    // process.
     you.on_current_level = (you_depth.original_value() == l.depth
                             && you_branch.original_value() == l.branch);
     return true;
@@ -2368,10 +2367,8 @@ static void _save_game_base()
     /* Stashes */
     SAVEFILE("st", "stashes", StashTrack.save);
 
-#ifdef CLUA_BINDINGS
     /* lua */
-    SAVEFILE("lua", "lua", clua.save);
-#endif
+    SAVEFILE("lua", "lua", clua.save); // what goes in here?
 
     /* kills */
     SAVEFILE("kil", "kills", you.kills.save);
@@ -3052,6 +3049,8 @@ static bool _restore_game(const string& filename)
         }
     }
 
+    you.on_current_level = false; // we aren't on the current level until
+                                  // everything is fully loaded
     _restore_tagged_chunk(you.save, "you", TAG_YOU, "Save data is invalid.");
 
     _convert_obsolete_species();
@@ -3106,6 +3105,11 @@ static bool _restore_game(const string& filename)
         reader inf(you.save, CHUNK("msg", "messages"), minorVersion);
         load_messages(inf);
     }
+
+    // Handle somebody SIGHUP'ing out of the skill menu with every skill
+    // disabled. Doing this here rather in tags code because it can trigger
+    // UI, which may not be safe if everything isn't fully loaded.
+    check_selected_skills();
 
     return true;
 }

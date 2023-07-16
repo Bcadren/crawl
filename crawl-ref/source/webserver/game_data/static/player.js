@@ -1,6 +1,6 @@
-﻿define(["jquery", "comm", "./enums", "./map_knowledge", "./messages",
-        "./options"],
-function ($, comm, enums, map_knowledge, messages, options) {
+define(["jquery", "comm", "./enums", "./map_knowledge", "./messages",
+        "./options", "./util"],
+function ($, comm, enums, map_knowledge, messages, options, util) {
     "use strict";
 
     var player = {}, last_time;
@@ -158,11 +158,14 @@ function ($, comm, enums, map_knowledge, messages, options) {
             return String.fromCharCode("A".charCodeAt(0) + index - 26);
     }
 
-    function inventory_item_desc(index)
+    function inventory_item_desc(index, parens=false)
     {
         var item = player.inv[index];
         var elem = $("<span>");
-        elem.text(item.name);
+        if (parens)
+            elem.text("(" + item.name + ")");
+        else
+            elem.text(item.name);
         if (item.col != -1 && item.col != null)
             elem.addClass("fg" + item.col);
         return elem;
@@ -195,17 +198,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
 
     function quiver()
     {
-        if (!player.quiver_available)
-        {
-            var elem = $("<span>");
-            elem.text("Quiver unavailable");
-            elem.addClass("fg8");
-            return elem;
-        }
-        else if (player.quiver_item == -1)
-            return "Nothing quivered";
-        else
-            return inventory_item_desc(player.quiver_item);
+        // any use for player.quiver_available any more?
+        return util.formatted_string_to_html(player.quiver_desc);
     }
 
     player.has_status_light = function (status_light, col)
@@ -553,6 +547,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
         $("#stats_weapon1_letter").text(
             index_to_letter(player.equip[enums.equip.WEAPON1]) + ")");
         $("#stats_weapon1").html(wielded_weapon(enums.equip.WEAPON1));
+
+        $("#stats_quiver").html(quiver());
     }
 
     function handle_player_message(data)
@@ -632,7 +628,8 @@ function ($, comm, enums, map_knowledge, messages, options) {
                 rp: 0, re: 0, ra: 0, mr: 0,
                 piety_rank: 0, piety: 0, penance: false,
                 status: [],
-                inv: {}, equip: {}, quiver_item: -1,
+                inv: {}, equip: {},
+                quiver_item: -1,
                 unarmed_attack: "",
                 pos: {x: 0, y: 0},
                 wizard: 0,

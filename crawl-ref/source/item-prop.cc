@@ -2329,16 +2329,13 @@ bool is_throwable(const actor *actor, const item_def &wpn, bool force)
 }
 
 // Decide if something is launched or thrown.
-launch_retval is_launched(const actor *actor, const item_def *launcher0,
-                          const item_def *launcher1, const item_def &missile)
+launch_retval is_launched(const actor *actor, const item_def *launcher,
+                          const item_def &missile)
 {
     if (missile.base_type != OBJ_MISSILES)
         return launch_retval::FUMBLED;
 
-    if (launcher0 && missile.launched_by(*launcher0))
-        return launch_retval::LAUNCHED;
-
-    if (launcher1 && missile.launched_by(*launcher1))
+    if (launcher && missile.launched_by(*launcher))
         return launch_retval::LAUNCHED;
 
     return is_throwable(actor, missile) ? launch_retval::THROWN : launch_retval::FUMBLED;
@@ -2355,6 +2352,17 @@ int ammo_type_damage(int missile_type)
     return Missile_prop[ Missile_index[missile_type] ].dam;
 }
 
+//
+// Cleaving functions:
+//
+cleave_type weapon_cleave(const item_def &item)
+{
+    if (item.is_type(OBJ_WEAPONS, WPN_SCYTHE))
+        return CLEAVE_TWO;
+    if (item_attack_skill(item) == SK_AXES_HAMMERS || item.is_type(OBJ_WEAPONS, WPN_CLEAVER))
+        return CLEAVE_ONE;
+    return CLEAVE_NONE;
+}
 
 //
 // Reaching functions:

@@ -214,7 +214,6 @@ public:
     int berserk_penalty;                // The penalty for moving while berserk
 
     FixedVector<int, NUM_ATTRIBUTES> attribute;
-    FixedVector<uint8_t, quiver::NUM_LAUNCHERS> quiver; // default items for quiver
     FixedVector<int, NUM_TIMERS> last_timer_effect;
     FixedVector<int, NUM_TIMERS> next_timer_effect;
 
@@ -366,7 +365,7 @@ public:
 
     LevelXPInfo global_xp_info;
 
-    quiver::history m_quiver_history;
+    quiver::ammo_history m_quiver_history;
 
     quiver::action_cycler quiver_action;
 
@@ -964,6 +963,8 @@ public:
     bool form_uses_xl() const;
     bool have_serpentine_tail() const;
     bool can_silent_cast() const;
+
+    bool can_blood_cast(int cost) const;
 
     bool clear_far_engulf() override;
 

@@ -150,7 +150,6 @@ bool mons_is_safe(const monster* mon, const bool want_move,
                            || !mons_can_hurt_player(mon, want_move))
                     || mon->attitude == ATT_PASSIVE);
 
-#ifdef CLUA_BINDINGS
     if (consider_user_options)
     {
         bool moving = you_are_delayed()
@@ -169,7 +168,6 @@ bool mons_is_safe(const monster* mon, const bool want_move,
             is_safe = result;
         }
     }
-#endif
 
     return is_safe;
 }

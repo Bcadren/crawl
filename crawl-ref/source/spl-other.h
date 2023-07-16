@@ -48,6 +48,7 @@ bool try_recall(mid_t mid);
 void do_recall(int time);
 void end_recall();
 
+bool passwall_simplified_check(const actor &act);
 spret cast_passwall(const coord_def& delta, int pow, bool fail);
 spret cast_darkness(int pow, bool fail);
 spret cast_SMD(const coord_def& target, int pow, bool fail);

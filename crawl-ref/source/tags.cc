@@ -1233,7 +1233,6 @@ void tag_read(reader &inf, tag_type tag_id)
         // disabled. Doing this here rather in _tag_read_you() because
         // you.can_currently_train() requires the player's equipment be loaded.
         init_can_currently_train();
-        check_selected_skills();
         break;
     case TAG_LEVEL:
         _tag_read_level(th);
@@ -1664,7 +1663,7 @@ static void _tag_construct_you(writer &th)
 
     marshallByte(th, you.piety_hysteresis);
 
-    you.m_quiver_history.save(th);
+    you.quiver_action.save(QUIVER_MAIN_SAVE_KEY);
 
     CANARY;
 
@@ -3568,9 +3567,10 @@ static void _tag_read_you(reader &th)
 
     you.piety_hysteresis = unmarshallByte(th);
 
-    you.m_quiver_history.load(th);
 
 #if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() < TAG_MINOR_MOSTLY_REMOVE_AMMO)
+        you.m_quiver_history.load(th);
     if (th.getMinorVersion() < TAG_MINOR_FRIENDLY_PICKUP)
         unmarshallByte(th);
     if (th.getMinorVersion() < TAG_MINOR_NO_ZOTDEF)
@@ -4103,8 +4103,8 @@ static void _tag_read_you_items(reader &th)
         for (int j = 0; j < count2; j++)
             you.force_autopickup[i][j] = unmarshallInt(th);
 
-    // TODO: not sure this is the ideal timing or way
-    you.quiver_action.set(quiver::find_ammo_action());
+    // preconditions: need to have read items, and you (incl props).
+    you.quiver_action.load(QUIVER_MAIN_SAVE_KEY);
 
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_JIYVA_REWORK && you.species == SP_BARACHI)

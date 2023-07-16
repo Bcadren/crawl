@@ -1649,18 +1649,24 @@ static void _do_display_map()
 
 static void _do_cycle_quiver(int dir)
 {
-    if (you.species == SP_FELID || you.species == SP_FAIRY)
-    {
-        mpr("You can't grasp things well enough to throw them.");
-        return;
-    }
-
     const bool changed = you.quiver_action.cycle(dir);
+    quiver::set_needs_redraw();
 
-    if (!changed)
-        mpr("No other quiver actions available. Use F to throw any item.");
-    else if (!you.quiver_action.get().is_valid())
-        mpr("No quiver actions available. Use F to throw any item.");
+    const bool valid = you.quiver_action.get()->is_valid();
+
+    if (!changed || !valid)
+    {
+        // `others`: there are quiverable but uncyclable actions.
+        // Things could be excluded from cycling via inscriptions, custom
+        // fire_order, or setting fire_items_start, and still available from
+        // the menu. This messaging still excludes stuff that requires
+        // force-quivering, e.g. zigfigs
+        const bool others = !valid && quiver::anything_to_quiver();
+        mprf("No %squiver actions available for cycling.%s",
+            valid ? "other " : "",
+            others ? " Use [<white>Q</white>] to select from all actions."
+            : "");
+    }
 }
 
 static void _do_list_gold()
@@ -1669,6 +1675,87 @@ static void _do_list_gold()
         mprf("You have %d gold piece%s.", you.gold, you.gold != 1 ? "s" : "");
     else
         shopping_list.display();
+}
+
+static bool _check_recklessness(command_type prev_cmd)
+{
+    if (Options.autofight_warning > 0
+        && !is_processing_macro()
+        && you.real_time_delta
+                        <= chrono::milliseconds(Options.autofight_warning)
+        && (prev_cmd == CMD_AUTOFIGHT
+            || prev_cmd == CMD_AUTOFIGHT_NOMOVE
+            || prev_cmd == CMD_AUTOFIRE))
+    {
+        mprf(MSGCH_DANGER, "You should not fight recklessly!");
+        return true;
+    }
+    return false;
+}
+
+static const string _autofight_lua_fn(command_type cmd)
+{
+    switch (cmd)
+    {
+    case CMD_AUTOFIRE:
+        return "fire_closest";
+    case CMD_AUTOFIGHT_NOMOVE:
+        return "hit_closest_nomove";
+    case CMD_AUTOFIGHT:
+        return "hit_closest";
+    default:
+        die("Unknown autofight command");
+    }
+}
+
+static void _handle_autofight(command_type cmd, command_type prev_cmd)
+{
+    // This will lead to recklessness messages taking priority over disabled
+    // quiver messages -- is this good?
+    if (_check_recklessness(prev_cmd))
+        return;
+
+    if (cmd == CMD_AUTOFIRE)
+    {
+        auto a = quiver::get_secondary_action();
+        if (!a || !a->is_valid())
+        {
+            mpr("Nothing quivered!"); // Can this happen?
+            return;
+        }
+
+        const bool secondary_enabled = a->is_enabled();
+
+        // Some quiver actions need to be triggered directly. Disabled quiver
+        // actions are also triggered here for messaging purposes -- the errors
+        // are more informative than what you'd get through autofight.
+        // TODO: this probably breaks autofight_wait for these cases?
+        if (!a->use_autofight_targeting() || !secondary_enabled)
+        {
+            dist target;
+            // TODO is there a better way to handle this division of labor??
+            if (!clua.callfn("get_af_fire_stop", ">b", &target.isEndpoint))
+            {
+                if (!clua.error.empty())
+                    mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+                // just continue with the default value in this case
+            }
+            // set this so that it prints appropriate error messages for
+            // autofiring
+            if (!secondary_enabled)
+                target.find_target = true;
+            a->trigger(target);
+            return;
+        }
+
+        // quiver actions that aren't called directly above are triggered via
+        // autofight code below
+    }
+
+    const string fnname = _autofight_lua_fn(cmd);
+
+    if (!clua.callfn(fnname.c_str(), 0, 0))
+        mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
 }
 
 // Note that in some actions, you don't want to clear afterwards.
@@ -1733,25 +1820,12 @@ void process_command(command_type cmd, command_type prev_cmd)
     case CMD_RUN_DOWN_RIGHT:_start_running(RDIR_DOWN_RIGHT, RMODE_START); break;
     case CMD_RUN_RIGHT:     _start_running(RDIR_RIGHT, RMODE_START);     break;
 
-#ifdef CLUA_BINDINGS
+    case CMD_AUTOFIRE:
     case CMD_AUTOFIGHT:
     case CMD_AUTOFIGHT_NOMOVE:
-    {
-        const char * const fnname = cmd == CMD_AUTOFIGHT ? "hit_closest"
-                                                         : "hit_closest_nomove";
-        if (Options.autofight_warning > 0
-            && !is_processing_macro()
-            && you.real_time_delta
-               <= chrono::milliseconds(Options.autofight_warning)
-            && (prev_cmd == CMD_AUTOFIGHT || prev_cmd == CMD_AUTOFIGHT_NOMOVE))
-        {
-            mprf(MSGCH_DANGER, "You should not fight recklessly!");
-        }
-        else if (!clua.callfn(fnname, 0, 0))
-            mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
+        _handle_autofight(cmd, prev_cmd);
         break;
-    }
-#endif
+
     case CMD_REST:           _do_rest(); break;
 
     case CMD_GO_UPSTAIRS:
@@ -1833,7 +1907,7 @@ void process_command(command_type cmd, command_type prev_cmd)
     case CMD_CAST_SPELL:           do_cast_spell_cmd(false); break;
     case CMD_DISPLAY_SPELLS:       inspect_spells();         break;
     case CMD_EAT:                  eat_food();               break;
-    case CMD_FIRE:                 fire_thing();             break;
+    case CMD_FIRE:                 you.quiver_action.target(); break;
     case CMD_FORCE_CAST_SPELL:     do_cast_spell_cmd(true);  break;
     case CMD_LOOK_AROUND:          do_look_around();         break;
     case CMD_QUAFF:                drink();                  break;
@@ -1856,6 +1930,12 @@ void process_command(command_type cmd, command_type prev_cmd)
 
     case CMD_EVOKE:
         if (!evoke_item())
+            flush_input_buffer(FLUSH_ON_FAILURE);
+        break;
+
+    case CMD_PRIMARY_ATTACK:
+        quiver::get_primary_action()->trigger();
+        if (!you.turn_is_over)
             flush_input_buffer(FLUSH_ON_FAILURE);
         break;
 
@@ -1993,9 +2073,17 @@ void process_command(command_type cmd, command_type prev_cmd)
     }
 
         // Quiver commands.
-    case CMD_QUIVER_ITEM:           quiver::choose(); break;
+    case CMD_QUIVER_ITEM:           quiver::choose(you.quiver_action); break;
     case CMD_CYCLE_QUIVER_FORWARD:  _do_cycle_quiver(+1);     break;
     case CMD_CYCLE_QUIVER_BACKWARD: _do_cycle_quiver(-1);     break;
+    case CMD_SWAP_QUIVER_RECENT:
+    {
+        auto a = you.quiver_action.find_last_valid();
+        if (a)
+            you.quiver_action.set(a);
+        quiver::set_needs_redraw();
+        break;
+    }
 
 #ifdef WIZARD
     case CMD_WIZARD: handle_wizard_command(); break;
@@ -2099,6 +2187,8 @@ static void _prep_input()
     you.shield_blocks = 0;              // no blocks this round
 
     you.redraw_status_lights = true;
+    if (you.running == 0)
+        you.quiver_action.set_needs_redraw();
     print_stats();
     update_screen();
 
@@ -2444,73 +2534,10 @@ static keycode_type _get_next_keycode()
 
 static void _swing_at_target(coord_def move)
 {
-    if (you.attribute[ATTR_HELD])
-    {
-        free_self_from_net();
-        you.turn_is_over = true;
-        return;
-    }
-
-    if (you.confused())
-    {
-        if (!you.is_stationary())
-        {
-            mpr("You're too confused to attack without stumbling around!");
-            return;
-        }
-
-        if (cancel_confused_move(true))
-            return;
-
-        if (!one_chance_in(3))
-        {
-            move.x = random2(3) - 1;
-            move.y = random2(3) - 1;
-            if (move.origin())
-            {
-                mpr("You nearly hit yourself!");
-                you.turn_is_over = true;
-                return;
-            }
-        }
-    }
-
-    const coord_def target = you.pos() + move;
-    monster* mon = monster_at(target);
-    if (mon)
-    {
-        you.turn_is_over = true;
-        fight_melee(&you, mon);
-
-        you.berserk_penalty = 0;
-        you.apply_berserk_penalty = false;
-        return;
-    }
-
-    // Don't waste a turn if feature is solid.
-    if (feat_is_solid(env.grid(target)) && !you.confused())
-        return;
-    else
-    {
-        list<actor*> cleave_targets;
-        get_cleave_targets(you, target, cleave_targets);
-
-        if (!cleave_targets.empty())
-        {
-            targeter_cleave hitfunc(&you, target);
-            if (stop_attack_prompt(hitfunc, "attack"))
-                return;
-
-            attack_cleave_targets(you, cleave_targets);
-        }
-        else
-            mpr("You swing at nothing.");
-        make_hungry(3, true);
-        // Take the usual attack delay.
-        you.time_taken = you.attack_delay().roll();
-    }
-    you.turn_is_over = true;
-    return;
+    dist target;
+    target.target = you.pos() + move;
+    // this lets ranged weapons work via this command also -- good or bad?
+    quiver::get_primary_action()->trigger(target);
 }
 
 // An attempt to tone down berserk a little bit. -- bwross

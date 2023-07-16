@@ -1125,7 +1125,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DEATH_CHANNEL, "Death Channel", "",
     spschool::necromancy | spschool::charms,
-    spflag::helpful | spflag::utility,
+    spflag::helpful | spflag::utility | spflag::selfench,
     6,
     200,
     -1, -1,

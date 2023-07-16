@@ -257,6 +257,21 @@ body {
      width: 45%;
 }
 
+#stats_weapon_letter
+{
+    float: left;
+    display: block;
+    margin-right:0.5em;
+}
+
+#stats_weapon
+{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden;
+}
+
 .status_light[data-desc]:hover::after {
     content: attr(data-desc);
 

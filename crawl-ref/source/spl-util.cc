@@ -35,7 +35,9 @@
 #include "spl-book.h"
 #include "spl-clouds.h"
 #include "spl-damage.h"
+#include "spl-other.h"
 #include "spl-summoning.h"
+#include "spl-util.h"
 #include "spl-zap.h"
 #include "stringutil.h"
 #include "target.h"
@@ -150,6 +152,11 @@ void init_spell_name_cache()
         const string spell_name = lowercase_string(sptitle);
         spell_name_cache[spell_name] = type;
     }
+}
+
+bool spell_data_initialized()
+{
+    return spell_name_cache.size() > 0;
 }
 
 spell_type spell_by_name(string name, bool partial_match)
@@ -465,6 +472,8 @@ bool spell_harms_target(spell_type spell)
     if (flags & spflag::targeting_mask)
         return true;
 
+    // n.b. this excludes various untargeted attack spells like hailstorm, abs 0
+
     return false;
 }
 
@@ -478,6 +487,61 @@ bool spell_harms_area(spell_type spell)
     if (flags & spflag::area)
         return true;
 
+    return false;
+}
+
+/**
+ * Does the spell cause damage directly on a successful, non-resisted, cast?
+ * This is much narrower than "harm", and excludes e.g. hexes that harm in a
+ * broader sense.
+ */
+bool spell_is_direct_attack(spell_type spell)
+{
+    if (spell_harms_target(spell))
+    {
+        // spell school exceptions
+        if (   spell == SPELL_VIOLENT_UNRAVELLING  // hex
+            || spell == SPELL_FORCE_LANCE // transloc
+            || spell == SPELL_GRAVITAS
+            || spell == SPELL_BLINKBOLT
+            || spell == SPELL_BANISHMENT)
+        {
+            return true;
+        }
+
+        // spell schools that generally "harm" but not damage
+        if (get_spell_disciplines(spell) & (spschool::hexes | spschool::translocation | spschool::summoning))
+            return false;
+
+        // harms target exceptions outside of those schools
+        if (spell == SPELL_PETRIFY
+            || spell == SPELL_STICKY_FLAME // maybe ok?
+            || spell == SPELL_FREEZING_CLOUD // some targeted cloud spells that do indirect damage via the clouds
+            || spell == SPELL_MEPHITIC_CLOUD
+            || spell == SPELL_POISONOUS_CLOUD)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    // The area harm check has too many false positives to bother with here
+    if (   spell == SPELL_MUSE_OAMS_AIR_BLAST
+        || spell == SPELL_OZOCUBUS_REFRIGERATION
+        || spell == SPELL_SYMBOL_OF_TORMENT
+        || spell == SPELL_SHATTER
+        || spell == SPELL_DISCHARGE
+        || spell == SPELL_CHAIN_LIGHTNING
+        || spell == SPELL_DRAIN_LIFE
+        || spell == SPELL_CHAIN_OF_CHAOS
+        || spell == SPELL_IRRADIATE
+        || spell == SPELL_ICICLE_CASCADE
+        || spell == SPELL_STARBURST
+        || spell == SPELL_HAILSTORM) // n.b. not an area spell
+    {
+        return true;
+    }
     return false;
 }
 
@@ -917,8 +981,9 @@ bool spell_direction(dist &spelld, bolt &pbolt, direction_chooser_args *args)
 
     if (!spelld.isValid)
     {
-        // Check for user cancel.
-        canned_msg(MSG_OK);
+        // Check for user cancel in interactive direction choosing.
+        if (spelld.isCancel && spelld.interactive && !spelld.fire_context)
+            canned_msg(MSG_OK);
         return false;
     }
 
@@ -1293,6 +1358,63 @@ bool spell_is_form(spell_type spell)
 }
 
 /**
+ * Casting-specific checks that are involved when casting any spell. Includes
+ * MP (which does use the spell level if provided), confusion state, banned
+ * schools.
+ *
+ * @param spell      The spell in question.
+ * @param temp       Include checks for volatile or temporary states
+ *                   (status effects, mana)
+ * @return           Whether casting is useless
+ */
+bool casting_is_useless(spell_type spell, bool temp)
+{
+    return !casting_uselessness_reason(spell, temp).empty();
+}
+
+/**
+ * Casting-specific checks that are involved when casting any spell. Includes
+ * MP (which does use the spell level if provided), confusion state, banned
+ * schools.
+ *
+ * @param spell      The spell in question.
+ * @param temp       Include checks for volatile or temporary states
+ *                   (status effects, mana)
+ # @return           A reason why casting is useless, or "" if it isn't.
+ */
+string casting_uselessness_reason(spell_type spell, bool temp)
+{
+    if (temp)
+    {
+        if (you.duration[DUR_CONF] > 0)
+            return "you're too confused to cast spells.";
+
+        const int cost = spell_mana(spell);
+
+        if (!enough_mp(cost, true, false)
+            && !you.can_blood_cast(cost)
+            && !you.attribute[ATTR_DIVINE_ENERGY])
+        {
+            return "you don't have enough magic to cast that spell.";
+        }
+    }
+
+    // Somewhat temp? (XP-gated is longer term than things in temp tho.)
+    // BCADDO: Consider combining with cannot_use_schools.
+    if (you.has_mutation(MUT_CORRUPTED_CHARM)
+        && bool(get_spell_disciplines(spell) & spschool::charms))
+    {
+        return "you must wait for your corrupted magic to wear off first.";
+    }
+
+    // Check for banned schools (Currently just Ru sacrifices)
+    if (cannot_use_schools(get_spell_disciplines(spell)))
+        return "you cannot use spells of this school.";
+
+    return "";
+}
+
+/**
  * This function attempts to determine if a given spell is useless to the
  * player.
  *
@@ -1301,14 +1423,16 @@ bool spell_is_form(spell_type spell)
  *                   (status effects, mana, gods, items, etc.)
  * @param prevent    Whether to only check for effects which prevent casting,
  *                   rather than just ones that make it unproductive.
- * @param fake_spell true if the spell is evoked or from an innate or divine ability
+ * @param skip_casting_checks true if the spell is evoked or from an innate or
+ *                   divine ability, or if casting checks are carried out
+ *                   already.
  *                   false if it is a spell being cast normally.
  * @return           Whether the given spell has no chance of being useful.
  */
 bool spell_is_useless(spell_type spell, bool temp, bool prevent,
-                      bool fake_spell)
+                      bool skip_casting_checks)
 {
-    return !spell_uselessness_reason(spell, temp, prevent, fake_spell).empty();
+    return !spell_uselessness_reason(spell, temp, prevent, skip_casting_checks).empty();
 }
 
 bool spell_is_kiku_ritual(spell_type spell)
@@ -1325,7 +1449,9 @@ bool spell_is_kiku_ritual(spell_type spell)
  *                   (status effects, mana, gods, items, etc.)
  * @param prevent    Whether to only check for effects which prevent casting,
  *                   rather than just ones that make it unproductive.
- * @param fake_spell true if the spell is evoked or from an innate or divine ability
+ * @param skip_casting_checks true if the spell is evoked or from an innate or
+ *                   divine ability, or if casting checks are carried out
+ *                   already.
  *                   false if it is a spell being cast normally.
  * @return           The reason a spell is useless to the player, if it is;
  *                   "" otherwise. The string should be a full clause, but
@@ -1333,33 +1459,43 @@ bool spell_is_kiku_ritual(spell_type spell)
  *                   the middle of a sentence.
  */
 string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
-                                bool fake_spell)
+                                bool skip_casting_checks)
 {
-    if (temp)
+    // prevent all of this logic during excursions / levelgen. This function
+    // does get called during character creation, so allow it to run for !temp.
+    if (temp && (!in_bounds(you.pos()) || !you.on_current_level))
+        return "you can't cast spells right now.";
+
+    if (!skip_casting_checks)
     {
-        if (!fake_spell && you.duration[DUR_CONF] > 0)
-            return "you're too confused.";
-        if (!enough_mp(spell_mana(spell), true, false)
-            && !fake_spell)
-        {
-            return "you don't have enough magic.";
-        }
-        if (!prevent && spell_no_hostile_in_range(spell))
-            return "you can't see any valid targets.";
+        string c_check = casting_uselessness_reason(spell, temp);
+        if (!c_check.empty())
+            return c_check;
     }
 
-    // Check for banned schools.
-    if (!fake_spell && cannot_use_schools(get_spell_disciplines(spell)))
-        return "you cannot use spells of this school.";
-
-    if (!fake_spell && you.has_mutation(MUT_CORRUPTED_CHARM)
-        && bool(get_spell_disciplines(spell) & spschool::charms))
-    {
-        return "you must wait for your corrupted magic to wear off first.";
-    }
+    if (!prevent && temp && spell_no_hostile_in_range(spell))
+        return "you can't see any targets that would be affected.";
 
     if (spell_is_kiku_ritual(spell) && !you_worship(GOD_KIKUBAAQUDGHA))
         return "you cannot complete the ritual without Kikubaaqudgha.";
+
+    // other Ru spells not affected by the school check; handle these separately
+    // since they may have other constraints
+    switch (spell)
+    {
+    case SPELL_ANIMATE_DEAD:
+    case SPELL_STICKS_TO_SNAKES:
+    case SPELL_SKELETAL_UPRISING:
+    case SPELL_DEATH_CHANNEL:
+    case SPELL_SIMULACRUM:
+    case SPELL_INFESTATION:
+    case SPELL_TUKIMAS_DANCE:
+        if (you.get_mutation_level(MUT_NO_LOVE))
+            return "you cannot coerce anything to obey you.";
+        break;
+    default:
+        break;
+    }
 
     switch (spell)
     {
@@ -1518,8 +1654,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_PASSWALL:
+        // the full check would need a real spellpower here, so we just check
+        // a drastically simplified version of it
         if (temp && you.is_stationary())
             return "you can't move.";
+        if (temp && !passwall_simplified_check(you))
+            return "you aren't next to any passable walls.";
         break;
 
     case SPELL_SKELETAL_UPRISING:
@@ -1527,13 +1667,13 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return "skeletons already rise from your steps.";
         // intentional fallthrough
     case SPELL_ANIMATE_DEAD:
-    case SPELL_DEATH_CHANNEL:
+        if (temp && !animate_dead(&you, 1, BEH_FRIENDLY, MHITYOU, &you, "", GOD_NO_GOD, false))
+            return "there is nothing nearby to animate!";
+        break;
+
     case SPELL_SIMULACRUM:
-    case SPELL_INFESTATION:
-    case SPELL_STICKS_TO_SNAKES:
-    case SPELL_TUKIMAS_DANCE:
-        if (you.get_mutation_level(MUT_NO_LOVE))
-            return "you cannot coerce anything to obey you.";
+        if (temp && find_simulacrable_corpse(you.pos()) < 0)
+            return "there is nothing here to animate!";
         break;
 
     case SPELL_SONG_OF_SLAYING:
@@ -1542,6 +1682,9 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_CORPSE_ROT:
+        if (temp && corpse_rot(&you, false) == spret::abort)
+            return "there is nothing fresh enough to decay nearby.";
+        // fallthrough
     case SPELL_POISONOUS_VAPOURS:
     case SPELL_CONJURE_FLAME:
     case SPELL_POISONOUS_CLOUD:
@@ -1615,6 +1758,10 @@ int spell_highlight_by_utility(spell_type spell, int default_colour,
 
 bool spell_no_hostile_in_range(spell_type spell)
 {
+    // sanity check: various things below will be prone to crash in these cases.
+    if (!in_bounds(you.pos()) || !you.on_current_level)
+        return true;
+
     const int range = calc_spell_range(spell, 0);
     const int minRange = get_dist_to_nearest_monster();
 
@@ -1631,7 +1778,8 @@ bool spell_no_hostile_in_range(spell_type spell)
     case SPELL_PASSWALL:
     case SPELL_SMD:
     case SPELL_GOLUBRIAS_PASSAGE:
-    case SPELL_LRD:
+    case SPELL_LRD: // TODO: LRD logic here is a bit confusing, it should error
+                    // now that it doesn't destroy walls
     case SPELL_FULMINANT_PRISM:
     case SPELL_SUMMON_LIGHTNING_SPIRE:
     case SPELL_SUMMON_FOREST:

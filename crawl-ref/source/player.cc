@@ -6227,7 +6227,6 @@ player::player()
     attribute.init(0);
     // Default to flying the first time you wear boots of flying.
     attribute[ATTR_LAST_FLIGHT_STATUS] = 1;
-    quiver.init(ENDOFPACK);
 
     last_timer_effect.init(0);
     next_timer_effect.init(20 * BASELINE_DELAY);
@@ -6316,7 +6315,7 @@ player::player()
     global_info = PlaceInfo();
     global_info.assert_validity();
 
-    m_quiver_history = quiver::history();
+    m_quiver_history = quiver::ammo_history();
     quiver_action = quiver::action_cycler();
 
     props.clear();
@@ -10063,6 +10062,13 @@ bool player::form_uses_xl() const
         || form == transformation::bat;
 }
 
+bool player::can_blood_cast(int cost) const
+{
+    return have_passive(passive_t::power_of_blood) && !is_fairy()
+        && can_bleed() && hp > ((cost - magic_points) * 2)
+        && !duration[DUR_DEATHS_DOOR];
+}
+
 bool player::can_silent_cast() const
 {
     return get_mutation_level(MUT_SILENT_CAST) || (get_mutation_level(MUT_JIBBERING_MAWS) >= 2);
@@ -10573,7 +10579,7 @@ void player_end_berserk()
 
     learned_something_new(HINT_POSTBERSERK);
     Hints.hints_events[HINT_YOU_ENCHANTED] = hints_slow;
-    you.redraw_quiver = true; // Can throw again.
+    quiver::set_needs_redraw();
 }
 
 /**

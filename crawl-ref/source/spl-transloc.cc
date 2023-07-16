@@ -440,12 +440,18 @@ static bool _check_charge_through(coord_def pos)
 }
 
 static bool _find_charge_target(vector<coord_def> &target_path, int max_range,
-                                targeter *hitfunc)
+                                targeter *hitfunc, dist *target)
 {
     // Check for unholy weapons, breadswinging, etc
-    if (!wielded_weapons_check())
+    if (!wielded_weapons_check("roll"))
         return false;
 
+    const bool interactive = target && target->interactive;
+    dist targ_local;
+    if (!target)
+        target = &targ_local;
+
+    // TODO: can't this all be done within a single direction call?
     while (true)
     {
         // query for location {dlb}:
@@ -455,8 +461,7 @@ static bool _find_charge_target(vector<coord_def> &target_path, int max_range,
         args.prefer_farthest = true;
         args.top_prompt = "Roll where?";
         args.hitfunc = hitfunc;
-        dist beam;
-        direction(beam, args);
+        direction(*target, args);
 
         // TODO: deduplicate with _find_cblink_target
         if (crawl_state.seen_hups)
@@ -465,49 +470,64 @@ static bool _find_charge_target(vector<coord_def> &target_path, int max_range,
             return false;
         }
 
-        if (!beam.isValid || beam.target == you.pos())
+        if (!target->isValid || target->target == you.pos())
         {
             canned_msg(MSG_OK);
             return false;
         }
 
-        const monster* beholder = you.get_beholder(beam.target);
+        const monster* beholder = you.get_beholder(target->target);
         if (beholder)
         {
             mprf("You cannot roll away from %s!",
                 beholder->name(DESC_THE, true).c_str());
-            continue;
+            if (interactive)
+                continue;
+            else
+                return false;
         }
 
-        const monster* fearmonger = you.get_fearmonger(beam.target);
+        const monster* fearmonger = you.get_fearmonger(target->target);
         if (fearmonger)
         {
             mprf("You cannot roll closer to %s!",
                 fearmonger->name(DESC_THE, true).c_str());
-            continue;
+            if (interactive)
+                continue;
+            else
+                return false;
         }
 
-        if (!you.see_cell_no_trans(beam.target))
+        if (!you.see_cell_no_trans(target->target))
         {
             clear_messages();
-            if (you.trans_wall_blocking(beam.target))
+            if (you.trans_wall_blocking(target->target))
                 canned_msg(MSG_SOMETHING_IN_WAY);
             else
                 canned_msg(MSG_CANNOT_SEE);
-            continue;
+            if (interactive)
+                continue;
+            else
+                return false;
         }
 
-        if (grid_distance(you.pos(), beam.target) > max_range)
+        if (grid_distance(you.pos(), target->target) > max_range)
         {
             mpr("That's out of range!"); // ! targeting
-            continue;
+            if (interactive)
+                continue;
+            else
+                return false;
         }
 
         ray_def ray;
-        if (!find_ray(you.pos(), beam.target, ray, opc_solid))
+        if (!find_ray(you.pos(), target->target, ray, opc_solid))
         {
             mpr("You can't roll through that!");
-            continue;
+            if (interactive)
+                continue;
+            else
+                return false;
         }
 
         // done with hard vetos; now we're on a mix of prompts and vetos.
@@ -522,11 +542,16 @@ static bool _find_charge_target(vector<coord_def> &target_path, int max_range,
             if (!can_charge_through_mons(ray.pos()))
                 break;
             ok = _check_charge_through(ray.pos());
-            if (ray.pos() == beam.target || !ok)
+            if (ray.pos() == target->target || !ok)
                 break;
         }
         if (!ok)
-            continue;
+        {
+            if (interactive)
+                continue;
+            else
+                return false;
+        }
 
         // DON'T use beam.target here - we might have used ! targeting to
         // target something behind another known monster
@@ -569,19 +594,34 @@ static void _charge_cloud_trail(const coord_def pos)
         place_cloud(CLOUD_DUST, pos, 2 + random2(3), &you);
 }
 
+bool rolling_charge_possible(bool quiet, bool allow_safe_monsters)
+{
+    // general movement conditions are checked in ability.cc:_check_ability_possible
+    targeter_charge tgt(&you, rolling_charge_range());
+    for (monster_near_iterator mi(&you); mi; ++mi)
+        if (tgt.valid_aim(mi->pos())
+            && (allow_safe_monsters || !mons_is_safe(*mi, false)))
+        {
+            return true;
+        }
+    if (!quiet)
+        mpr("There's nothing you can charge at!");
+    return false;
+}
+
 int rolling_charge_range()
 {
     return 3 + you.get_mutation_level(MUT_ROLL);
 }
 
 /**
-* Attempt to charge the player to a target of their choosing.
-*
-* @param fail          Whether this came from a mis-invoked ability (& should
-*                      therefore fail after selecting a target)
-* @return              Whether the charge succeeded, aborted, or was miscast.
-*/
-spret rolling_charge(bool fail)
+ * Attempt to charge the player to a target of their choosing.
+ *
+ * @param fail          Whether this came from a mis-invoked ability (& should
+ *                      therefore fail after selecting a target)
+ * @return              Whether the charge succeeded, aborted, or was miscast.
+ */
+spret rolling_charge(bool fail, dist *target)
 {
     const coord_def initial_pos = you.pos();
 
@@ -590,7 +630,7 @@ spret rolling_charge(bool fail)
 
     vector<coord_def> target_path;
     targeter_charge tgt(&you, rolling_charge_range());
-    if (!_find_charge_target(target_path, rolling_charge_range(), &tgt))
+    if (!_find_charge_target(target_path, rolling_charge_range(), &tgt, target))
         return spret::abort;
 
     fail_check();
@@ -598,13 +638,13 @@ spret rolling_charge(bool fail)
     if (!you.attempt_escape(1)) // prints its own messages
         return spret::success;
 
-    const coord_def target = target_path.back();
-    monster* target_mons = monster_at(target);
+    const coord_def target_pos = target_path.back();
+    monster* target_mons = monster_at(target_pos);
     if (fedhas_passthrough(target_mons))
         target_mons = nullptr;
     ASSERT(target_mons != nullptr);
     // Are you actually moving forward?
-    if (grid_distance(you.pos(), target) > 1 || !target_mons)
+    if (grid_distance(you.pos(), target_pos) > 1 || !target_mons)
         mpr("You roll forward with a rough scrape of stone!");
 
     crawl_state.cancel_cmd_again();

@@ -197,7 +197,7 @@ static const form_entry formdata[] =
              | MR_RES_PETRIFY | MR_RES_PHYSICAL,
     BAD_DURATION, 0, 0, SIZE_TINY, 10,
     5, 0, 50, false, 0, 5,
-    SPWPN_NORMAL, LIGHTGREY, "Misty tendrils", { "touch", "hit",
+    SPWPN_NORMAL, LIGHTGREY, "Misty tendrils", { "touch", "touch",
                                                  "engulf", "engulf" },
     FC_ENABLE, FC_FORBID, FC_FORBID, false, false,
     "whoosh", -8, "misty tendril", "strand", "swirl around", "vapour"

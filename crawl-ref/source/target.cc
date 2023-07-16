@@ -17,6 +17,7 @@
 #include "los-def.h"
 #include "losglobal.h"
 #include "mon-tentacle.h"
+#include "religion.h"
 #include "ray.h"
 #include "spl-damage.h"
 #include "spl-goditem.h" // player::debuffable
@@ -863,7 +864,7 @@ bool targeter_reach::valid_aim(coord_def a)
     int dist = (origin - a).rdist();
 
     if (dist > range)
-        return notify_fail("You can't reach that far!");
+        return notify_fail("Your weapon can't reach that far!");
 
     return true;
 }
@@ -876,7 +877,10 @@ aff_type targeter_reach::is_affected(coord_def loc)
     if (loc == aim)
         return AFF_YES;
 
-    if (((loc - origin) * 2 - (aim - origin)).abs() <= 1
+    // hacks: REACH_THREE entails smite targeting, because it exists entirely
+    // for the sake of UNRAND_RIFT. So, don't show the tracer.
+    if (range == REACH_TWO
+        && ((loc - origin) * 2 - (aim - origin)).abs() < 1
         && feat_is_reachable_past(env.grid(loc)))
     {
         return AFF_TRACER;
@@ -890,14 +894,29 @@ targeter_cleave::targeter_cleave(const actor* act, coord_def target)
     ASSERT(act);
     agent = act;
     origin = act->pos();
+    set_aim(target);
+}
+
+bool targeter_cleave::valid_aim(coord_def a)
+{
+    if ((origin - a).rdist() > 1)
+        return notify_fail("Your weapon can't reach that far!");
+    return true;
+}
+
+
+bool targeter_cleave::set_aim(coord_def target)
+{
     aim = target;
+    targets.clear();
     list<actor*> act_targets;
-    get_cleave_targets(*act, target, act_targets);
+    get_cleave_targets(*agent, target, act_targets);
     while (!act_targets.empty())
     {
         targets.insert(act_targets.front()->pos());
         act_targets.pop_front();
     }
+    return true;
 }
 
 aff_type targeter_cleave::is_affected(coord_def loc)
@@ -1735,4 +1754,89 @@ aff_type targeter_monster_sequence::is_affected(coord_def loc)
     }
 
     return on_path ? AFF_TRACER : AFF_NO;
+}
+
+targeter_multiposition::targeter_multiposition(const actor *a,
+            vector<coord_def> seeds, bool _hit_friends, aff_type _positive)
+    : targeter(), hit_friends(_hit_friends), positive(_positive)
+{
+    agent = a;
+    for (auto &c : seeds)
+        add_position(c);
+}
+
+void targeter_multiposition::add_position(const coord_def &loc)
+{
+    if (cell_is_solid(loc)
+        && (!can_affect_walls() || agent == &you && you_worship(GOD_FEDHAS)))
+    {
+        return;
+    }
+
+    actor *act = actor_at(loc);
+    if (agent == &you && act == &you)
+        return; // any exceptions to this?
+
+    // Friendly creature, don't mark this square. This logic is only implemented
+    // for players, because this class is currently only used for ui
+    if (!hit_friends && act
+        && (act == agent
+            || (agent == &you && act->is_monster() // not yet implemented for monster agents
+                && act->as_monster()->wont_attack())))
+    {
+        return;
+    }
+
+    affected_positions.insert(loc);
+}
+
+aff_type targeter_multiposition::is_affected(coord_def loc)
+{
+    // is this better with maybe or yes?
+    return affected_positions.count(loc) > 0 ? positive : AFF_NO;
+}
+
+targeter_multifireball::targeter_multifireball(const actor *a, vector<coord_def> seeds)
+    : targeter_multiposition(a, seeds, false)
+{
+    for (auto &c : seeds)
+    {
+        if (affected_positions.count(c)) // did the parent constructor like this pos?
+            for (adjacent_iterator ai(c); ai; ++ai)
+                add_position(*ai);
+    }
+}
+
+// note: starburst is not in spell_to_zap
+targeter_starburst_beam::targeter_starburst_beam(const actor *a, int _range, int pow, const coord_def &offset)
+    : targeter_beam(a, _range, ZAP_BOLT_OF_FIRE, pow, 0, 0)
+{
+    set_aim(a->pos() + offset);
+}
+
+targeter_starburst::targeter_starburst(const actor *a, int range, int pow)
+    : targeter()
+{
+    agent = a ? a : &you;
+    // XX code duplication with cast_starburst
+    const vector<coord_def> offsets = { coord_def(range, 0),
+                                        coord_def(range, range),
+                                        coord_def(0, range),
+                                        coord_def(-range, range),
+                                        coord_def(-range, 0),
+                                        coord_def(-range, -range),
+                                        coord_def(0, -range),
+                                        coord_def(range, -range) };
+
+    // extremely brute force...
+    for (auto &o : offsets)
+        beams.push_back(targeter_starburst_beam(agent, range, pow, o));
+}
+
+aff_type targeter_starburst::is_affected(coord_def loc)
+{
+    for (auto &t : beams)
+        if (auto r = t.is_affected(loc))
+            return r;
+    return AFF_NO;
 }

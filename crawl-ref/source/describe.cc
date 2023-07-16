@@ -3365,10 +3365,8 @@ static vector<command_type> _allowed_actions(const item_def& item)
     default:
         ;
     }
-#if defined(CLUA_BINDINGS)
     if (clua.callbooleanfn(false, "ch_item_wieldable", "i", &item))
         actions.push_back(CMD_WIELD_WEAPON);
-#endif
 
     if (item_is_subsumable(item) && !item_is_equipped(item))
         actions.push_back(CMD_SUBSUME);
@@ -3781,7 +3779,7 @@ void inscribe_item(item_def &item)
 
     mprf_nocap(MSGCH_EQUIPMENT, "%s", item.name(DESC_INVENTORY).c_str());
     you.wield_change  = true;
-    you.redraw_quiver = true;
+    quiver::set_needs_redraw();
 }
 
 /**

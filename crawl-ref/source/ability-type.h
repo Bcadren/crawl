@@ -113,6 +113,7 @@ enum ability_type
     // Divine abilities
     // Zin
     ABIL_ZIN_SUSTENANCE = 1000,
+    ABIL_FIRST_RELIGIOUS_ABILITY = ABIL_ZIN_SUSTENANCE,
     ABIL_ZIN_RECITE,
     ABIL_ZIN_VITALISATION,
     ABIL_ZIN_IMPRISON,
@@ -296,6 +297,7 @@ enum ability_type
     // Bahamut & Tiamat
         // Choices
     ABIL_BAHAMUT_PROTECTION = 1300,
+        ABIL_FIRST_BT_CHOICE = ABIL_BAHAMUT_PROTECTION,
     ABIL_TIAMAT_RETRIBUTION,
     ABIL_CHOOSE_BAHAMUT_BREATH,
     ABIL_CHOOSE_TIAMAT_BREATH,
@@ -305,6 +307,7 @@ enum ability_type
     ABIL_CHOOSE_TIAMAT_TRANSFORM,
     ABIL_BAHAMUT_DRAGONSLAYING,
     ABIL_TIAMAT_DRAGON_BOOK,
+        ABIL_LAST_BT_CHOICE = ABIL_TIAMAT_DRAGON_BOOK,
 
     // Normal Actives
     ABIL_BAHAMUT_EMPOWERED_BREATH,
@@ -315,6 +318,7 @@ enum ability_type
 
     // For both Yred and Beogh
     ABIL_STOP_RECALL = 1500,
+    ABIL_LAST_RELIGIOUS_ABILITY = ABIL_STOP_RECALL,
 
     // General divine (pseudo) abilities.
     ABIL_RENOUNCE_RELIGION,

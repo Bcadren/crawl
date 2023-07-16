@@ -21,8 +21,8 @@
 #include "decks.h"
 #include "describe.h"
 #include "env.h"
+#include "evoke.h"
 #include "food.h"
-#include "tile-env.h"
 #include "god-item.h"
 #include "god-passive.h"
 #include "initfile.h"
@@ -49,6 +49,7 @@
 #include "tag-version.h"
 #include "throw.h"
 #include "tilepick.h"
+#include "tile-env.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Inventory menu shenanigans
@@ -539,6 +540,9 @@ string no_selectables_message(int item_selector)
         return "All of your items are already fragile.";
     case OSEL_UNCURSED_WORN_RINGS:
         return "You aren't wearing any uncursed rings.";
+    case OSEL_QUIVER_ACTION:
+    case OSEL_QUIVER_ACTION_FORCE:
+        return "You don't have any quiverable items.";
     }
 
     return "You aren't carrying any such object.";
@@ -1108,8 +1112,10 @@ bool item_is_selected(const item_def &i, int selector)
     case OBJ_MISSILES:
         return itype == OBJ_MISSILES || itype == OBJ_WEAPONS;
 
+    // Can be fumbled, since throwing is gone.
     case OSEL_THROWABLE:
-        return false;
+        return ((itype == OBJ_WEAPONS || itype == OBJ_SHIELDS) && i.soul_bound())
+            || !item_is_equipped(i);
     case OBJ_WEAPONS:
     case OBJ_SHIELDS:
     case OSEL_WIELD:
@@ -1119,7 +1125,8 @@ bool item_is_selected(const item_def &i, int selector)
         return itype == OBJ_SCROLLS || itype == OBJ_BOOKS;
 
     case OSEL_EVOKABLE:
-        return item_is_evokable(i, true);
+        // assumes valid link...would break with evoking from floor?
+        return item_is_evokable(i, true) && item_is_evokable(i, true, false);//evoke_check(i.link, true);
 
     case OSEL_ENCHANTABLE_ITEM:
         return is_enchantable_item(i);
@@ -1171,6 +1178,11 @@ bool item_is_selected(const item_def &i, int selector)
     case OSEL_UNCURSED_WIELDED_WEAPONS:
             return !i.cursed() && item_is_equipped(i)
             && (itype == OBJ_WEAPONS || itype == OBJ_STAVES || itype == OBJ_SHIELDS);
+
+    case OSEL_QUIVER_ACTION:
+        return in_inventory(i) && quiver::slot_to_action(i.link)->is_valid();
+    case OSEL_QUIVER_ACTION_FORCE:
+        return in_inventory(i) && quiver::slot_to_action(i.link, true)->is_valid();
 
     default:
         return false;
@@ -1945,15 +1957,8 @@ int prompt_invent_item(const char *prompt,
     const bool auto_list = !(flags & invprompt_flag::manual_list);
     const bool allow_easy_quit = !(flags & invprompt_flag::escape_only);
 
-    if (!any_items_of_type(type_expect)
-        && type_expect == OSEL_THROWABLE
-        && (oper == OPER_FIRE || oper == OPER_QUIVER)
-        && mtype == menu_type::invlist)
-    {
-        type_expect = OSEL_ANY;
-    }
-
-    if (!any_items_of_type(type_expect) && type_expect != OSEL_WIELD)
+    if (!any_items_of_type(type_expect) && type_expect != OSEL_WIELD
+        && type_expect != OSEL_QUIVER_ACTION)
     {
         mprf(MSGCH_PROMPT, "%s",
              no_selectables_message(type_expect).c_str());
@@ -2221,7 +2226,8 @@ bool item_is_evokable(const item_def &item, bool reach,
     {
         const unrandart_entry* entry = get_unrand_entry(item.unrand_idx);
 
-        if (entry->evoke_func && item_type_known(item))
+        if ((entry->evoke_func || entry->targeted_evoke_func)
+            && item_type_known(item))
         {
             if (no_evocables)
             {
@@ -2271,11 +2277,14 @@ bool item_is_evokable(const item_def &item, bool reach,
     case OBJ_WANDS:
         return true;
 
+    // TODO: move these out of evoke
     case OBJ_WEAPONS:
         if ((!wielded || !reach) && !msg)
             return false;
 
-        if (reach && weapon_reach(item) > REACH_NONE && item_type_known(item))
+        // XX code duplication with evoke_check
+        if (weapon_reach(item) > REACH_NONE && item_type_known(item)
+                || you.weapon(0) && is_range_weapon(*you.weapon()))
         {
             if (!wielded)
             {

@@ -176,11 +176,9 @@ bool trap_def::is_safe(actor* act) const
     if (type == TRAP_GOLUBRIA || type == TRAP_SHAFT)
         return true;
 
-#ifdef CLUA_BINDINGS
     // Let players specify traps as safe via lua.
     if (clua.callbooleanfn(false, "c_trap_is_safe", "s", trap_name(type).c_str()))
         return true;
-#endif
 
     if (type == TRAP_NEEDLE)
         return you.hp > 15;
@@ -404,7 +402,7 @@ static bool _player_caught_in_web()
 
     you.redraw_armour_class = true;
     you.redraw_evasion      = true;
-    you.redraw_quiver       = true;
+    quiver::set_needs_redraw();
 
     // No longer stop_running() and stop_delay().
     return true;
@@ -1033,7 +1031,7 @@ trap_type get_trap_type(const coord_def& pos)
 void stop_being_held()
 {
     you.attribute[ATTR_HELD] = 0;
-    you.redraw_quiver = true;
+    quiver::set_needs_redraw();
     you.redraw_evasion = true;
 }
 

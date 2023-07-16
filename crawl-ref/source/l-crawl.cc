@@ -413,6 +413,19 @@ static bool _check_can_do_command(lua_State *ls)
     return true;
 }
 
+/****
+ * Handle any command that takes a target and no other parameters. This includes
+ * CMD_PRIMARY_ATTACK, CMD_EVOKE_WIELDED, and CMD_FIRE. If the target
+ * coordinates are out of bounds (the default), this enters interactive
+ * targeting.
+ *
+ * @tparam string command name
+ * @tparam[opt=0] number x coordinate
+ * @tparam[opt=0] number y coordinate
+ * @tparam[opt=false] boolean if true, aim at the target; if false, shoot past it
+ * @treturn boolean whether an action took place
+ * @function do_targeted_command
+ */
 static int crawl_do_targeted_command(lua_State *ls)
 {
     if (!_check_can_do_command(ls))
@@ -432,25 +445,25 @@ static int crawl_do_targeted_command(lua_State *ls)
     target.target = c;
     target.isEndpoint = lua_toboolean(ls, 4); // can be nil
 
-
-    // TODO: automagic, other things that can be targeted
-    // TODO: could this be unified with main.cc command handling code somehow?
     switch (cmd)
     {
+    case CMD_PRIMARY_ATTACK:
+        quiver::get_primary_action()->trigger(target);
+        break;
     case CMD_EVOKE_WIELDED:
         // BCADNOTE: Not sure this is Bcadren relevant. 
                   // Will need rework to also evoke WEAPON1 if it is.
-        evoke_item(you.equip[EQ_WEAPON0], target);
+        evoke_item(you.equip[EQ_WEAPON0], &target);
         break;
     case CMD_FIRE:
-        you.quiver_action.get().trigger(target);
+        quiver::get_secondary_action()->trigger(target);
         break;
     default:
         luaL_argerror(ls, 1, ("Not a (supported) targeted command: " + command).c_str());
         return 0;
     }
 
-    return 0;
+    PLUARET(boolean, you.turn_is_over);
 }
 
 /*** Process a string of input keys
@@ -1591,7 +1604,6 @@ LUAFN(_crawl_redraw_stats)
 
     you.wield_change         = true;
     you.redraw_title         = true;
-    you.redraw_quiver        = true;
     you.redraw_hit_points    = true;
     you.redraw_magic_points  = true;
     you.redraw_stats.init(true);
@@ -1600,6 +1612,7 @@ LUAFN(_crawl_redraw_stats)
     you.redraw_evasion       = true;
     you.redraw_status_lights = true;
     you.redraw_resists       = true;
+    quiver::set_needs_redraw();
 
     print_stats();
     update_screen();

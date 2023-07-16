@@ -595,8 +595,8 @@ static bool _have_appropriate_spell(const actor* target)
 
 static bool _can_fire_item()
 {
-    return you.species != SP_FELID && you.species != SP_FAIRY
-           && you.quiver_action.get().is_valid();
+    // check is_enabled too?
+    return quiver::get_secondary_action()->is_valid();
 }
 
 static bool _handle_distant_monster(monster* mon, unsigned char mod)
@@ -1044,8 +1044,8 @@ static void _add_tip(string &tip, string text)
 
 bool tile_dungeon_tip(const coord_def &gc, string &tip)
 {
-    const int attack_dist = you.weapon() ?
-        weapon_reach(*you.weapon()) : 1;
+    const int attack_dist = you.weapon(0) ?
+        weapon_reach(*you.weapon(0)) : 1;
 
     vector<command_type> cmd;
     tip = "";
@@ -1083,9 +1083,8 @@ bool tile_dungeon_tip(const coord_def &gc, string &tip)
                 }
             }
 
-            if (you.species != SP_FELID && you.species != SP_FAIRY
-                && you.see_cell_no_trans(target->pos())
-                && you.quiver_action.get().is_valid())
+            if (you.see_cell_no_trans(target->pos())
+                && quiver::get_secondary_action()->is_valid())
             {
                 _add_tip(tip, "[Shift + L-Click] Fire (%)");
                 cmd.push_back(CMD_FIRE);

@@ -108,7 +108,7 @@ void expire_lantern_shadows()
     }
 }
 
-static bool _reaching_weapon_attack(const item_def& wpn, dist &beam)
+static bool _reaching_weapon_attack(const item_def& wpn, dist *_beam)
 {
     if (you.confused())
     {
@@ -129,6 +129,9 @@ static bool _reaching_weapon_attack(const item_def& wpn, dist &beam)
     }
 
     bool targ_mid = false;
+    dist beam;
+    if (_beam)
+        beam = *_beam;
 
     beam.isEndpoint = true; // is this needed? imported from autofight code
     const reach_type reach_range = weapon_reach(wpn);
@@ -153,6 +156,9 @@ static bool _reaching_weapon_attack(const item_def& wpn, dist &beam)
     args.hitfunc = hitfunc.get();
 
     direction(beam, args);
+    if (_beam)
+        *_beam = beam;
+
     if (!beam.isValid)
     {
         if (beam.isCancel)
@@ -373,7 +379,7 @@ static void _spray_lightning(int range, int power)
  *
  * @return  Whether anything happened.
  */
-static bool _lightning_rod()
+static bool _lightning_rod(dist *preselect)
 {
     if (you.confused())
     {
@@ -390,7 +396,8 @@ static bool _lightning_rod()
     const int power =
         player_adjust_evoc_power(5 + you.skill(SK_EVOCATIONS, 3), surge);
 
-    const spret ret = your_spells(SPELL_THUNDERBOLT, power, false);
+    const spret ret = your_spells(SPELL_THUNDERBOLT, power, false,
+                                                        nullptr, preselect);
 
     if (ret == spret::abort)
         return false;
@@ -426,40 +433,16 @@ int wand_mp_cost()
     return min(you.magic_points, you.get_mutation_level(MUT_MP_WANDS) * multiplier);
 }
 
-void zap_wand(int slot)
+void zap_wand(int slot, dist *_target)
 {
     if (inv_count() < 1)
     {
-        canned_msg(MSG_NOTHING_CARRIED);
+        canned_msg(MSG_NOTHING_CARRIED); // why is this handled here??
         return;
     }
 
-    if (you.confused())
-    {
-        canned_msg(MSG_TOO_CONFUSED);
+    if (!evoke_check(slot))
         return;
-    }
-
-    if (you.berserk())
-    {
-        canned_msg(MSG_TOO_BERSERK);
-        return;
-    }
-
-    if (you.get_mutation_level(MUT_NO_ARTIFICE))
-    {
-        mpr("You cannot evoke magical items.");
-        return;
-    }
-
-#if TAG_MAJOR_VERSION == 34
-    if (player_under_penance(GOD_PAKELLAS))
-    {
-        simple_god_message("'s wrath prevents you from evoking devices!",
-                           GOD_PAKELLAS);
-        return;
-    }
-#endif
 
     const int mp_cost = wand_mp_cost();
 
@@ -483,11 +466,10 @@ void zap_wand(int slot)
         mpr("You can't zap that!");
         return;
     }
-    if (item_type_removed(wand.base_type, wand.sub_type))
-    {
-        mpr("Sorry, this wand was removed!");
+
+    if (!evoke_check(slot))
         return;
-    }
+
     // If you happen to be wielding the wand, its display might change.
     if (you.equip[EQ_WEAPON0] == item_slot)
         you.wield_change = true;
@@ -513,7 +495,7 @@ void zap_wand(int slot)
     const spell_type spell =
         spell_in_wand(static_cast<wand_type>(wand.sub_type));
 
-    spret ret = your_spells(spell, power, false, &wand);
+    spret ret = your_spells(spell, power, false, &wand, _target);
 
     if (ret == spret::abort)
         return;
@@ -1292,16 +1274,20 @@ void wind_blast(actor* agent, int pow, coord_def target, int source)
             it.first->collide(it.second, agent, pow);
 }
 
-static bool _phial_of_floods()
+static bool _phial_of_floods(dist *target)
 {
-    dist target;
-    bolt beam;
-
+    // BCADDO: Allow confused use with target fuzz?
+    // TODO: code duplication with your_spells
     if (you.confused())
     {
         canned_msg(MSG_TOO_CONFUSED);
         return false;
     }
+
+    bolt beam;
+    dist target_local;
+    if (!target)
+        target = &target_local;
 
     // BCADDO: Consider this and other elemental evoker power scaling.
     const int base_pow = 10 + you.skill(SK_EVOCATIONS, 4); // placeholder?
@@ -1310,11 +1296,12 @@ static bool _phial_of_floods()
     beam.range = LOS_RADIUS;
     beam.aimed_at_spot = true;
 
+    // TODO: this needs a custom targeter
     direction_chooser_args args;
     args.mode = TARG_HOSTILE;
     args.top_prompt = "Aim the phial where?";
 
-    if (spell_direction(target, beam, &args)
+    if (spell_direction(*target, beam, &args)
         && player_tracer(ZAP_PRIMAL_WAVE, base_pow, beam))
     {
 
@@ -1334,11 +1321,14 @@ static bool _phial_of_floods()
     return false;
 }
 
-static spret _phantom_mirror()
+static spret _phantom_mirror(dist *target)
 {
     bolt beam;
     monster* victim = nullptr;
-    dist spd;
+    dist target_local;
+    if (!target)
+        target = &target_local;
+
     targeter_smite tgt(&you, LOS_RADIUS, 0, 0);
 
     direction_chooser_args args;
@@ -1347,7 +1337,7 @@ static spret _phantom_mirror()
     args.self = confirm_prompt_type::cancel;
     args.top_prompt = "Aiming: <white>Phantom Mirror</white>";
     args.hitfunc = &tgt;
-    if (!spell_direction(spd, beam, &args))
+    if (!spell_direction(*target, beam, &args))
         return spret::abort;
     victim = monster_at(beam.target);
     if (!victim || !you.can_see(*victim))
@@ -1489,13 +1479,44 @@ static spret _condenser()
     return spret::success;
 }
 
+
+// Is there anything that would prevent a player from evoking?
+// If slot == -1, it asks this question in general.
+// If slot is a particular item, it asks this question for that item. This
+// wierdly does not check whether an item is actually evokable! (TODO)
 bool evoke_check(int slot, bool quiet)
 {
     if (slot == -1)
         return true;
 
-    const bool reaching =  ((slot == you.equip[EQ_WEAPON0] && you.weapon(0) && weapon_reach(*you.weapon(0)) > REACH_NONE && !you.melded[EQ_WEAPON0]) ||
-                            (slot == you.equip[EQ_WEAPON1] && you.weapon(1) && weapon_reach(*you.weapon(1)) > REACH_NONE && !you.melded[EQ_WEAPON1]));
+    item_def *i = nullptr;
+    if (slot >= 0 && slot < ENDOFPACK && you.inv[slot].defined())
+        i = &you.inv[slot];
+
+    if (i && item_type_removed(i->base_type, i->sub_type))
+    {
+        if (!quiet)
+            mpr("Sorry, this item was removed!");
+        return false;
+    }
+
+    // TODO: are these reaching checks necessary any more?
+    // is slot a wielded reaching weapon, or if no slot, is the player wielding
+    // a reaching weapon?
+    const bool wielded0 = you.weapon(0) && (slot != -1 && slot == you.equip[EQ_WEAPON0] 
+                                         || slot == -1 && you.equip[EQ_WEAPON0] >= 0);
+    const bool wielded1 = you.weapon(1) && (slot != -1 && slot == you.equip[EQ_WEAPON1] 
+                                         || slot == -1 && you.equip[EQ_WEAPON1] >= 0);
+    const bool reaching = wielded0 && weapon_reach(*you.weapon(0)) > REACH_NONE 
+                       || wielded1 && weapon_reach(*you.weapon(1)) > REACH_NONE;
+
+    // BCADNOTE: A form that melds one weapon slot and not the other would need revise here.
+    if (reaching && you.melded[EQ_WEAPON0])
+    {
+        if (!quiet)
+            canned_msg(MSG_PRESENT_FORM);
+        return false;
+    }
 
     if (you.berserk() && !reaching)
     {
@@ -1503,13 +1524,72 @@ bool evoke_check(int slot, bool quiet)
             canned_msg(MSG_TOO_BERSERK);
         return false;
     }
-    
-    return (item_is_evokable(you.inv[slot]));
+    if (you.confused())
+    {
+        if (!quiet)
+            canned_msg(MSG_TOO_CONFUSED);
+        return false;
+    }
+    if (reaching)
+        return true;
+
+    // is this supposed to be allowed under confusion?
+    if (i && i->base_type == OBJ_MISCELLANY && i->sub_type == MISC_ZIGGURAT)
+        return true;
+
+    if (!i)
+    {
+        // does the player have a zigfig? overrides sac artiface
+        // this is ugly...this thing should probably be goldified
+        for (const auto s : you.inv)
+            if (s.defined() && s.base_type == OBJ_MISCELLANY
+                                     && s.sub_type == MISC_ZIGGURAT)
+            {
+                return true;
+            }
+    }
+
+#if TAG_MAJOR_VERSION == 34
+    if (player_under_penance(GOD_PAKELLAS))
+    {
+        if (!quiet)
+        {
+            simple_god_message("'s wrath prevents you from evoking devices!",
+                           GOD_PAKELLAS);
+        }
+        return false;
+    }
+#endif
+
+    if (you.get_mutation_level(MUT_NO_ARTIFICE))
+    {
+        if (!quiet)
+            mpr("You cannot evoke magical items.");
+        return false;
+    }
+
+    if (i && i->base_type == OBJ_WANDS && i->charges <= 0)
+    {
+        // I think this case should be obsolete? Maybe still could happen with
+        // an upgrade
+        if (!quiet)
+            mpr("This wand has no charges.");
+        return false;
+    }
+
+    if (i && is_xp_evoker(*i) && evoker_charges(i->sub_type) <= 0)
+    {
+        // DESC_THE prints "The tin of tremorstones (inert) is presently inert."
+        if (!quiet)
+            mprf("The %s is presently inert.", i->name(DESC_DBNAME).c_str());
+        return false;
+    }
+
+    return true;
 }
 
-bool evoke_item(int slot, dist preselect)
+bool evoke_item(int slot, dist *preselect)
 {
-    // TODO: implement preselect for items besides weapons
     if (!evoke_check(slot))
         return false;
 
@@ -1535,7 +1615,7 @@ bool evoke_item(int slot, dist preselect)
 
     item_def& item = you.inv[slot];
     // Also handles messages.
-    if (!item_is_evokable(item, true, false, false))
+    if (!item_is_evokable(item, true, false, true) || !evoke_check(slot))
         return false;
 
     bool did_work   = false;  // "Nothing happens" message
@@ -1544,17 +1624,18 @@ bool evoke_item(int slot, dist preselect)
     const unrandart_entry *entry = is_unrandom_artefact(item)
         ? get_unrand_entry(item.unrand_idx) : nullptr;
 
-    if (entry && entry->evoke_func)
+    if (entry && (entry->evoke_func || entry->targeted_evoke_func))
     {
         ASSERT(item_is_equipped(item));
 
-        if (you.confused())
-        {
-            canned_msg(MSG_TOO_CONFUSED);
-            return false;
-        }
-
-        bool qret = entry->evoke_func(&item, &did_work, &unevokable);
+        bool qret;
+        // only use one of these, prioritizing the targeted version. In
+        // principle we could call them both?
+        ASSERT(!(entry->evoke_func && entry->targeted_evoke_func)); // probably should be in art-data.pl
+        if (entry->targeted_evoke_func)
+            qret = entry->targeted_evoke_func(&item, &did_work, &unevokable, preselect);
+        else
+            qret = entry->evoke_func(&item, &did_work, &unevokable);
 
         if (!unevokable)
             count_action(CACT_EVOKE, item.unrand_idx);
@@ -1566,7 +1647,7 @@ bool evoke_item(int slot, dist preselect)
     else switch (item.base_type)
     {
     case OBJ_WANDS:
-        zap_wand(slot);
+        zap_wand(slot, preselect);
         return true;
 
     // No Evocable Shields or Staves exist right now.
@@ -1575,18 +1656,15 @@ bool evoke_item(int slot, dist preselect)
         return false;
 
     case OBJ_WEAPONS:
+    {
         ASSERT(wielded);
+        dist targ_local;
+        if (!preselect)
+            preselect = &targ_local;
 
-        if (weapon_reach(item) > REACH_NONE)
-        {
-            if (_reaching_weapon_attack(item, preselect))
-                did_work = true;
-            else
-                return false;
-        }
-        else
-            unevokable = true;
-        break;
+        quiver::get_primary_action()->trigger(*preselect);
+        return you.turn_is_over;
+    }
 
     case OBJ_MISCELLANY:
         did_work = true; // easier to do it this way for misc items
@@ -1674,12 +1752,7 @@ bool evoke_item(int slot, dist preselect)
 #endif
 
         case MISC_PHIAL_OF_FLOODS:
-            if (!evoker_charges(item.sub_type))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
-            if (_phial_of_floods())
+            if (_phial_of_floods(preselect))
             {
                 expend_xp_evoker(item.sub_type);
                 if (!evoker_charges(item.sub_type))
@@ -1691,11 +1764,6 @@ bool evoke_item(int slot, dist preselect)
             break;
 
         case MISC_HORN_OF_GERYON:
-            if (!evoker_charges(item.sub_type))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
             if (_evoke_horn_of_geryon())
             {
                 expend_xp_evoker(item.sub_type);
@@ -1708,11 +1776,6 @@ bool evoke_item(int slot, dist preselect)
             break;
 
         case MISC_BOX_OF_BEASTS:
-            if (!evoker_charges(item.sub_type))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
             if (_box_of_beasts())
             {
                 expend_xp_evoker(item.sub_type);
@@ -1745,12 +1808,7 @@ bool evoke_item(int slot, dist preselect)
             break;
 
         case MISC_LIGHTNING_ROD:
-            if (!evoker_charges(item.sub_type))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
-            if (_lightning_rod())
+            if (_lightning_rod(preselect))
             {
                 practise_evoking(1);
                 expend_xp_evoker(item.sub_type);
@@ -1770,12 +1828,7 @@ bool evoke_item(int slot, dist preselect)
             break;
 
         case MISC_PHANTOM_MIRROR:
-            if (!evoker_charges(item.sub_type))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
-            switch (_phantom_mirror())
+            switch (_phantom_mirror(preselect))
             {
                 default:
                 case spret::abort:
@@ -1798,11 +1851,6 @@ bool evoke_item(int slot, dist preselect)
             break;
 
         case MISC_CONDENSER_VANE:
-            if (!evoker_charges(item.sub_type))
-            {
-                mpr("That is presently inert.");
-                return false;
-            }
             switch (_condenser())
             {
                 default:

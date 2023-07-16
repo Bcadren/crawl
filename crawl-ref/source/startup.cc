@@ -332,16 +332,18 @@ static void _post_init(bool newc)
     you.redraw_armour_class = true;
     you.redraw_evasion      = true;
     you.redraw_experience   = true;
-    you.redraw_quiver       = true;
     you.redraw_noise        = true;
     you.wield_change        = true;
     you.redraw_resists      = true;
     you.gear_change         = true;
+    quiver::set_needs_redraw();
+
 
     // Start timer on session.
     you.last_keypress_time = chrono::system_clock::now();
 
-#ifdef CLUA_BINDINGS
+    // in principle everything here might be skippable if CLUA_BINDINGS is not
+    // defined, but do it anyways for consistency with normal builds.
     clua.runhook("chk_startgame", "b", newc);
 
     read_init_file(true);
@@ -351,7 +353,6 @@ static void _post_init(bool newc)
     init_char_table(Options.char_set);
     init_show_table();
     init_monster_symbols();
-#endif
 
 #ifdef USE_TILE
     init_player_doll();
@@ -359,6 +360,9 @@ static void _post_init(bool newc)
     tiles.resize();
 #endif
     update_player_symbol();
+
+    if (newc)
+        quiver::on_newchar(); // needs to happen after init file is read
 
     draw_border();
     new_level(!newc);
