@@ -1234,7 +1234,9 @@ namespace quiver
         if (   static_cast<int>(a) >= ABIL_FIRST_SACRIFICE
                     && static_cast<int>(a) <= ABIL_FINAL_SACRIFICE
             || static_cast<int>(a) >= ABIL_HEPLIAKLQANA_FIRST_TYPE
-                    && static_cast<int>(a) <= ABIL_HEPLIAKLQANA_LAST_TYPE)
+                    && static_cast<int>(a) <= ABIL_HEPLIAKLQANA_LAST_TYPE
+            || static_cast<int>(a) >= ABIL_FIRST_BT_CHOICE
+                    && static_cast<int>(a) <= ABIL_TIAMAT_DRAGON_BOOK)
         {
             return true;
         }
@@ -1243,14 +1245,27 @@ namespace quiver
         {
         case ABIL_END_TRANSFORMATION:
         case ABIL_CANCEL_PPROJ:
+        case ABIL_END_UPRISING:
+        case ABIL_STOP_FLYING:
+        case ABIL_DISMOUNT:
         case ABIL_EVOKE_TURN_VISIBLE:
+        case ABIL_SUBSUME:
+        case ABIL_EJECT:
         case ABIL_TSO_BLESS_WEAPON:
+        case ABIL_KIKU_OPEN_CRYPTS:
+        case ABIL_KIKU_CLOSE_CRYPTS:
         case ABIL_KIKU_BLESS_WEAPON:
         case ABIL_KIKU_GIFT_NECRONOMICON:
         case ABIL_SIF_MUNA_FORGET_SPELL:
+        case ABIL_SIF_MUNA_DIVINE_ENERGY:
+        case ABIL_SIF_MUNA_STOP_DIVINE_ENERGY:
+        case ABIL_LUGONU_ABYSS_EXIT:
         case ABIL_LUGONU_BLESS_WEAPON:
         case ABIL_BEOGH_GIFT_ITEM:
         case ABIL_ASHENZARI_CURSE:
+        case ABIL_ASHENZARI_END_TRANSFER:
+        case ABIL_JIYVA_SET_TARGETS:
+        case ABIL_JIYVA_SET_TARGETS_FREE:
         case ABIL_RU_REJECT_SACRIFICES:
         case ABIL_HEPLIAKLQANA_IDENTITY:
         case ABIL_STOP_RECALL:
@@ -1258,7 +1273,6 @@ namespace quiver
         case ABIL_CONVERT_TO_BEOGH:
         // high price zone
         case ABIL_ZIN_DONATE_GOLD:
-        // BCADDO: Any more?
         // not entirely pseudo, but doesn't make a lot of sense to quiver:
         case ABIL_FLY:
         case ABIL_TRAN_BAT:
