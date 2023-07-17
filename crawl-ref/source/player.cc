@@ -415,7 +415,7 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
     if (mons_is_projectile(*mons))
     {
         if (!quiet)
-            mpr("It's unwise to walk into this.");
+            mprf("It's unwise to %s into this.", you.walkverb().c_str());
         return false;
     }
 
@@ -455,9 +455,9 @@ bool swap_check(monster* mons, coord_def &loc, bool quiet)
     // XXX: We still need the location so we can swap the foxfire and kill it
     // in its new location (which is finalized after the player's movement is
     // complete).
-    // BCADDO: Movement verb.
     if ((mons->type == MONS_FOXFIRE || mons->type == MONS_EPHEMERAL_SPIRIT) && !quiet
-        && !yesno(make_stringf("Do you really want to walk into %s?",
+        && !yesno(make_stringf("Do you really want to %s into %s?",
+                  you.walkverb().c_str(),
                   mons->name(DESC_YOUR).c_str()).c_str(), true, 'N'))
     {
         return false;
@@ -10067,6 +10067,36 @@ bool player::can_blood_cast(int cost) const
     return have_passive(passive_t::power_of_blood) && !is_fairy()
         && can_bleed() && hp > ((cost - magic_points) * 2)
         && !duration[DUR_DEATHS_DOOR];
+}
+
+string player::walkverb() const
+{
+    if (mounted())
+        return "ride";
+
+    if (airborne())
+    {
+        if (species == SP_TENGU && form_keeps_mutations())
+            return "glide";
+        return "fly";
+    }
+
+    if (swimming())
+        return "swim";
+
+    if (floundering())
+        return "thrash";
+
+    if (form == transformation::scorpion)
+        return "crawl";
+
+    if (species == SP_NAGA || char_class == JOB_NAGA)
+        return "slither";
+
+    if (species == SP_CENTAUR || char_class == JOB_CENTAUR)
+        return "gallop";
+
+    return "walk";
 }
 
 bool player::can_silent_cast() const

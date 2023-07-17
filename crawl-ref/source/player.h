@@ -965,6 +965,7 @@ public:
     bool can_silent_cast() const;
 
     bool can_blood_cast(int cost) const;
+    string walkverb() const;
 
     bool clear_far_engulf() override;
 

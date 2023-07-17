@@ -7060,7 +7060,7 @@ bool uskayaw_line_pass()
         else if (cell_is_solid(beam.target))
         {
             clear_messages();
-            mpr("You can't walk through walls!");
+            mprf("You can't %s through walls!", you.walkverb().c_str());
             continue;
         }
         else if (!check_moveto(beam.target, "line pass"))
