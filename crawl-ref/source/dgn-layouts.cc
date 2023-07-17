@@ -24,7 +24,6 @@ static void _make_trail(int xs, int xr, int ys, int yr, int corrlength,
 static void _builder_extras(int level_number);
 static bool _octa_room(dgn_region& region, int oblique_max,
                        dungeon_feature_type type_floor);
-static dungeon_feature_type _random_wall();
 static void _chequerboard(dgn_region& region, dungeon_feature_type target,
                           dungeon_feature_type floor1,
                           dungeon_feature_type floor2);
@@ -487,22 +486,6 @@ static bool _octa_room(dgn_region& region, int oblique_max,
     return true;
 }
 
-// BCADDO: Redo this to have explicit in list.
-static dungeon_feature_type _random_wall()
-{
-    const dungeon_feature_type min_rand = DNGN_METAL_WALL;
-    const dungeon_feature_type max_rand = DNGN_STONE_WALL;
-    dungeon_feature_type wall;
-    do
-    {
-        wall = static_cast<dungeon_feature_type>(
-                   random_range(min_rand, max_rand));
-    }
-    while (wall == DNGN_SLIMY_WALL);
-
-    return wall;
-}
-
 // Helper function for chequerboard rooms.
 // Note that box boundaries are INclusive.
 static void _chequerboard(dgn_region& region, dungeon_feature_type target,
@@ -752,7 +735,10 @@ static void _big_room(int level_number)
                      MMT_VAULT);
 
     if (type_floor == DNGN_FLOOR)
-        type_2 = _random_wall();
+    {
+        type_2 = random_choose(DNGN_METAL_WALL, DNGN_CRYSTAL_WALL,
+                                DNGN_ROCK_WALL, DNGN_STONE_WALL);
+    }
 
     // No lava in the Crypt or Tomb, thanks!
     if (player_in_branch(BRANCH_CRYPT) || player_in_branch(BRANCH_TOMB))
