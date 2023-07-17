@@ -728,6 +728,8 @@ bool melee_attack::handle_phase_damaged()
         }
     }
 
+    attacker_sustain_passive_damage();
+
     if (!attack::handle_phase_damaged())
         return false;
 
@@ -1217,8 +1219,6 @@ bool melee_attack::attack()
         if (ev_margin >= 0)
         {
             bool cont = handle_phase_hit();
-
-            attacker_sustain_passive_damage();
 
             if (!cont)
             {
@@ -2661,7 +2661,6 @@ void melee_attack::decapitate()
 void melee_attack::attacker_sustain_passive_damage()
 {
     // If the defender has been cleaned up, it's too late for anything.
-    // BCADDO: Final acid splash on death?
     if (!defender->alive())
         return;
 
@@ -2704,7 +2703,7 @@ void melee_attack::attacker_sustain_passive_damage()
     else
     {
         simple_monster_message(*attacker->as_monster(),
-                               make_stringf("is burned by acid%s", attack_strength_punctuation(acid_strength).c_str()).c_str());
+                               make_stringf(" is burned by acid%s", attack_strength_punctuation(acid_strength).c_str()).c_str());
     }
 
     if (!mount_attack)
