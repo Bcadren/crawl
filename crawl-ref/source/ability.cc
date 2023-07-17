@@ -104,6 +104,7 @@ enum class abflag
     hostile             = 0x00001000, // failure summons a hostile (Makhleb)
     starve_ok           = 0x00002000, // can use even if starving
     berserk_ok          = 0x00004000, // can use even if berserk
+    skill_fail          = 0x00008000, // drains skill on failure
 };
 DEF_BITFIELD(ability_flags, abflag);
 
@@ -356,24 +357,24 @@ static const ability_def Ability_List[] =
     // any reason to label them as "Evoke" in the text, they don't
     // use or train Evocations (the others do).  -- bwr
     { ABIL_EVOKE_BLINK, "Evoke Blink",
-        1, 0, 120, 0, {fail_basis::evo, 40, 2}, abflag::none },
+        1, 0, 120, 0, {fail_basis::evo, 40, 2}, abflag::skill_fail },
     { ABIL_HEAL_WOUNDS, "Heal Wounds",
         0, 0, 0, 0, {fail_basis::xl, 45, 2}, abflag::none },
     { ABIL_EVOKE_BERSERK, "Evoke Berserk Rage",
-        0, 0, 1000, 0, {fail_basis::evo, 50, 2}, abflag::none },
+        0, 0, 1000, 0, {fail_basis::evo, 50, 2}, abflag::skill_fail },
 
     { ABIL_EVOKE_TURN_INVISIBLE, "Evoke Invisibility",
-        2, 0, 500, 0, {fail_basis::evo, 60, 2}, abflag::skill_drain },
+        2, 0, 500, 0, {fail_basis::evo, 60, 2}, abflag::skill_fail },
 #if TAG_MAJOR_VERSION == 34
     { ABIL_EVOKE_TURN_VISIBLE, "Turn Visible",
         0, 0, 0, 0, {}, abflag::starve_ok },
 #endif
     { ABIL_EVOKE_FLIGHT, "Evoke Flight",
-        1, 0, 150, 0, {fail_basis::evo, 40, 2}, abflag::none },
+        1, 0, 150, 0, {fail_basis::evo, 40, 2}, abflag::skill_fail },
     { ABIL_EVOKE_FOG, "Evoke Fog",
-        2, 0, 500, 0, {fail_basis::evo, 50, 2}, abflag::none },
+        2, 0, 500, 0, {fail_basis::evo, 50, 2}, abflag::skill_fail },
     { ABIL_EVOKE_THUNDER, "Evoke Thunderclouds",
-        5, 0, 300, 0, {fail_basis::evo, 60, 2}, abflag::none },
+        5, 0, 300, 0, {fail_basis::evo, 60, 2}, abflag::skill_fail },
 
     { ABIL_END_TRANSFORMATION, "End Transformation",
         0, 0, 0, 0, {}, abflag::starve_ok },
@@ -942,12 +943,10 @@ static const string _detailed_cost_description(ability_type ability)
         ret << "\nYou can use it even if confused.";
 
     if (abil.flags & abflag::skill_drain)
-    {
-        ret << "\nThis ability will temporarily drain your skills when used";
-        if (ability == ABIL_EVOKE_TURN_INVISIBLE)
-            ret << ", even unsuccessfully";
-        ret << ".";
-    }
+        ret << "\nThis ability will temporarily drain your skills when used.";
+
+    if (abil.flags & abflag::skill_fail)
+        ret << "\nIf you evoke this item unsuccessfully, your skills will be temporarily drained.";
 
     if (abil.ability == ABIL_HEAL_WOUNDS)
     {
@@ -2695,12 +2694,16 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
     }
 
     case ABIL_EVOKE_BLINK:      // randarts
+        if (fail)
+            drain_player(40, false, true);
         fail_check();
         // deliberate fall-through
     case ABIL_BLINK:            // mutation
         return cast_blink(fail);
 
     case ABIL_EVOKE_BERSERK:    // amulet of rage, randarts
+        if (fail)
+            drain_player(40, false, true);
         fail_check();
         you.go_berserk(true);
         break;
@@ -2804,7 +2807,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
     case ABIL_EVOKE_TURN_INVISIBLE:     // cloaks, randarts
         if (!invis_allowed())
             return spret::abort;
-        drain_player(40, false, true); // yes, before the fail check!
+        if (fail)
+            drain_player(40, false, true);
         fail_check();
 #if TAG_MAJOR_VERSION == 34
         surge_power(you.spec_evoke());
@@ -2825,6 +2829,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
 #endif
 
     case ABIL_EVOKE_FLIGHT:             // randarts
+        if (fail)
+            drain_player(40, false, true);
         fail_check();
         ASSERT(!get_form()->forbids_flight());
 #if TAG_MAJOR_VERSION == 34
@@ -2834,12 +2840,16 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         break;
 
     case ABIL_EVOKE_FOG:     // cloak of the Thief
+        if (fail)
+            drain_player(40, false, true);
         fail_check();
         mpr("With a swish of your cloak, you release a cloud of fog.");
         big_cloud(random_smoke_type(), &you, you.pos(), 50, 8 + random2(8));
         break;
 
     case ABIL_EVOKE_THUNDER: // robe of Clouds
+        if (fail)
+            drain_player(40, false, true);
         fail_check();
         mpr("The folds of your robe billow into a mighty storm.");
 
