@@ -137,12 +137,21 @@ spret cast_swiftness(int power, bool fail)
 {
     fail_check();
 
-    if (you.in_liquid())
+    // Hint that the player won't be faster until they leave the liquid.
+    if (you.in_lava())
+        mpr("The lava splatters!");
+    else if (you.in_liquid())
     {
-        // BCADDO: Case for lava?
-        // Hint that the player won't be faster until they leave the liquid.
-        mprf("The %s foams!", you.in_water() ? "water"
-                                             : "liquid ground");
+        if (env.grid(you.pos()) == DNGN_SLIMY_WATER
+            || env.grid(you.pos()) == DNGN_DEEP_SLIMY_WATER)
+        {
+            mpr("The slime gurgles!");
+        }
+        else
+        {
+            mprf("The %s foams!", you.in_water() ? "water"
+                                                 : "liquid ground");
+        }
     }
 
     you.set_duration(DUR_SWIFTNESS, 12 + random2(power)/2, 30,
