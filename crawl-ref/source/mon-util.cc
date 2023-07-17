@@ -2391,7 +2391,12 @@ mon_attack_def mons_attack_spec(const monster& m, int attk_number,
         // TODO: randomization here is not the greatest way of doing any of
         // these...
         if (attk.type == AT_RANDOM)
-            attk.type = random_choose(AT_HIT, AT_GORE);
+        {
+            attk.type = random_choose(AT_HIT, AT_GORE, AT_BITE, AT_STING,
+                AT_CLAW, AT_PECK, AT_HEADBUTT, AT_PUNCH, AT_KICK,
+                AT_TENTACLE_SLAP, AT_TAIL_SLAP, AT_TRUNK_SLAP,
+                AT_SLAP, AT_SLASH, AT_RAKE, AT_PINCER, AT_SLAM);
+        }
 
         if (attk.type == AT_CHERUB)
             attk.type = random_choose(AT_HIT, AT_BITE, AT_PECK, AT_GORE);
@@ -2459,7 +2464,7 @@ string mon_attack_name(attack_type attack, bool with_object)
         "hit, bite, peck, or gore", // AT_CHERUB
         "bite", // AT_MULTIBITE
         "hit", // AT_WEAP_ONLY,
-        "hit or gore", // AT_RANDOM
+        "strike", // AT_RANDOM
     };
     COMPILE_CHECK(ARRAYSZ(attack_types) == NUM_ATTACK_TYPES - AT_FIRST_ATTACK);
 

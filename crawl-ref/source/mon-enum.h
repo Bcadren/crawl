@@ -57,7 +57,7 @@ enum attack_type
     AT_CHERUB,
     AT_MULTIBITE,
     AT_WEAP_ONLY,   // AT_HIT if wielding a melee weapon, AT_NONE otherwise
-    AT_RANDOM,      // Currently AT_HIT or AT_GORE BCADDO: Consider further randomization (It's Chaos Spawn's Signature).
+    AT_RANDOM,      // Randomly selected verb.
     NUM_ATTACK_TYPES,
 };
 
