@@ -3908,7 +3908,7 @@ void random_uselessness(actor * act)
         for (int i = 0; i < amt; ++i)
         {
             create_monster(
-                mgen_data(MONS_BUTTERFLY, BEH_STRICT_NEUTRAL,
+                mgen_data(MONS_BUTTERFLY, BEH_PASSIVE,
                     act->pos(), MHITNOT)
                 .set_summoned(act, duration, 0));
         }

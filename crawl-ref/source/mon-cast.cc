@@ -6929,7 +6929,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         for (int i = 0; i < 10; ++i)
         {
             create_monster(
-                mgen_data(MONS_BUTTERFLY, SAME_ATTITUDE(mons),
+                mgen_data(MONS_BUTTERFLY, BEH_PASSIVE,
                           mons->pos(), mons->foe)
                 .set_summoned(mons, duration, spell_cast, god));
         }

@@ -946,14 +946,14 @@ static void _place_twister_clouds(monster *mon)
 }
 
 static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
-                                   level_id place,
-                                   bool force_pos, bool dont_place)
+    level_id place,
+    bool force_pos, bool dont_place)
 {
     coord_def fpos;
 
     // Some sanity checks.
     if (mons_is_unique(mg.cls) && !(mg.cls == MONS_ROYAL_JELLY) && you.unique_creatures[mg.cls]
-            && !crawl_state.game_is_arena()
+        && !crawl_state.game_is_arena()
         || mons_class_flag(mg.cls, M_CANT_SPAWN))
     {
         die("invalid monster to place: %s (%d)", mons_class_name(mg.cls), mg.cls);
@@ -974,7 +974,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     else if (!leader
         && in_bounds(mg.pos)
         && (mg.behaviour == BEH_FRIENDLY ||
-            (!is_sanctuary(mg.pos) || mons_is_tentacle_segment(montype)))
+        (!is_sanctuary(mg.pos) || mons_is_tentacle_segment(montype)))
         && !monster_at(mg.pos)
         && (you.pos() != mg.pos || fedhas_passthrough_class(mg.cls))
         && (force_pos || monster_habitable_grid(montype, env.grid(mg.pos))))
@@ -1015,9 +1015,9 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     // Now, actually create the monster. (Wheeee!)
     mon->set_new_monster_id();
-    mon->type         = mg.cls;
+    mon->type = mg.cls;
     mon->base_monster = mg.base_type;
-    mon->xp_tracking  = mg.xp_tracking;
+    mon->xp_tracking = mg.xp_tracking;
 
     // Set pos and link monster into monster grid.
     if (!dont_place && !mon->move_to_pos(fpos))
@@ -1041,7 +1041,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         case BRANCH_TARTARUS:
             mon->type = MONS_SERPENT_OF_HELL_TARTARUS;
             break;
-        default: ; // if it spawns out of Hell (sprint, wizmode), use Gehenna
+        default:; // if it spawns out of Hell (sprint, wizmode), use Gehenna
         }
     }
 
@@ -1147,7 +1147,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
                     mon->god = GOD_SIF_MUNA;
                     break;
 
-                // Associated with multiple gods or no (player) god.
+                    // Associated with multiple gods or no (player) god.
                 case SPELL_SMITING:
                 case SPELL_SAP_MAGIC:
                 case SPELL_HASTE_OTHER:
@@ -1192,7 +1192,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->god = GOD_JIYVA;
     // Mennas belongs to Zin.
     else if (mg.cls == MONS_MENNAS
-            || mg.cls == MONS_SILVER_STAR)
+        || mg.cls == MONS_SILVER_STAR)
     {
         mon->god = GOD_ZIN;
     }
@@ -1201,7 +1201,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->god = GOD_XOM;
     // Grinder and Ignacio belong to Makhleb.
     else if (mg.cls == MONS_GRINDER
-             || mg.cls == MONS_IGNACIO)
+        || mg.cls == MONS_IGNACIO)
     {
         mon->god = GOD_MAKHLEB;
     }
@@ -1234,7 +1234,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     // If the caller requested a specific colour for this monster, apply
     // it now.
     if ((mg.colour == COLOUR_INHERIT
-         && mons_class_colour(mon->type) != COLOUR_UNDEF)
+        && mons_class_colour(mon->type) != COLOUR_UNDEF)
         || mg.colour > COLOUR_UNDEF)
     {
         mon->colour = mg.colour;
@@ -1289,7 +1289,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     }
 
     // Store the extra flags here.
-    mon->flags       |= mg.extra_flags;
+    mon->flags |= mg.extra_flags;
 
     // "Prince Ribbit returns to his original shape as he dies."
     if (mg.cls == MONS_PRINCE_RIBBIT)
@@ -1317,8 +1317,8 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->add_ench(ENCH_GLOWING_SHAPESHIFTER);
 
     if ((mg.cls == MONS_TOADSTOOL
-         || mg.cls == MONS_PILLAR_OF_SALT
-         || mg.cls == MONS_BLOCK_OF_ICE)
+        || mg.cls == MONS_PILLAR_OF_SALT
+        || mg.cls == MONS_BLOCK_OF_ICE)
         && !mg.props.exists(MGEN_NO_AUTO_CRUMBLE))
     {
         // This enchantment is a timer that counts down until death.
@@ -1331,7 +1331,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     else if (mg.cls == MONS_HYPERACTIVE_BALLISTOMYCETE)
         mon->add_ench(ENCH_EXPLODING);
     else if (mons_is_demonspawn(mon->type)
-             && draco_or_demonspawn_subspecies(*mon) == MONS_GELID_DEMONSPAWN)
+        && draco_or_demonspawn_subspecies(*mon) == MONS_GELID_DEMONSPAWN)
     {
         mon->add_ench(ENCH_ICEMAIL);
     }
@@ -1354,9 +1354,9 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->props["dbname"] = mons_class_name(mon->type);
     }
 
-    if (bool (mons_class_itemuse(mon->type) & MU_THROW_MASK)
-        || (mons_class_is_zombified(mon->type) 
-             && bool(mons_class_itemuse(mon->base_monster) & MU_THROW_MASK)))
+    if (bool(mons_class_itemuse(mon->type) & MU_THROW_MASK)
+        || (mons_class_is_zombified(mon->type)
+            && bool(mons_class_itemuse(mon->base_monster) & MU_THROW_MASK)))
     {
         maybe_give_throw_spell(*mon, mg.place.absdepth());
     }
@@ -1377,7 +1377,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     const item_def *shld = mon->shield();
 
-    if (mon->has_spell(SPELL_CONDENSATION_SHIELD) 
+    if (mon->has_spell(SPELL_CONDENSATION_SHIELD)
         && (!shld || shld->base_type != OBJ_SHIELDS || is_hybrid(shld->sub_type)))
     {
         const int power = mon->spell_hd(SPELL_OZOCUBUS_ARMOUR);
@@ -1416,7 +1416,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
 
     // dur should always be 1-6 for monsters that can be abjured.
     const bool summoned = mg.abjuration_duration >= 1
-                       && mg.abjuration_duration <= 6;
+        && mg.abjuration_duration <= 6;
 
     if (mons_class_is_animated_weapon(mg.cls))
     {
@@ -1457,12 +1457,12 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     {
         // Boost HP to what it would have been if it had grown this
         // big by merging.
-        mon->hit_points     *= mon->blob_size;
+        mon->hit_points *= mon->blob_size;
         mon->max_hit_points *= mon->blob_size;
     }
 
     // Set attitude, behaviour and target.
-    mon->attitude  = ATT_HOSTILE;
+    mon->attitude = ATT_HOSTILE;
     mon->behaviour = mg.behaviour;
 
     // Statues cannot sleep (nor wander but it means they are a bit
@@ -1475,7 +1475,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     // Setting attitude will always make the monster wander...
     // If you want sleeping hostiles, use BEH_SLEEP since the default
     // attitude is hostile.
-    if (mg.behaviour > NUM_BEHAVIOURS)
+    if (mg.behaviour > NUM_BEHAVIOURS || mons_class_flag(mg.cls, M_PASSIVE))
     {
         if (mg.behaviour == BEH_FRIENDLY)
             mon->attitude = ATT_FRIENDLY;
@@ -1483,7 +1483,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         if (mg.behaviour == BEH_GOOD_NEUTRAL)
             mon->attitude = ATT_GOOD_NEUTRAL;
 
-        if (mg.behaviour == BEH_PASSIVE)
+        if (mg.behaviour == BEH_PASSIVE || mons_class_flag(mg.cls, M_PASSIVE))
             mon->attitude = ATT_PASSIVE;
 
         if (mg.behaviour == BEH_NEUTRAL)

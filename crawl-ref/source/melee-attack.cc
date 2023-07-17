@@ -656,8 +656,6 @@ bool melee_attack::handle_phase_hit()
         defender->as_monster()->flags |= MF_EXPLODE_KILL;
     }
 
-
-
     if (check_unrand_effects())
         return false;
 
