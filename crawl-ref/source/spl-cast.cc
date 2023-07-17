@@ -1659,7 +1659,6 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
     case SPELL_BEASTLY_APPENDAGE:
     case SPELL_SUBLIMATION_OF_BLOOD:
     case SPELL_BORGNJORS_REVIVIFICATION:
-    case SPELL_CONJURE_FLAME:
         return make_unique<targeter_radius>(&you, LOS_SOLID_SEE, 0);
 
     // LOS radius:
