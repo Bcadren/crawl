@@ -617,10 +617,10 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_MALIGN_GATEWAY, "Malign Gateway", "",
     spschool::summoning | spschool::translocation,
-    spflag::unholy | spflag::chaotic,
+    spflag::dir_or_target | spflag::unholy | spflag::chaotic,
     7,
     200,
-    -1, -1,
+    LOS_RADIUS, LOS_RADIUS,
     6, 0,
     TILEG_MALIGN_GATEWAY,
 },

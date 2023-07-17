@@ -69,9 +69,9 @@ bool can_cast_malign_gateway();
 void create_malign_gateway(coord_def point, beh_type beh, string cause,
                            int pow, god_type god = GOD_NO_GOD,
                            bool is_player = false);
-spret cast_malign_gateway(actor* caster, int pow,
-                               god_type god = GOD_NO_GOD, bool fail = false);
-coord_def find_gateway_location(actor* caster);
+spret cast_malign_gateway(actor* caster, int pow, god_type god = GOD_NO_GOD, 
+                           coord_def target = coord_def(0, 0), bool fail = false);
+coord_def find_gateway_location(actor* caster, coord_def target = coord_def(0, 0));
 spret cast_summon_forest(actor* caster, int pow, coord_def& where, god_type god, bool fail);
 
 spret cast_dragon_call(int pow, bool fail);

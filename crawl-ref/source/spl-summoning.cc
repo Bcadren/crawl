@@ -1374,12 +1374,42 @@ bool can_cast_malign_gateway()
     return count_malign_gateways() < 1;
 }
 
-coord_def find_gateway_location(actor* caster)
+coord_def find_gateway_location(actor* caster, coord_def target)
 {
     vector<coord_def> points;
 
     bool xray = you.xray_vision;
     you.xray_vision = false;
+
+    if (target != coord_def(0, 0))
+    {
+        targeter_cone hitfunc(caster, LOS_RADIUS);
+        hitfunc.set_aim(target);
+
+        for (int i = 1; i <= LOS_RADIUS; i++)
+        {
+            for (const auto &entry : hitfunc.sweep[i])
+            {
+                if (entry.second <= 0)
+                    continue;
+
+                coord_def test = entry.first;
+
+                if (!in_bounds(test) || !feat_is_malign_gateway_suitable(env.grid(test))
+                    || actor_at(test)
+                    || count_neighbours_with_func(test, &feat_is_solid) != 0
+                    || !caster->see_cell_no_trans(test))
+                {
+                    continue;
+                }
+
+                points.push_back(test);
+            }
+        }
+    }
+
+    if (!points.empty())
+        return points[random2(points.size())];
 
     for (coord_def delta : Compass)
     {
@@ -1428,9 +1458,10 @@ void create_malign_gateway(coord_def point, beh_type beh, string cause,
                      "and a portal to some otherworldly place is opened!");
 }
 
-spret cast_malign_gateway(actor * caster, int pow, god_type god, bool fail)
+spret cast_malign_gateway(actor * caster, int pow, god_type god, 
+                                 coord_def target, bool fail)
 {
-    coord_def point = find_gateway_location(caster);
+    coord_def point = find_gateway_location(caster, target);
     bool success = point != coord_def(0, 0);
 
     bool is_player = caster->is_player();

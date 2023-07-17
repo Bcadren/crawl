@@ -1598,6 +1598,7 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_smite>(&you, range, 0, 2);
     case SPELL_BLINDING_SPRAY:
         return make_unique<targeter_spray>(&you, range, ZAP_BLINDING_SPRAY);
+    case SPELL_MALIGN_GATEWAY:
     case SPELL_GLACIATE:
         return make_unique<targeter_cone>(&you, range);
     case SPELL_CLOUD_CONE:
@@ -1700,7 +1701,6 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_maybe_radius>(&you, LOS_SOLID_SEE, 3);
     // TODO: these two actually have pretty wtf positioning that uses compass
     // directions, so this targeter is not entirely accurate.
-    case SPELL_MALIGN_GATEWAY:
     case SPELL_SUMMON_FOREST:
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, LOS_RADIUS, 0, 2);
     case SPELL_TWISTED_RESURRECTION:
@@ -2463,7 +2463,7 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
         return cast_summon_jungle(powc, god, fail);
 
     case SPELL_MALIGN_GATEWAY:
-        return cast_malign_gateway(&you, powc, god, fail);
+        return cast_malign_gateway(&you, powc, god, target, fail);
 
     case SPELL_SUMMON_FOREST:
         return cast_summon_forest(&you, powc, beam.target, god, fail);
