@@ -718,6 +718,89 @@ namespace quiver
                 return { };
         }
     };
+
+    struct rock_action : public action
+    {
+        rock_action() : action() { }
+
+        int get_item() const override
+        {
+            return -1;
+        }
+
+        bool is_valid() const override
+        {
+            return you.species != SP_FELID && you.species != SP_FAIRY;
+        }
+
+        formatted_string quiver_description(bool short_desc) const override
+        {
+            // TODO: generalize this code
+            if (!is_valid())
+                return action::quiver_description(short_desc);
+
+            formatted_string qdesc;
+
+            qdesc.textcolour(Options.status_caption_colour);
+            qdesc.cprintf("%s: ", quiver_verb().c_str());
+
+            qdesc.textcolour(quiver_color());
+            qdesc += "Junk";
+
+            return qdesc;
+        }
+
+        virtual bool is_enabled() const override
+        {
+            if (!is_valid())
+                return false;
+            return true;
+        }
+
+        bool uses_mp() const override
+        {
+            return is_pproj_active();
+        }
+
+        bool affected_by_pproj() const override
+        {
+            return true;
+        }
+
+        vector<shared_ptr<action>> get_fire_order(bool allow_disabled = true, bool = false) const override
+        {
+            if (is_valid() && (allow_disabled || is_enabled()))
+                return { make_shared<rock_action>() };
+            else
+                return {};
+        }
+
+        bool is_targeted() const override
+        {
+            return !you.confused();
+        }
+
+        bool allow_autofight() const override
+        {
+            return false;
+        }
+
+        void trigger(dist &t) override
+        {
+            set_target(t);
+            if (!is_valid())
+                return;
+            if (!is_enabled())
+                return;
+            if (autofight_check())
+                return;
+
+            // TODO: refactor throw_it into here?
+            throw_it(*this);
+        }
+
+        string quiver_verb() const override { return "Throw"; }
+    };
     
     struct item_action : public action
     {
@@ -2691,7 +2774,9 @@ namespace quiver
         // TODO: icons in tiles, dividers or subtitles for each category?
         ActionSelectMenu menu(cur_quiver, allow_empty);
         vector<shared_ptr<action>> actions;
-        auto tmp = ammo_action(-1).get_fire_order(true, true);
+        auto tmp = rock_action().get_fire_order(true, true);
+        actions.insert(actions.end(), tmp.begin(), tmp.end());
+        tmp = ammo_action(-1).get_fire_order(true, true);
         actions.insert(actions.end(), tmp.begin(), tmp.end());
         tmp = ranged_action().get_fire_order(true, true);
         actions.insert(actions.end(), tmp.begin(), tmp.end());
