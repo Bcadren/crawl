@@ -6289,6 +6289,7 @@ player::player()
 
     seen_weapon.init(0);
     seen_armour.init(0);
+    seen_staff.init(0);
     seen_misc.reset();
 
     octopus_king_rings = 0x00;

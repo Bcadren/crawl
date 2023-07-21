@@ -141,11 +141,11 @@ enum armour_property_type
     PARM_EVASION
 };
 
-const int SP_FORBID_EGO   = -1;
-const int SP_FORBID_BRAND = -1;
+const int SP_FORBID_EGO    = -1;
+const int SP_FORBID_BRAND  = -1;
 const int SP_UNKNOWN_BRAND = 31; // seen_weapon is a 32-bit bitfield
-const int SP_UNKNOWN_EGO = 63; // seen_armour is a 64-bit bitfield
-// BCADDO: Seen bitfield for staff facets?
+const int SP_UNKNOWN_EGO   = 63; // seen_armour is a 64-bit bitfield
+const int SP_UNKNOWN_FACET = 15; // seen_staff is a 16-bit bitfield
 
 enum facet_type // item_def.special
 {

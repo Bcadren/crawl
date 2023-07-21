@@ -394,13 +394,6 @@ static armour_type _useless_armour_type()
 
 static armour_type _pick_unseen_armour()
 {
-    // Consider shields uninteresting always, since unlike with other slots
-    // players might well prefer an empty slot to wearing one. We don't
-    // want to try to guess at this by looking at their weapon's handedness
-    // because this would encourage switching weapons or putting on a
-    // shield right before reading acquirement in some cases. --elliptic
-    // This affects only the "unfilled slot" special-case, not regular
-    // acquirement which can always produce (wearable) shields.
     static const equipment_type armour_slots[] =
         {  EQ_CLOAK, EQ_HELMET, EQ_GLOVES, EQ_BOOTS, EQ_BARDING  };
 
@@ -1062,7 +1055,7 @@ static bool _is_armour_plain(const item_def &item)
 /**
  * Has the player already encountered an item with this brand?
  *
- * Only supports weapons & armour.
+ * Only supports weapons, armour & staves
  *
  * @param item      The item in question.
  * @param           Whether the player has encountered another weapon or
@@ -1078,6 +1071,9 @@ static bool _brand_already_seen(const item_def &item)
         case OBJ_ARMOURS:
             return you.seen_armour[item.sub_type]
                    & (1<<get_armour_ego_type(item));
+        case OBJ_STAVES:
+            return you.seen_staff[item.sub_type]
+                   & (1<<get_staff_facet(item));
         default:
             die("Unsupported item type!");
     }
@@ -1150,26 +1146,27 @@ static void _adjust_brand(item_def &item, bool divine, int agent)
     {
         skill_type best_spell_skill = best_skill(SK_FIRST_MAGIC_SCHOOL,
             SK_LAST_MAGIC);
+
         if (best_spell_skill == SK_CHARMS && !one_chance_in(3))
             item.brand = SPSTF_SHIELD;
         else if (best_spell_skill == SK_HEXES && !one_chance_in(3))
             item.brand = SPSTF_FLAY;
         else if (best_spell_skill == SK_TRANSLOCATIONS && !one_chance_in(3))
             item.brand = SPSTF_WARP;
-        else
+
+        if (_brand_already_seen(item))
             reroll_brand(item, ITEM_LEVEL);
-        if (!is_staff_brand_ok(item.sub_type, item.brand, true))
+
+        while (!is_staff_brand_ok(item.sub_type, item.brand, true))
         {
             switch (random2(3))
             {
             case 0:  item.sub_type = STAFF_FIRE;   break;
             case 1:  item.sub_type = STAFF_COLD;   break;
             case 2:  item.sub_type = STAFF_AIR;    break;
-            case 3:  item.sub_type = STAFF_EARTH;  break;
-            default: item.sub_type = STAFF_POISON; break;
+            default: item.sub_type = STAFF_EARTH;  break;
             }
         }
-        return;
     }
 
     // Try to not generate brands that were already seen, although unlike

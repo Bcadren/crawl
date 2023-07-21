@@ -763,6 +763,7 @@ void dgn_flush_map_memory()
     // potentially relevant for item placement in e.g. troves:
     you.seen_weapon.init(0);
     you.seen_armour.init(0);
+    you.seen_staff.init(0);
     you.seen_misc.reset();
 }
 
