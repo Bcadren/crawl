@@ -2249,9 +2249,7 @@ bool item_is_evokable(const item_def &item, bool reach,
 
     if (no_evocables
         && item.base_type != OBJ_WEAPONS // reaching is ok.
-        && !(item.base_type == OBJ_MISCELLANY
-             && (item.sub_type == MISC_ZIGGURAT
-                 || is_deck(item)))) // decks and zigfigs are OK.
+        && !(item.is_type( OBJ_MISCELLANY, MISC_ZIGGURAT ))) // decks and zigfigs are OK.
     {
         // the rest are forbidden under sac evocables.
         if (msg)
@@ -2259,10 +2257,7 @@ bool item_is_evokable(const item_def &item, bool reach,
         return false;
     }
 
-    const bool wielded = !equip || you.equip[EQ_WEAPON0] == item.link
-                                   && !item_is_melded(item) ||
-                                   you.equip[EQ_WEAPON1] == item.link
-                                   && !item_is_melded(item);
+    const bool wielded = !equip || _is_wielded(item);
 
     // TODO: check other summoning constraints here?
     if (_item_ally_only(item) && you.has_mutation(MUT_NO_LOVE))
@@ -2283,8 +2278,7 @@ bool item_is_evokable(const item_def &item, bool reach,
             return false;
 
         // XX code duplication with evoke_check
-        if (weapon_reach(item) > REACH_NONE && item_type_known(item)
-                || you.weapon(0) && is_range_weapon(*you.weapon()))
+        if (weapon_reach(item) > REACH_NONE)
         {
             if (!wielded)
             {

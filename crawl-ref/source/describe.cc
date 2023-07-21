@@ -3402,6 +3402,7 @@ static vector<command_type> _allowed_actions(const item_def& item)
     default:
         ;
     }
+
     if (clua.callbooleanfn(false, "ch_item_wieldable", "i", &item))
         actions.push_back(CMD_WIELD_WEAPON);
 
