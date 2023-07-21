@@ -1638,7 +1638,7 @@ bool beogh_can_gift_items_to(const monster* mons, bool quiet)
         return false;
     }
 
-    if (!is_orcish_follower(*mons) || mons_genus(mons->type) != MONS_ORC)
+    if (!is_orcish_follower(*mons) || monster_class_is_orcish(mons->type))
     {
         if (!quiet)
             mpr("That's not an orcish ally!");
@@ -4168,7 +4168,7 @@ void spare_beogh_convert()
             continue;
         if (mon->attitude != ATT_HOSTILE)
             continue;
-        if (mons_genus(mon->type) != MONS_ORC)
+        if (monster_class_is_orcish(mon->type))
             continue;
         witnesses.insert(mon->mid);
 
@@ -4181,7 +4181,7 @@ void spare_beogh_convert()
                 const monster *orc = monster_at(*pi);
                 if (!orc || !cell_see_cell(*ri, *pi, LOS_DEFAULT))
                     continue;
-                if (mons_genus(orc->type) != MONS_ORC)
+                if (monster_class_is_orcish(orc->type))
                     continue;
                 if (mon->attitude != ATT_HOSTILE)
                     continue;

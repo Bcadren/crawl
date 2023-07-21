@@ -1906,6 +1906,23 @@ static string _weapon_brand_desc(const item_def &item)
                 " protects you against hostile enchantments (MR+++).";
         }
         break;
+    case SPWPN_ORC_SLAYING:
+        description += "It bears an enchantment created by Beogh's acolytes to"
+            " punish non-believers. Due to unfortunate choice of words in the"
+            " runes, works on virtually all orcs.";
+        
+        if (species_is_orcish(you.species))
+        {
+            description += "\n\nThe runes read: May I strike down all those who "
+                "doubt my wielder represents the true Messiah.";
+        }
+
+        if (subsume)
+        {
+            description += "\n\nThe orcish runes convey no special benefit while"
+                " subsumed.";
+        }
+        break;
     case SPWPN_NORMAL:
         description += "It has no special brand (it is not molten, "
             "freezing, etc), but is still enchanted in some way - "
@@ -2142,14 +2159,34 @@ static string _describe_weapon(const item_def &item, bool verbose)
 
         description += _handedness_string(item);
 
-        if (is_holy_item(item) && you.undead_or_demonic() && crawl_state.need_save)
-            description += "\nIt is holy and will not allow you to wield it.";
-        else if (!you.could_wield(item, true) && crawl_state.need_save)
+        if (crawl_state.need_save)
         {
-            if (you.body_size(PSIZE_TORSO, true) <= SIZE_MEDIUM)
-                description += "\nIt is too large for you to wield.";
-            else
-                description += "\nIt is too small for you to wield.";
+            if (is_holy_item(item) && you.undead_or_demonic())
+                description += "\nIt is holy and will not allow you to wield it.";
+            else if (species_is_orcish(you.species) && !you_worship(GOD_BEOGH) 
+                && (get_weapon_brand(item) == SPWPN_ORC_SLAYING))
+            {
+                description += "\nOrcs who do not follow Beogh cannot wield it.";
+            }
+            else if (you.char_class == JOB_DEMONSPAWN && (get_weapon_brand(item) == SPWPN_SILVER)
+                && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
+            {
+                description += "\nThe silver will sear your flesh if you try to wield it.";
+                if (you_can_wear(EQ_GLOVES) == MB_TRUE)
+                {
+                    description += "If you were wearing Gloves of Wielding, they would"
+                        " protect from this effect.";
+                }
+            }
+            else if (!you.could_wield(item, true))
+            {
+                if (you.get_mutation_level(MUT_MISSING_HAND) && you.hands_reqd(item) == HANDS_TWO)
+                    description += "\nYour missing hand prevents you from wielding it.";
+                else if (you.body_size(PSIZE_TORSO, true) <= SIZE_MEDIUM)
+                    description += "\nIt is too large for you to wield.";
+                else
+                    description += "\nIt is too small for you to wield.";
+            }
         }
     }
 

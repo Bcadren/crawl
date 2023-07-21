@@ -158,7 +158,7 @@ static bool _fill_out_corpse(const monster& mons, item_def& corpse)
     }
 
     // 0 mid indicates this is a dummy monster, such as for kiku corpse drop
-    if (mons_genus(mons.type) == MONS_ORC && mons.mid != 0)
+    if (monster_class_is_orcish(mons.type) && mons.mid != 0)
     {
         auto &saved_mon = corpse.props[ORC_CORPSE_KEY].get_monster();
         saved_mon = mons;
@@ -853,7 +853,7 @@ static bool _beogh_maybe_convert_orc(monster &mons, killer_type killer,
                                     int killer_index)
 {
     if (!have_passive(passive_t::convert_orcs)
-        || mons_genus(mons.type) != MONS_ORC
+        || !monster_class_is_orcish(mons.type)
         || mons.is_summoned() || mons.is_shapeshifter()
         || !you.see_cell(mons.pos()) || mons_is_god_gift(mons))
     {

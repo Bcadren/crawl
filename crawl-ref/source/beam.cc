@@ -4972,7 +4972,7 @@ void bolt::enchantment_affect_monster(monster* mon)
             set_attack_conducts(conducts, *mon, you.can_see(*mon));
 
             if (have_passive(passive_t::convert_orcs)
-                && mons_genus(mon->type) == MONS_ORC
+                && monster_class_is_orcish(mon->type)
                 && mon->asleep() && you.see_cell(mon->pos()))
             {
                 hit_woke_orc = true;

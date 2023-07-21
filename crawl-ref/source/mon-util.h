@@ -367,6 +367,7 @@ mon_energy_usage mons_energy(const monster& mon);
 int mons_class_zombie_base_speed(monster_type zombie_base_mc);
 int mons_base_speed(const monster& mon, bool known = false);
 
+bool monster_class_is_orcish(monster_type mc);
 bool monster_class_flies(monster_type mc);
 bool monster_inherently_flies(const monster &mons);
 

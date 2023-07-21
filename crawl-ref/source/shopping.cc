@@ -222,6 +222,7 @@ static int _weapon_brand_value(item_def item)
             return 15;
 
         case SPWPN_PROTECTION:
+        case SPWPN_ORC_SLAYING:
             return 12;
     }
 }

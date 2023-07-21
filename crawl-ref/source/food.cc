@@ -891,7 +891,7 @@ static bool _vampire_consume_corpse(item_def& corpse)
     lessen_hunger(food_value, false);
 
     // this will never matter :)
-    if (mons_genus(mons_type) == MONS_ORC)
+    if (monster_class_is_orcish(mons_type))
         did_god_conduct(DID_DESECRATE_ORCISH_REMAINS, 2);
     if (mons_class_holiness(mons_type) & MH_HOLY)
         did_god_conduct(DID_DESECRATE_HOLY_REMAINS, 2);

@@ -213,9 +213,7 @@ i-flaming BRAND_FLAMING BRAND_WEP_FIRST
 i-freezing BRAND_FREEZING
 i-holy_wrath BRAND_HOLY_WRATH
 i-electrocution BRAND_ELECTROCUTION
-# start TAG_MAJOR_VERSION == 34
-i-confusion BRAND_ORC_SLAYING
-# end TAG_MAJOR_VERSION
+i-orc_slaying BRAND_ORC_SLAYING
 i-dragon_slaying BRAND_DRAGON_SLAYING
 i-venom BRAND_VENOM
 i-protection BRAND_PROTECTION

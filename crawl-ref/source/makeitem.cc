@@ -455,6 +455,7 @@ bool is_weapon_brand_ok(int type, int brand, bool /*strict*/)
         break;
 
     // Melee-only brands.
+    case SPWPN_ORC_SLAYING:
     case SPWPN_VAMPIRISM:
     case SPWPN_PAIN:
     case SPWPN_DISTORTION:
@@ -478,7 +479,6 @@ bool is_weapon_brand_ok(int type, int brand, bool /*strict*/)
     // Removed brands.
     case SPWPN_RETURNING:
     case SPWPN_REACHING:
-    case SPWPN_ORC_SLAYING:
     case SPWPN_FLAME:
     case SPWPN_FROST:
     case SPWPN_EVASION:
@@ -2628,8 +2628,7 @@ void makeitem_tests()
         item.brand = coinflip() ? SPWPN_NORMAL
                                 : random2(NUM_REAL_SPECIAL_WEAPONS);
 #if TAG_MAJOR_VERSION == 34
-        if (item.special == SPWPN_ORC_SLAYING
-            || item.special == SPWPN_REACHING
+        if (item.special == SPWPN_REACHING
             || item.special == SPWPN_RETURNING
             || item.special == SPWPN_CONFUSE)
         {

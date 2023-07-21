@@ -1873,6 +1873,29 @@ bool attack::apply_damage_brand(const char *what)
         }
         break;
 
+    case SPWPN_ORC_SLAYING:
+    {
+        if (mount_defend // There will never be an orc mount.
+            || defender->is_monster() && !monster_class_is_orcish(defender->type)
+            || defender->is_player() && !species_is_orcish(you.species)
+            || is_orcish_follower(*defender->as_monster()))
+        {
+            break;
+        }
+
+        special_damage = roll_dice(2, 6);
+        if (special_damage && defender_visible)
+        {
+            special_damage_message =
+                make_stringf(
+                    "%s %s%s",
+                    defender_name(false).c_str(),
+                    defender->conj_verb("convulse").c_str(),
+                    attack_strength_punctuation(special_damage).c_str());
+        }
+        break;
+    }
+
     case SPWPN_ELECTROCUTION:
     {
         int original = roll_dice(2, 4);

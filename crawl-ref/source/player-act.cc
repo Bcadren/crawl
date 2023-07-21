@@ -603,6 +603,14 @@ bool player::could_wield(const item_def &item, bool ignore_brand,
         return false;
     }
 
+    if (!ignore_brand && species_is_orcish(you.species) && !you_worship(GOD_BEOGH)
+        && is_weapon(item) && (get_weapon_brand(item) == SPWPN_ORC_SLAYING))
+    {
+        if (!quiet)
+            mpr("You feel strangely suicidal. You cannot use this weapon without following Beogh.");
+        return false;
+    }
+
     if (!ignore_brand && (you.char_class == JOB_DEMONSPAWN) && is_weapon(item)
         && (get_weapon_brand(item) == SPWPN_SILVER) && !you.wearing_ego(EQ_GLOVES, SPARM_WIELDING))
     {

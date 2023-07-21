@@ -55,6 +55,12 @@ void give_specific_item(monster* mon, int thing, bool on_spawn)
             set_item_ego_type(mthing, SPWPN_DRAINING);
     }
 
+    if (monster_class_is_orcish(mon->type) && !(mon->god == GOD_BEOGH))
+    {
+        if (get_weapon_brand(mthing) == SPWPN_ORC_SLAYING)
+            set_item_ego_type(mthing, SPWPN_NORMAL);
+    }
+
     if (!is_artefact(mthing)
         && (mthing.base_type == OBJ_WEAPONS
          || mthing.base_type == OBJ_ARMOURS

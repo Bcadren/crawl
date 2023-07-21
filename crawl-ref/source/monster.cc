@@ -886,6 +886,9 @@ void monster::equip_weapon_message(item_def &item)
         case SPWPN_ACID:
             mprf("It begins to drip corrosive slime!");
             break;
+        case SPWPN_ORC_SLAYING:
+            mpr("The runes upon it glow red for a moment.");
+            break;
         default:
             break;
     }

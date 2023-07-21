@@ -506,7 +506,7 @@ bool mons_speaks(monster* mons)
     // Add Beogh to list of prefixes for orcs (hostile and friendly) if you
     // worship Beogh. (This assumes your being an orc, so might have odd
     // results in wizard mode.) Don't count charmed or summoned orcs.
-    if (you_worship(GOD_BEOGH) && mons_genus(mons->type) == MONS_ORC)
+    if (you_worship(GOD_BEOGH) && monster_class_is_orcish(mons->type))
     {
         if (!mons->has_ench(ENCH_CHARM) && !mons->is_summoned())
         {

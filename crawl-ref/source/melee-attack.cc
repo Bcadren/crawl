@@ -532,7 +532,7 @@ bool melee_attack::handle_phase_hit()
 
         // TODO: Remove this (placed here so I can get rid of player_attack)
         if (have_passive(passive_t::convert_orcs)
-            && mons_genus(defender->mons_species()) == MONS_ORC
+            && monster_class_is_orcish(defender->mons_species())
             && !defender->is_summoned()
             && !defender->as_monster()->is_shapeshifter()
             && you.see_cell(defender->pos()) && defender->asleep())

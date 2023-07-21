@@ -75,7 +75,7 @@ void beogh_follower_convert(monster* mons, bool orc_hit)
     // For followers of Beogh, decide whether orcs will join you.
     if (will_have_passive(passive_t::convert_orcs)
         && mons->foe == MHITYOU
-        && mons_genus(mons->type) == MONS_ORC
+        && monster_class_is_orcish(mons->type)
         && !mons->is_summoned()
         && !mons->is_shapeshifter()
         && !testbits(mons->flags, MF_ATT_CHANGE_ATTEMPT)
@@ -322,7 +322,7 @@ static void _print_converted_orc_speech(const string& key,
 void beogh_convert_orc(monster* orc, conv_t conv)
 {
     ASSERT(orc); // XXX: change to monster &orc
-    ASSERT(mons_genus(orc->type) == MONS_ORC);
+    ASSERT(monster_class_is_orcish(orc->type));
 
     switch (conv)
     {

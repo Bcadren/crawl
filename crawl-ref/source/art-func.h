@@ -1379,7 +1379,7 @@ static int _harvest_corpses()
             // forbid harvesting orcs under Beogh
             const monster_type monnum
                 = static_cast<monster_type>(item.orig_monnum);
-            if (you.religion == GOD_BEOGH && mons_genus(monnum) == MONS_ORC)
+            if (you.religion == GOD_BEOGH && monster_class_is_orcish(monnum))
                 continue;
 
             did_god_conduct(DID_EVIL, 1);

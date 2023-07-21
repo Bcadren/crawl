@@ -673,6 +673,13 @@ static void _equip_weapon_effect(item_def& item, bool showMsgs, bool unmeld, equ
                         mpr("You feel an empty sense of dread.");
                     break;
 
+                case SPWPN_ORC_SLAYING:
+                    if (species_is_orcish(you.species))
+                        mpr("You feel like smiting the unbelievers!");
+                    else
+                        mpr("You feel like slaying orcs.");
+                    break;
+
                 case SPWPN_PAIN:
                 {
                     const string your_arm = you.arm_name(false);
@@ -842,6 +849,16 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                         mpr("You feel your glee subside.");
                     else
                         mpr("You feel the dreadful sensation subside.");
+                }
+                break;
+
+            case SPWPN_ORC_SLAYING:
+                if (showMsgs)
+                {
+                    if (species_is_orcish(you.species))
+                        mpr("You feel your religious fervour subside.");
+                    else
+                        mpr("Your racist feelings against orcs subside.");
                 }
                 break;
 

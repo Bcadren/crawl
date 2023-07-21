@@ -110,6 +110,11 @@ static int _mons_exp_mod(monster_type mclass);
 
 /* ******************** BEGIN PUBLIC FUNCTIONS ******************** */
 
+bool monster_class_is_orcish(monster_type mc)
+{
+    return mons_genus(mc) == MONS_ORC;
+}
+
 bool monster_class_flies(monster_type mc)
 {
     return mons_class_flag(mc, M_FLIES);
@@ -4070,7 +4075,7 @@ bool give_monster_proper_name(monster& mon, bool orcs_only)
     // don't bless non-orcs, and normally don't bless plain orcs, either.
     if (orcs_only)
     {
-        if (mons_genus(mon.type) != MONS_ORC
+        if (!monster_class_is_orcish(mon.type)
             || mon.type == MONS_ORC && !one_chance_in(8))
         {
             return false;

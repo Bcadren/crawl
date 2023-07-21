@@ -2455,7 +2455,7 @@ bool twisted_resurrection(actor *caster, int pow, beh_type beha,
                     continue;
                 }
 
-                if (mons_genus(si->mon_type) == MONS_ORC)
+                if (monster_class_is_orcish(si->mon_type))
                     num_orcs++;
                 if (mons_class_holiness(si->mon_type) & MH_HOLY)
                     num_holy++;

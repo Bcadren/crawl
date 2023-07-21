@@ -1206,7 +1206,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->god = GOD_MAKHLEB;
     }
     // 1 out of 7 non-priestly orcs are unbelievers.
-    else if (mons_genus(mg.cls) == MONS_ORC)
+    else if (monster_class_is_orcish(mg.cls))
     {
         if (!one_chance_in(7))
             mon->god = GOD_BEOGH;

@@ -430,10 +430,7 @@ const char* missile_brand_name(const item_def &item, mbn_type t)
 
 static const char *weapon_brands_terse[] =
 {
-    "", "molten", "freeze", "holy", "elec",
-#if TAG_MAJOR_VERSION == 34
-    "obsolete",
-#endif
+    "", "molten", "freeze", "holy", "elec", "slay orc",
     "slay drac", "venom", "protect", "drain", "speed", "buggy-vorpal",
 #if TAG_MAJOR_VERSION == 34
     "obsolete", "obsolete",
