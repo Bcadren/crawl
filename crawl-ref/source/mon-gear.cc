@@ -278,7 +278,7 @@ struct mon_weapon_spec
     weapon_list types;
     /// range of possible weapon enchant plusses; if nonzero, sets force_item
     plus_range plusses;
-    /// weighted brand list; NUM_BRANDS -> no forced brand
+    /// weighted brand list; NUM_SPECIAL_WEAPONS -> no forced brand
     vector<pair<brand_type, int>> brands;
     /// extra 1/x chance to generate as ISPEC_GOOD_ITEM
     int good_chance;
@@ -424,9 +424,18 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { WPN_GLAIVE,           1 },
         { WPN_BROAD_AXE,        1 },
         { WPN_HALBERD,          1 }, };
+    static const vector<pair<brand_type, int>> ORC_BRANDS =
+    {   { SPWPN_ORC_SLAYING,    3 },
+        { SPWPN_ANTIMAGIC,      2 },
+        { SPWPN_MOLTEN,         2 },
+        { NUM_SPECIAL_WEAPONS, 13 }, } ;
     static const mon_weapon_spec ORC_KNIGHT_WSPEC =
         { ORC_KNIGHT_WEAPONS, {4, 1, 3} };
     static const mon_weapon_spec ORC_WARLORD_WSPEC =
+        { ORC_KNIGHT_WEAPONS, {4, 1, 3}, ORC_BRANDS, 3 };
+    static const mon_weapon_spec KNIGHT_WSPEC =
+        { ORC_KNIGHT_WEAPONS, {4, 1, 3}, ORC_BRANDS };
+    static const mon_weapon_spec WARLORD_WSPEC =
         { ORC_KNIGHT_WEAPONS, {4, 1, 3}, {}, 3 };
     static const weapon_list IRON_WEAPONS =
     {   { WPN_GREAT_MACE,       3 },
@@ -587,7 +596,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
             { { { WPN_SPEAR,            3 },
                 { WPN_HALBERD,          1 },
                 { WPN_GLAIVE,           1 },
-        }, { 1, -2, 1 } } },
+        }, { 1, -2, 1 }, ORC_BRANDS } },
         { MONS_CRAZY_YIUF,
             { { { WPN_QUARTERSTAFF, 1 } },
             { 1, 2, 4 },
@@ -707,15 +716,15 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
                 { WPN_BATTLEAXE,        8 },
                 { WPN_EXECUTIONERS_AXE, 2 },
         }, {}, {}, 1 } },
-        { MONS_TENGU_REAVER,            ORC_WARLORD_WSPEC },
-        { MONS_VAULT_WARDEN,            ORC_WARLORD_WSPEC },
+        { MONS_TENGU_REAVER,            WARLORD_WSPEC },
+        { MONS_VAULT_WARDEN,            WARLORD_WSPEC },
         { MONS_ORC_WARLORD,             ORC_WARLORD_WSPEC },
         { MONS_SAINT_ROKA,              ORC_WARLORD_WSPEC },
-        { MONS_DRACONIAN_KNIGHT,        ORC_WARLORD_WSPEC },
+        { MONS_DRACONIAN_KNIGHT,        WARLORD_WSPEC },
         { MONS_ORC_KNIGHT,              ORC_KNIGHT_WSPEC },
-        { MONS_TENGU_WARRIOR,           ORC_KNIGHT_WSPEC },
-        { MONS_VAULT_GUARD,             ORC_KNIGHT_WSPEC },
-        { MONS_VAMPIRE_KNIGHT,          ORC_KNIGHT_WSPEC },
+        { MONS_TENGU_WARRIOR,           KNIGHT_WSPEC },
+        { MONS_VAULT_GUARD,             KNIGHT_WSPEC },
+        { MONS_VAMPIRE_KNIGHT,          KNIGHT_WSPEC },
         { MONS_LOUISE,
             { { { WPN_MORNINGSTAR, 1 },
                 { WPN_EVENINGSTAR, 1 },

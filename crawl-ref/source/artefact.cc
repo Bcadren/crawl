@@ -592,7 +592,7 @@ static void _add_randart_weapon_brand(const item_def &item,
     }
     else
     {
-        // Total Weight: 303
+        // Total Weight: 306/316
         item_props[ARTP_BRAND] = random_choose_weighted(
             73, SPWPN_VORPAL,
             34, SPWPN_MOLTEN,
@@ -607,6 +607,7 @@ static void _add_randart_weapon_brand(const item_def &item,
             13, SPWPN_ANTIMAGIC,
             13, SPWPN_PROTECTION,
             13, SPWPN_SPECTRAL,
+            item_attack_skill(item) == SK_AXES_HAMMERS ? 13 : 3, SPWPN_ORC_SLAYING,
              3, SPWPN_DISTORTION,
              3, SPWPN_CHAOS);
     }

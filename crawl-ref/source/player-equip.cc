@@ -858,7 +858,7 @@ static void _unequip_weapon_effect(item_def& real_item, bool showMsgs,
                     if (species_is_orcish(you.species))
                         mpr("You feel your religious fervour subside.");
                     else
-                        mpr("Your racist feelings against orcs subside.");
+                        mpr("Your lust for orcish blood subsides.");
                 }
                 break;
 

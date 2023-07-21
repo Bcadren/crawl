@@ -822,7 +822,7 @@ static bool _beogh_retribution()
                 ASSERT(mon->weapon() != nullptr);
                 item_def& wpn(*mon->weapon());
 
-                set_item_ego_type(wpn, SPWPN_ELECTROCUTION);
+                set_item_ego_type(wpn, SPWPN_ORC_SLAYING);
 
                 wpn.plus  = random2(3);
                 wpn.sub_type = wpn_type;

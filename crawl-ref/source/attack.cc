@@ -1876,9 +1876,9 @@ bool attack::apply_damage_brand(const char *what)
     case SPWPN_ORC_SLAYING:
     {
         if (mount_defend // There will never be an orc mount.
-            || defender->is_monster() && !monster_class_is_orcish(defender->type)
-            || defender->is_player() && !species_is_orcish(you.species)
-            || is_orcish_follower(*defender->as_monster()))
+            || defender->is_monster() && (!monster_class_is_orcish(defender->type) 
+                || attacker->is_player() && is_orcish_follower(*defender->as_monster()))
+            || defender->is_player() && !species_is_orcish(you.species))
         {
             break;
         }
