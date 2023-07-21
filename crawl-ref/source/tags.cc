@@ -1781,6 +1781,10 @@ static void _tag_construct_you_items(writer &th)
     for (int j = 0; j < NUM_STAVES; ++j)
         marshallInt(th, you.seen_staff[j]);
 
+    marshallShort(th, NUM_SHIELDS);
+    for (int j = 0; j < NUM_SHIELDS; ++j)
+        marshallInt(th, you.seen_shield[j]);
+
     _marshallFixedBitVector<NUM_MISCELLANY>(th, you.seen_misc);
 
     for (int i = 0; i < NUM_OBJECT_CLASSES; i++)
@@ -4113,6 +4117,15 @@ static void _tag_read_you_items(reader &th)
         for (int j = count; j < NUM_STAVES; ++j)
             you.seen_staff[j] = 0;
         for (int j = NUM_STAVES; j < count; ++j)
+            unmarshallInt(th);
+
+        count = unmarshallShort(th);
+        ASSERT(count >= 0);
+        for (int j = 0; j < count && j < NUM_SHIELDS; ++j)
+            you.seen_shield[j] = unmarshallInt(th);
+        for (int j = count; j < NUM_SHIELDS; ++j)
+            you.seen_shield[j] = 0;
+        for (int j = NUM_SHIELDS; j < count; ++j)
             unmarshallInt(th);
 #if TAG_MAJOR_VERSION == 34
     }

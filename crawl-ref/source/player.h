@@ -329,6 +329,7 @@ public:
     FixedVector<uint32_t, NUM_WEAPONS> seen_weapon;
     FixedVector<uint64_t, NUM_ARMOURS> seen_armour;
     FixedVector<uint16_t, NUM_ARMOURS> seen_staff;
+    FixedVector<uint64_t, NUM_SHIELDS> seen_shield;
     FixedBitVector<NUM_MISCELLANY>     seen_misc;
     uint8_t                            octopus_king_rings;
 
@@ -1003,6 +1004,7 @@ protected:
 COMPILE_CHECK((int) SP_UNKNOWN_BRAND < 8*sizeof(you.seen_weapon[0]));
 COMPILE_CHECK((int) SP_UNKNOWN_EGO   < 8*sizeof(you.seen_armour[0]));
 COMPILE_CHECK((int) SP_UNKNOWN_FACET < 8*sizeof(you.seen_staff[0]));
+COMPILE_CHECK((int) SP_UNKNOWN_EGO   < 8*sizeof(you.seen_shield[0]));
 
 class monster;
 struct item_def;

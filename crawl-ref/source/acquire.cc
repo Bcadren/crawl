@@ -223,7 +223,7 @@ static armour_type _acquirement_armour_for_slot(equipment_type slot_type,
  *
  * @return A potentially wearable type of shield.
  */
-static int _acquirement_shield_subtype(bool /*divine*/, int& /*quantity*/, int /*agent*/)
+static int _acquirement_shield_subtype(bool /*divine*/, int& /*quantity*/, int agent)
 {
     const int scale = 256;
 
@@ -235,10 +235,18 @@ static int _acquirement_shield_subtype(bool /*divine*/, int& /*quantity*/, int /
 
     if (random2(you.skill(SK_SHIELDS, 10, false, false, false)) < 50 || one_chance_in(5))
     {
-        if (one_chance_in(2))
+        if (coinflip())
             return SHD_NUNCHAKU;
-        else if (one_chance_in(2))
+        else if (coinflip())
             return SHD_SAI;
+    }
+
+    // Trog only gives WEAPONS, so short circuit to prevent normal shields.
+    if (agent == GOD_TROG)
+    {
+        return random_choose_weighted(5, SHD_TARGE,
+                                      3, SHD_NUNCHAKU,
+                                      2, SHD_SAI);
     }
 
     vector<pair<shield_type, int>> weights = {
@@ -1055,7 +1063,7 @@ static bool _is_armour_plain(const item_def &item)
 /**
  * Has the player already encountered an item with this brand?
  *
- * Only supports weapons, armour & staves
+ * Only supports weapons, armour, shields & staves
  *
  * @param item      The item in question.
  * @param           Whether the player has encountered another weapon or
@@ -1074,6 +1082,16 @@ static bool _brand_already_seen(const item_def &item)
         case OBJ_STAVES:
             return you.seen_staff[item.sub_type]
                    & (1<<get_staff_facet(item));
+        case OBJ_SHIELDS:
+        {
+            if (is_hybrid(item.sub_type))
+            {
+                return you.seen_shield[item.sub_type]
+                    & (1 << get_weapon_brand(item));
+            }
+            return you.seen_shield[item.sub_type]
+                & (1 << get_armour_ego_type(item));
+        }
         default:
             die("Unsupported item type!");
     }
@@ -1100,17 +1118,20 @@ static bool _brand_already_seen(const item_def &item)
 static void _adjust_brand(item_def &item, bool divine, int agent)
 {
     if (item.base_type != OBJ_WEAPONS && item.base_type != OBJ_ARMOURS
-        && item.base_type != OBJ_STAVES)
+        && item.base_type != OBJ_STAVES && item.base_type != OBJ_SHIELDS)
     {
         return;
     }
 
     if (is_artefact(item))
     {
-        if (agent == GOD_TROG && get_weapon_brand(item) != SPWPN_VORPAL
+        if (agent == GOD_TROG && is_weapon(item) // Sanity
+                              && get_weapon_brand(item) != SPWPN_VORPAL
                               && get_weapon_brand(item) != SPWPN_MOLTEN
                               && get_weapon_brand(item) != SPWPN_ANTIMAGIC)
+        {
             set_item_ego_type(item, SPWPN_ANTIMAGIC);
+        }
         if (agent == GOD_XOM && item.base_type == OBJ_WEAPONS && one_chance_in(4))
             set_item_ego_type(item, SPWPN_CHAOS);
         // BCADNOTE: Other gods adjusting brand would be neat but other gods need to give items
@@ -1119,18 +1140,21 @@ static void _adjust_brand(item_def &item, bool divine, int agent)
     }
 
     // Trog has a restricted brand table.
-    if (agent == GOD_TROG && item.base_type == OBJ_WEAPONS)
+    if (agent == GOD_TROG && is_weapon(item))
     {
         // 75% chance of a brand
         item.brand = random_choose(SPWPN_NORMAL, SPWPN_VORPAL,
                                    SPWPN_MOLTEN, SPWPN_ANTIMAGIC);
-        if (weapon_has_flag(item.sub_type, WPNF_WOODEN) && item.brand == SPWPN_MOLTEN)
+        if (item.base_type == OBJ_WEAPONS && weapon_has_flag(item.sub_type, WPNF_WOODEN)
+            && item.brand == SPWPN_MOLTEN)
+        {
             item.brand = SPWPN_ANTIMAGIC;
+        }
         return;
     }
 
     // Not from a god, so we should prefer better brands.
-    if (!divine && item.base_type == OBJ_WEAPONS)
+    if (!divine && is_weapon(item) && item.base_type != OBJ_STAVES)
     {
         while (_weapon_brand_quality(get_weapon_brand(item),
                                      is_range_weapon(item)) < random2(6))

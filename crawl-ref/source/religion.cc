@@ -1401,7 +1401,12 @@ static bool _give_equipment_gift(bool forced)
     if (you_worship(GOD_VEHUMET))
         gift_type = OBJ_STAVES;
     else if (you_worship(GOD_TROG))
-        gift_type = OBJ_WEAPONS;
+    {
+        if (one_chance_in(3))
+            gift_type = OBJ_SHIELDS;
+        else
+            gift_type = OBJ_WEAPONS;
+    }
     else if (you_worship(GOD_OKAWARU))
     {
         if (one_chance_in(4))
@@ -1426,7 +1431,7 @@ static bool _give_equipment_gift(bool forced)
 
     if (success)
     {
-        if (gift_type == OBJ_WEAPONS)
+        if (gift_type == OBJ_WEAPONS || you_worship(GOD_TROG))
             simple_god_message(" grants you a weapon!");
         else if (gift_type == OBJ_SHIELDS)
             simple_god_message(" grants you a shield!");
