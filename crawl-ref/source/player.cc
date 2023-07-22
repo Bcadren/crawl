@@ -8446,7 +8446,7 @@ reach_type player::reach_range() const
 {
     reach_type retval = REACH_NONE;
 
-    item_def *wpn = weapon();
+    item_def *wpn = weapon(0);
     if (wpn)
         retval = weapon_reach(*wpn);
     

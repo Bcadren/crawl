@@ -2762,8 +2762,8 @@ bool melee_attack::apply_staff_damage()
         }
         else
         {
-            // BCADNOTE: Boost this for spellcasters?
-            flay_power = div_rand_round(6 + attacker->get_hit_dice(), 2);
+            flay_power = attacker->as_monster()->spell_hd(mon_spell_slot(SPELL_MASS_CONFUSION, 1, MON_SPELL_WIZARD));
+            flay_power = div_rand_round(6 + flay_power, 2);
             flay_dur = div_rand_round(flay_power, 2);
         }
         flay_power = flay_power/2 + random2(flay_power);

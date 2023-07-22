@@ -4365,7 +4365,7 @@ int monster::res_acid(bool /*mount*/) const
  *                      know about.
  * @return              The monster's magic resistance value.
  */
-// BCADNOTE: calc_unid is still neede because of stochaistics.
+// BCADNOTE: calc_unid is still needed because of stochaistics.
 int monster::res_magic(bool calc_unid) const
 {
     if (mons_immune_magic(*this))
