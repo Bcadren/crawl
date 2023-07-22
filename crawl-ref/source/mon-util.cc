@@ -4718,6 +4718,7 @@ bool mons_has_ranged_spell(const monster& mon, bool attack_only,
 // Note that this only current checks for inherent obvious immunity (ie: sleep
 // immunity from being undead) and not immunity that might be granted by gear
 // (such as clarity or stasis)
+// BCADNOTE: I fixed this function's logic, but nothing calls it.
 bool mons_has_incapacitating_spell(const monster& mon, const actor& foe)
 {
     for (const mon_spell_slot &slot : mon.spells)
@@ -4739,6 +4740,17 @@ bool mons_has_incapacitating_spell(const monster& mon, const actor& foe)
         case SPELL_PETRIFY:
             return true;
 
+        case SPELL_THROW_NET:
+            if (foe.body_size(PSIZE_BODY) < SIZE_GIANT && !foe.is_insubstantial())
+                return true;
+            break;
+
+        case SPELL_THROW_BLOWGUN:
+        case SPELL_THROW_CURARE:
+            if (!(foe.holiness() & (MH_CONSTRUCT | MH_UNDEAD | MH_ELEMENTAL)))
+                return true;
+            break;
+
         default:
             break;
         }
@@ -4747,23 +4759,19 @@ bool mons_has_incapacitating_spell(const monster& mon, const actor& foe)
     return false;
 }
 
-// BCADDO: Rework this. IDK what it's for, but it's always false now.
 static bool _mons_has_usable_ranged_weapon(const monster* mon)
 {
-    // Ugh.
+    for (auto spellslot : mon->spells)
+        if (testbits(get_spell_flags(spellslot.spell), spflag::ranged))
+            return true;
+
     const item_def *weapon  = mon->launcher();
     const item_def *primary = mon->mslot_item(MSLOT_WEAPON);
-    const item_def *missile = mon->missiles();
 
-    // We don't have a usable ranged weapon if a different cursed weapon
-    // is presently equipped.
-    if (weapon != primary && primary && primary->cursed())
+    if (!weapon || (weapon != primary && primary && primary->cursed()))
         return false;
 
-    if (!missile)
-        return false;
-
-    return is_launched(mon, weapon, *missile) != launch_retval::FUMBLED;
+    return true;
 }
 
 static bool _mons_has_attack_wand(const monster& mon)
@@ -4779,43 +4787,6 @@ bool mons_has_ranged_attack(const monster& mon)
            || _mons_has_usable_ranged_weapon(&mon)
            || mon.reach_range() != REACH_NONE
            || _mons_has_attack_wand(mon);
-}
-
-bool mons_has_incapacitating_ranged_attack(const monster& mon, const actor& foe)
-{
-    if (!_mons_has_usable_ranged_weapon(&mon))
-        return false;
-
-    const item_def *missile = mon.missiles();
-
-    if (missile && missile->sub_type == MI_THROWING_NET)
-        return true;
-    else if (missile && missile->sub_type == MI_NEEDLE)
-    {
-        switch (get_ammo_brand(*missile))
-        {
-        // Not actually incapacitating, but marked as such so that
-        // assassins will prefer using it while ammo remains
-        case SPMSL_CURARE:
-            if (foe.res_poison() <= 0)
-                return true;
-            break;
-
-        case SPMSL_SLEEP:
-            if (foe.can_sleep())
-                return true;
-            break;
-
-        case SPMSL_CONFUSION:
-        case SPMSL_PETRIFICATION:
-            return true;
-
-        default:
-            break;
-        }
-    }
-
-    return false;
 }
 
 bool mons_can_attack(const monster& mon)
