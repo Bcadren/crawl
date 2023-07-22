@@ -929,37 +929,6 @@ void do_cast_spell_cmd(bool force)
         flush_input_buffer(FLUSH_ON_FAILURE);
 }
 
-/* BCADDO: Turn this into a scarf brand effect.
-static void _handle_wucad_mu(int cost)
-{
-    if (!player_equip_unrand(UNRAND_WUCAD_MU))
-        return;
-
-    if (!x_chance_in_y(you.skill(SK_EVOCATIONS), 81))
-        return;
-
-    did_god_conduct(DID_WIZARDLY_ITEM, 10);
-
-    // The chance of backfiring goes down with evo skill and up with cost
-    if (one_chance_in(max(you.skill(SK_EVOCATIONS) - cost, 1)))
-    {
-        mpr(random_choose("Weird images run through your mind.",
-                          "Your head hurts.",
-                          "You feel a strange surge of energy.",
-                          "You feel uncomfortable."));
-        if (coinflip())
-            confuse_player(2 + random2(4));
-        else
-        lose_stat(STAT_INT, 1 + random2avg(5, 2));
-    }
-    else
-    {
-        mpr("Magical energy flows into your mind!");
-        inc_mp(cost, true);
-    }
-}
-*/
-
 /**
  * Cast a spell.
  *
