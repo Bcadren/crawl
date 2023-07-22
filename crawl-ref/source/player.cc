@@ -7645,6 +7645,8 @@ mon_holy_type player::holiness(bool temp, bool mt) const
         holi = MH_CONSTRUCT;
     else if (species == SP_LIGNIFITE && (!temp || you.form == transformation::none))
         holi = MH_PLANT;
+    else if (species == SP_FAIRY)
+        holi = MH_HOLY;
     else
         holi = MH_NATURAL;
 
@@ -7652,11 +7654,12 @@ mon_holy_type player::holiness(bool temp, bool mt) const
         holi |= MH_PLANT;
 
     // Petrification takes precedence over base holiness and lich form
-    if (temp && (form == transformation::statue
-                 || form == transformation::wisp
-                 || petrified()))
+    if (temp)
     {
-        holi = MH_CONSTRUCT;
+        if (form == transformation::statue || petrified())
+            holi = MH_CONSTRUCT;
+        if (form == transformation::wisp)
+            holi = MH_ELEMENTAL;
     }
 
     if (is_good_god(religion))
@@ -7673,7 +7676,10 @@ mon_holy_type player::holiness(bool temp, bool mt) const
         }
     }
 
-    if (is_evil_god(religion) || char_class == JOB_DEMONSPAWN)
+    if (char_class == JOB_DEMONSPAWN)
+        holi |= MH_DEMONIC;
+
+    if (is_evil_god(religion))
         holi |= MH_EVIL;
 
     // BCADDO: evil bit from evil spells (would affect holy damage and little else?)

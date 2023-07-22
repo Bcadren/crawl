@@ -3320,24 +3320,6 @@ bool god_hates_attacking_friend(god_type god, const monster& fr)
     }
 }
 
-static bool _transformed_player_can_join_god(god_type which_god)
-{
-    if (which_god == GOD_ZIN && you.form != transformation::none)
-        return false; // zin hates everything
-    // all these clauses are written with a ! in front of them, so that
-    // the stuff to the right of that is uniformly "gods that hate this form"
-    switch (you.form)
-    {
-    case transformation::lich:
-        return !(is_good_god(which_god) || which_god == GOD_FEDHAS);
-    case transformation::statue:
-    case transformation::wisp:
-        return !(which_god == GOD_YREDELEMNUL);
-    default:
-        return true;
-    }
-}
-
 int gozag_service_fee()
 {
     if (you.char_class == JOB_MONK && had_gods() == 0)
@@ -3369,54 +3351,120 @@ static bool _god_rejects_loveless(god_type god)
     }
 }
 
-// BCADDO: Refactor this to include the rejection messages clearly.
+// String used to replace "does not accept worship from those such 
+// as you" with something more flavourful and clearer as to why.
+string cannot_join_god_reason(god_type god)
+{
+    switch (god)
+    {
+    case GOD_ZIN:
+        if (you.form != transformation::none)
+        {
+            return " doesn't accept those who befoul their form with transmutation."
+                "\nReturn in your natural state to be considered.";
+        }
+        // fallthrough to all good gods.
+    case GOD_SHINING_ONE:
+    case GOD_ELYVILON:
+        if (you.undead_or_demonic())
+        {
+            if (you.holiness() & MH_DEMONIC)
+                return " doesn't accept worship from those of demonic lineage.";
+            else if (!(you.holiness(false) & MH_UNDEAD))
+            {
+                return " doesn't accept those who befoul their form with necromantic energy."
+                    "\nReturn in your natural state to be considered.";
+            }
+            return " doesn't accept worship from those kept alive through impure magic.";
+        }
+        break;
+    case GOD_YREDELEMNUL:
+        if (you.is_nonliving())
+        {
+            if (!you.is_nonliving(false))
+            {
+                return " finds your current form loathsome."
+                    "\nReturn in your natural state to be considered.";
+            }
+            return " is repulsed by those who stand outside the forces of life and undeath.";
+        }
+        if (you.species == SP_FAIRY)
+            return " finds creatures of holiness and light repugnant.";
+        break;
+    case GOD_DITHMENOS:
+        if (you.species == SP_FAIRY)
+            return " is appalled by the light you give.";
+        break;
+    case GOD_BEOGH:
+        if (!species_is_orcish(you.species))
+            return " only accepts those of noble Orcish lineage.";
+        break;
+    case GOD_BAHAMUT_TIAMAT:
+        if (!species_is_draconian(you.species))
+            return " only accepts those of noble Draconic heritage.";
+        break;
+    case GOD_TROG:
+        if (bool(you.holiness() & MH_UNDEAD) || you.has_innate_mutation(MUT_STASIS))
+        {
+            if (!you.has_innate_mutation(MUT_STASIS) && !(you.holiness(false) & MH_UNDEAD))
+            {
+                return " finds your current form loathsome."
+                    "\nReturn in your natural state to be considered.";
+            }
+
+            return " does not accept worship from those who cannot"
+                " power a blood rage within.";
+        }
+        //fallthrough
+    case GOD_OKAWARU:
+    case GOD_WU_JIAN:
+    case GOD_JIYVA:
+        if (you.species == SP_FAIRY)
+        {
+            return " is flattered, but their worship is simply incompatible "
+                "with your dimunitive form.";
+        }
+        break;
+    case GOD_FEDHAS:
+    {
+        if (you.holiness() & MH_UNDEAD)
+        {
+            string loc = " is outraged by your defiance against the natural order.";
+            if (!(you.holiness(false) & MH_UNDEAD))
+                loc +=  "\nReturn in your natural state to be considered.";
+
+            return loc;
+        }
+        break;
+    }
+    case GOD_GOZAG:
+        if (you.gold < gozag_service_fee())
+            return " does not accept service from beggars like you!";
+        break;
+#if TAG_MAJOR_VERSION == 34
+    case GOD_PAKELLAS:
+        if (you.get_mutation_level(MUT_NO_ARTIFICE))
+        {
+            return " does not accept worship from those who are "
+                               "unable to use magical devices!";
+        }
+#endif
+    default:
+        break;
+    }
+
+    if (you.get_mutation_level(MUT_NO_LOVE) && _god_rejects_loveless(god))
+        return " cannot accept worship from those who cannot be loved by others.";
+
+    return "";
+}
+
 bool player_can_join_god(god_type which_god)
 {
     if (you.species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD)
         return false;
 
-    if (is_good_god(which_god) && you.undead_or_demonic())
-        return false;
-
-    if (which_god == GOD_YREDELEMNUL && you.is_nonliving())
-        return false;
-
-    if (which_god == GOD_BEOGH && !species_is_orcish(you.species))
-        return false;
-
-    if (which_god == GOD_BAHAMUT_TIAMAT && !species_is_draconian(you.species))
-        return false;
-
-    // Fedhas hates undead, but will accept demonspawn. Trog won't accept those that can't rage.
-    if ((which_god == GOD_FEDHAS || which_god == GOD_TROG) && you.holiness() & MH_UNDEAD)
-        return false;
-
-    // Stasis prevents berserk.
-    if (which_god == GOD_TROG && you.has_innate_mutation(MUT_STASIS))
-        return false;
-
-    // Fairies natural halo cuts them out of Dith; lack of melee cuts them out of Trog, Oka and Wu.
-    // Being considered "Holy" cuts them out of Yred. Too much of new Jiyva doesn't work with fairy.
-    if (you.species == SP_FAIRY && (which_god == GOD_DITHMENOS || which_god == GOD_TROG 
-        || which_god == GOD_OKAWARU || which_god == GOD_WU_JIAN || which_god == GOD_YREDELEMNUL
-        || which_god == GOD_JIYVA))
-        return false;
-
-    if (which_god == GOD_GOZAG && you.gold < gozag_service_fee())
-        return false;
-
-    if (you.get_mutation_level(MUT_NO_LOVE) && _god_rejects_loveless(which_god))
-        return false;
-
-#if TAG_MAJOR_VERSION == 34
-    if (you.get_mutation_level(MUT_NO_ARTIFICE)
-        && which_god == GOD_PAKELLAS)
-    {
-        return false;
-    }
-#endif
-
-    return _transformed_player_can_join_god(which_god);
+    return cannot_join_god_reason(which_god).empty();
 }
 
 // Handle messaging and identification for items/equipment on conversion.
@@ -4038,11 +4086,16 @@ void god_pitch(god_type which_god)
     // Gods can be racist...
     if (!player_can_join_god(which_god))
     {
+        if (you.species == SP_DEMIGOD || you.char_class == JOB_DEMIGOD)
+        {
+            mpr("You're too godlike to stoop to worshipping other gods.");
+            return;
+        }
+
+        simple_god_message(cannot_join_god_reason(which_god).c_str(), which_god);
         you.turn_is_over = false;
         if (which_god == GOD_GOZAG)
         {
-            simple_god_message(" does not accept service from beggars like you!",
-                               which_god);
             if (you.gold == 0)
             {
                 mprf("The service fee for joining is currently %d gold; you have"
@@ -4053,37 +4106,6 @@ void god_pitch(god_type which_god)
                 mprf("The service fee for joining is currently %d gold; you only"
                      " have %d.", fee, you.gold);
             }
-        }
-        else if (you.get_mutation_level(MUT_NO_LOVE)
-                 && _god_rejects_loveless(which_god))
-        {
-            simple_god_message(" does not accept worship from the loveless!",
-                               which_god);
-        }
-#if TAG_MAJOR_VERSION == 34
-        else if (you.get_mutation_level(MUT_NO_ARTIFICE)
-                 && which_god == GOD_PAKELLAS)
-        {
-            simple_god_message(" does not accept worship from those who are "
-                               "unable to use magical devices!", which_god);
-        }
-#endif
-        else if (!_transformed_player_can_join_god(which_god))
-        {
-            simple_god_message(" says: How dare you approach in such a "
-                               "loathsome form!",
-                               which_god);
-        }
-        else if (which_god == GOD_TROG)
-        {
-            simple_god_message(" does not accept worship from those who cannot"
-                               " power a blood rage within.", GOD_TROG);
-        }
-        else
-        {
-            simple_god_message(" does not accept worship from those such as"
-                               " you!",
-                               which_god);
         }
         return;
     }
