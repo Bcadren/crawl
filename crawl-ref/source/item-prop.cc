@@ -1272,7 +1272,7 @@ void set_ident_flags(item_def &item, iflags_t flags)
         if (item.base_type == OBJ_STAVES)
             you.seen_staff[item.sub_type] |= 1 << item.brand;
         if (item.base_type == OBJ_SHIELDS)
-            you.seen_staff[item.sub_type] |= 1 << item.brand;
+            you.seen_shield[item.sub_type] |= 1 << item.brand;
         if (item.base_type == OBJ_MISCELLANY)
             you.seen_misc.set(item.sub_type);
     }
@@ -3200,15 +3200,17 @@ void seen_item(const item_def &item)
 {
     if (!is_artefact(item) && _is_affordable(item) && !you.chapter == CHAPTER_NONDUNGEON_START)
     {
+        unsigned long long int u = 1U;
+
         // Known brands will be set in set_item_flags().
         if (item.base_type == OBJ_WEAPONS)
             you.seen_weapon[item.sub_type] |= 1U << SP_UNKNOWN_BRAND;
         if (item.base_type == OBJ_ARMOURS)
-            you.seen_armour[item.sub_type] |= 1U << SP_UNKNOWN_EGO;
+            you.seen_armour[item.sub_type] |= u << SP_UNKNOWN_EGO;
         if (item.base_type == OBJ_STAVES)
             you.seen_staff[item.sub_type]  |= 1U << SP_UNKNOWN_FACET;
         if (item.base_type == OBJ_SHIELDS)
-            you.seen_staff[item.sub_type]  |= 1U << SP_UNKNOWN_EGO;
+            you.seen_shield[item.sub_type]  |= u << SP_UNKNOWN_EGO;
         if (item.base_type == OBJ_MISCELLANY
             && !is_deck(item))
         {
