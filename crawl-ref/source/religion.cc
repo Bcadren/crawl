@@ -923,7 +923,10 @@ static void _inc_penance(god_type god, int val)
                 else
                     mprf(MSGCH_GOD, "Tiamat will no longer haste you when suffering hard or fiery hits in combat.");
             }
-            // BCADDO: There's probably going to be more here.
+
+            if (you.mounted() && you.mount == mount_type::drake)
+                dismount();
+            make_god_gifts_disappear();
         }
         else if (god == GOD_OKAWARU)
         {
@@ -3043,6 +3046,12 @@ void excommunication(bool voluntary, god_type new_god)
             add_daction(DACT_ALLY_YRED_SLAVE);
             remove_all_companions(GOD_YREDELEMNUL);
         }
+        break;
+
+    case GOD_BAHAMUT_TIAMAT:
+        if (you.mounted() && you.mount == mount_type::drake)
+            dismount();
+        make_god_gifts_disappear();
         break;
 
     case GOD_MAKHLEB:
