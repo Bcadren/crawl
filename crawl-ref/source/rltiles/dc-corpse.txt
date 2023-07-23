@@ -155,6 +155,17 @@ iguana CORPSE_IGUANA
 basilisk CORPSE_BASILISK
 komodo_dragon CORPSE_KOMODO_DRAGON
 
+## Chameleons (';')
+chameleon CORPSE_CHAMELEON
+chameleon1
+chameleon2
+chameleon3
+chameleon4
+chameleon5
+chameleon6
+chameleon7
+chameleon8
+
 ## Mummies ('M')
 %sdir mon/undead
 %back blood_sand blood_sand1 blood_sand2 blood_sand3 blood_sand4

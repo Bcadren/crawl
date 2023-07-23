@@ -3871,6 +3871,11 @@ static const colour_t ugly_colour_values[] =
     RED, BROWN, GREEN, CYAN, MAGENTA, LIGHTGREY
 };
 
+static const colour_t chameleon_colour_values[] =
+{
+    GREEN, RED, WHITE, BLUE, LIGHTCYAN, BROWN, PURPLE, YELLOW, BLACK
+};
+
 colour_t ugly_thing_random_colour()
 {
     return RANDOM_ELEMENT(ugly_colour_values);

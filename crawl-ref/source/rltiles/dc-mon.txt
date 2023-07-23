@@ -132,6 +132,17 @@ iguana MONS_IGUANA
 basilisk MONS_BASILISK
 komodo_dragon MONS_KOMODO_DRAGON
 
+## Chameleons (';')
+chameleon MONS_CHAMELEON
+chameleon1
+chameleon2
+chameleon3
+chameleon4
+chameleon5
+chameleon6
+chameleon7
+chameleon8
+
 ## Slugs ('w')
 %sdir mon/unique
 gastronok MONS_GASTRONOK
