@@ -1767,8 +1767,11 @@ vector<string> desc_success_chance(const monster_info& mi, int pow, bool evoked,
     {
         // Polymorph has a special effect on ugly things and shapeshifters that
         // does not require passing an MR check.
-        if (mi.type == MONS_UGLY_THING || mi.type == MONS_VERY_UGLY_THING)
+        if (mi.type == MONS_UGLY_THING || mi.type == MONS_VERY_UGLY_THING
+            || mi.type == MONS_CHAMELEON)
+        {
             return vector<string>{"will change colour"};
+        }
         if (mi.is(MB_SHAPESHIFTER))
             return vector<string>{"will change shape"};
         if (mi.type == MONS_SLIME_CREATURE && mi.slime_size > 1)

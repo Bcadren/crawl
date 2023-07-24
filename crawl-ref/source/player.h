@@ -843,6 +843,7 @@ public:
     bool stasis() const override;
     bool is_fairy() const override;
     bool cloud_immune(bool calc_unid = true, bool items = true) const override;
+    bool frag_immune() const override { return false; }
     bool evokable_berserk(bool calc_unid = true) const override;
     int evokable_invis(bool calc_unid = true) const override;
     int spirit_shield(bool calc_unid = true, bool items = true) const override;

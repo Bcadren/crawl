@@ -391,7 +391,7 @@ monster_info::monster_info(monster_type p_type, monster_type p_base_type)
 
     props.clear();
     // Change this in sync with monster::cloud_immune()
-    if (type == MONS_CLOUD_MAGE || type == MONS_CHAOS_VORTEX)
+    if (type == MONS_CLOUD_MAGE || type == MONS_CHAOS_VORTEX || (type == MONS_CHAMELEON && colour() == LIGHTCYAN))
         props[CLOUD_IMMUNE_MB_KEY] = true;
 
     // At least enough to keep from crashing. TODO: allow specifying these?
@@ -877,6 +877,9 @@ string monster_info::_core_name() const
         case MONS_VERY_UGLY_THING:
             s = ugly_thing_colour_name(_colour) + " " + s;
             break;
+        case MONS_CHAMELEON:
+            s = chameleon_colour_name(_colour) + " " + s;
+            break;
 
         case MONS_DANCING_WEAPON:
         case MONS_SPECTRAL_WEAPON:
@@ -1245,7 +1248,7 @@ string monster_info::pluralised_name(bool fullname) const
         return pluralise_monster(mons_type_name(MONS_DEMONSPAWN, DESC_PLAIN));
     else if (type == MONS_UGLY_THING || type == MONS_VERY_UGLY_THING
              || type == MONS_DANCING_WEAPON || type == MONS_SPECTRAL_WEAPON
-             || type == MONS_MUTANT_BEAST || !fullname)
+             || type == MONS_MUTANT_BEAST || type == MONS_CHAMELEON || !fullname)
     {
         return pluralise_monster(mons_type_name(type, DESC_PLAIN));
     }

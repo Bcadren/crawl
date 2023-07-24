@@ -1599,6 +1599,9 @@ tileidx_t tileidx_monster_base(int type, int mon_id, bool in_water, int colour,
         return tileidx_mon_clamp(ugly_tile, colour_offset);
     }
 
+    case MONS_CHAMELEON:
+        return tileidx_mon_clamp(TILEP_MONS_CHAMELEON, chameleon_colour_offset(colour));
+
     case MONS_HYDRA:
         // Number of heads
         return tileidx_mon_clamp(TILEP_MONS_HYDRA, number - 1);
@@ -2724,6 +2727,14 @@ static tileidx_t _tileidx_corpse(const item_def &item)
     case MONS_VERY_UGLY_THING:
     {
         int colour_offset = ugly_thing_colour_offset(item.get_colour());
+        if (colour_offset == -1)
+            colour_offset = 0;
+        return base + colour_offset;
+    }
+
+    case MONS_CHAMELEON:
+    {
+        int colour_offset = chameleon_colour_offset(item.get_colour());
         if (colour_offset == -1)
             colour_offset = 0;
         return base + colour_offset;

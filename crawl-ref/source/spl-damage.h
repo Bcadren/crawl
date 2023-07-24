@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "beam-type.h"
 #include "enum.h"
 #include "mpr.h"
 #include "spl-cast.h"
@@ -54,6 +55,8 @@ void tornado_move(const coord_def &pos);
 void cloud_strike(actor *caster, actor *foe, int damage);
 spret cast_thunderbolt(actor *caster, int pow, coord_def aim,
                             bool fail);
+void additional_flavoured_damage(actor *caster, actor *foe, int preres, 
+                            beam_type damtype, string verb, string noun);
 
 actor* forest_near_enemy(const actor *mon);
 void forest_message(const coord_def pos, const string &msg,

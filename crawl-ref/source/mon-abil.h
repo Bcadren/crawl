@@ -16,6 +16,7 @@ bool mon_special_ability(monster* mons);
 
 void draconian_change_colour(monster* drac);
 
+void chameleon_polymorph(monster& chameleon);
 bool ugly_thing_mutate(monster& ugly, bool force = true);
 bool slime_creature_polymorph(monster& slime, poly_power_type power = PPT_SAME);
 void merge_ench_durations(monster& initial, monster& merge_to, bool usehd = false);

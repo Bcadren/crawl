@@ -307,8 +307,8 @@ enum monster_type                      // env.mons[].type
 #endif
     MONS_GIANT_BLOWFLY,
     MONS_GIRAFFE,
+    MONS_CHAMELEON,
 #if TAG_MAJOR_VERSION == 34
-    MONS_FEATURE_MIMIC,
     MONS_RAVENOUS_FEATURE_MIMIC,
     MONS_MONSTROUS_FEATURE_MIMIC, // unused
 #endif

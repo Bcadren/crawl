@@ -4747,6 +4747,20 @@ mons_spec mons_list::mons_by_name(string name) const
         }
     }
 
+    if (name.find(" chameleon") != string::npos)
+    {
+        const string::size_type wordend = name.find(' ');
+        const string first_word = name.substr(0, wordend);
+
+        const int colour = str_to_chameleon_colour(first_word);
+        if (colour)
+        {
+            spec = mons_by_name(name.substr(wordend + 1));
+            spec.colour = colour;
+            return spec;
+        }
+    }
+
     get_zombie_type(name, spec);
     if (spec.type != MONS_PROGRAM_BUG)
         return spec;

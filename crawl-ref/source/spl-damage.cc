@@ -1114,7 +1114,7 @@ spret cast_freeze(int pow, monster* mons, bool fail)
     return spret::success;
 }
 
-static void _cloud_strike_damage(actor * caster, actor * foe, int preres, beam_type damtype, string verb, string noun)
+void additional_flavoured_damage(actor * caster, actor * foe, int preres, beam_type damtype, string verb, string noun)
 {
     const bool nullbeam = (damtype == BEAM_MISSILE);
     const int damage = nullbeam ? preres : resist_adjust_damage(foe, damtype, preres);
@@ -1125,7 +1125,7 @@ static void _cloud_strike_damage(actor * caster, actor * foe, int preres, beam_t
 
         mprf("%s %s %s%s%s",
             foe->name(DESC_THE).c_str(),
-            foe->conj_verb(absorb ? "absorb" : "is").c_str(),
+            foe->conj_verb(absorb ? "absorb" : "are").c_str(),
             absorb ? "" : verb.c_str(),
             noun.c_str(),
             attack_strength_punctuation(damage).c_str());
@@ -1135,7 +1135,7 @@ static void _cloud_strike_damage(actor * caster, actor * foe, int preres, beam_t
         else
         {
             foe->hurt(caster, damage, damtype, KILLED_BY_BEAM,
-                "", "by the air");
+                "", noun);
             if (foe->alive() && !nullbeam)
                 foe->beam_effects(damtype, preres, damage);
         }
@@ -1195,21 +1195,21 @@ void cloud_strike(actor * caster, actor * foe, int damage)
         return;
     case CLOUD_FIRE:
     case CLOUD_FOREST_FIRE:
-        _cloud_strike_damage(caster, foe, damage, BEAM_FIRE, "charred by ", "the scorching flames");
+        additional_flavoured_damage(caster, foe, damage, BEAM_FIRE, "charred by ", "the scorching flames");
         break;
     case CLOUD_STEAM:
-        _cloud_strike_damage(caster, foe, damage, BEAM_FIRE, "burned by ", "the wild steam");
+        additional_flavoured_damage(caster, foe, damage, BEAM_FIRE, "burned by ", "the wild steam");
         break;
     case CLOUD_MEPHITIC:
     case CLOUD_POISON:
     case CLOUD_MIASMA:
-        _cloud_strike_damage(caster, foe, damage, BEAM_POISON, "engulfed in ", "the poisonous vapours");
+        additional_flavoured_damage(caster, foe, damage, BEAM_POISON, "engulfed in ", "the poisonous vapours");
         break;
     case CLOUD_COLD:
-        _cloud_strike_damage(caster, foe, damage, BEAM_COLD, "frozen by ", "the icy vapours");
+        additional_flavoured_damage(caster, foe, damage, BEAM_COLD, "frozen by ", "the icy vapours");
         break;
     case CLOUD_HOLY:
-        _cloud_strike_damage(caster, foe, damage, BEAM_HOLY, "rebuked by ", "the sacred flames");
+        additional_flavoured_damage(caster, foe, damage, BEAM_HOLY, "rebuked by ", "the sacred flames");
         break;
     case CLOUD_BLACK_SMOKE:
     case CLOUD_GREY_SMOKE:
@@ -1224,17 +1224,17 @@ void cloud_strike(actor * caster, actor * foe, int damage)
     case CLOUD_SALT:
     case CLOUD_FLUFFY:
     case CLOUD_GOLD_DUST:
-        _cloud_strike_damage(caster, foe, foe->apply_ac(damage, damage), BEAM_MISSILE, "struck forcefully by ", "the clouds");
+        additional_flavoured_damage(caster, foe, foe->apply_ac(damage, damage), BEAM_MISSILE, "struck forcefully by ", "the clouds");
         break;
     case CLOUD_MUTAGENIC:
-        _cloud_strike_damage(caster, foe, foe->apply_ac(damage, damage), BEAM_MISSILE, "engulfed in ", "the mutagenic fog");
+        additional_flavoured_damage(caster, foe, foe->apply_ac(damage, damage), BEAM_MISSILE, "engulfed in ", "the mutagenic fog");
         
         if (damage && foe->alive())
             foe->malmutate("mutagenic fog");
         break;
     case CLOUD_PETRIFY:
     case CLOUD_TORNADO:
-        _cloud_strike_damage(caster, foe, foe->apply_ac(damage * 2, damage * 2), BEAM_MISSILE, "battered violently by ", "the raging clouds");
+        additional_flavoured_damage(caster, foe, foe->apply_ac(damage * 2, damage * 2), BEAM_MISSILE, "battered violently by ", "the raging clouds");
         break;
 
     case CLOUD_BLOOD:
@@ -1243,7 +1243,7 @@ void cloud_strike(actor * caster, actor * foe, int damage)
         if (heals > foe->stat_hp())
             heals = foe->stat_hp();
 
-        _cloud_strike_damage(caster, foe, damage, BEAM_NEG, "consumed by ", "the vampiric fog");
+        additional_flavoured_damage(caster, foe, damage, BEAM_NEG, "consumed by ", "the vampiric fog");
 
         if (heals > 0)
         {
@@ -1267,16 +1267,16 @@ void cloud_strike(actor * caster, actor * foe, int damage)
     }
         break;
     case CLOUD_NEGATIVE_ENERGY:
-        _cloud_strike_damage(caster, foe, damage, BEAM_DRAIN, "drained by ", "the funereal energy");
+        additional_flavoured_damage(caster, foe, damage, BEAM_DRAIN, "drained by ", "the funereal energy");
         break;
     case CLOUD_SPECTRAL:
-        _cloud_strike_damage(caster, foe, damage, BEAM_DRAIN, "drained by ", "the ghastly fog");
+        additional_flavoured_damage(caster, foe, damage, BEAM_DRAIN, "drained by ", "the ghastly fog");
         break;
     case CLOUD_ACID:
-        _cloud_strike_damage(caster, foe, damage, BEAM_ACID, "engulfed in ", "the acidic vapours");
+        additional_flavoured_damage(caster, foe, damage, BEAM_ACID, "engulfed in ", "the acidic vapours");
         break;
     case CLOUD_STORM:
-        _cloud_strike_damage(caster, foe, damage, BEAM_ELECTRICITY, "struck by ", "lightning");
+        additional_flavoured_damage(caster, foe, damage, BEAM_ELECTRICITY, "struck by ", "lightning");
         noisy(15, pos);
         break;
     default:

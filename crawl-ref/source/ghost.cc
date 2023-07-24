@@ -453,7 +453,7 @@ void ghost_demon::init_player_ghost()
     damage = 4;
     brand = SPWPN_NORMAL;
 
-    if (you.weapon())
+    if (you.weapon(0))
     {
         // This includes ranged weapons, but they're treated as melee.
 
@@ -599,6 +599,81 @@ static attack_flavour _ugly_thing_colour_to_flavour(colour_t u_colour)
         u_att_flav = _very_ugly_thing_flavour_upgrade(u_att_flav);
 
     return u_att_flav;
+}
+
+/**
+* Init a ghost demon object corresponding to a chameleon monster.
+*
+* @param only_mutate   Whether just change the colour or creating new
+* @param force_colour  The chameleon's (new) colour. (Default COLOUR_UNDEF = random)
+*/
+void ghost_demon::init_chameleon(bool only_mutate, colour_t force_colour)
+{
+    const monsterentry* stats = get_monster_data(MONS_CHAMELEON);
+
+    speed = stats->speed;
+    ev = stats->ev;
+    ac = stats->AC;
+    mr = stats->resist_magic;
+    resists = stats->resists;
+    damage = stats->attack[0].damage;
+    move_energy = stats->energy_usage.move;
+
+    // If we're mutating a chameleon, leave its experience level, hit
+    // dice and maximum hit points as they are.
+    if (!only_mutate)
+    {
+        xl = stats->HD;
+        max_hp = hit_points(stats->avg_hp_10x);
+    }
+
+    att_type = AT_GORE;
+
+    colour = force_colour;
+
+    if (!force_colour)
+        colour = chameleon_random_colour();
+
+    att_flav = chameleon_colour_to_flavour(colour);
+
+    switch (colour)
+    {
+    case GREEN:
+        resists |= mrd(MR_RES_POISON, 3);
+        break;
+    case RED:
+        resists |= mrd(MR_RES_FIRE, 4);
+        break;
+    case WHITE:
+        resists |= mrd(MR_RES_COLD, 4);
+        break;
+    case BLUE:
+        resists |= mrd(MR_RES_ELEC, 4);
+        break;
+    default:
+    case LIGHTCYAN:
+        // cloud immune is hardcoded.
+        ac -= 2;
+        damage *= 2;
+        damage /= 3;
+        resists = MR_RES_WIND;
+        break;
+    case BROWN:
+        ac *= 3;
+        ac /= 2;
+        damage *= 3;
+        damage /= 2;
+        // frag immune is hardcoded.
+        break;
+    case MAGENTA:
+        mr *= 5;
+        mr /= 3;
+        break;
+    case YELLOW:
+        resists |= mrd(MR_RES_ACID, 4);
+    case DARKGREY:
+        resists |= mrd(MR_RES_NEG, 4);
+    }
 }
 
 /**

@@ -1602,6 +1602,18 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
         mon->set_ghost(ghost);
         mon->uglything_init();
     }
+    else if (mon->type == MONS_CHAMELEON)
+    {
+        ghost_demon ghost;
+        colour_t force_colour;
+        if (mg.colour < COLOUR_UNDEF)
+            force_colour = COLOUR_UNDEF;
+        else
+            force_colour = mg.colour;
+        ghost.init_chameleon(false, force_colour);
+        mon->set_ghost(ghost);
+        mon->uglything_init();
+    }
     else if (mons_class_is_animated_weapon(mon->type))
     {
         ghost_demon ghost;

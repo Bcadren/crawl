@@ -91,6 +91,13 @@ void draconian_change_colour(monster* drac)
     drac->spells.push_back(drac_breath(draco_or_demonspawn_subspecies(*drac)));
 }
 
+// For Chameleons, this is only called on polymorph.
+void chameleon_polymorph(monster& chameleon)
+{
+    simple_monster_message(chameleon, " basks in the mutagenic energy and changes!");
+    chameleon.chameleon_mutate(COLOUR_UNDEF);
+}
+
 bool ugly_thing_mutate(monster& ugly, bool force)
 {
     if (!(one_chance_in(9) || force))

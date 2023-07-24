@@ -249,6 +249,8 @@ public:
     void ghost_demon_init();
     void uglything_init(bool only_mutate = false);
     void uglything_mutate(colour_t force_colour = COLOUR_UNDEF);
+    void chameleon_init(bool only_mutate = false);
+    void chameleon_mutate(colour_t force_colour = COLOUR_UNDEF);
     void destroy_inventory();
     void load_ghost_spells();
     brand_type ghost_brand() const;
@@ -419,6 +421,7 @@ public:
     bool stasis() const override;
     bool is_fairy() const override;
     bool cloud_immune(bool calc_unid = true, bool items = true) const override;
+    bool frag_immune() const override;
 
     bool airborne() const override;
     bool can_cling_to_walls() const override;

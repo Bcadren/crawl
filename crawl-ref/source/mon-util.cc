@@ -3826,6 +3826,15 @@ void define_monster(monster& mons)
         break;
     }
 
+    case MONS_CHAMELEON:
+    {
+        ghost_demon ghost;
+        ghost.init_chameleon();
+        mons.set_ghost(ghost);
+        mons.chameleon_init();
+        break;
+    }
+
     // Load with dummy values so certain monster properties can be queried
     // before placement without crashing (proper setup is done later here)
     case MONS_DANCING_WEAPON:
@@ -3871,10 +3880,67 @@ static const colour_t ugly_colour_values[] =
     RED, BROWN, GREEN, CYAN, MAGENTA, LIGHTGREY
 };
 
+static const char *chameleon_colour_names[] =
+{
+    "green", "red", "white", "blue", "clear", "brown", "purple", "yellow", "black"
+};
+
 static const colour_t chameleon_colour_values[] =
 {
-    GREEN, RED, WHITE, BLUE, LIGHTCYAN, BROWN, PURPLE, YELLOW, BLACK
+    GREEN, RED, WHITE, BLUE, LIGHTCYAN, BROWN, MAGENTA, YELLOW, DARKGREY
 };
+
+attack_flavour chameleon_colour_to_flavour(colour_t colour)
+{
+    switch (colour)
+    {
+    case GREEN:
+        return AF_POISON;
+    case RED:
+        return AF_FIRE;
+    case WHITE:
+        return AF_COLD;
+    case BLUE:
+        return AF_ELEC;
+    default:
+    case LIGHTCYAN: 
+    case BROWN:
+        return AF_PLAIN;
+    case MAGENTA:
+        return AF_CONFUSE;
+    case YELLOW:
+        return AF_ACID;
+    case DARKGREY:
+        return AF_DRAIN_XP;
+    }
+}
+
+colour_t chameleon_random_colour(bool weighted)
+{
+    if (!weighted)
+        return RANDOM_ELEMENT(chameleon_colour_values);
+    
+    if (one_chance_in(7))
+        return coinflip() ? LIGHTCYAN : YELLOW;
+
+    return random_choose_weighted(1 + you.skill(SK_POISON_MAGIC) / 3,  GREEN,
+                                  1 + you.skill(SK_FIRE_MAGIC) / 3,      RED,
+                                  1 + you.skill(SK_ICE_MAGIC) / 3,     WHITE,
+                                  1 + you.skill(SK_AIR_MAGIC) / 3,      BLUE,
+                                  1 + you.skill(SK_EARTH_MAGIC) / 3,   BROWN,
+                                  1 + you.skill(SK_HEXES) / 3,       MAGENTA,
+                                  1 + you.skill(SK_NECROMANCY) / 3, DARKGREY);
+}
+
+string chameleon_colour_name(colour_t colour)
+{
+    int colour_offset = chameleon_colour_offset(colour);
+
+    if (colour_offset == -1)
+        return "buggy";
+
+    return chameleon_colour_names[colour_offset];
+}
 
 colour_t ugly_thing_random_colour()
 {
@@ -3888,6 +3954,26 @@ int str_to_ugly_thing_colour(const string &s)
         if (s == ugly_colour_names[i])
             return ugly_colour_values[i];
     return BLACK;
+}
+
+int str_to_chameleon_colour(const string &s)
+{
+    COMPILE_CHECK(ARRAYSZ(chameleon_colour_values) == ARRAYSZ(chameleon_colour_names));
+    for (int i = 0, size = ARRAYSZ(chameleon_colour_values); i < size; ++i)
+        if (s == chameleon_colour_names[i])
+            return chameleon_colour_values[i];
+    return BLACK;
+}
+
+int chameleon_colour_offset(colour_t colour)
+{
+    for (unsigned i = 0; i < ARRAYSZ(chameleon_colour_values); ++i)
+    {
+        if (colour == chameleon_colour_values[i])
+            return i;
+    }
+
+    return -1;
 }
 
 int ugly_thing_colour_offset(colour_t colour)
@@ -6925,9 +7011,12 @@ bool is_chaotic_type(monster_type type)
 {
     if (type == MONS_UGLY_THING
         || type == MONS_VERY_UGLY_THING
+        || type == MONS_CHAMELEON
         || type == MONS_ABOMINATION_SMALL
         || type == MONS_ABOMINATION_LARGE
         || type == MONS_WRETCHED_STAR
+        || type == MONS_CHAOS_BUTTERFLY
+        || type == MONS_CHAOS_ELEMENTAL
         || type == MONS_KILLER_KLOWN      // For their random attacks.
         || type == MONS_LIVARRA            // For her colour-changing.
         || type == MONS_BAI_SUZHEN

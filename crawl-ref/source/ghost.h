@@ -32,7 +32,7 @@ public:
     short best_skill_level;
     short xl;
 
-    short max_hp, ev, ac, damage, speed, move_energy;
+    short max_hp, ev, ac, mr, damage, speed, move_energy;
     bool see_invis, flies;
     brand_type brand;
     attack_type att_type;
@@ -52,6 +52,7 @@ public:
     void init_player_ghost();
     void init_ugly_thing(bool very_ugly, bool only_mutate = false,
                          colour_t force_colour = BLACK);
+    void init_chameleon(bool only_mutate = false, colour_t force_colour = BLACK);
     void init_dancing_weapon(const item_def& weapon, int power);
     void init_spectral_weapon(const item_def& weapon, int power);
 

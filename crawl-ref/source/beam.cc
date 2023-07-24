@@ -3308,6 +3308,14 @@ bool bolt::is_harmless(const monster* mon) const
     case BEAM_ELECTRICITY:
         return mon->res_elec() >= 3;
 
+    case BEAM_ICY_SHARDS:
+        if (mon->is_icy())
+            return true;
+        // fallthrough
+    case BEAM_FRAG:
+    case BEAM_SILVER_FRAG:
+        return mon->frag_immune();
+
     case BEAM_POISON:
         return mon->res_poison() >= 3;
 
@@ -3362,6 +3370,9 @@ bool bolt::harmless_to_player() const
     case BEAM_NEG:
     case BEAM_DRAIN:
         return player_prot_life(false) >= 3;
+
+    case BEAM_ICY_SHARDS:
+        return you.is_icy();
 
     case BEAM_POISON:
         return player_res_poison(false) >= 3
@@ -4225,6 +4236,43 @@ void impale_monster_with_barbs(monster* mon, actor* agent, string what)
         random_range(5, 7) * BASELINE_DELAY));
 }
 
+static void _do_chameleon_special_dmg(actor * attacker, actor * defender, int dmg)
+{
+    if (attacker->as_monster()->type != MONS_CHAMELEON)
+        return;
+
+    switch (attacker->as_monster()->colour)
+    {
+    case GREEN:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_POISON, "stung by ", "its barbed tongue");
+        break;
+    case RED:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_FIRE, "charred by ", "its scorching tongue");
+        break;
+    case WHITE:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_ICE, "chilled by ", "its frozen tongue");
+        break;
+    case BLUE:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_ELECTRICITY, "electrocuted by ", "its shocking tongue");
+        break;
+    default:
+    case LIGHTCYAN:
+        break;
+    case BROWN:
+        additional_flavoured_damage(attacker, defender, dmg * 2, BEAM_FRAG, "crushed by ", "its stony tongue");
+        break;
+    case MAGENTA:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_RANDOM, "stricken by ", "its magic-infused tongue");
+        break;
+    case YELLOW:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_ACID, "digested by ", "its acidic saliva");
+        break;
+    case DARKGREY:
+        additional_flavoured_damage(attacker, defender, dmg, BEAM_DRAIN, "drained by ", "its foul saliva");
+        break;
+    }
+}
+
 void bolt::affect_player()
 {
     hit_count[MID_PLAYER]++;
@@ -4314,8 +4362,8 @@ void bolt::affect_player()
         {
             if (hit_verb.empty())
                 hit_verb = engulfs ? "engulfs" : "hits";
-            mprf("The %s %s %s!", name.c_str(), hit_verb.c_str(),
-                you.hp > 0 ? "you" : "your lifeless body");
+            mprf("The %s %s you%s!", name.c_str(), hit_verb.c_str(),
+                you.hp > 0 ? "" : "r lifeless body");
         }
 
         affect_player_enchantment();
@@ -4385,15 +4433,15 @@ void bolt::affect_player()
 
     const bool harmless = (flavour == BEAM_MAGIC_CANDLE 
                         || flavour == BEAM_WAND_HEALING || flavour == BEAM_FOG);
-    const bool alive = ((you.hp - yu_final_dam) > 0);
-    const bool mt_alive = ((you.mount_hp - mt_final_dam) > 0);
+    const bool alive = (you.hp > yu_final_dam);
+    const bool mt_alive = (you.mount_hp > mt_final_dam);
 
     hit_something = true;
 
     if (hits_you && flavour != BEAM_VISUAL && !is_enchantment())
     {
         mprf("The %s %s you%s%s%s", name.c_str(), hit_verb.c_str(),
-                                !alive ? "" : "r lifeless body",
+                                 alive ? "" : "r lifeless body",
             (yu_final_dam || harmless) ? "" : " but does no damage",
                              harmless ? "." : attack_strength_punctuation(yu_final_dam).c_str());
     }
@@ -4402,7 +4450,7 @@ void bolt::affect_player()
     {
         mprf("The %s %s your %s%s%s%s", name.c_str(), hit_verb.c_str(),
                                               you.mount_name(true).c_str(),
-                             !mt_alive ? "" : "'s lifeless body",
+                              mt_alive ? "" : "'s lifeless body",
             (mt_final_dam || harmless) ? "" : " but does no damage",
                              harmless ? "." : attack_strength_punctuation(mt_final_dam).c_str());
     }
@@ -4432,7 +4480,7 @@ void bolt::affect_player()
 
     if (origin_spell == SPELL_TONGUE_LASH && you.alive())
     {
-        // BCADNOTE/BCADDO: Chameleon special damage here.
+        _do_chameleon_special_dmg(agent(), &you, yu_pre_res_dam);
 
         if (you.alive() && agent()->alive() && adjacent(you.pos(), agent()->pos()))
             fight_melee(agent(), &you);
@@ -5142,10 +5190,23 @@ void bolt::monster_post_hit(monster* mon, int dmg)
         if (item && item->base_type == OBJ_MISSILES)
             m_brand = get_ammo_brand(*item);
 
-        if (origin_spell == SPELL_FORCE_LASSO && mon->alive())
+        if ((origin_spell == SPELL_FORCE_LASSO
+            || origin_spell == SPELL_TONGUE_LASH) && mon->alive())
         {
-            actor &ma = *mon;
-            beckon(source, ma, *this, damage.size, *agent());
+            if (origin_spell == SPELL_TONGUE_LASH)
+                _do_chameleon_special_dmg(agent(), mon, dmg);
+
+            if (mon->alive())
+            {
+                actor &ma = *mon;
+                beckon(source, ma, *this, damage.size, *agent());
+            }
+
+            if (origin_spell == SPELL_TONGUE_LASH && mon->alive()
+                && agent()->alive() && adjacent(mon->pos(), agent()->pos()))
+            {
+                fight_melee(agent(), mon);
+            }
         }
 
         if (item && item->base_type == OBJ_MISSILES
@@ -6145,6 +6206,7 @@ mon_resist_type bolt::try_enchant_monster(monster* mon, int &res_margin)
         if (flavour == BEAM_POLYMORPH
             && (mon->type == MONS_UGLY_THING
                 || mon->type == MONS_VERY_UGLY_THING
+                || mon->type == MONS_CHAMELEON
                 || mon->is_shapeshifter()))
         {
             ;
@@ -7264,7 +7326,8 @@ bool bolt::nice_to(const monster_info& mi) const
     if (flavour == BEAM_POLYMORPH)
     {
         return mi.type == MONS_UGLY_THING
-               || mi.type == MONS_VERY_UGLY_THING;
+               || mi.type == MONS_VERY_UGLY_THING
+               || mi.type == MONS_CHAMELEON;
     }
 
     if (flavour == BEAM_HASTE

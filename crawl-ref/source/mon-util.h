@@ -513,8 +513,13 @@ bool monster_senior(const monster& first, const monster& second,
 string ugly_thing_colour_name(colour_t colour);
 colour_t ugly_thing_random_colour();
 int str_to_ugly_thing_colour(const string &s);
+int str_to_chameleon_colour(const string &s);
 colour_t random_monster_colour();
 int ugly_thing_colour_offset(colour_t colour);
+int chameleon_colour_offset(colour_t colour);
+string chameleon_colour_name(colour_t colour);
+colour_t chameleon_random_colour(bool weighted = false);
+attack_flavour chameleon_colour_to_flavour(colour_t colour);
 
 /**
  * @brief

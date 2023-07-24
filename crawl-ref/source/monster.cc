@@ -4377,6 +4377,13 @@ int monster::res_magic(bool calc_unid) const
                 get_hit_dice() * -type_mr * 4 / 3 :
                 mons_class_res_magic(type, base_monster);
 
+    if (mons_is_ghost_demon(type))
+    {
+        int mr = ghost->mr;
+        if (mr)
+            u = mr; // BCADDO: Use this more.
+    }
+
     // Hepliaklqana ancestors scale with xl.
     if (mons_is_hepliaklqana_ancestor(type))
         u = get_experience_level() * species_mr_modifier(you.species) * 2;
@@ -4994,6 +5001,21 @@ void monster::ghost_init(bool need_pos)
     bind_spell_flags(); // does this even do anything on ghosts?
 }
 
+void monster::chameleon_init(bool only_mutate)
+{
+    // If we're mutating a chameleon, leave its experience level, hit
+    // dice and maximum and current hit points as they are.
+    if (!only_mutate)
+    {
+        hit_dice = ghost->xl;
+        max_hit_points = ghost->max_hp;
+        hit_points = max_hit_points;
+    }
+
+    speed = ghost->speed;
+    colour = ghost->colour;
+}
+
 void monster::uglything_init(bool only_mutate)
 {
     // If we're mutating an ugly thing, leave its experience level, hit
@@ -5029,6 +5051,12 @@ void monster::uglything_mutate(colour_t force_colour)
 {
     ghost->init_ugly_thing(type == MONS_VERY_UGLY_THING, true, force_colour);
     uglything_init(true);
+}
+
+void monster::chameleon_mutate(colour_t force_colour)
+{
+    ghost->init_chameleon(true, force_colour);
+    chameleon_init(true);
 }
 
 // Randomise potential damage.
@@ -5712,6 +5740,12 @@ bool monster::malmutate(const string &/*reason*/)
         return true;
     }
 
+    if (type == MONS_CHAMELEON)
+    {
+        chameleon_polymorph(*this);
+        return true;
+    }
+
     simple_monster_message(*this, " twists and deforms.");
     add_ench(mon_enchant(ENCH_WRETCHED, 1));
     return true;
@@ -5747,6 +5781,12 @@ bool monster::polymorph(poly_power_type power)
     if (type == MONS_UGLY_THING || type == MONS_VERY_UGLY_THING)
     {
         ugly_thing_mutate(*this);
+        return true;
+    }
+
+    if (type == MONS_CHAMELEON)
+    {
+        chameleon_polymorph(*this);
         return true;
     }
 
@@ -7445,7 +7485,12 @@ bool monster::cloud_immune(bool calc_unid, bool items) const
     // Cloud Mage is also checked for in (so stay in sync with)
     // monster_info::monster_info(monster_type, monster_type).
     return type == MONS_CLOUD_MAGE || type == MONS_CHAOS_VORTEX  || type == MONS_CHAOS_BUTTERFLY
-        || flags & MF_CLOUD_IMMUNE || actor::cloud_immune(calc_unid, items);
+        || flags & MF_CLOUD_IMMUNE || type == MONS_CHAMELEON && colour == LIGHTCYAN || actor::cloud_immune(calc_unid, items);
+}
+
+bool monster::frag_immune() const
+{
+    return type == MONS_CHAMELEON && colour == BROWN;
 }
 
 bool monster::is_illusion() const
