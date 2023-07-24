@@ -128,6 +128,7 @@ noxious_bog NOXIOUS_BOG
 mass_abjuration MASS_ABJURATION
 call_canine_familiar CALL_CANINE_FAMILIAR
 call_imp CALL_IMP
+call_chameleon CALL_CHAMELEON
 call_lost_souls CALL_LOST_SOULS
 malign_gateway MALIGN_GATEWAY
 recall RECALL
