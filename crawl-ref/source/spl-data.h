@@ -1258,10 +1258,10 @@ static const struct spell_desc spelldata[] =
     SPELL_CALL_CANINE_FAMILIAR, "Call Canine Familiar", "",
     spschool::summoning,
     spflag::none,
-    3,
+    2,
     100,
     -1, -1,
-    3, 0,
+    2, 0,
     TILEG_CALL_CANINE_FAMILIAR,
 },
 
