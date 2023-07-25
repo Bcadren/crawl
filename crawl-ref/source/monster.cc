@@ -5014,6 +5014,17 @@ void monster::chameleon_init(bool only_mutate)
 
     speed = ghost->speed;
     colour = ghost->colour;
+
+    if (colour == LIGHTCYAN)
+    {
+        flags |= MF_INVIS;
+        add_ench(ENCH_INVIS);
+    }
+    else
+    {
+        flags &= ~(MF_INVIS);
+        del_ench(ENCH_INVIS);
+    }
 }
 
 void monster::uglything_init(bool only_mutate)
@@ -6663,7 +6674,7 @@ bool monster::can_drink_potion(potion_type ptype) const
     switch (ptype)
     {
         case POT_INVISIBILITY:
-            return !mons_class_flag(type, M_INVIS);
+            return !mons_class_flag(type, M_INVIS) && !(flags & MF_INVIS);
         case POT_CURING:
         case POT_HEAL_WOUNDS:
             return !(holiness() & (MH_ELEMENTAL | MH_PLANT | MH_CONSTRUCT));

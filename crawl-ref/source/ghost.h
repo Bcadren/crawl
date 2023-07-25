@@ -33,7 +33,7 @@ public:
     short xl;
 
     short max_hp, ev, ac, mr, damage, speed, move_energy;
-    bool see_invis, flies;
+    bool see_invis, flies; // BCADDO: Rework to extra flags.
     brand_type brand;
     attack_type att_type;
     attack_flavour att_flav;

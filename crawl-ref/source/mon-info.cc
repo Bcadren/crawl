@@ -1748,7 +1748,7 @@ bool monster_info::debuffable() const
     // to MBs.
 
     // can't debuff innately invisible monsters
-    if (is(MB_INVISIBLE) && !mons_class_flag(type, M_INVIS) 
+    if (is(MB_INVISIBLE) && !mons_class_flag(type, M_INVIS)
                          && !(draco_or_demonspawn_subspecies() == MONS_BLACK_DRACONIAN))
     { 
         return true;

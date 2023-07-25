@@ -247,9 +247,10 @@ enum monster_flag_type : uint64_t
     MF_TWO_WEAPONS        = BIT(21),
     /// Monster gets various archery boosts.
     MF_ARCHER             = BIT(22),
-
-                          //BIT(23),
+    // Permanently invisible (clone of M_INVIS).
+    MF_INVIS              = BIT(23),
                           //BIT(24),
+    // Immune to all clouds.
     MF_CLOUD_IMMUNE       = BIT(25),
 
     /// This monster cannot regenerate.

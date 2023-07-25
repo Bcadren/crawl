@@ -1301,7 +1301,7 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     if (mons_is_unique(mg.cls))
         you.unique_creatures.set(mg.cls);
 
-    if (mons_class_flag(mg.cls, M_INVIS) ||
+    if (mons_class_flag(mg.cls, M_INVIS) || (mg.extra_flags & MF_INVIS) ||
         (mons_is_draconian_job(mg.cls) && draco_or_demonspawn_subspecies(*mon) == MONS_BLACK_DRACONIAN))
     {
         mon->add_ench(ENCH_INVIS);

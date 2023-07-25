@@ -772,7 +772,7 @@ void monster::timeout_enchantments(int levels)
             break;
 
         case ENCH_INVIS:
-            if (!mons_class_flag(type, M_INVIS))
+            if (!mons_class_flag(type, M_INVIS) && !(flags & MF_INVIS))
                 lose_ench_levels(entry.second, levels);
             break;
 

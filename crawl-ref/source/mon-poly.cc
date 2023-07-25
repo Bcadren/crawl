@@ -383,7 +383,7 @@ void change_monster_type(monster* mons, monster_type targetc)
 
     mons->ench_countdown = old_ench_countdown;
 
-    if (mons_class_flag(mons->type, M_INVIS) ||
+    if (mons_class_flag(mons->type, M_INVIS) || (mons->flags & MF_INVIS) ||
         (mons_is_draconian_job(mons->type) && draco_or_demonspawn_subspecies(*mons) == MONS_BLACK_DRACONIAN))
     {
         mons->add_ench(ENCH_INVIS);

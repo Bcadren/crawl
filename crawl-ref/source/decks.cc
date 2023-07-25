@@ -1603,14 +1603,16 @@ static void _summon_demon_card(int power, deck_rarity_type rarity)
 
     const bool hostile = one_chance_in(power_level + 4);
 
-    if (!create_monster(mgen_data(dct, hostile ? BEH_HOSTILE : BEH_FRIENDLY,
-                                  you.pos(), MHITYOU, MG_AUTOFOE)
-                        .set_summoned(&you, 5 - power_level, 0)))
+    monster * m = create_monster(mgen_data(dct, hostile ? BEH_HOSTILE : BEH_FRIENDLY,
+        you.pos(), MHITYOU, MG_AUTOFOE)
+        .set_summoned(&you, 5 - power_level, 0));
+
+    if (!m)
     {
         mpr("You see a puff of smoke.");
     }
     else if (hostile
-             && mons_class_flag(dct, M_INVIS)
+             && (mons_class_flag(dct, M_INVIS) || (m->flags & MF_INVIS))
              && !you.can_see_invisible())
     {
         mpr("You sense the presence of something unfriendly.");
@@ -1731,13 +1733,16 @@ static void _summon_flying(int power, deck_rarity_type rarity)
     {
         const bool hostile = one_chance_in(power_level + 4);
 
-        create_monster(
+        monster * m = create_monster(
             mgen_data(result,
                       hostile ? BEH_HOSTILE : BEH_FRIENDLY, you.pos(), MHITYOU,
                       MG_AUTOFOE).set_summoned(&you, 3, 0));
 
-        if (hostile && mons_class_flag(result, M_INVIS) && !you.can_see_invisible())
+        if (hostile && (mons_class_flag(result, M_INVIS) || (m->flags & MF_INVIS))
+            && !you.can_see_invisible())
+        {
             hostile_invis = true;
+        }
     }
 
     if (hostile_invis)
