@@ -5064,8 +5064,15 @@ void monster::uglything_mutate(colour_t force_colour)
     uglything_init(true);
 }
 
-void monster::chameleon_mutate(colour_t force_colour)
+void monster::chameleon_mutate(colour_t force_colour, bool force_not)
 {
+    if (force_not)
+    {
+        const colour_t orig_colour = force_colour;
+        while (force_colour == orig_colour)
+            force_colour = chameleon_random_colour();
+    }
+
     ghost->init_chameleon(true, force_colour);
     chameleon_init(true);
 }

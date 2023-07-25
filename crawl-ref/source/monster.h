@@ -250,7 +250,8 @@ public:
     void uglything_init(bool only_mutate = false);
     void uglything_mutate(colour_t force_colour = COLOUR_UNDEF);
     void chameleon_init(bool only_mutate = false);
-    void chameleon_mutate(colour_t force_colour = COLOUR_UNDEF);
+    void chameleon_mutate(colour_t force_colour = COLOUR_UNDEF, 
+                              bool force_not = false);
     void destroy_inventory();
     void load_ghost_spells();
     brand_type ghost_brand() const;

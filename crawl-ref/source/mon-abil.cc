@@ -95,7 +95,7 @@ void draconian_change_colour(monster* drac)
 void chameleon_polymorph(monster& chameleon)
 {
     simple_monster_message(chameleon, " basks in the mutagenic energy and changes!");
-    chameleon.chameleon_mutate(COLOUR_UNDEF);
+    chameleon.chameleon_mutate(chameleon.colour, true);
 }
 
 bool ugly_thing_mutate(monster& ugly, bool force)
