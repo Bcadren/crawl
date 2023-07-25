@@ -2378,6 +2378,10 @@ static spell_type _fixup_player_spell(spell_type s, int version)
             return SPELL_NO_SPELL;
         return s;
 
+    case SPELL_CALL_IMP:
+        // BCADDO: Tag this on Makhleb update.
+        return SPELL_CALL_CHAMELEON;
+
     case SPELL_ICICLE_CASCADE:
         if (version < TAG_MINOR_ICICLE_CASCADE)
             return SPELL_UNSTABLE_FIERY_DASH;

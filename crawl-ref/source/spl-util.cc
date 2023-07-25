@@ -2057,7 +2057,6 @@ const set<spell_type> removed_spells =
     SPELL_FREEZING_AURA,
     SPELL_FRENZY,
     SPELL_GRAND_AVATAR,
-    SPELL_HASTE_PLANTS,
     SPELL_HOLY_LIGHT,
     SPELL_HOLY_WORD,
     SPELL_HUNTING_CRY,

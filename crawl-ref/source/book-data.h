@@ -14,7 +14,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_FLAME_TONGUE,
     SPELL_SLOW,
     SPELL_BLINK,
-    SPELL_CALL_IMP,
+    SPELL_CALL_CHAMELEON,
     SPELL_CONJURE_FLAME,
     SPELL_MEPHITIC_CLOUD,
 },
@@ -173,7 +173,7 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Callings
     SPELL_SUMMON_SMALL_MAMMAL,
-    SPELL_CALL_IMP,
+    SPELL_CALL_CHAMELEON,
     SPELL_CALL_CANINE_FAMILIAR,
     SPELL_SUMMON_ICE_BEAST,
     SPELL_SUMMON_LIGHTNING_SPIRE,

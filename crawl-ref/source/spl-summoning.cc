@@ -1162,6 +1162,24 @@ spret cast_call_imp(int pow, god_type god, bool fail)
     return spret::success;
 }
 
+spret cast_call_chameleon(int pow, god_type god, bool fail)
+{
+    fail_check();
+
+    const int dur = min(2 + (random2(pow) / 3), 6);
+
+    mgen_data c_data = _pal_data(MONS_CHAMELEON, dur, god, SPELL_CALL_CHAMELEON);
+    if (monster *cham = create_monster(c_data))
+    {
+        cham->chameleon_mutate(chameleon_random_colour(true));
+        chaos_summon(SPELL_CALL_CHAMELEON, cham, &you);
+    }
+    else
+        canned_msg(MSG_NOTHING_HAPPENS);
+
+    return spret::success;
+}
+
 static bool _summon_demon_wrapper(int pow, god_type god, int spell,
                                   monster_type mon, int dur, bool friendly,
                                   bool charmed)
@@ -3714,6 +3732,7 @@ static const map<spell_type, summon_cap> summonsdata =
     { SPELL_SUMMON_SMALL_MAMMAL,        { 4, 2 } },
     { SPELL_STICKS_TO_SNAKES,           { 4, 3 } },
     { SPELL_CALL_CANINE_FAMILIAR,       { 1, 2 } },
+    { SPELL_CALL_CHAMELEON,             { 4, 3 } },
     { SPELL_SUMMON_ICE_BEAST,           { 3, 3 } },
     { SPELL_SUMMON_HYDRA,               { 3, 2 } },
     { SPELL_SUMMON_MANA_VIPER,          { 2, 2 } },

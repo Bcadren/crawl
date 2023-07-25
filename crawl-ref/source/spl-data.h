@@ -762,12 +762,23 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_CALL_IMP, "Call Imp", "",
     spschool::summoning,
-    spflag::unholy | spflag::selfench,
+    spflag::unholy | spflag::monster,
     2,
     100,
     -1, -1,
     2, 0,
     TILEG_CALL_IMP,
+},
+
+{
+    SPELL_CALL_CHAMELEON, "Call Chameleon", "",
+    spschool::summoning,
+    spflag::chaotic,
+    3,
+    200,
+    -1, -1,
+    3, 0,
+    TILEG_CALL_CHAMELEON,
 },
 
 {
@@ -4007,7 +4018,6 @@ AXED_SPELL(SPELL_FORCEFUL_DISMISSAL, "Forceful Dismissal")
 AXED_SPELL(SPELL_FREEZING_AURA, "Freezing Aura")
 AXED_SPELL(SPELL_FRENZY, "Frenzy")
 AXED_SPELL(SPELL_GRAND_AVATAR, "Grand Avatar")
-AXED_SPELL(SPELL_HASTE_PLANTS, "Haste Plants")
 AXED_SPELL(SPELL_HOLY_LIGHT, "Holy Light")
 AXED_SPELL(SPELL_HUNTING_CRY, "Hunting Cry")
 AXED_SPELL(SPELL_IGNITE_POISON_SINGLE, "Localized Ignite Poison")
