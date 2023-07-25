@@ -57,6 +57,7 @@ spret cast_thunderbolt(actor *caster, int pow, coord_def aim,
                             bool fail);
 void additional_flavoured_damage(actor *caster, actor *foe, int preres, 
                             beam_type damtype, string verb, string noun);
+bool allied_chameleon(const actor * caster, const actor * act);
 
 actor* forest_near_enemy(const actor *mon);
 void forest_message(const coord_def pos, const string &msg,

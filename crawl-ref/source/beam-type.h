@@ -93,7 +93,7 @@ enum beam_type                  // bolt::flavour
     BEAM_PETRIFYING_CLOUD,
     BEAM_ENSNARE,
     BEAM_CRYSTAL,
-    BEAM_DEATH_RATTLE,
+    BEAM_DEATH_RATTLE, // BCADDO: Deprecate (similar to Air or Neg).
     BEAM_MAGIC_CANDLE,
     BEAM_FOG,
     BEAM_BUTTERFLY,

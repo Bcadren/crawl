@@ -239,7 +239,7 @@ static const cloud_data clouds[] = {
     { "spectral mist", nullptr,                 // terse, verbose name
       ETC_ELECTRICITY,                          // colour
       { TILE_CLOUD_SPECTRAL, CTVARY_DUR },      // tile
-      BEAM_MALIGN_OFFERING,                     // beam_effect
+      BEAM_NEG,                                 // beam_effect
       { 3, 13 },                                // base, random damage
     },
     // CLOUD_ACID,
@@ -747,6 +747,25 @@ static bool _cloud_is_stronger(cloud_type ct, const cloud_struct& cloud)
            || ct == CLOUD_TORNADO; // soon gone
 }
 
+static void _chameleon_change_for_cloud(monster *chameleon, cloud_type cl_type)
+{
+    if (chameleon->type != MONS_CHAMELEON)
+        return;
+
+    if (actor_cloud_immune(*chameleon, cl_type))
+        return;
+
+    if (chameleon->incapacitated())
+        return;
+
+    colour_t new_colour = chameleon_will_change(chameleon, _cloud2beam(cl_type));
+
+    if (new_colour == COLOUR_UNDEF || one_chance_in(3))
+        new_colour = LIGHTCYAN;
+
+    chameleon->chameleon_mutate(new_colour);
+}
+
 /*
  * Places a cloud with the given stats. Will overwrite an old cloud under some
  * circumstances.
@@ -824,6 +843,14 @@ void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
     const cloud_struct *cloud = cloud_at(ctarget);
     if (cloud && !_cloud_is_stronger(cl_type, *cloud))
         return;
+
+    // Allied chameleons will change to be immune.
+    if (mons_aligned(agent, mons)
+        && mons->type == MONS_CHAMELEON)
+    {
+        monster * cmons = monster_at(ctarget);
+        _chameleon_change_for_cloud(cmons, cl_type);
+    }
 
     // If the old cloud was opaque, may need to recalculate los. It *is*
     // possible to overwrite an opaque cloud with a non-opaque one; OOD will do
@@ -1640,6 +1667,8 @@ int actor_apply_cloud(actor *act, bool mount)
 
         cloud.decay += final_damage; // Absorbing clouds shortens their duration.
     }
+
+    _chameleon_change_for_cloud(act->as_monster(), cloud.type);
 
     return final_damage;
 }

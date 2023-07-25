@@ -7068,3 +7068,123 @@ bool is_fiery_type(monster_type mc)
         || mc == MONS_ORB_OF_FIRE
         || mc == MONS_CINDER_NEWT;
 }
+
+colour_t chameleon_will_change(const monster * mons, beam_type beam, bool check)
+{
+    // Sanity
+    if (mons->type != MONS_CHAMELEON)
+        return COLOUR_UNDEF;
+
+    // No colour change if already immune.
+    if (mons->immune_to_flavour(beam))
+        return COLOUR_UNDEF;
+
+    if (mons->incapacitated())
+        return COLOUR_UNDEF;
+
+    bool immune = false;
+    colour_t new_colour = COLOUR_UNDEF;
+
+    // Pre-Ops.
+    switch (beam)
+    {
+    case BEAM_CRYSTAL:
+    case BEAM_PARADOXICAL:
+    case BEAM_CRYSTAL_SPEAR:
+        beam = coinflip() ? BEAM_LAVA : BEAM_ICE;
+        break;
+
+    default:
+        break;
+    }
+
+    // Main
+    switch (beam)
+    {
+    case BEAM_FIRE:
+    case BEAM_STICKY_FLAME:
+    case BEAM_STEAM:
+        immune = true;
+    case BEAM_LAVA:
+    case BEAM_CRYSTAL_FIRE:
+        new_colour = RED;
+        break;
+    case BEAM_COLD:
+        immune = true;
+    case BEAM_CRYSTAL_ICE:
+    case BEAM_ICY_DEVASTATION:
+    case BEAM_ICE:
+    case BEAM_FREEZE:
+    case BEAM_ICY_SHARDS:
+        new_colour = WHITE;
+        break;
+    case BEAM_ELECTRICITY:
+        immune = true;
+        new_colour = BLUE;
+        break;
+    case BEAM_POISON:
+    case BEAM_MEPHITIC:
+        immune = true;
+    case BEAM_POISON_ARROW:
+        new_colour = GREEN;
+        break;
+    case BEAM_PAIN:
+    case BEAM_MALIGN_OFFERING:
+    case BEAM_NEG:
+    case BEAM_DRAIN:
+    case BEAM_BLOOD:
+        immune = true;
+        new_colour = DARKGREY;
+        break;
+    case BEAM_ACID:
+        immune = true;
+    case BEAM_ACID_WAVE:
+        new_colour = YELLOW;
+        break;
+    case BEAM_FRAG:
+    case BEAM_SILVER_FRAG:
+        immune = true;
+        new_colour = BROWN;
+        break;
+    case BEAM_AIR:
+        immune = true;
+    case BEAM_PETRIFYING_CLOUD:
+        new_colour = LIGHTCYAN;
+        break;
+    default:
+    case BEAM_MIASMA: // BCADNOTE: Should Green or Black be immune, maybe?
+        break;
+    }
+
+    if (check && !immune)
+        return COLOUR_UNDEF;
+
+    if (new_colour == mons->colour)
+        return COLOUR_UNDEF;
+
+    if (beam >= BEAM_FIRST_ENCHANTMENT
+        && beam <= BEAM_LAST_ENCHANTMENT)
+    {
+        return MAGENTA;
+    }
+
+    return new_colour;
+}
+
+// Returns (if) the chameleon will be immune to the damage after colour change.
+// Sometimes still changes colour without immunity (to Red for Lava still takes the physical part).
+void chameleon_colour_change(monster * mons, beam_type beam)
+{
+    // Sanity
+    if (!mons->alive())
+        return;
+
+    colour_t new_colour = chameleon_will_change(mons, beam, false);
+
+    if (new_colour != COLOUR_UNDEF)
+    {
+        mprf("%s changes colours to %s.", mons->name(DESC_THE).c_str(), 
+            colour_to_str(new_colour).c_str());
+        mons->chameleon_mutate(new_colour);
+    }
+}

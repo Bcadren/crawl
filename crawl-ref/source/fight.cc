@@ -1393,6 +1393,7 @@ int mons_missile_damage(monster* mons, const item_def *launch,
     return max(0, launch_damage + missile_damage);
 }
 
+// BCADDO: This needs fixing. Staff of life should disable melee, not all.
 bool bad_attack(const monster *mon, string& adj, string& suffix,
                 bool& would_cause_penance, coord_def attack_pos)
 {

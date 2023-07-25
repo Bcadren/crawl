@@ -2900,6 +2900,8 @@ void monster::expose_to_element(beam_type flavour, int strength,
     default:
         break;
     }
+
+    chameleon_colour_change(this, flavour);
     mon_lose_staff_shield(*this, flavour, strength);
 }
 
@@ -2996,7 +2998,7 @@ bool monster::has_attack_flavour(int flavour) const
     return false;
 }
 
-bool monster::immune_to_flavour(beam_type flavour)
+bool monster::immune_to_flavour(beam_type flavour) const
 {
     return (resist_adjust_damage(this, flavour, 1000) == 0);
 }

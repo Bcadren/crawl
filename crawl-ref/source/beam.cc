@@ -5731,6 +5731,9 @@ void bolt::affect_monster(monster* mon)
         return;
     }
 
+    if (allied_chameleon(agent(), mon))
+        chameleon_colour_change(mon, flavour);
+
     // We need to know how much the monster _would_ be hurt by this,
     // before we decide if it actually hits.
     int preac, postac, final;
@@ -5984,7 +5987,7 @@ void bolt::affect_monster(monster* mon)
 
 bool bolt::ignores_monster(const monster* mon) const
 {
-    // Digging doesn't affect monsters (should it harm earth elementals?).
+    // Digging doesn't affect monsters BCADDO: (should it harm earth elementals?).
     if (flavour == BEAM_DIGGING)
         return true;
 
@@ -6004,6 +6007,12 @@ bool bolt::ignores_monster(const monster* mon) const
     // Missiles go past bushes and briar patches, unless aimed directly at them
     if (bush_immune(*mon))
         return true;
+
+    if (is_tracer && allied_chameleon(agent(), mon)
+        && chameleon_will_change(mon, flavour))
+    {
+        return true;
+    }
 
     if (shoot_through_monster(*this, mon))
         return true;

@@ -520,6 +520,8 @@ int chameleon_colour_offset(colour_t colour);
 string chameleon_colour_name(colour_t colour);
 colour_t chameleon_random_colour(bool weighted = false);
 attack_flavour chameleon_colour_to_flavour(colour_t colour);
+colour_t chameleon_will_change(const monster * mons, beam_type beam, bool check = true);
+void chameleon_colour_change(monster * mons, beam_type beam);
 
 /**
  * @brief

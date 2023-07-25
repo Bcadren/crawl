@@ -515,7 +515,7 @@ static bool _damageable(const actor *caster, const actor *act)
                 && fedhas_protects(act->as_monster()));
 }
 
-static bool _no_help(const actor */*act*/) { return false; }
+static bool _no_help(const actor */*caster*/, const actor */*act*/) { return false; }
 
 static void _los_spell_pre_damage_monsters(const actor* agent,
                                            vector<monster *> affected_monsters,
@@ -688,6 +688,19 @@ static int _los_spell_damage_monster(actor* agent, monster &target,
     return hurted + mtdam;
 }
 
+bool allied_chameleon(const actor * caster, const actor * act)
+{
+    if (!caster || !act)
+        return false;
+
+    if (act->is_player())
+        return false;
+
+    if (act->as_monster()->type != MONS_CHAMELEON)
+        return false;
+
+    return mons_aligned(caster, act);
+}
 
 static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
                                          bool actual, bool fail, int* damage_done)
@@ -708,7 +721,7 @@ static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
                *mons_vis_msg = nullptr, *mons_invis_msg = nullptr,
                *verb = nullptr, *prompt_verb = nullptr;
     bool (*vulnerable)(const actor *, const actor *) = nullptr;
-    bool (*helped_by)(const actor *) = nullptr;
+    bool (*helped_by)(const actor *, const actor *) = nullptr;
 
     switch (spell)
     {
@@ -742,10 +755,11 @@ static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
                 vulnerable = [](const actor *caster, const actor *act) {
                     return act->is_player() || act->res_cold() < 3
                         && !(caster->deity() == GOD_FEDHAS
-                            && fedhas_protects(act->as_monster()));
+                            && fedhas_protects(act->as_monster()))
+                        && !allied_chameleon(caster, act);
                 };
-                helped_by = [](const actor *act) {
-                    return (act->res_cold() > 3);
+                helped_by = [](const actor *caster, const actor *act) {
+                    return (act->res_cold() > 3 || allied_chameleon(caster, act));
                 };
             }
             break;
@@ -759,7 +773,7 @@ static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
             verb = "drained of life";
             prompt_verb = "drain life";
             vulnerable = &_drain_lifeable;
-            helped_by = [](const actor *act) {
+            helped_by = [](const actor */*caster*/, const actor *act) {
                 return (act->res_negative_energy() > 3);
             };
             break;
@@ -772,7 +786,8 @@ static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
             verb = "buffeted";
             prompt_verb = "breathe mighty wind";
             vulnerable = [](const actor *caster, const actor *act) {
-                return act != caster && !act->res_wind();
+                return act != caster && !act->res_wind() 
+                    && !allied_chameleon(caster, act);
             };
             helped_by = &_no_help;
             break;
@@ -833,7 +848,10 @@ static spret _cast_los_attack_spell(spell_type spell, int pow, actor* agent,
     for (actor_near_iterator ai((agent ? agent : &you)->pos(), LOS_NO_TRANS);
          ai; ++ai)
     {
-        if ((*vulnerable)(agent, *ai) || (*helped_by)(*ai))
+        if (allied_chameleon(agent, *ai))
+            chameleon_colour_change((*ai)->as_monster(), beam.flavour);
+
+        if ((*vulnerable)(agent, *ai) || (*helped_by)(agent, *ai))
         {
             if (ai->is_player())
                 affects_you = true;
@@ -1375,6 +1393,8 @@ spret cast_airstrike(int pow, const dist &beam, bool fail)
 
     if (!(have_passive(passive_t::shoot_through_plants)
           && fedhas_protects(mons))
+        && !(allied_chameleon(&you, mons)
+            && !determine_chaos(&you, SPELL_AIRSTRIKE, false))
         && stop_attack_prompt(mons, false, you.pos()))
     {
         return spret::abort;
@@ -1402,6 +1422,12 @@ spret cast_airstrike(int pow, const dist &beam, bool fail)
     const bool absorb = dmg < 0;
     const int hurted = absorb ? dmg : mons->apply_ac(dmg, 10 + div_round_up(pow, 7));
     dprf("preac: %d, postac: %d", dam, hurted);
+
+    if (allied_chameleon(&you, mons) && !chaos)
+    {
+        chameleon_colour_change(mons, BEAM_AIR);
+        return spret::success;
+    }
 
     string substr = attack_strength_punctuation(hurted);
 
@@ -2214,6 +2240,9 @@ static int _ignite_tracer_cloud_value(coord_def where, actor *agent)
             return 0;
         }
 
+        if (allied_chameleon(agent, act))
+            return 1;
+
         return mons_aligned(act, agent) ? -dam : dam;
     }
     // We've done something, but its value is indeterminate
@@ -2379,7 +2408,7 @@ static int _ignite_poison_monsters(coord_def where, beam_type damtype, int pow, 
 
     const int base_dam = dam_dice.roll();
     int damage = resist_adjust_damage(mon, damtype, base_dam);
-    const bool absorb = damage < 0;
+    bool absorb = damage < 0;
 
     if (damtype == BEAM_ACID || damtype == BEAM_DRAIN)
         damage = div_rand_round(2 * damage, 3);
@@ -2408,6 +2437,13 @@ static int _ignite_poison_monsters(coord_def where, beam_type damtype, int pow, 
 
     if (you.see_cell(mon->pos()))
     {
+        if (!chaos && allied_chameleon(agent, mon))
+        {
+            chameleon_colour_change(mon, BEAM_FIRE);
+            absorb = true;
+            damage = -abs(damage);
+        }
+
         if (absorb)
         {
             mprf("The poison inside %s is %s. %s %s the %s%s",
@@ -3120,6 +3156,9 @@ static int _discharge_monsters(const coord_def &where, int pow,
     {
         monster* mons = victim->as_monster();
 
+        if (allied_chameleon(&agent, victim) && !chaos)
+            chameleon_colour_change(mons, BEAM_ELECTRICITY);
+
         // We need to initialize these before the monster has died.
         god_conduct_trigger conducts[3];
         if (agent.is_player())
@@ -3187,7 +3226,8 @@ bool safe_discharge(coord_def where, vector<const actor *> &exclude)
                 // Harmless to these monsters, so don't prompt about them.
                 if (act->res_elec() > 0
                     || you.deity() == GOD_FEDHAS
-                       && fedhas_protects(act->as_monster()))
+                       && fedhas_protects(act->as_monster())
+                    || allied_chameleon(&you, act))
                 {
                     continue;
                 }
@@ -3669,8 +3709,9 @@ spret cast_fragmentation(int pow, const actor *caster,
 
 static bool _elec_not_immune(const actor *act)
 {
-    return act->res_elec() < 3 && !(you_worship(GOD_FEDHAS)
-                                    && fedhas_protects(act->as_monster()));
+    return act->res_elec() < 3 
+        && !(you_worship(GOD_FEDHAS) && fedhas_protects(act->as_monster())
+        && !allied_chameleon(&you, act));
 }
 
 spret cast_thunderbolt(actor *caster, int pow, coord_def aim, bool fail)
@@ -3742,9 +3783,14 @@ spret cast_thunderbolt(actor *caster, int pow, coord_def aim, bool fail)
         if (entry.second <= 0)
             continue;
 
+        actor * act = actor_at(entry.first);
+
         // beams are incredibly spammy in debug mode
-        if (!actor_at(entry.first))
+        if (!act)
             continue;
+
+        if (allied_chameleon(&you, act))
+            chameleon_colour_change(act->as_monster(), BEAM_ELECTRICITY);
 
         int arc = hitfunc.arc_length[entry.first.distance_from(hitfunc.origin)];
         ASSERT(arc > 0);
@@ -4021,13 +4067,22 @@ static bool _toxic_can_affect(const actor *act)
     return act->res_poison() < (act->is_player() ? 3 : 1);
 }
 
+static bool _toxic_can_affect_player(const actor *act)
+{
+    if (allied_chameleon(&you, act))
+        return false;
+
+    // currently monsters are still immune at rPois 1
+    return act->res_poison() < (act->is_player() ? 3 : 1);
+}
+
 spret cast_toxic_radiance(actor *agent, int pow, bool fail, bool mon_tracer)
 {
     bool chaos = determine_chaos(agent, SPELL_OLGREBS_TOXIC_RADIANCE);
     if (agent->is_player())
     {
         targeter_radius hitfunc(&you, LOS_NO_TRANS);
-        if (stop_attack_prompt(hitfunc, "poison", _toxic_can_affect))
+        if (stop_attack_prompt(hitfunc, "poison", chaos ? _toxic_can_affect : _toxic_can_affect_player))
             return spret::abort;
 
         fail_check();
@@ -4101,6 +4156,12 @@ void toxic_radiance_effect(actor* agent, int mult, bool on_cast, bool chaos)
     {
         if (!chaos && !_toxic_can_affect(*ai))
             continue;
+
+        if (!chaos && allied_chameleon(agent, *ai))
+        {
+            chameleon_colour_change((*ai)->as_monster(), BEAM_POISON);
+            continue;
+        }
 
         // Monsters can skip hurting friendlies
         // BCADDO: Should they tho?

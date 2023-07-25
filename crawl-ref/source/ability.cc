@@ -2430,7 +2430,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         {
             return !(you.deity() == GOD_FEDHAS
                     && fedhas_protects(act->as_monster()))
-                && (act->res_elec() < 3);
+                && (act->res_elec() < 3)
+                && !(chameleon_will_change(act->as_monster(), BEAM_ELECTRICITY));
         };
 
         if (stop_attack_prompt(hitfunc, "lightning breath", vulnerable))
@@ -2469,6 +2470,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
                     simple_god_message(" protects your plant from harm.", GOD_FEDHAS);
                 else
                 {
+                    if (act->as_monster()->friendly())
+                        chameleon_colour_change(act->as_monster(), BEAM_ELECTRICITY);
                     dam_beam.target = *ri;
                     dam_beam.in_explosion_phase = true;
                     dam_beam.explosion_affect_cell(*ri);

@@ -476,7 +476,7 @@ public:
     bool has_corpse_violating_spell() const;
 
     bool has_attack_flavour(int flavour) const;
-    bool immune_to_flavour(beam_type flavour);
+    bool immune_to_flavour(beam_type flavour) const;
     int constriction_damage(bool direct) const override;
     bool constriction_does_damage(bool direct) const override;
 
