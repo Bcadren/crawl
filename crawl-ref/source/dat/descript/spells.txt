@@ -271,6 +271,12 @@ Call Canine Familiar spell
 
 Summons a solitary canine to the caster's aid.
 %%%%
+Call Chameleon spell
+
+Summons a magical chameleon, a useful creature magically engineered to adapt 
+to most forms of magic. It will form a psychic link to you and your allies 
+to anticipate your magic and change colour before it can be hit.
+%%%%
 Call Imp spell
 
 Calls forth a minor demon from the pits of Hell.

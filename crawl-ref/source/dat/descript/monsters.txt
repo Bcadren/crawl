@@ -778,6 +778,12 @@ centaur warrior
 A muscular centaur, veteran of numerous battles, armed with well-made weapons
 and able to use them skillfully.
 %%%%
+chameleon
+
+A magical giant chameleon. They adapt when hit to resist most forms of magic. 
+They can also form psychic links to willing allies to anticipate attacks and 
+adapt to prevent friendly fire.
+%%%%
 chaos butterfly
 
 Rumoured to have been created by a mad wizard that took 'chaos theory' too seriously.
