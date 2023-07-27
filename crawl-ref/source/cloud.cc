@@ -845,7 +845,7 @@ void place_cloud(cloud_type cl_type, const coord_def& ctarget, int cl_range,
         return;
 
     // Allied chameleons will change to be immune.
-    if (mons_aligned(agent, mons)
+    if (mons && agent && mons_aligned(agent, mons)
         && mons->type == MONS_CHAMELEON)
     {
         monster * cmons = monster_at(ctarget);
