@@ -749,14 +749,13 @@ static bool _cloud_is_stronger(cloud_type ct, const cloud_struct& cloud)
 
 static void _chameleon_change_for_cloud(monster *chameleon, cloud_type cl_type)
 {
-    if (chameleon->type != MONS_CHAMELEON)
-        return;
-
-    if (actor_cloud_immune(*chameleon, cl_type))
-        return;
-
-    if (chameleon->incapacitated())
-        return;
+    if (!chameleon || !chameleon->alive()
+        || (chameleon->type != MONS_CHAMELEON)
+        || actor_cloud_immune(*chameleon, cl_type)
+        || chameleon->incapacitated())
+        {
+            return;
+        }
 
     colour_t new_colour = chameleon_will_change(chameleon, _cloud2beam(cl_type));
 
