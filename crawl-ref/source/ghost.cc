@@ -457,10 +457,13 @@ void ghost_demon::init_player_ghost()
     {
         // This includes ranged weapons, but they're treated as melee.
 
-        const item_def& weapon = *you.weapon();
+        const item_def& weapon = *you.weapon(0);
         if (is_weapon(weapon))
         {
-            damage = property(weapon, PWPN_DAMAGE);
+            if (weapon.base_type == OBJ_SHIELDS)
+                damage = property(weapon, PSHD_DAMAGE);
+            else
+                damage = property(weapon, PWPN_DAMAGE);
 
             // Bows skill doesn't make bow-bashing better.
             skill_type sk = is_range_weapon(weapon) ? SK_FIGHTING
@@ -468,7 +471,7 @@ void ghost_demon::init_player_ghost()
             damage *= 25 + you.skills[sk];
             damage /= 25;
 
-            if (weapon.base_type == OBJ_WEAPONS)
+            if (weapon.base_type == OBJ_WEAPONS || weapon.base_type == OBJ_SHIELDS)
             {
                 brand = static_cast<brand_type>(get_weapon_brand(weapon));
 
