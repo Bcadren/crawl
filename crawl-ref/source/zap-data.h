@@ -465,25 +465,8 @@ static const zap_info zap_data[] =
     3
 },
 
-{   // BCADNOTE: This is identical to the wand version. Only exists because spl-zap lookup expects one zap per spell, issue?
+{ 
     ZAP_ENSNARE,
-    "stream of webbing",
-    200,
-    new dicedef_calculator<1, 1, 1, 8>,
-    new tohit_calculator<6, 4, 3>,
-    new dicedef_calculator<1, 1, 1, 8>,
-    new tohit_calculator<6, 4, 3>,
-    WHITE,
-    false,
-    BEAM_ENSNARE,
-    DCHAR_FIRED_MISSILE,
-    false,
-    false,
-    0
-},
-
-{
-    ZAP_WAND_ENSNARE,
     "stream of webbing",
     200,
     new dicedef_calculator<1, 1, 1, 8>,

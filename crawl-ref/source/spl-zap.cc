@@ -66,6 +66,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_EMPOWERED_BREATH,       ZAP_EMPOWERED_BREATH},
     { SPELL_MALIGN_OFFERING,        ZAP_MALIGN_OFFERING},
     { SPELL_STARBURST,              ZAP_BOLT_OF_FIRE },
+    { SPELL_ENSNARE,                ZAP_ENSNARE },
 
     // wands
     { SPELL_WAND_FLAME,             ZAP_WAND_FLAME },
@@ -73,7 +74,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_WAND_DRAIN,             ZAP_WAND_DRAIN },
     { SPELL_WAND_POLYMORPH,         ZAP_WAND_POLYMORPH },
     { SPELL_WAND_HEALING,           ZAP_WAND_HEALING },
-    { SPELL_WAND_ENSNARE,           ZAP_WAND_ENSNARE },
+    { SPELL_WAND_ENSNARE,           ZAP_ENSNARE },
     { SPELL_WAND_HASTING,           ZAP_WAND_HASTING },
 
     // monster-specific
@@ -120,7 +121,6 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_METAL_SPLINTERS,        ZAP_BREATHE_METAL },
     { SPELL_BONE_SHARDS,            ZAP_BREATHE_BONE },
     { SPELL_RADIATION_BREATH,       ZAP_RADIATION_BREATH },
-    { SPELL_ENSNARE,                ZAP_ENSNARE },
     { SPELL_SHADOW_BOLT,            ZAP_SHADOW },
     { SPELL_DEATH_RATTLE,           ZAP_DEATH_RATTLE },
     { SPELL_UPHEAVAL,               ZAP_UPHEAVAL },

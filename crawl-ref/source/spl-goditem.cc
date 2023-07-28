@@ -1327,7 +1327,7 @@ int random_effects_zap()
                          ZAP_WAND_POLYMORPH,
                          ZAP_ENSLAVEMENT,
                          ZAP_MALMUTATE,
-                         ZAP_WAND_ENSNARE,
+                         ZAP_ENSNARE,
                          ZAP_WAND_HASTING,
                          ZAP_INVISIBILITY,
                          ZAP_WAND_HEALING);
