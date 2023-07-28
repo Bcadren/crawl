@@ -173,8 +173,8 @@ static const vector<spell_type> spellbook_templates[] =
 
 {   // Book of Callings
     SPELL_SUMMON_SMALL_MAMMAL,
-    SPELL_CALL_CHAMELEON,
     SPELL_CALL_CANINE_FAMILIAR,
+    SPELL_CALL_CHAMELEON,
     SPELL_SUMMON_ICE_BEAST,
     SPELL_SUMMON_LIGHTNING_SPIRE,
 },
