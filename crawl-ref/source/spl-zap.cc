@@ -67,6 +67,8 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_MALIGN_OFFERING,        ZAP_MALIGN_OFFERING},
     { SPELL_STARBURST,              ZAP_BOLT_OF_FIRE },
     { SPELL_ENSNARE,                ZAP_ENSNARE },
+    { SPELL_ICICLE_CASCADE,         ZAP_CASCADE },
+    { SPELL_ICICLE_CASCADE,         ZAP_CASCADE_II },
 
     // wands
     { SPELL_WAND_FLAME,             ZAP_WAND_FLAME },

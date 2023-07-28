@@ -2917,23 +2917,7 @@ static int _spell_power(spell_type spell)
     return min(calc_spell_power(spell, true, false, false), cap);
 }
 
-static int _spell_power_bars(spell_type spell)
-{
-    return power_to_barcount(_spell_power(spell));
-}
-
-#ifdef WIZARD
-static string _wizard_spell_power_numeric_string(spell_type spell)
-{
-    const int cap = spell_power_cap(spell);
-    if (cap == 0)
-        return "N/A";
-    const int power = min(calc_spell_power(spell, true, false, false), cap);
-    return make_stringf("%d (%d)", power, cap);
-}
-#endif
-
-dice_def _spell_damage(spell_type spell)
+static dice_def _spell_damage(spell_type spell)
 {
     const int power = _spell_power(spell);
     if (power < 0)
@@ -2963,8 +2947,14 @@ string spell_damage_string(spell_type spell)
             mult = "8x";
             break;
         case SPELL_IOOD:
-            suffix = "+10% x Dist";
+            suffix = " +(10% x Dist)";
             break;
+        case SPELL_ICICLE_CASCADE:
+        {
+            const int power = _spell_power(spell);
+            const dice_def secondary = zap_damage(ZAP_CASCADE_II, power, false);
+            suffix = make_stringf(" + %dd%d Explosion", secondary.num, secondary.size);
+        }
         default:
             break;
     }

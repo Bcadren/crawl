@@ -3862,7 +3862,7 @@ static string _player_spell_stats(const spell_type spell)
     }
     const int acc = spell_acc(spell);
     if (acc != -1)
-        description += make_stringf("\nAccuracy: %d%%", acc);
+        description += make_stringf("\nAccuracy: %d", acc);
 
     description += "\nRange : ";
     description += spell_range_string(spell);
