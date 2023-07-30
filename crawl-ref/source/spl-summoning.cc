@@ -3100,7 +3100,7 @@ bool aim_battlesphere(actor* agent, spell_type spell, int powc, bolt& beam)
 
         // This is so that reflection and pathing rules for the parent beam
         // will be obeyed when figuring out what is being aimed at
-        zappy(ztype, powc, false, testbeam);
+        zappy(ztype, powc, agent->is_monster(), testbeam);
 
         battlesphere->props["firing_target"] = beam.target;
         battlesphere->props.erase("foe");
