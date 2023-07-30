@@ -534,17 +534,20 @@ void give_basic_mutations(species_type species)
         you.mutation[MUT_ANCIENT_WISDOM] = you.innate_mutation[MUT_ANCIENT_WISDOM] = 1;
     }
 
+    const bool li = (species == SP_LIGNIFITE);
+
     if (you.char_class == JOB_CENTAUR)
     {
-        you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 2;
+        you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = li ? 3 : 2;
+        you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 0;
         you.mutation[MUT_HOOVES] = you.innate_mutation[MUT_HOOVES] = 1;
     }
 
     if (you.char_class == JOB_NAGA)
     {
         you.mutation[MUT_ACUTE_VISION] = you.innate_mutation[MUT_ACUTE_VISION] = 1;
-        you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 0;
-        you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 2;
+        you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = li ? 2 : 0;
+        you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = li ? 0 : 2;
         you.mutation[MUT_SPIT_POISON] = you.innate_mutation[MUT_SPIT_POISON] = 1;
         you.mutation[MUT_POISON_RESISTANCE] = you.innate_mutation[MUT_POISON_RESISTANCE] = 1;
         you.mutation[MUT_SLOW_METABOLISM] = you.innate_mutation[MUT_SLOW_METABOLISM] = 1;
@@ -617,18 +620,25 @@ void give_level_mutations(species_type species, int xp_level)
 
     // Ineligant, make something more refined if losing mutations with level becomes more common.
     // Also doing this way instead of perma_mutate() to use custom messaging.
-    if (you.species == SP_LIGNIFITE)
+    if (you.species == SP_LIGNIFITE && !(xp_level % 5))
     {
-        if (xp_level == 5)
-            you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 2;
-        if (xp_level == 10)
-            you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 1;
-        if (xp_level == 15)
-            you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = 0;
-        if (xp_level == 20)
-            you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 1;
-        if (xp_level == 25)
-            you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = 2;
+        int fast = 3 - xp_level / 5;
+
+        if (you.char_class == JOB_NAGA)
+            fast--;
+
+        else if (you.char_class == JOB_CENTAUR)
+            fast++;
+
+        fast = max(min(fast, 3), -3);
+
+        int slow = 0 - fast;
+
+        fast = max(min(fast, 3), 0);
+        slow = max(min(slow, 3), 0);
+        
+        you.mutation[MUT_FAST] = you.innate_mutation[MUT_FAST] = fast;
+        you.mutation[MUT_SLOW] = you.innate_mutation[MUT_SLOW] = slow;
     }
 
     // Right now this only happens to lignifites; but leave it open to possibly happen to

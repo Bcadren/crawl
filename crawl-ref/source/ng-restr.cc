@@ -36,9 +36,6 @@ static bool _banned_combination(job_type job, species_type species)
         // Fallthrough
     case JOB_CENTAUR:
     case JOB_NAGA:
-        if (species == SP_LIGNIFITE)
-            return true;
-        // Fallthrough
     case JOB_GLADIATOR:
     case JOB_HUNTER:
     case JOB_ARCANE_MARKSMAN:

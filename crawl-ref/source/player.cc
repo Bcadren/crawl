@@ -3787,7 +3787,10 @@ void level_change(bool skip_attribute_increase)
             case SP_LIGNIFITE:
                 if (!(you.experience_level % 5))
                 {
-                    mprf(MSGCH_INTRINSIC_GAIN, "You grow larger and bulkier, but also slower.");
+                    if (you.experience_level == 5 && you.char_class == JOB_CENTAUR)
+                        mprf(MSGCH_INTRINSIC_GAIN, "You grow larger and bulkier.");
+                    else
+                        mprf(MSGCH_INTRINSIC_GAIN, "You grow larger and bulkier, but also slower.");
                 }
                 if (you.experience_level == 13)
                 {
