@@ -2293,7 +2293,7 @@ static bool _unsuppress_mutation(bool temp)
     }
     else
     {
-        mprf(MSGCH_MUTATION, "You %s is no longer suppressed.", msg.short_desc);
+        mprf(MSGCH_MUTATION, "Your %s is no longer suppressed.", msg.short_desc);
         if (gain_msg)
             mprf(MSGCH_MUTATION, "%s", msg.gain[you.mutation[target] - 1]);
     }
@@ -2765,12 +2765,25 @@ static bool _delete_single_mutation_level(mutation_type mutat,
                                           bool miscast)
 {
     bool was_transient = false;
+    bool was_suppressed = false;
+
+    // Null the bool for bookkeeping reasons, but let it still remove other muts.
+    if (miscast && !you.has_miscast_mutation(mutat))
+        miscast = false;
 
     if (!innate)
     {
         // are there some non-innate mutations to delete?
         if (you.get_base_mutation_level(mutat, false, true, true) == 0)
-            return false;
+        {
+            if (you.get_base_mutation_level(mutat, false, true, true, false) != 0)
+            {
+                _delete_single_mutation_level(MUT_SUPPRESSION, "deletion of suppressed mutation", true);
+                was_suppressed = true;
+            }
+            else
+                return false;
+        }
 
         if (you.has_temporary_mutation(mutat))
         {
@@ -2795,7 +2808,7 @@ static bool _delete_single_mutation_level(mutation_type mutat,
     const mutation_def& mdef = _get_mutation_def(mutat);
     const bool lose_msg = _post_loss_effects(mutat, was_transient);
 
-    if (lose_msg)
+    if (lose_msg && !was_suppressed)
     {
         species_mutation_message msg = _spmut_msg(mutat);
         if (msg.mutation == MUT_NON_MUTATION)
@@ -2814,7 +2827,9 @@ static bool _delete_single_mutation_level(mutation_type mutat,
     if (mutat == MUT_LOW_MAGIC || mutat == MUT_HIGH_MAGIC)
         calc_mp();
 
-    if (was_transient)
+    if (was_suppressed)
+        you.suppressed_mutation[mutat] = 0;
+    else if (was_transient)
     {
         --you.temp_mutation[mutat];
         --you.attribute[ATTR_TEMP_MUTATIONS];
