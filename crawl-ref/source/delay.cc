@@ -1006,6 +1006,7 @@ void DerootDelay::finish()
 {
     you.attribute[ATTR_ROOTED] = 0;
     mpr("You finish extracting your roots and can move again.");
+    you.redraw_armour_class = true;
 }
 
 void SMDDelay::finish()
