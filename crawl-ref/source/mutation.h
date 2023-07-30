@@ -60,7 +60,7 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
                      bool force_mutation = false, bool god_gift = false,
                      bool disallow_mismatch = false);
 
-bool delete_all_mutations(const string &reason);
+bool delete_all_mutations(const string &reason, bool on_death = false);
 bool remove_slime_mutations();
 bool is_valid_mutation(mutation_type mut);
 

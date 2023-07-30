@@ -1066,6 +1066,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
         canned_msg(MSG_YOU_DIE);
         xom_death_message((kill_method_type) se.get_death_type());
+
+        if (delete_all_mutations("reincarnation", true))
+        {
+            mprf(MSGCH_MUTATION, "Your unnatural mutations reset as you form a new body.");
+            if (you_worship(GOD_JIYVA))
+                mprf(MSGCH_GOD, "Your slimy mutations transfer seamless through the grace of %s.", god_name_jiyva(true).c_str());
+        }
+
         more();
 
         _place_player_corpse(death_type == KILLED_BY_DISINT);

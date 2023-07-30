@@ -2948,18 +2948,25 @@ bool delete_mutation(mutation_type which_mutation, const string &reason,
  *
  * @return  Whether the function found mutations to delete.
  */
-bool delete_all_mutations(const string &reason)
+bool delete_all_mutations(const string &reason, bool on_death)
 {
+    bool retval = false;
+
     for (int i = 0; i < NUM_MUTATIONS; ++i)
     {
-        while (_delete_single_mutation_level(static_cast<mutation_type>(i), reason, true))
-            ;
+        mutation_type mut = static_cast<mutation_type>(i);
+
+        if (on_death && is_slime_mutation(mut))
+            continue;
+
+        while (_delete_single_mutation_level(mut, reason, true, false, on_death))
+            retval = true;
     }
     ASSERT(you.attribute[ATTR_TEMP_MUTATIONS] == 0);
     ASSERT(you.how_mutated(false, true, false) == 0);
     you.attribute[ATTR_TEMP_MUT_XP] = 0;
 
-    return !you.how_mutated();
+    return retval;
 }
 
 bool remove_slime_mutations()
