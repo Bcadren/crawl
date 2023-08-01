@@ -2736,7 +2736,6 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
         you.duration[DUR_PETRIFIED] = 0;
 
         you.attribute[ATTR_ROOTED] = 1;
-        you.redraw_evasion = true;
         you.redraw_armour_class = true;
         break;
 

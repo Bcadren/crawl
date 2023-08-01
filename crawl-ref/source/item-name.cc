@@ -3308,7 +3308,7 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
         case SCR_ENCHANT:
             return ((you.species == SP_FELID || you.species == SP_FAIRY) && you.get_mutation_level(MUT_NO_ARTIFICE));
         case SCR_SUMMONING:
-            return you.get_mutation_level(MUT_NO_LOVE) > 0;
+            return you.has_mutation(MUT_NO_LOVE);
         case SCR_FOG:
             return temp && (env.level_state & LSTATE_STILL_WINDS);
         default:
@@ -3324,7 +3324,7 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
             return false;
 
         if (item.sub_type == WAND_ENSLAVEMENT)
-            return you.get_mutation_level(MUT_NO_LOVE);
+            return you.has_mutation(MUT_NO_LOVE);
 
         if (item.sub_type == WAND_CLOUDS)
             return temp && (env.level_state & LSTATE_STILL_WINDS);
@@ -3517,8 +3517,8 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
         case MISC_BOX_OF_BEASTS:
         case MISC_HORN_OF_GERYON:
         case MISC_PHANTOM_MIRROR:
-            return you.get_mutation_level(MUT_NO_LOVE)
-                   || you.get_mutation_level(MUT_NO_ARTIFICE);
+            return you.has_mutation(MUT_NO_LOVE)
+                   || you.has_mutation(MUT_NO_ARTIFICE);
 
         case MISC_CONDENSER_VANE:
             if (temp && (env.level_state & LSTATE_STILL_WINDS))
@@ -3526,7 +3526,7 @@ bool is_useless_item(const item_def &item, bool temp, bool ident)
             // Intentional fallthrough to check artifice
 
         default:
-            return you.get_mutation_level(MUT_NO_ARTIFICE) && !is_deck(item);
+            return you.has_mutation(MUT_NO_ARTIFICE) && !is_deck(item);
         }
 
     case OBJ_MANUALS:
