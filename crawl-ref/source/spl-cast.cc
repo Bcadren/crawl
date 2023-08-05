@@ -2974,6 +2974,16 @@ string spell_damage_string(spell_type spell)
             const int power = _spell_power(spell);
             const dice_def secondary = zap_damage(ZAP_CASCADE_II, power, false);
             suffix = make_stringf(" + %dd%d Explosion", secondary.num, secondary.size);
+            break;
+        }
+        case SPELL_SEARING_RAY:
+        {
+            const int power = _spell_power(spell);
+            const dice_def secondary = zap_damage(ZAP_SEARING_RAY_II, power, false);
+            const dice_def tertiary = zap_damage(ZAP_SEARING_RAY_III, power, false);
+            suffix = make_stringf(", %dd%d, %dd%d", 
+                secondary.num, secondary.size, tertiary.num, tertiary.size);
+            break;
         }
         default:
             break;
