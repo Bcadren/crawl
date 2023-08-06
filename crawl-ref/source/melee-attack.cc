@@ -4329,7 +4329,7 @@ void melee_attack::do_spines()
 
             attacker->hurt(&you, hurt);
 
-            if (you.get_mutation_level(MUT_FROST_BURST))
+            if (you.get_mutation_level(MUT_FROST_BURST)  && attacker->alive())
             {
                 const int dice_size = div_rand_round(you.experience_level + you.skill(SK_INVOCATIONS), 5);
                 const int ice_dmg   = roll_dice(you.get_mutation_level(MUT_FROST_BURST), dice_size);
