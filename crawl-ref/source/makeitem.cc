@@ -2469,6 +2469,12 @@ void reroll_brand(item_def &item, int item_level)
     case OBJ_STAVES:
         item.brand = generate_staff_facet(item, item_level);
         break;
+    case OBJ_SHIELDS:
+        if (is_hybrid(item.sub_type))
+            item.brand = determine_weapon_brand(item, item_level);
+        else
+            item.brand = defensive_shield_brand();
+        break;
     default:
         die("can't reroll brands of this type");
     }
