@@ -428,7 +428,7 @@ static const struct spell_desc spelldata[] =
     spschool::summoning,
     spflag::none,
     1,
-    25,
+    200,
     -1, -1,
     1, 0,
     TILEG_SUMMON_SMALL_MAMMAL,

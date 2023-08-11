@@ -197,6 +197,14 @@ public:
     FixedBitVector<NUM_SPELLS> hidden_spells;
     FixedVector<spell_type, MAX_KNOWN_SPELLS> spells;
 
+    struct summon_xp
+    {
+        spell_type summon;
+        int            xp;
+    };
+
+    vector<summon_xp> summon_xp_data;
+
     uint8_t spell_no;
     game_chapter chapter;
     bool royal_jelly_dead;

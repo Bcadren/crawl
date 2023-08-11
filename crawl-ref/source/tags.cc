@@ -1447,11 +1447,12 @@ static void _tag_construct_you(writer &th)
     for (int i = 0; i < 52; i++)
         marshallShort(th, you.ability_letter_table[i]);
 
-    // Size of two removed lists is always 0, they are removed.
-#if TAG_MAJOR_VERSION == 34
-    marshallUByte(th, 0);
-    marshallUByte(th, 0);
-#endif
+    marshallByte(th, you.summon_xp_data.size());
+    for (int j = 0; j < int(you.summon_xp_data.size()); ++j)
+    {
+        marshallShort(th, you.summon_xp_data[j].summon);
+        marshallInt(th, you.summon_xp_data[j].xp);
+    }
 
     CANARY;
 
@@ -2670,15 +2671,6 @@ static void _tag_read_you(reader &th)
     you.hp_max_adj_temp = unmarshallShort(th);
     you.hp_max_adj_perm = unmarshallShort(th);
     you.mp_max_adj = unmarshallShort(th);
-#if TAG_MAJOR_VERSION == 34
-    if (th.getMinorVersion() < TAG_MINOR_REMOVE_BASE_MP)
-    {
-        int baseadj = unmarshallShort(th);
-        you.mp_max_adj += baseadj;
-    }
-    if (th.getMinorVersion() < TAG_MINOR_CLASS_HP_0)
-        you.hp_max_adj_perm -= 8;
-#endif
 
     const int x = unmarshallShort(th);
     const int y = unmarshallShort(th);
@@ -2688,7 +2680,7 @@ static void _tag_read_you(reader &th)
 
     _unmarshallFixedBitVector<NUM_SPELLS>(th, you.spell_library);
     _unmarshallFixedBitVector<NUM_SPELLS>(th, you.hidden_spells);
-    
+
 #if TAG_MAJOR_VERSION == 34
     if (th.getMinorVersion() < TAG_MINOR_MISCAST_MUTATIONS)
     {
@@ -2703,7 +2695,7 @@ static void _tag_read_you(reader &th)
     you.spells = unmarshall_player_spells(th);
     you.spell_letter_table = unmarshall_player_spell_letter_table(th);
     you.spell_no = count_if(begin(you.spells), end(you.spells),
-            [](const spell_type spell) { return spell != SPELL_NO_SPELL; });
+        [](const spell_type spell) { return spell != SPELL_NO_SPELL; });
 
     count = unmarshallByte(th);
     ASSERT(count == (int)you.ability_letter_table.size());
@@ -2794,13 +2786,32 @@ static void _tag_read_you(reader &th)
     }
 
 #if TAG_MAJOR_VERSION == 34
-    count = unmarshallUByte(th);
-    for (int i = 0; i < count; ++i)
-        you.spell_library.set(unmarshallSpellType(th), true);
+    if (th.getMinorVersion() < TAG_MINOR_SUMMON_XP)
+    {
+        count = unmarshallUByte(th);
+        for (int i = 0; i < count; ++i)
+            you.spell_library.set(unmarshallSpellType(th), true);
 
-    count = unmarshallUByte(th);
-    for (int i = 0; i < count; ++i)
-        you.spell_library.set(unmarshallSpellType(th), true);
+        count = unmarshallUByte(th);
+        for (int i = 0; i < count; ++i)
+            you.spell_library.set(unmarshallSpellType(th), true);
+    }
+
+    if (th.getMinorVersion() >= TAG_MINOR_SUMMON_XP)
+    {
+#endif
+        count = unmarshallUByte(th);
+        you.summon_xp_data.clear();
+        for (int j = 0; j < count; ++j)
+        {
+            player::summon_xp xp;
+            xp.summon = static_cast<spell_type>(unmarshallShort(th));
+            ASSERT_RANGE(xp.summon, 0, NUM_SPELLS);
+            xp.xp = unmarshallInt(th);
+            you.summon_xp_data.push_back(xp);
+        }
+#if TAG_MAJOR_VERSION == 34
+    }
 #endif
 
     EAT_CANARY;
