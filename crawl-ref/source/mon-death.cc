@@ -260,7 +260,21 @@ static int _calc_monster_experience(monster* victim, killer_type killer,
     return experience;
 }
 
-static void _give_monster_experience(int experience, int killer_index)
+static void _update_spell_xp_bonus(player::summon_xp * xp)
+{
+    const int base = spell_difficulty(xp->summon) * 3;
+
+    while (xp->bonus < 9 && xp->xp >= exp_needed(min(27, base + xp->bonus), 2))
+    {
+        xp->xp -= exp_needed(min(27, base + xp->bonus), -2);
+        xp->bonus++;
+    }
+
+    if (xp->bonus == 9)
+        xp->xp = 0;
+}
+
+static void _give_monster_experience(int experience, int killer_index, bool pet_kill)
 {
     if (experience <= 0 || invalid_monster_index(killer_index))
         return;
@@ -268,6 +282,40 @@ static void _give_monster_experience(int experience, int killer_index)
     monster* mon = &env.mons[killer_index];
     if (!mon->alive())
         return;
+
+    int type = 0;
+    if (pet_kill && mon->is_summoned(nullptr, &type))
+    {
+        if (type > 0)
+        {
+            const spell_type spell = static_cast<spell_type>(type);
+            bool found = false;
+            for (int i = 0; i < (int)you.summon_xp_data.size(); i++)
+            {
+                player::summon_xp * xp = &you.summon_xp_data[i];
+                if (xp->summon == spell)
+                {
+                    found = true;
+                    if (xp->bonus < 9)
+                    {
+                        xp->xp += experience;
+                        _update_spell_xp_bonus(xp);
+                    }
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                player::summon_xp new_xp;
+                new_xp.xp = experience;
+                new_xp.summon = spell;
+                new_xp.bonus = 0;
+                _update_spell_xp_bonus(&new_xp);
+                you.summon_xp_data.emplace_back(new_xp);
+            }
+        }
+    }
 
     if (mon->gain_exp(experience))
     {
@@ -297,7 +345,7 @@ static void _beogh_spread_experience(int exp)
         if (is_orcish_follower(**mi))
         {
             _give_monster_experience(exp * mi->get_experience_level() / total_hd,
-                                         mi->mindex());
+                                         mi->mindex(), false);
         }
 }
 
@@ -394,7 +442,7 @@ static void _give_experience(int player_exp, int monster_exp,
 {
     _give_player_experience(player_exp, killer, pet_kill, was_visible,
             xp_tracking);
-    _give_monster_experience(monster_exp, killer_index);
+    _give_monster_experience(monster_exp, killer_index, pet_kill);
 }
 
 /**

@@ -687,15 +687,22 @@ static const char *_spell_title(spell_type spell, const actor * caster)
     if (spell == SPELL_FULMINANT_PRISM && is_christmas())
         return "Fulminant Present";
 
-    string chaosTitle = _seekspell(spell)->chaosTitle;
-    if (!chaosTitle.size())
-        return _seekspell(spell)->title; // No need for chaos check on spells without a chaos name.
-
     const bool chaos = determine_chaos(caster, spell, false);
 
-    if (chaos)
-        return _seekspell(spell)->chaosTitle;
-    return _seekspell(spell)->title;
+    const string chaosTitle = _seekspell(spell)->chaosTitle;
+    const char * Title = (chaosTitle.size() && chaos) ? _seekspell(spell)->chaosTitle
+                                                      : _seekspell(spell)->title;
+
+    if (!caster || !caster->is_player())
+        return Title;
+
+    for (player::summon_xp xp : you.summon_xp_data)
+    {
+        if (xp.summon == spell && xp.bonus > 0)
+            return make_stringf("%s (+%d)", Title, xp.bonus).c_str();
+    }
+
+    return Title;
 }
 
 bool mi_chaos_chance(spell_type spell, const monster_info * mi)
@@ -1665,7 +1672,8 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
     case SPELL_SKELETAL_UPRISING:
         if (temp && you.attribute[ATTR_SKELETON])
             return "skeletons already rise from your steps.";
-        // intentional fallthrough
+        break;
+
     case SPELL_ANIMATE_DEAD:
         if (temp && !animate_dead(&you, 1, BEH_FRIENDLY, MHITYOU, &you, "", GOD_NO_GOD, false))
             return "there is nothing nearby to animate!";

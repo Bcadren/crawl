@@ -640,7 +640,7 @@ void infestation_death_fineff::fire()
                                          false))
     {
         spawn->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 6));
-        chaos_summon(SPELL_INFESTATION, spawn, &you, false);
+        player_post_summon_adjustments(SPELL_INFESTATION, spawn);
 
         if (you.see_cell(posn) || you.can_see(*spawn))
         {

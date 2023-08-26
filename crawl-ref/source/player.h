@@ -200,7 +200,8 @@ public:
     struct summon_xp
     {
         spell_type summon;
-        int            xp;
+        unsigned int   xp;
+        int         bonus;
     };
 
     vector<summon_xp> summon_xp_data;

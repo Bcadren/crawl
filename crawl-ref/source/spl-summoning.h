@@ -23,6 +23,8 @@
 // How many aut until the next doom hound pops out of doom howl?
 #define NEXT_DOOM_HOUND_KEY "next_doom_hound"
 
+void player_post_summon_adjustments(spell_type spell, monster * mon);
+void apply_summon_xp_bonus(spell_type spell, monster * mon);
 void chaos_summon(spell_type spell, monster * mon, actor * caster, bool summoned = true);
 
 spret cast_summon_butterflies(int pow, god_type god = GOD_NO_GOD,
@@ -90,13 +92,14 @@ int animate_remains(const coord_def &a, corpse_type class_allowed,
                     actor *as = nullptr, string nas = "",
                     god_type god = GOD_NO_GOD, bool actual = true,
                     bool quiet = false, bool apply_lovelessness = true,
-                    monster** mon = nullptr, int* motions = nullptr);
+                    monster** mon = nullptr, int* motions = nullptr,
+                    spell_type source_spell = SPELL_NO_SPELL);
 
 bool cast_animate_skeleton(god_type god, bool fail, coord_def pos);
 spret cast_animate_dead(int pow, god_type god, bool fail);
 int animate_dead(actor *caster, int /*pow*/, beh_type beha,
                  unsigned short hitting, actor *as = nullptr, string nas = "",
-                 god_type god = GOD_NO_GOD, bool actual = true);
+                 god_type god = GOD_NO_GOD, bool actual = true, bool is_spell = true);
 
 int find_simulacrable_corpse(coord_def c);
 spret cast_simulacrum(int pow, god_type god, bool fail);

@@ -162,12 +162,8 @@ bool monster::gain_exp(int exp, int max_levels_to_gain)
     if (get_experience_level() >= MAX_MONS_HD)
         return false;
 
-    // Only natural monsters can level-up.
-    if (!(holiness() & MH_NATURAL))
-        return false;
-
-    // Only monsters that you can gain XP from can level-up.
-    if (!mons_class_gives_xp(type) || is_summoned())
+    // Derived undead cannot level-up.
+    if (mons_class_is_zombified(type))
         return false;
 
     // Avoid wrap-around.

@@ -1452,6 +1452,7 @@ static void _tag_construct_you(writer &th)
     {
         marshallShort(th, you.summon_xp_data[j].summon);
         marshallInt(th, you.summon_xp_data[j].xp);
+        marshallShort(th, you.summon_xp_data[j].bonus);
     }
 
     CANARY;
@@ -2808,6 +2809,7 @@ static void _tag_read_you(reader &th)
             xp.summon = static_cast<spell_type>(unmarshallShort(th));
             ASSERT_RANGE(xp.summon, 0, NUM_SPELLS);
             xp.xp = unmarshallInt(th);
+            xp.bonus = unmarshallShort(th);
             you.summon_xp_data.push_back(xp);
         }
 #if TAG_MAJOR_VERSION == 34
