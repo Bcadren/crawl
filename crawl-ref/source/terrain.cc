@@ -2001,7 +2001,7 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
                         mprf("%s reforms in the acidic ooze%s", uppercase_first(act->name(DESC_THE)).c_str(),
                             attack_strength_punctuation(healz).c_str());
                     }
-                    act->heal(healz)
+                    act->heal(healz);
                 }
             }
             else if (mons_primary_habitat(*mon) == HT_SLIME)
