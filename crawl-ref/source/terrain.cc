@@ -1994,9 +1994,15 @@ void actor_apply_terrain(actor* act, dungeon_feature_type terrain)
         {
             if (mon->res_acid() > 3)
             {
-                mprf("%s reforms in the acidic ooze%s", uppercase_first(act->name(DESC_THE)).c_str(),
-                    attack_strength_punctuation(healz).c_str());
-                act->heal(healz);
+                if (mon->hit_points < mon->max_hit_points)
+                {
+                    if (you.can_see(*act))
+                    {
+                        mprf("%s reforms in the acidic ooze%s", uppercase_first(act->name(DESC_THE)).c_str(),
+                            attack_strength_punctuation(healz).c_str());
+                    }
+                    act->heal(healz)
+                }
             }
             else if (mons_primary_habitat(*mon) == HT_SLIME)
                 return;
