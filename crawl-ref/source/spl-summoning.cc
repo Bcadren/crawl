@@ -91,9 +91,41 @@ static mgen_data _pal_data(monster_type pal, int dur, god_type god,
     return _summon_data(you, pal, dur, god, spell);
 }
 
-void player_post_summon_adjustments(spell_type spell, monster * mon)
+static void _scale_summon_duration(spell_type spell, monster * mon, int power, bool summoned)
+{
+    const int min_pow = spell_difficulty(spell) * 10;
+
+    mon_enchant abj = mon->get_ench(summoned ? ENCH_ABJ : ENCH_FAKE_ABJURATION);
+
+    if (!abj.ench)
+    {
+        if (summoned)
+            mprf(MSGCH_ERROR, "Error. Wrong summon type scale.");
+        if (!summoned && !have_passive(passive_t::extend_undead))
+            mprf(MSGCH_ERROR, "Error. Indefinite undead without Kiku Boost.");
+        return;
+    }
+
+    int dur = abj.duration;
+
+    if (power < min_pow)
+        dur /= 3;
+
+    dur *= power + 10;
+    dur /= min_pow + 10;
+
+    dur = min(dur, abj.duration * 3); // Lets not go nuts with low level spells.
+
+    abj.duration = dur;
+    mon->update_ench(abj);
+}
+
+void player_post_summon_adjustments(spell_type spell, monster * mon, int power)
 {
     apply_summon_xp_bonus(spell, mon);
+
+    if (power == 0)
+        power = calc_spell_power(spell, true);
 
     bool summoned = true;
     switch (spell)
@@ -107,6 +139,8 @@ void player_post_summon_adjustments(spell_type spell, monster * mon)
     default:
         break;
     }
+
+    _scale_summon_duration(spell, mon, power, summoned);
     chaos_summon(spell, mon, &you, summoned);
 }
 
@@ -188,7 +222,7 @@ spret cast_summon_small_mammal(int pow, god_type god, bool fail)
         mon = MONS_QUOKKA;
 
     if (monster * m = create_monster(_pal_data(mon, 3, god, SPELL_SUMMON_SMALL_MAMMAL)))
-        player_post_summon_adjustments(SPELL_SUMMON_SMALL_MAMMAL, m);
+        player_post_summon_adjustments(SPELL_SUMMON_SMALL_MAMMAL, m, pow);
     else
         canned_msg(MSG_NOTHING_HAPPENS);
 
@@ -248,7 +282,7 @@ spret cast_sticks_to_snakes(int pow, god_type god, bool fail)
             mon = MONS_BALL_PYTHON;
         if (monster * m = create_monster(_pal_data(mon, 3, god, SPELL_STICKS_TO_SNAKES), false))
         {
-            player_post_summon_adjustments(SPELL_STICKS_TO_SNAKES, m);
+            player_post_summon_adjustments(SPELL_STICKS_TO_SNAKES, m, pow);
             count++;
         }
     }
@@ -287,7 +321,7 @@ spret cast_call_canine_familiar(int pow, god_type god, bool fail)
     const int dur = min(2 + (random2(pow) / 4), 6);
 
     if (monster * m = create_monster(_pal_data(mon, dur, god, SPELL_CALL_CANINE_FAMILIAR)))
-        player_post_summon_adjustments(SPELL_CALL_CANINE_FAMILIAR, m);
+        player_post_summon_adjustments(SPELL_CALL_CANINE_FAMILIAR, m, pow); 
     else
         canned_msg(MSG_NOTHING_HAPPENS);
 
@@ -305,7 +339,7 @@ spret cast_summon_ice_beast(int pow, god_type god, bool fail)
 
     if (monster * mon = create_monster(ice_beast))
     {
-        player_post_summon_adjustments(SPELL_SUMMON_ICE_BEAST, mon);
+        player_post_summon_adjustments(SPELL_SUMMON_ICE_BEAST, mon, pow);
         mpr("A chill wind blows around you.");
     }
     else
@@ -494,7 +528,7 @@ static void _place_dragon()
         if (!dragon)
             continue;
 
-        player_post_summon_adjustments(SPELL_DRAGON_CALL, dragon);
+        player_post_summon_adjustments(SPELL_DRAGON_CALL, dragon, pow);
 
         dec_mp(mp_cost);
         if (you.see_cell(dragon->pos()))
@@ -665,7 +699,7 @@ spret cast_summon_mana_viper(int pow, god_type god, bool fail)
 
     if (monster * vip = create_monster(viper))
     {
-        player_post_summon_adjustments(SPELL_SUMMON_MANA_VIPER, vip);
+        player_post_summon_adjustments(SPELL_SUMMON_MANA_VIPER, vip, pow);
         mpr("A mana viper appears with a sibilant hiss.");
     }
     else
@@ -1137,7 +1171,7 @@ spret cast_summon_lightning_spire(int pow, const coord_def& where, god_type god,
 
     if (monster * m = create_monster(spire))
     {
-        player_post_summon_adjustments(SPELL_SUMMON_LIGHTNING_SPIRE, m);
+        player_post_summon_adjustments(SPELL_SUMMON_LIGHTNING_SPIRE, m, pow);
         if (!silenced(where))
             mpr("An electric hum fills the air.");
     }
@@ -1198,7 +1232,7 @@ spret cast_call_imp(int pow, god_type god, bool fail)
     {
         mpr(_imp_summon_messages[imp_type]);
 
-        player_post_summon_adjustments(SPELL_CALL_IMP, imp);
+        player_post_summon_adjustments(SPELL_CALL_IMP, imp, pow);
 
         _monster_greeting(imp, "_friendly_imp_greeting");
     }
@@ -1218,7 +1252,7 @@ spret cast_call_chameleon(int pow, god_type god, bool fail)
     if (monster *cham = create_monster(c_data))
     {
         cham->chameleon_mutate(chameleon_random_colour(true));
-        player_post_summon_adjustments(SPELL_CALL_CHAMELEON, cham);
+        player_post_summon_adjustments(SPELL_CALL_CHAMELEON, cham, pow);
     }
     else
         canned_msg(MSG_NOTHING_HAPPENS);
@@ -1264,7 +1298,7 @@ static bool _summon_demon_wrapper(int pow, god_type god, int spell,
             charm.duration = charm_dur;
             demon->update_ench(charm);
 
-            player_post_summon_adjustments(SPELL_SUMMON_DEMON, demon);
+            player_post_summon_adjustments(SPELL_SUMMON_DEMON, demon, pow);
 
             // Ensure that temporarily-charmed demons will outlast their charm
             mon_enchant abj = demon->get_ench(ENCH_ABJ);
@@ -1581,7 +1615,7 @@ spret cast_summon_horrible_things(int pow, god_type god, bool fail)
                                          SPELL_SUMMON_HORRIBLE_THINGS);
         if (monster * ab = create_monster(abom))
         {
-            player_post_summon_adjustments(SPELL_SUMMON_HORRIBLE_THINGS, ab);
+            player_post_summon_adjustments(SPELL_SUMMON_HORRIBLE_THINGS, ab, pow);
             ++count;
         }
     }
@@ -1592,7 +1626,7 @@ spret cast_summon_horrible_things(int pow, god_type god, bool fail)
                                           SPELL_SUMMON_HORRIBLE_THINGS);
         if (monster * tm = create_monster(tmons))
         {
-            player_post_summon_adjustments(SPELL_SUMMON_HORRIBLE_THINGS, tm);
+            player_post_summon_adjustments(SPELL_SUMMON_HORRIBLE_THINGS, tm, pow);
             ++count;
         }
     }
@@ -1629,7 +1663,7 @@ spret cast_summon_jungle(int pow, god_type god, bool fail)
             SPELL_SUMMON_JUNGLE);
         if (monster * hu = create_monster(hunter))
         {
-            player_post_summon_adjustments(SPELL_SUMMON_JUNGLE, hu);
+            player_post_summon_adjustments(SPELL_SUMMON_JUNGLE, hu, pow);
             ++count;
         }
     }
@@ -1642,7 +1676,7 @@ spret cast_summon_jungle(int pow, god_type god, bool fail)
                 SPELL_SUMMON_JUNGLE);
             if (monster * el = create_monster(elephant))
             {
-                player_post_summon_adjustments(SPELL_SUMMON_JUNGLE, el);
+                player_post_summon_adjustments(SPELL_SUMMON_JUNGLE, el, pow);
                 ++count;
             }
         }
@@ -1653,7 +1687,7 @@ spret cast_summon_jungle(int pow, god_type god, bool fail)
                 SPELL_SUMMON_JUNGLE);
             if (monster * an = create_monster(anaconda))
             {
-                player_post_summon_adjustments(SPELL_SUMMON_JUNGLE, an);
+                player_post_summon_adjustments(SPELL_SUMMON_JUNGLE, an, pow);
                 ++count;
             }
         }
@@ -1860,7 +1894,7 @@ spret cast_summon_forest(actor* caster, int pow, coord_def &where, god_type god,
             kael->move_to_pos(where);
             kael->max_hit_points = kael->hit_points = div_rand_round(kael->max_hit_points * kael->get_experience_level(), 5);
 
-            player_post_summon_adjustments(SPELL_SUMMON_FOREST, kael);
+            player_post_summon_adjustments(SPELL_SUMMON_FOREST, kael, pow);
 
             // Pre-awaken the forest just summoned.
             bolt dummy;
@@ -2466,7 +2500,7 @@ spret cast_simulacrum(int pow, god_type god, bool fail)
         if (monster *sim = create_monster(mg))
         {
             count++;
-            player_post_summon_adjustments(SPELL_SIMULACRUM, sim);
+            player_post_summon_adjustments(SPELL_SIMULACRUM, sim, pow);
             sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, have_passive(passive_t::extend_undead) ? 6 : 3));
         }
     }
@@ -2710,7 +2744,7 @@ spret cast_haunt(int pow, const coord_def& where, god_type god, bool fail)
         {
             success++;
 
-            player_post_summon_adjustments(SPELL_HAUNT, mons);
+            player_post_summon_adjustments(SPELL_HAUNT, mons, pow);
             mons->add_ench(mon_enchant(ENCH_HAUNTING, 1, m, INFINITE_DURATION));
             mons->foe = mi;
         }
@@ -2842,7 +2876,7 @@ void init_servitor(monster* servitor, actor* caster)
     servitor->props["ideal_range"].get_int() = shortest_range;
 }
 
-spret cast_spellforged_servitor(int /*pow*/, god_type god, bool fail)
+spret cast_spellforged_servitor(int pow, god_type god, bool fail)
 {
     fail_check();
 
@@ -2852,7 +2886,7 @@ spret cast_spellforged_servitor(int /*pow*/, god_type god, bool fail)
     if (monster* mon = create_monster(mdata))
     {
         init_servitor(mon, &you);
-        player_post_summon_adjustments(SPELL_SPELLFORGED_SERVITOR, mon);
+        player_post_summon_adjustments(SPELL_SPELLFORGED_SERVITOR, mon, pow);
     }
     else
         canned_msg(MSG_NOTHING_HAPPENS);
@@ -2995,7 +3029,7 @@ spret cast_battlesphere(actor* agent, int pow, god_type god, bool fail)
             battlesphere->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, 1, 0, dur));
             battlesphere->summoner = agent->mid;
             if (agent->is_player())
-                player_post_summon_adjustments(SPELL_BATTLESPHERE, battlesphere);
+                player_post_summon_adjustments(SPELL_BATTLESPHERE, battlesphere, pow);
             else
                 chaos_summon(SPELL_BATTLESPHERE, battlesphere, agent);
             agent->props["battlesphere"].get_int() = battlesphere->mid;

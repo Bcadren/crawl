@@ -3829,6 +3829,39 @@ void inscribe_item(item_def &item)
 static string _player_spell_stats(const spell_type spell)
 {
     string description;
+
+    bool scaled = false;
+    switch (spell)
+    {
+    case SPELL_INFESTATION:
+    case SPELL_STICKS_TO_SNAKES:
+    case SPELL_ANIMATE_DEAD:
+    case SPELL_SKELETAL_UPRISING:
+    case SPELL_SIMULACRUM:
+        scaled = true;
+        break;
+    default:
+        if (spell_typematch(spell, spschool::summoning))
+            scaled = true;
+        break;
+    }
+
+    const int min_pow = (spell_difficulty(spell) * 10);
+
+    if (scaled)
+    {
+        const bool bad = calc_spell_power(spell, true) < min_pow;
+
+        if (bad)
+        {
+            description += "\n<red>Creatures conjured by this spell will not ";
+            description += "stay in this world very long due to insufficient spellpower.\n";
+        }
+        description += make_stringf("\nMinimum power: %d\n", min_pow);
+        if (bad)
+            description += "</red>";
+    }
+
     description += make_stringf("\nLevel: %d", spell_difficulty(spell));
 
     const string schools = spell_schools_string(spell);
