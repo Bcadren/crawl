@@ -3485,10 +3485,10 @@ MAP
 ENDMAP
 
 NAME: cheibrodos_iron_armory
-DEPTH: D:2-5
+DEPTH: D:3-6
 TAGS: no_item_gen no_monster_gen
 ORIENT: float
-MONS: taeringu, orc warrior ; plate armour good_item . demon trident
+MONS: torturous demonspawn ; demon whip, orc warrior ; plate armour good_item . demon trident
 ITEM: scimitar good_item / scimitar not_cursed randart w:3, halberd good_item / halberd not_cursed randart w:3
 ITEM: war axe good_item / war axe not_cursed randart w:3, morningstar good_item / morningstar not_cursed randart w:3
 ITEM: plate armour good_item / plate armour not_cursed randart
