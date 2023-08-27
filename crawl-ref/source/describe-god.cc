@@ -644,8 +644,6 @@ static formatted_string _beogh_extra_description()
         if (!mons->is_named()) continue;
         has_named_followers = true;
 
-        desc += mons->full_name(DESC_PLAIN);
-
         if (companion_is_elsewhere(mons->mid))
         {
             desc += formatted_string(mons->full_name(DESC_PLAIN).c_str());

@@ -3484,7 +3484,7 @@ MAP
         ...
 ENDMAP
 
-NAME: cheibrodos_iron_armory
+NAME: cheibrodos_iron_armoury
 DEPTH: D:3-6
 TAGS: no_item_gen no_monster_gen
 ORIENT: float
