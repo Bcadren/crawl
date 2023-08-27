@@ -4008,7 +4008,7 @@ void ugly_thing_apply_uniform_band_colour(mgen_data &mg,
 static const char *drac_colour_names[] =
 {
     "black", "pink", "lime", "green", "purple", "red", "white", "silver", 
-    "blue", "cyan", "olive", "bone", "teal", "golden", "pearl", 
+    "blue", "cyan", "olive", "bone", "turquoise", "golden", "pearl", 
     "scintillating", "blood", "platinum", "magenta"
 };
 
