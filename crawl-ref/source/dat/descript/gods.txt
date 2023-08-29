@@ -23,7 +23,7 @@ properties of other items of that type that are found.
 %%%%
 Beogh
 
-Beogh is an evil deity, worshipped by the cave orcs native to the dungeon. Only
+Beogh is xenophobic deity, worshipped by the cave orcs native to the dungeon. Only
 orcs may devote their service to Beogh, and they must prove their devotion with
 bloodshed. Especially fervent devotees of Beogh will find orcish followers
 flocking to their banner: it is an age of signs and portents, and the orcs have
@@ -517,7 +517,7 @@ track of them, never ending the hunt.
 Beogh wrath
 
 Blasphemers against the word of Beogh find themselves assaulted by waves of
-orcish warriors, or by dancing electric weapons. Beogh may also simply smite
+orcish warriors, or by dancing orc-slaying weapons. Beogh may also simply smite
 such blasphemers – and when smiting true sinners, Beogh has a heavy hand
 indeed! Those who still worship Beogh will also find their followers regularly
 deserting them.

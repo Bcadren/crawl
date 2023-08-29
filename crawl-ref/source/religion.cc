@@ -462,7 +462,6 @@ bool is_evil_god(god_type god)
 {
     return is_necro_god(god)
            || god == GOD_MAKHLEB
-           || god == GOD_BEOGH
            || god == GOD_LUGONU
            || god == GOD_DITHMENOS;
 }
