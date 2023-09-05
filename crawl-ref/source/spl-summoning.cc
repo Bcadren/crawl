@@ -120,9 +120,9 @@ static void _scale_summon_duration(spell_type spell, monster * mon, int power, b
     mon->update_ench(abj);
 }
 
-void player_post_summon_adjustments(spell_type spell, monster * mon, int power)
+void player_post_summon_adjustments(spell_type spell, monster * mon, int power, int used)
 {
-    apply_summon_xp_bonus(spell, mon);
+    apply_summon_xp_bonus(spell, mon, used);
 
     if (power == 0)
         power = calc_spell_power(spell, true);
@@ -144,7 +144,7 @@ void player_post_summon_adjustments(spell_type spell, monster * mon, int power)
     chaos_summon(spell, mon, &you, summoned);
 }
 
-void apply_summon_xp_bonus(spell_type spell, monster * mon)
+void apply_summon_xp_bonus(spell_type spell, monster * mon, int used)
 {
     int bonus = 0;
     for (player::summon_xp xp : you.summon_xp_data)
@@ -155,6 +155,8 @@ void apply_summon_xp_bonus(spell_type spell, monster * mon)
             break;
         }
     }
+
+    bonus -= used;
 
     if (bonus > 0)
     {
@@ -215,14 +217,53 @@ spret cast_summon_small_mammal(int pow, god_type god, bool fail)
     fail_check();
 
     monster_type mon = MONS_PROGRAM_BUG;
+    int used = 0;
 
-    if (x_chance_in_y(10, pow + 1))
-        mon = random_choose(MONS_BAT, MONS_RAT);
-    else
+    const int bonus = you.lookup_spell_xp_bonus(SPELL_SUMMON_SMALL_MAMMAL);
+
+    switch (random2(4))
+    {
+    default:
+    case 0:
         mon = MONS_QUOKKA;
+        if (bonus >= 5 && x_chance_in_y(bonus - 2, 5))
+        {
+            mon = MONS_PORCUPINE;
+            used = 4;
+        }
+        break;
+    
+    case 1:
+    case 2:
+        mon = MONS_RAT;
+        if (bonus >= 6 && x_chance_in_y(bonus - 3, 6) && !is_good_god(you.religion))
+        {
+            mon = MONS_HELL_RAT;
+            used = 5;
+        }
+        else if (bonus >= 3 && x_chance_in_y(bonus - 2, 3))
+        {
+            mon = MONS_SEWER_RAT;
+            used = 3;
+        }
+        break;
+
+    case 3:
+        mon = MONS_BAT;
+        if (bonus >= 4 && x_chance_in_y(bonus - 3, 4) && you.religion != GOD_DITHMENOS)
+        {
+            mon = MONS_FIRE_BAT;
+            used = 3;
+        }
+        else if (bonus >= 2 && x_chance_in_y(bonus - 2, 2) && !is_good_god(you.religion))
+        {
+            mon = MONS_VAMPIRE_BAT;
+            used = 1;
+        }
+    }
 
     if (monster * m = create_monster(_pal_data(mon, 3, god, SPELL_SUMMON_SMALL_MAMMAL)))
-        player_post_summon_adjustments(SPELL_SUMMON_SMALL_MAMMAL, m, pow);
+        player_post_summon_adjustments(SPELL_SUMMON_SMALL_MAMMAL, m, pow, used);
     else
         canned_msg(MSG_NOTHING_HAPPENS);
 

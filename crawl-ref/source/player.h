@@ -593,6 +593,9 @@ public:
 
     bool spellcasting_unholy() const;
 
+    int lookup_spell_xp_bonus(spell_type spell) const;
+    summon_xp lookup_spell_xp(spell_type spell) const;
+
     // Dealing with beholders. Implemented in behold.cc.
     void add_beholder(const monster& mon, bool axe = false);
     bool beheld() const;

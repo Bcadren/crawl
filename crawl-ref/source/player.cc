@@ -8400,6 +8400,28 @@ bool player::spellcasting_unholy() const
     return player_equip_unrand(UNRAND_MAJIN);
 }
 
+int player::lookup_spell_xp_bonus(spell_type spell) const
+{
+    summon_xp xp = lookup_spell_xp(spell);
+    return xp.bonus;
+}
+
+player::summon_xp player::lookup_spell_xp(spell_type spell) const
+{
+    for (player::summon_xp xp : you.summon_xp_data)
+    {
+        if (xp.summon == spell)
+            return xp;
+    }
+
+    summon_xp new_xp;
+    new_xp.xp = 0;
+    new_xp.summon = SPELL_NO_SPELL;
+    new_xp.bonus = 0;
+
+    return new_xp;
+}
+
 /**
  * What is the player's (current) place on the Undead Spectrum?
  * (alive, hungry undead (ghoul), semi-undead (vampire), or very dead (mummy,
