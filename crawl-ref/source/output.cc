@@ -2619,27 +2619,49 @@ static vector<formatted_string> _get_overview_resistances(
     const int rinvi = you.vision(calc_unid);
     out += _resist_composer("Vision", cwidth, rinvi, 1, true) + "\n";
 
-    const int gourmand = you.gourmand(calc_unid);
-    out += _resist_composer("Gourm", cwidth, gourmand, 1) + "\n";
+    // Below here only show active resists.
+    int count = 4;
 
-    const int faith = you.faith(calc_unid);
-    out += _resist_composer("Faith", cwidth, faith) + "\n";
+    if (you.gourmand(calc_unid))
+    {
+        out += _resist_composer("Gourm", cwidth, 1) + "\n";
+        count++;
+    }
 
-    const int rspir = you.spirit_shield(calc_unid);
-    out += _resist_composer("Spirit", cwidth, rspir) + "\n";
+    if (you.faith(calc_unid))
+    {
+        out += _resist_composer("Faith", cwidth, 1) + "\n";
+        count++;
+    }
+
+    if (you.spirit_shield(calc_unid))
+    {
+        out += _resist_composer("Spirit", cwidth, 1) + "\n";
+        count++;
+    }
 
     // BCADDO: Add a display for chaos defence here (check all sources).
 
     const item_def *sh = you.shield();
-    const int reflect = you.reflection(calc_unid)
-                        || sh && shield_reflects(*sh);
-    out += _resist_composer("Reflect", cwidth, reflect) + "\n";
+    const bool reflect = you.reflection(calc_unid)
+                         || sh && shield_reflects(*sh);
+    if (reflect && count < 10)
+    {
+        out += _resist_composer("Reflect", cwidth, reflect) + "\n";
+        count++;
+    }
 
-    const int harm = you.extra_harm(calc_unid);
-    out += _resist_composer("Harm", cwidth, harm) + "\n";
+    if (you.extra_harm(calc_unid) && count < 10)
+    {
+        out += _resist_composer("Harm", cwidth, 1) + "\n";
+        count++;
+    }
 
-    const int rampage = you.rampaging(calc_unid);
-    out += _resist_composer("Rampage", cwidth, rampage) + "\n";
+    if (you.rampaging(calc_unid) && count < 10)
+    {
+        out += _resist_composer("Rampage", cwidth, true) + "\n";
+        count++;
+    }
 
     const int rclar = you.clarity(calc_unid);
     const int stasis = you.stasis();
@@ -2649,23 +2671,29 @@ static vector<formatted_string> _get_overview_resistances(
                              || have_passive(passive_t::berserkitis))
                             && !rclar && !stasis
                             && !you.is_lifeless_undead();
-    if (show_angry || rclar)
+    if ((show_angry || rclar) && count < 10)
     {
         out += (rclar && !have_passive(passive_t::berserkitis)) ? _resist_composer("Clarity", cwidth, rclar) + "\n"
                                                                 : _resist_composer("Rnd*Rage", cwidth, 1, 1, false) + "\n";
+        count++;
     }
 
     // Fo don't need a reminder that they can't teleport
-    if (!you.stasis())
+    if (!you.stasis() && count < 10)
     {
         if (you.no_tele(calc_unid))
+        {
             out += _resist_composer("NoTele", cwidth, 1, 1, false) + "\n";
+            count++;
+        }
         else if (player_teleport(calc_unid))
+        {
             out += _resist_composer("Rnd*Tele", cwidth, 1, 1, false) + "\n";
+            count++;
+        }
     }
 
-    const int no_cast = you.no_cast(calc_unid);
-    if (no_cast)
+    if (you.no_cast(calc_unid) && count < 10)
         out += _resist_composer("NoCast", cwidth, 1, 1, false);
 
     cols.add_formatted(1, out, false);
