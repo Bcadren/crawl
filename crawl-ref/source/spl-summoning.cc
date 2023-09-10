@@ -209,6 +209,17 @@ spret cast_summon_butterflies(int pow, god_type god, bool fail)
     return spret::success;
 }
 
+static bool _change_type(monster_type & type, monster_type changed, int bonus, int min, int max, int & used)
+{
+    if (bonus >= min && x_chance_in_y(bonus - max + min, min) && !god_hates_monster(changed))
+    {
+        used = min - coinflip();
+        type = changed;
+        return true;
+    }
+    return false;
+}
+
 spret cast_summon_small_mammal(int pow, god_type god, bool fail)
 {
     if (otr_stop_summoning_prompt())
@@ -226,40 +237,21 @@ spret cast_summon_small_mammal(int pow, god_type god, bool fail)
     default:
     case 0:
         mon = MONS_QUOKKA;
-        if (bonus >= 5 && x_chance_in_y(bonus - 2, 5))
-        {
-            mon = MONS_PORCUPINE;
-            used = 4;
-        }
+        _change_type(mon, MONS_PORCUPINE, bonus, 5, 7, used);
         break;
     
     case 1:
     case 2:
         mon = MONS_RAT;
-        if (bonus >= 6 && x_chance_in_y(bonus - 3, 6) && !is_good_god(you.religion))
-        {
-            mon = MONS_HELL_RAT;
-            used = 5;
-        }
-        else if (bonus >= 3 && x_chance_in_y(bonus - 2, 3))
-        {
-            mon = MONS_SEWER_RAT;
-            used = 3;
-        }
+        if (!_change_type(mon, MONS_HELL_RAT, bonus, 6, 9, used))
+            _change_type(mon, MONS_SEWER_RAT, bonus, 3, 5, used);
         break;
 
     case 3:
         mon = MONS_BAT;
-        if (bonus >= 4 && x_chance_in_y(bonus - 3, 4) && you.religion != GOD_DITHMENOS)
-        {
-            mon = MONS_FIRE_BAT;
-            used = 3;
-        }
-        else if (bonus >= 2 && x_chance_in_y(bonus - 2, 2) && !is_good_god(you.religion))
-        {
-            mon = MONS_VAMPIRE_BAT;
-            used = 1;
-        }
+        if (!_change_type(mon, MONS_FIRE_BAT, bonus, 4, 7, used))
+            _change_type(mon, MONS_VAMPIRE_BAT, bonus, 2, 4, used);
+        break;
     }
 
     if (monster * m = create_monster(_pal_data(mon, 3, god, SPELL_SUMMON_SMALL_MAMMAL)))
