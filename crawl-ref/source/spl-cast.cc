@@ -113,6 +113,15 @@ void surge_power_wand(const int mp_cost)
         mpr("You feel a surge of power.");
 }
 
+static string _spell_with_plus(spell_type spell)
+{
+    const char * Title = spell_title(spell);
+    const int bonus = you.lookup_spell_xp(spell).bonus;
+    if (bonus > 0)
+        return make_stringf("%s (+%d)", Title, bonus).c_str();
+    return Title;
+}
+
 static string _spell_base_description(spell_type spell, bool viewing)
 {
     ostringstream desc;
@@ -122,8 +131,7 @@ static string _spell_base_description(spell_type spell, bool viewing)
     desc << "<" << colour_to_str(highlight) << ">" << left;
 
     // spell name
-    desc << chop_string(spell_title(spell), 30);
-
+    desc << chop_string(_spell_with_plus(spell), 30);
     int* x = new int;
     // spell schools
     desc << spell_schools_string(spell, x);

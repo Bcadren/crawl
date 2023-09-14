@@ -696,15 +696,6 @@ static const char *_spell_title(spell_type spell, const actor * caster)
     if (!caster || !caster->is_player())
         return Title;
 
-    for (player::summon_xp xp : you.summon_xp_data)
-    {
-        if (xp.summon == spell && xp.bonus > 0)
-        {
-            const char * retval = make_stringf("%s (+%d)", Title, xp.bonus).c_str();
-            return retval;
-        }
-    }
-
     return Title;
 }
 
