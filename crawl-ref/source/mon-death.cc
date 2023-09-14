@@ -264,7 +264,7 @@ static void _update_spell_xp_bonus(player::summon_xp * xp)
 {
     const int base = spell_difficulty(xp->summon) * 3;
 
-    while (xp->bonus < 9 && xp->xp >= exp_needed(min(27, base + xp->bonus), 2))
+    while (xp->bonus < 9 && xp->xp >= exp_needed(min(27, base + xp->bonus), -2))
     {
         xp->xp -= exp_needed(min(27, base + xp->bonus), -2);
         xp->bonus++;
