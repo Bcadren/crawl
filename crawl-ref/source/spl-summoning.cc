@@ -131,7 +131,6 @@ void player_post_summon_adjustments(spell_type spell, monster * mon, int power, 
     switch (spell)
     {
     case SPELL_INFESTATION:
-    case SPELL_STICKS_TO_SNAKES:
     case SPELL_ANIMATE_DEAD:
     case SPELL_SKELETAL_UPRISING:
     case SPELL_SIMULACRUM:
