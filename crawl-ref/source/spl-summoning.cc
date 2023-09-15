@@ -331,29 +331,63 @@ spret cast_sticks_to_snakes(int pow, god_type god, bool fail)
     return spret::success;
 }
 
+#define DOG_FLIP "canine_familiar_type"
+
 spret cast_call_canine_familiar(int pow, god_type god, bool fail)
 {
     if (otr_stop_summoning_prompt())
         return spret::abort;
 
     fail_check();
-    monster_type mon = MONS_PROGRAM_BUG;
+    monster_type mon = MONS_JACKAL;
+    int used = 0;
+    
+    if (!you.props.exists(DOG_FLIP))
+        you.props[DOG_FLIP] = true;
 
-    const int chance = pow + random_range(-10, 10);
+    const int bonus = you.lookup_spell_xp_bonus(SPELL_CALL_CANINE_FAMILIAR);
+    const bool flip = you.props[DOG_FLIP].get_bool();
 
-    if (chance > 59)
-        mon = MONS_WARG;
-    else if (chance > 39)
+    switch (bonus)
+    {
+    case 9:
+    case 8:
+    case 7:
+        if (flip || god_hates_monster(MONS_HELL_HOUND))
+        {
+            used = 6;
+            mon = MONS_RAIJU;
+            break;
+        }
+        used = 5;
+        mon = MONS_HELL_HOUND;
+        break;
+    case 6:
+    case 5:
+        if (flip)
+            mon = MONS_WAR_DOG;
+        else
+            mon = MONS_WARG;
+        used = 4;
+        break;
+    case 4:
+    case 3:
         mon = MONS_WOLF;
-    else if (chance > 19)
+        used = 2;
+        break;
+    case 2:
+    case 1:
         mon = MONS_HOUND;
-    else
-        mon = MONS_JACKAL;
+    default:
+        break;
+    }
+    
+    you.props[DOG_FLIP] = !you.props[DOG_FLIP];
 
     const int dur = min(2 + (random2(pow) / 4), 6);
 
     if (monster * m = create_monster(_pal_data(mon, dur, god, SPELL_CALL_CANINE_FAMILIAR)))
-        player_post_summon_adjustments(SPELL_CALL_CANINE_FAMILIAR, m, pow); 
+        player_post_summon_adjustments(SPELL_CALL_CANINE_FAMILIAR, m, pow, used); 
     else
         canned_msg(MSG_NOTHING_HAPPENS);
 
