@@ -304,17 +304,21 @@ spret cast_sticks_to_snakes(int pow, god_type god, bool fail)
     fail_check();
     for (int i = 0; i < how_many_max; i++)
     {
-        monster_type mon;
-        if (one_chance_in(5 - min(4, div_rand_round(pow * 2, 25))))
+        monster_type mon = MONS_BALL_PYTHON;
+        const int bonus = you.lookup_spell_xp_bonus(SPELL_STICKS_TO_SNAKES);
+        int used = 0;
+
+        // BCADDO: Restructure to have mid-tier constrictor and separate Poison/Constrictor pools.
+        if (!_change_type(mon, MONS_ANACONDA, bonus, 8, 11, used)
+            && !_change_type(mon, MONS_SEA_SNAKE, bonus, 7, 9, used)
+            && !_change_type(mon, MONS_BLACK_MAMBA, bonus, 5, 8, used)
+            && !_change_type(mon, MONS_WATER_MOCCASIN, bonus, 3, 5, used))
         {
-            mon = x_chance_in_y(pow / 3, 100) ? MONS_WATER_MOCCASIN
-                                              : MONS_ADDER;
+            _change_type(mon, MONS_ADDER, bonus, 2, 4, used);
         }
-        else
-            mon = MONS_BALL_PYTHON;
         if (monster * m = create_monster(_pal_data(mon, 3, god, SPELL_STICKS_TO_SNAKES), false))
         {
-            player_post_summon_adjustments(SPELL_STICKS_TO_SNAKES, m, pow);
+            player_post_summon_adjustments(SPELL_STICKS_TO_SNAKES, m, pow, used);
             count++;
         }
     }
