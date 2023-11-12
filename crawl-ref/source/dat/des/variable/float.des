@@ -2449,7 +2449,7 @@ DEPTH:   Depths
 MONS:    plant w:14 / fungus w:4 / bush w:2
 MONS:    fire dragon / ice dragon / lindwurm / hell hound
 MONS:    death yak / manticore / catoblepas / dire elephant
-MONS:    hydra / anaconda / hornet w:2 / redback w:3 / wolf spider w:5 / harpy
+MONS:    hydra / blood boa / hornet w:2 / redback w:3 / wolf spider w:5 / harpy
 MONS:    spriggan druid, spriggan rider
 MONS:    sphinx / helvityr w:5 / caustic shrike w:5
 ITEM:    ration / nothing w:80
@@ -2519,7 +2519,7 @@ KMONS: S = swamp dragon / hydra w:5 / thorn hunter / large slime creature / \
            alligator
 KMONS: A = alligator snapping turtle w:5 / merfolk avatar / merfolk aquamancer / \
            merfolk impaler / harpy
-KMONS: K = nagaraja w:5 / naga mage / anaconda / naga warrior / \
+KMONS: K = nagaraja w:5 / naga mage / anaconda w:3 / blood boa w:7 / naga warrior / \
            guardian serpent
 KMONS: R = emperor scorpion / wolf spider / orb spider / ghost moth w:5 / \
            tarantella
@@ -3699,7 +3699,7 @@ ORIENT: float
 MONS: w:5 wolf spider / tarantella / redback,  demonic crawler / orb spider
 MONS: spark wasp
 : else
-MONS: w:5 anaconda / black mamba / water moccasin, mana viper, shock serpent
+MONS: w:5 blood boa / black mamba / water moccasin, mana viper, shock serpent
 : end
 ITEM: w:60 star_item / crystal ball of energy / staff of air / \
       lightning rod w:15  / fan of gales w:15

@@ -678,6 +678,11 @@ block of ice
 
 A block of ice shaped like a statue, but worked by no living hands.
 %%%%
+blood boa
+
+A massive vampiric constrictor snake; slower than anacondas, but still faster than 
+most and with frightening bulk.
+%%%%
 blood saint
 
 <demonspawn>

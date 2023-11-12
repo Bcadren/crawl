@@ -2685,14 +2685,15 @@ static bool _polymorph_ally(const monster* mon, bool actual)
         MONS_BLINK_FROG,
         MONS_MANA_VIPER,
         MONS_WATER_MOCCASIN,
+        MONS_ANACONDA,
         MONS_SPINY_FROG,
         MONS_SEA_SNAKE,
         MONS_BLACK_MAMBA,
-        MONS_ANACONDA,
+        MONS_BLOOD_BOA,
         MONS_SHOCK_SERPENT,
     };
 
-    const int lengths[] = { 12, 16, 7, 17, 4, 10 };
+    const int lengths[] = { 12, 16, 7, 17, 4, 11 };
 
     const int total_length = lengths[0] + lengths[1] + lengths[2]
                            + lengths[3] + lengths[4] + lengths[5];
@@ -4543,7 +4544,8 @@ static monster_type _pick_horrible_thing()
 static monster_type _pick_jungle_animal()
 {
     return one_chance_in(4) ? MONS_THORN_HUNTER :
-                 coinflip() ? MONS_ANACONDA
+                 coinflip() ? MONS_ANACONDA :
+                 coinflip() ? MONS_BLOOD_BOA
                             : MONS_DIRE_ELEPHANT;
 }
 
@@ -5384,6 +5386,7 @@ static branch_summon_pair _invitation_summons[] =
 static const pop_entry _planerend_snake[] =
 { // Snake enemies
   {  1,   1,   40, FLAT, MONS_ANACONDA },
+  {  1,   1,   40, FLAT, MONS_BLOOD_BOA },
   {  1,   1,  100, FLAT, MONS_GUARDIAN_SERPENT },
   {  1,   1,  100, FLAT, MONS_NAGARAJA },
   { 0,0,0,FLAT,MONS_0 }

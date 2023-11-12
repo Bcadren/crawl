@@ -302,9 +302,7 @@ enum monster_type                      // env.mons[].type
     // Mimics:
     MONS_ROT_ELEMENTAL,
     MONS_PAIN_ELEMENTAL,
-#if TAG_MAJOR_VERSION == 34
-    MONS_RAVENOUS_ITEM_MIMIC,
-#endif
+    MONS_BLOOD_BOA,
     MONS_GIANT_BLOWFLY,
     MONS_GIRAFFE,
     MONS_CHAMELEON,

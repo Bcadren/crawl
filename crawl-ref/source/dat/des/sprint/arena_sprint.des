@@ -388,7 +388,7 @@ function arena_sprint_get_monster_set(round, boss)
                 "place:Spider:$ / wolf spider / orb spider / w:5 emperor scorpion /\
                     w:5 ghost moth",
                 "place:Snake:$ / naga mage / naga warrior / nagaraja /\
-                    guardian serpent / anaconda",
+                    guardian serpent / blood boa",
                 "place:Slime:$",
                 "dancing weapon",
                 "place:Forest",
@@ -458,7 +458,7 @@ function arena_sprint_get_monster_set(round, boss)
                 "place:Spider:$ w:5 / wolf spider / orb spider / emperor scorpion /\
                     ghost moth / moth of wrath",
                 "place:Snake:$ w:5 / naga mage / naga warrior / w:20 nagaraja /\
-                    guardian serpent / w:5 anaconda",
+                    guardian serpent / w:5 blood boa",
                 "place:Slime:$ / acid blob / azure jelly / great orb of eyes",
                 "dancing weapon",
                 "place:Forest:$ w:20 / spriggan defender / spriggan rider /\
@@ -530,7 +530,7 @@ function arena_sprint_get_monster_set(round, boss)
                 "gwyrdd / death drake",
                 "place:Spider:$ w:5 / orb spider w:5 / emperor scorpion /\
                     ghost moth / moth of wrath",
-                "place:Snake:$ w:2 / w:40 nagaraja / guardian serpent / w:5 anaconda",
+                "place:Snake:$ w:2 / w:40 nagaraja / guardian serpent / w:5 blood boa",
                 "place:Slime:$ / w:30 acid blob / azure jelly / floating eye /\
                     eye of draining",
                 "dancing weapon ; bardiche",
@@ -603,7 +603,7 @@ function arena_sprint_get_monster_set(round, boss)
                     cenysus / Vetrifl",
                 "gwyrdd / death drake w:15",
                 "orb spider / emperor scorpion / ghost moth / moth of wrath",
-                "w:40 nagaraja / guardian serpent / w:5 anaconda",
+                "w:40 nagaraja / guardian serpent / w:5 blood boa",
                 "w:30 acid blob / azure jelly / floating eye / eye of draining",
                 "dancing weapon ; bardiche ego:speed",
                 "spriggan air mage",
@@ -688,7 +688,7 @@ function arena_sprint_init_boss_table()
     if crawl.coinflip() then
         bs[1] = {"place:Snake", "aizul hd:7 hp:120 / " ..
                  "naga warrior name:naga_warlord n_rpl n_des n_noc col:cyan hp:130 / " ..
-                 "anaconda name:giant n_adj n_noc hp:130 col:lightred",
+                 "blood boa name:giant n_adj n_noc hp:130 col:lightred",
                  "serpentine rune of zot"}
     else
         bs[1] = {"place:Swamp", "the lernaean hydra / " ..

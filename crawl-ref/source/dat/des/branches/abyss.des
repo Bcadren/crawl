@@ -594,7 +594,7 @@ MONS:    shapeshifter / ugly thing / large abomination w:2, wretched star
 MONS:    large abomination / ghoul / death ooze w:2, ancient zyme
 MONS:    large slime creature w:12 / very large slime creature w:8 / rakshasa w:2
 KMONS:   8 = starcursed mass
-KMONS:   9 = floating eye / chaos elemental / anaconda perm_ench:shapeshifter w:2
+KMONS:   9 = floating eye / chaos elemental / blood boa perm_ench:shapeshifter w:2
 KMONS:   0 = tentacled starspawn
 KMONS:   A = patrolling cysgodol
 KMONS:   B = boggart
@@ -2067,7 +2067,7 @@ MONS:    hell hound, raiju, great orb of eyes
 MONS:    glowing orange brain, swamp drake, wind drake, torpor snail
 KMONS:   8 = tyrant leech
 KMONS:   9 = mana viper
-KMONS:   0 = anaconda
+KMONS:   0 = blood boa
 KMONS:   A = ball lightning
 KMONS:   B = air elemental
 KMONS:   C = unseen horror

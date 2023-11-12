@@ -603,7 +603,7 @@ NAME: sprint_mu_snake_twists
 TAGS: sprint_mu_snake no_rotate no_hmirror no_vmirror
 MONS: guardian serpent, naga warrior, nagaraja, naga
 MONS: adder, water moccasin, black mamba
-KMONS: 8 = anaconda
+KMONS: 8 = blood boa
 SUBST: 5 = 5..
 SUBST: 5 = 5678
 KFEAT: A = antique armour shop / antique weapon shop

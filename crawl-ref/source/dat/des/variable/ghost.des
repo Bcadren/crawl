@@ -1918,7 +1918,7 @@ MONS:   alligator snapping turtle
 SUBST:  D = FH, fg = |*, h = *%, i = $%--, j= -
 NSUBST: - = 1 / 1. / 3=2 / 5=2. / 3 / 3=3. / 4. / .
 : elseif you.in_branch("Snake") then
-MONS:   black mamba / mana viper / anaconda
+MONS:   black mamba / mana viper / anaconda / blood boa
 MONS:   guardian serpent / shock serpent
 SUBST:  D = FH, fg = |*, h = *%, i = $%--, j= -
 NSUBST: - = 1 / 1. / 3=2 / 5=2. / 3 / 4=3. / .

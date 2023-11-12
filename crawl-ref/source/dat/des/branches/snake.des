@@ -179,7 +179,7 @@ DEPTH:  Snake
 ORIENT: south
 # Black mambas can't swim, so none of those
 MONS:   ball python w:3 / adder / water moccasin / nothing w:5
-MONS:   anaconda / nothing w:5
+MONS:   anaconda / blood boa / nothing w:5
 SUBST:  w = wwW
 KPROP:  12 = no_tele_into
 MAP
@@ -231,7 +231,7 @@ TAGS:   transparent
 DEPTH:  Snake
 SUBST:  L = l1
 SUBST:  1 = 1.
-MONS:   adder / ball python / black mamba / anaconda w:5 / \
+MONS:   blood boa w:5 / black mamba / anaconda / \
         water moccasin / nothing w:40
 KMONS:  l = lava snake / nothing w:50
 KFEAT:  l = lava
@@ -258,7 +258,7 @@ TAGS:   transparent
 DEPTH:  Snake
 SUBST:  W = w1
 SUBST:  1 = 1.
-MONS:   adder / ball python / black mamba / anaconda w:5 / \
+MONS:   blood boa w:5 / black mamba / anaconda / \
         water moccasin w:15
 KMONS:  w = sea snake / nothing w:90
 KFEAT:  w = deep_water
@@ -311,8 +311,8 @@ ENDMAP
 NAME:   nicolae_snake_horde_hoard
 DEPTH:  Snake
 KITEM:  s = $ / nothing w:25 / * w:1
-KMONS:  s = adder w:5 / ball python w:5 / black mamba / anaconda / \
-           water moccasin / sea snake w:1 / nothing w:20
+KMONS:  s = adder w:3 / ball python w:3 / black mamba / anaconda / \
+           water moccasin / blood boa / sea snake w:1 / nothing w:20
 MAP
  xxxxxxx
 xxsssssxxxxxx
@@ -555,8 +555,8 @@ NAME:    hangedman_snake_corridor_cut
 TAGS:    no_monster_gen transparent
 DEPTH:   Snake
 MONS:    naga, patrolling naga mage
-MONS:    black mamba / anaconda, patrolling guardian serpent
-MONS:    patrolling adder / patrolling ball python / \
+MONS:    black mamba / blood boa, patrolling guardian serpent
+MONS:    patrolling adder / patrolling anaconda / \
          patrolling water moccasin w:5
 SHUFFLE: hH / hH / hH, iI / iI / Ii, jJ / jJ / Jj, kK / kK / Kk
 SHUFFLE: 1234 / 1234 / 1212 / 3434
@@ -586,7 +586,7 @@ ENDMAP
 NAME:    hangedman_snake_corridor_split
 TAGS:    no_monster_gen transparent allow_dup
 DEPTH:   Snake
-MONS:    naga, black mamba, naga warrior, anaconda, naga mage, guardian serpent
+MONS:    naga, black mamba, naga warrior, blood boa, naga mage, guardian serpent
 SUBST:   X : xxc, Y : x:33 c:66 w:1, 0 = 12
 SHUFFLE: 34, 56, 3456 / 3456 / 3456 / 3535 / 4646 / 3636 / 4545 / 3434 / 5656
 MAP
@@ -621,7 +621,7 @@ KMONS:  D = golden dragon / shadow dragon / quicksilver dragon w:5 / \
             iron dragon w:5
 : else
 KMONS:  A = naga warrior / naga mage / naga
-KMONS:  B = black mamba w:6 / anaconda
+KMONS:  B = black mamba w:6 / blood boa
 KMONS:  C = nagaraja / naga mage w:5 / guardian serpent w:5
 KMONS:  D = guardian serpent / anaconda w:2
 : end
@@ -1237,7 +1237,7 @@ MONS:   naga
 MONS:   naga mage w:40 / naga ritualist / naga sharpshooter
 MONS:   naga warrior / naga sharpshooter w:5
 MONS:   nagaraja, guardian serpent
-MONS:   w:21 anaconda / black mamba / shock serpent w:7 / mana viper w:13 / \
+MONS:   blood boa / anaconda / black mamba / shock serpent w:7 / mana viper w:13 / \
         nothing w:30
 KITEM:  O = serpentine rune of Zot
 KMONS:  OS = guardian serpent
@@ -1337,7 +1337,7 @@ MONS: nagaraja, guardian serpent
 MONS: naga warrior / naga sharpshooter w:5
 MONS: naga mage w:40 / naga ritualist / naga sharpshooter
 MONS: naga
-MONS: guardian serpent w:15 / anaconda w:30 / black mamba / \
+MONS: guardian serpent w:15 / blood boa w:30 / black mamba / \
       mana viper / shock serpent
 SUBST: 4 = 45, 3 = 35, 1 = 13, 2 = 21
 KMONS: 7 = sea snake
@@ -1388,7 +1388,7 @@ MONS:   nagaraja w:20 / naga warrior w:5 / naga mage w:5 / \
         naga ritualist w:5 / naga sharpshooter w:5
 MONS:   naga mage w:20 / naga ritualist / naga sharpshooter / naga w:40
 MONS:   naga / nothing
-MONS:   anaconda / guardian serpent
+MONS:   blood boa / anaconda w:5 / guardian serpent w:20
 MAP
      xxxxxxx
      ccccccc
@@ -1439,7 +1439,7 @@ MONS:   naga mage w:20 / naga ritualist / naga sharpshooter / naga w:30 / \
 MONS:   guardian serpent / salamander mystic w:5 / naga ritualist w:5 / \
         nothing
 MONS:   nagaraja w:30 / naga warrior w:5 / naga sharpshooter w:5
-MONS:   anaconda / black mamba / shock serpent w:5 / mana viper
+MONS:   blood boa / anaconda w:5 / black mamba / shock serpent w:5 / mana viper
 
 KMONS:  Z = Vashnia / nagaraja, nagaraja
 SUBST:  Z = ZZZ5

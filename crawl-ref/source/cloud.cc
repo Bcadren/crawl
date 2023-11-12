@@ -569,8 +569,9 @@ static void _handle_spectral_cloud(const cloud_struct& cloud)
         return;
 
     monster_type basetype =
-        random_choose_weighted(4,   MONS_ANACONDA,
-                               6,   MONS_HYDRA,
+        random_choose_weighted(4,   MONS_BLOOD_BOA,
+                               6,   MONS_ANACONDA,
+                               12,  MONS_HYDRA,
                                3,   MONS_SNAPPING_TURTLE,
                                2,   MONS_ALLIGATOR_SNAPPING_TURTLE,
                                100, RANDOM_MONSTER);
