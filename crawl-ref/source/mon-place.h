@@ -11,6 +11,7 @@
 #include "coord-def.h"
 #include "dungeon-char-type.h"
 #include "dungeon-feature-type.h"
+#include "god-type.h"
 #include "level-id.h"
 #include "mgen-enum.h"
 #include "monster-type.h"
@@ -94,8 +95,8 @@ monster_type pick_random_monster(level_id place,
                                  bool allow_ood = true,
                                  bool adjusted = false);
 
-conduct_type god_hates_monster(monster_type type);
-conduct_type god_hates_monster(const monster &mon);
+conduct_type god_hates_monster(monster_type type, god_type god = GOD_PLAYER);
+conduct_type god_hates_monster(const monster &mon, god_type god = GOD_PLAYER);
 bool mons_can_hate(monster_type type);
 void check_lovelessness(monster &mon);
 

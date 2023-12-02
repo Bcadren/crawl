@@ -39,4 +39,5 @@ enum god_type
     GOD_RANDOM = 100,
     GOD_NAMELESS,                      // for monsters with non-player gods
     GOD_ECUMENICAL,                    // Temporary
+    GOD_PLAYER,                        // Enum listing for player's gods.
 };

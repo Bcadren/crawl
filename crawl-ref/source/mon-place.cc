@@ -3071,7 +3071,7 @@ bool can_spawn_mushrooms(coord_def where)
     return actor_cloud_immune(dummy, *cloud);
 }
 
-conduct_type god_hates_monster(monster_type type)
+conduct_type god_hates_monster(monster_type type, god_type god)
 {
     monster dummy;
     dummy.type = type;
@@ -3082,7 +3082,7 @@ conduct_type god_hates_monster(monster_type type)
     else
         define_monster(dummy);
 
-    return god_hates_monster(dummy);
+    return god_hates_monster(dummy, god);
 }
 
 /**
@@ -3116,36 +3116,46 @@ void check_lovelessness(monster &mons)
  *      callers by god; we're duplicating god-conduct.cc right now.
  *
  * @param mon   The monster in question.
- * @return      The reason the player's religion conflicts with the monster
+ * @param god   The religion in question. Use GOD_PLAYER for player check.
+ * @return      The reason the given religion conflicts with the monster
  *              (e.g. DID_EVIL for evil monsters), or DID_NOTHING.
  */
-conduct_type god_hates_monster(const monster &mon)
+conduct_type god_hates_monster(const monster &mon, god_type god)
 {
-    // Player angers all real monsters
-    if (mons_can_hate(mon.type))
-        return DID_SACRIFICE_LOVE;
+    if (god == GOD_PLAYER)
+    {
+        // Player angers all real monsters
+        if (mons_can_hate(mon.type))
+            return DID_SACRIFICE_LOVE;
 
-    if (is_good_god(you.religion) && mon.evil())
+        god = you.religion;
+    }
+
+    // GOD_NAMELESS
+    if (god > NUM_GODS)
+        return DID_NOTHING;
+
+    if (is_good_god(god) && mon.evil())
         return DID_EVIL;
 
-    if (you_worship(GOD_FEDHAS)
+    if ((god == GOD_FEDHAS)
         && ((mon.holiness() & MH_UNDEAD && !mon.is_insubstantial())
             || mon.has_corpse_violating_spell()))
     {
         return DID_CORPSE_VIOLATION;
     }
 
-    if (is_evil_god(you.religion) && mon.is_holy())
+    if (is_evil_god(god) && mon.is_holy())
         return DID_HOLY;
 
-    if (you_worship(GOD_ZIN))
+    if (god == GOD_ZIN)
     {
         if (mon.how_unclean())
             return DID_UNCLEAN;
         if (mon.how_chaotic())
             return DID_CHAOS;
     }
-    if (god_hates_spellcasting(you.religion) && mon.is_actual_spellcaster())
+    if (god_hates_spellcasting(god) && mon.is_actual_spellcaster())
         return DID_SPELL_CASTING;
 
     return DID_NOTHING;

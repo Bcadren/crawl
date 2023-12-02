@@ -210,7 +210,7 @@ spret cast_summon_butterflies(int pow, god_type god, bool fail)
 
 static bool _change_type(monster_type & type, monster_type changed, int bonus, int min, int max, int & used)
 {
-    if (bonus >= min && x_chance_in_y(bonus - max + min, min) && !god_hates_monster(changed))
+    if (bonus >= min && x_chance_in_y(bonus - min + 1, max - min + 1) && !god_hates_monster(changed))
     {
         used = min - coinflip();
         type = changed;
@@ -427,6 +427,7 @@ spret cast_summon_ice_beast(int pow, god_type god, bool fail)
     return spret::success;
 }
 
+// BCADNOTE: Not sure what to do with this one.
 spret cast_monstrous_menagerie(actor* caster, int pow, god_type god, bool fail)
 {
     if (caster->is_player() && otr_stop_summoning_prompt())
@@ -522,22 +523,28 @@ spret cast_summon_hydra(actor *caster, int pow, god_type god, bool fail)
     return spret::success;
 }
 
-static monster_type _choose_dragon_type(int pow, god_type /*god*/, bool player)
+static monster_type _choose_dragon_type(int pow, god_type god)
 {
-    monster_type mon = MONS_PROGRAM_BUG;
+    monster_type mon = MONS_NO_MONSTER;
 
-    const int chance = random2(pow);
+    int chance = random2(pow);
 
     if (chance >= 80 || one_chance_in(6))
-        mon = random_choose(MONS_GOLDEN_DRAGON, MONS_QUICKSILVER_DRAGON);
+        mon = random_choose(MONS_BONE_DRAGON, MONS_GOLDEN_DRAGON, MONS_QUICKSILVER_DRAGON);
     else if (chance >= 40 || one_chance_in(6))
         mon = random_choose(MONS_IRON_DRAGON, MONS_SHADOW_DRAGON, MONS_STORM_DRAGON);
-    else
+    else if (chance >= 20 || one_chance_in(6) || pow > 100)
         mon = random_choose(MONS_FIRE_DRAGON, MONS_ICE_DRAGON);
+    else
+        mon = random_choose(MONS_ACID_DRAGON, MONS_STEAM_DRAGON);
 
-    // For good gods, switch away from shadow dragons to storm/iron dragons.
-    if (player && god_hates_monster(mon))
-        mon = random_choose(MONS_STORM_DRAGON, MONS_IRON_DRAGON);
+    if (god_hates_monster(mon, god))
+    {
+        if (is_good_god(god) && coinflip())
+            mon = MONS_PEARL_DRAGON;
+        else
+            mon = random_choose(MONS_STORM_DRAGON, MONS_IRON_DRAGON);
+    }
 
     return mon;
 }
@@ -560,8 +567,30 @@ spret cast_dragon_call(int pow, bool fail)
 static void _place_dragon()
 {
     const int pow = calc_spell_power(SPELL_DRAGON_CALL, true);
-    monster_type mon = _choose_dragon_type(pow, you.religion, true);
+    const int bonus = you.lookup_spell_xp_bonus(SPELL_DRAGON_CALL);
     const int mp_cost = you.species == SP_FAIRY ? 1 : random_range(2, 3);
+    
+    int used = 0;
+    monster_type mon = MONS_STEAM_DRAGON;
+
+    monster_type tier1 = random_choose(MONS_BONE_DRAGON, MONS_GOLDEN_DRAGON, MONS_QUICKSILVER_DRAGON);
+    monster_type tier2 = random_choose(MONS_IRON_DRAGON, MONS_SHADOW_DRAGON, MONS_STORM_DRAGON);
+    monster_type tier3 = random_choose(MONS_FIRE_DRAGON, MONS_ICE_DRAGON);
+
+    if (is_good_god(you.religion))
+    {
+        if (tier1 == MONS_BONE_DRAGON)
+            tier1 = MONS_PEARL_DRAGON;
+        if (tier2 == MONS_SHADOW_DRAGON)
+            tier2 = MONS_PEARL_DRAGON;
+    }
+
+    if (!_change_type(mon, tier1, bonus, 6, 11, used)
+        && !_change_type(mon, tier2, bonus, 3, 8, used)
+        && !_change_type(mon, tier3, bonus, 0, 5, used))
+    {
+        _change_type(mon, MONS_ACID_DRAGON, bonus, -1, 3, used);
+    }
 
     vector<monster*> targets;
 
@@ -607,7 +636,7 @@ static void _place_dragon()
         if (!dragon)
             continue;
 
-        player_post_summon_adjustments(SPELL_DRAGON_CALL, dragon, pow);
+        player_post_summon_adjustments(SPELL_DRAGON_CALL, dragon, pow, used);
 
         dec_mp(mp_cost);
         if (you.see_cell(dragon->pos()))
@@ -742,7 +771,7 @@ spret cast_summon_dragon(actor *caster, int pow, god_type god, bool fail)
         god = caster->deity();
 
     int how_many = 1;
-    monster_type mon = _choose_dragon_type(pow, god, caster->is_player());
+    monster_type mon = _choose_dragon_type(pow, god);
 
     if (pow >= 100 && (mon == MONS_FIRE_DRAGON || mon == MONS_ICE_DRAGON))
         how_many = 2;
