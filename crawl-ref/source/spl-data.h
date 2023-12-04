@@ -3121,7 +3121,7 @@ static const struct spell_desc spelldata[] =
     SPELL_DRAGON_CALL, "Dragon's Call", "",
     spschool::summoning,
     spflag::none,
-    9,
+    8,
     200,
     -1, -1,
     7, 15,

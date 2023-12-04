@@ -571,7 +571,7 @@ static void _place_dragon()
     const int mp_cost = you.species == SP_FAIRY ? 1 : random_range(2, 3);
     
     int used = 0;
-    monster_type mon = MONS_STEAM_DRAGON;
+    monster_type mon = MONS_ACID_DRAGON;
 
     monster_type tier1 = random_choose(MONS_BONE_DRAGON, MONS_GOLDEN_DRAGON, MONS_QUICKSILVER_DRAGON);
     monster_type tier2 = random_choose(MONS_IRON_DRAGON, MONS_SHADOW_DRAGON, MONS_STORM_DRAGON);
@@ -585,11 +585,32 @@ static void _place_dragon()
             tier2 = MONS_PEARL_DRAGON;
     }
 
-    if (!_change_type(mon, tier1, bonus, 6, 11, used)
-        && !_change_type(mon, tier2, bonus, 3, 8, used)
-        && !_change_type(mon, tier3, bonus, 0, 5, used))
+    if (you.religion == GOD_DITHMENOS)
+        tier3 = MONS_ICE_DRAGON;
+
+    if (one_chance_in(5))
     {
-        _change_type(mon, MONS_ACID_DRAGON, bonus, -1, 3, used);
+        switch (random2(4))
+        {
+        case 0:
+            mon = tier1;
+            used = min(bonus, 6);
+            break;
+        case 1:
+            mon = tier2;
+            used = min(bonus, 3);
+            break;
+        case 2:
+            mon = tier3;
+            break;
+        case 3:
+            break;
+        }
+    }
+    else if (!_change_type(mon, tier1, bonus, 6, 11, used)
+        && !_change_type(mon, tier2, bonus, 3, 8, used))
+    {
+        _change_type(mon, tier3, bonus, 0, 5, used);
     }
 
     vector<monster*> targets;
@@ -3930,8 +3951,7 @@ struct summon_cap
 };
 
 // BCADDO: Summon XP Spells:
-/*SPELL_SUMMON_SMALL_MAMMAL,
-SPELL_SUMMON_JUNGLE,
+/*SPELL_SUMMON_JUNGLE,
 SPELL_MALIGN_GATEWAY,
 SPELL_HAUNT,
 SPELL_SUMMON_ICE_BEAST,
@@ -3943,7 +3963,6 @@ SPELL_MONSTROUS_MENAGERIE,
 SPELL_CALL_LOST_SOULS,
 SPELL_SUMMON_FOREST,
 SPELL_SUMMON_LIGHTNING_SPIRE,
-SPELL_DRAGON_CALL,
 SPELL_SPELLFORGED_SERVITOR,
 SPELL_SUMMON_MANA_VIPER, */
 
