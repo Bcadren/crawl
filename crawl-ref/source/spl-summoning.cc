@@ -819,8 +819,22 @@ spret cast_summon_mana_viper(int pow, god_type god, bool fail)
 {
     fail_check();
 
-    mgen_data viper = _pal_data(MONS_MANA_VIPER, 2, god,
-                                SPELL_SUMMON_MANA_VIPER);
+    const int bonus = you.lookup_spell_xp_bonus(SPELL_SUMMON_MANA_VIPER);
+    monster_type mon = MONS_MANA_VIPER;
+    int used = 0;
+
+    if (one_chance_in(3))
+        mon = MONS_MANA_VIPER;
+    else if (!_change_type(mon, MONS_MANA_COBRA, bonus, 3, 7, used))
+        mon = MONS_MANA_VIPER;
+    
+    if (one_chance_in(5))
+    {
+        mon = MONS_MANA_COBRA;
+        used = 0;
+    }
+
+    mgen_data viper = _pal_data(mon, 2, god, SPELL_SUMMON_MANA_VIPER);
     viper.hd = (5 + div_rand_round(pow, 12));
 
     // Don't scale hp at the same time as their antimagic power
@@ -828,8 +842,11 @@ spret cast_summon_mana_viper(int pow, god_type god, bool fail)
 
     if (monster * vip = create_monster(viper))
     {
-        player_post_summon_adjustments(SPELL_SUMMON_MANA_VIPER, vip, pow);
-        mpr("A mana viper appears with a sibilant hiss.");
+        player_post_summon_adjustments(SPELL_SUMMON_MANA_VIPER, vip, pow, used);
+        if (mon == MONS_MANA_VIPER)
+            mpr("A mana viper appears with a sibilant hiss.");
+        else
+            mpr("A mana cobra appears with a sinister snarl.");
     }
     else
         canned_msg(MSG_NOTHING_HAPPENS);

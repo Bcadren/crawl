@@ -3982,7 +3982,7 @@ void bolt::affect_player_enchantment(bool resistible)
 
     case BEAM_DRAIN_MAGIC:
     {
-        int amount = random2avg(ench_power / 8, 3);
+        int amount = random2avg(ench_power, 3);
         if (you.is_fairy())
             amount = div_rand_round(amount, 6);
         amount = min(you.magic_points, amount);
@@ -6717,7 +6717,7 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             break;
 
         const int dur =
-            random2(div_rand_round(ench_power, mon->get_hit_dice()) + 1)
+            random2(div_rand_round(ench_power * 8, mon->get_hit_dice()) + 1)
                     * BASELINE_DELAY;
         mon->add_ench(mon_enchant(ENCH_ANTIMAGIC, 0,
                                   agent(), // doesn't matter
@@ -7540,6 +7540,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_MIASMA:                return "miasma";
     case BEAM_SPORE:                 return "spores";
     case BEAM_POISON_ARROW:          return "strong poison";
+    case BEAM_ANTIMAGIC:             return "magic disrupting venom";
     case BEAM_HELLFIRE:              return "hellfire";
     case BEAM_STICKY_FLAME:          return "sticky fire";
     case BEAM_STEAM:                 return "steam";

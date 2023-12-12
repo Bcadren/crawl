@@ -6533,6 +6533,11 @@ void monster::beam_effects(beam_type flavour, int original, int hurted, bolt *pb
             simple_monster_message(*this, " gets badly buffeted.");
         break;
 
+    case BEAM_ANTIMAGIC:
+        if (hurted)
+            enchant_actor_with_flavour(this, nullptr, BEAM_DRAIN_MAGIC, hurted);
+        break;
+
     case BEAM_ENSNARE:
         ensnare(this, original);
         break;

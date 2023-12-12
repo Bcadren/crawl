@@ -1434,6 +1434,12 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_MANA_COBRA,
+      {
+       { SPELL_ANTIMAGIC_SPIT, 100, MON_SPELL_NATURAL | MON_SPELL_BREATH },
+      }
+    },
+
     {  MST_GUARDIAN_SERPENT,
       {
        { SPELL_VENOM_BOLT, 19, MON_SPELL_WIZARD },

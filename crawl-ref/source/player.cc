@@ -9508,6 +9508,11 @@ void player::beam_effects(beam_type flavour, int original, int hurted, bolt *bea
             mpr("Your gory crimson scales reflect some of the hellish flames.");
         break;
 
+    case BEAM_ANTIMAGIC:
+        if (!mt && hurted)
+            enchant_actor_with_flavour(&you, nullptr, BEAM_DRAIN_MAGIC, hurted);
+        break;
+
     case BEAM_MAGIC_CANDLE:
         backlight();
         break;

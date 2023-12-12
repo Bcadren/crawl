@@ -313,6 +313,23 @@ static const zap_info zap_data[] =
 },
 
 {
+    ZAP_ANTIMAGIC_SPIT,
+    "magic disrupting venom",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<3, 4, 1, 3>,
+    new tohit_calculator<40>,
+    MAGENTA,
+    false,
+    BEAM_ANTIMAGIC,
+    DCHAR_FIRED_ZAP,
+    false,
+    false,
+    0
+},
+
+{
     ZAP_SPIT_LAVA,
     "glob of lava",
     200,

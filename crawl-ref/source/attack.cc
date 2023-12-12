@@ -2102,7 +2102,7 @@ bool attack::apply_damage_brand(const char *what)
         break;
 
     case SPWPN_ANTIMAGIC:
-        antimagic_affects_defender(damage_done * 8);
+        antimagic_affects_defender(damage_done);
         break;
 
     case SPWPN_ACID:

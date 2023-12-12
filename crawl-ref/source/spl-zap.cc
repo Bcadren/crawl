@@ -108,6 +108,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_PETRIFYING_CLOUD,       ZAP_PETRIFYING_CLOUD },
     { SPELL_FLASH_FREEZE,           ZAP_FLASH_FREEZE },
     { SPELL_SPIT_LAVA,              ZAP_SPIT_LAVA },
+    { SPELL_ANTIMAGIC_SPIT,         ZAP_ANTIMAGIC_SPIT },
     { SPELL_THROW_BARBS,            ZAP_THROW_BARBS },
     { SPELL_HOLY_BREATH,            ZAP_HOLY_BREATH },
     { SPELL_SPIT_ACID,              ZAP_SPIT_ACID },

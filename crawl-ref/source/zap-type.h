@@ -157,5 +157,6 @@ enum zap_type
     ZAP_DEATH_RATTLE,
     ZAP_UPHEAVAL,
     ZAP_SPECTRAL_CLOUD,
+    ZAP_ANTIMAGIC_SPIT,
     NUM_ZAPS
 };

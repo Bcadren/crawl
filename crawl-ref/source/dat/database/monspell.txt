@@ -340,6 +340,10 @@ Electrical Bolt cast
 Spit Lava cast
 
 @The_monster@ spits lava @at@ @target@.
+%%%%%
+Antimagic Spit cast
+
+@The_monster@ spits magic disrupting venom @at@ @target@.
 %%%%
 Spit Poison cast
 

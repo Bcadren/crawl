@@ -261,6 +261,7 @@ lava_snake MONS_LAVA_SNAKE
 sea_snake MONS_SEA_SNAKE
 shock_serpent MONS_SHOCK_SERPENT
 mana_viper MONS_MANA_VIPER
+mana_cobra MONS_MANA_COBRA
 blood_boa MONS_BLOOD_BOA
 
 ## Bears ('h' again)

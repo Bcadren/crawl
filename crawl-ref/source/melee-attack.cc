@@ -481,7 +481,7 @@ void melee_attack::apply_black_mark_effects()
         switch (random2(3))
         {
             case 0:
-                antimagic_affects_defender(damage_done * 8);
+                antimagic_affects_defender(damage_done);
                 break;
             case 1:
                 defender->weaken(attacker, 6);
@@ -1828,7 +1828,7 @@ bool melee_attack::player_aux_apply(unarmed_attack_type atk)
             {
                 const bool spell_user = defender->antimagic_susceptible();
 
-                antimagic_affects_defender(damage_done * 32);
+                antimagic_affects_defender(damage_done * 4);
 
                 // MP drain suppressed under Pakellas, but antimagic still applies.
                 if (!have_passive(passive_t::no_mp_regen) || spell_user)
@@ -3205,7 +3205,7 @@ bool melee_attack::apply_staff_damage()
                 if (attacker->is_player())
                     inc_mp(1 + random2(special_damage));
 
-                antimagic_affects_defender(special_damage * 8);
+                antimagic_affects_defender(special_damage);
 
                 special_damage_message =
                     make_stringf(
@@ -3941,7 +3941,7 @@ void melee_attack::mons_apply_attack_flavour()
         break;
 
     case AF_ANTIMAGIC:
-        antimagic_affects_defender(attacker->get_hit_dice() * 12);
+        antimagic_affects_defender(attacker->get_hit_dice() * 2);
 
         if (mons_genus(attacker->type) == MONS_VINE_STALKER
             && attacker->is_monster())

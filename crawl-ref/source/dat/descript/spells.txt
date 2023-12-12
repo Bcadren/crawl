@@ -1594,6 +1594,10 @@ Spit Acid spell
 
 Spits acid at a targeted creature.
 %%%%
+Antimagic Spit spell
+
+Spits antimagic venom at a targeted creature.
+%%%%
 Spit Lava spell
 
 Spits lava at a targeted creature.
@@ -1808,11 +1812,13 @@ Summon Lightning Spire spell
 Constructs a lightning spire in a nearby location. It can fire bouncing bolts
 of electricity at the caster's foes, but is completely immobile.
 %%%%
-Summon Mana Viper spell
+Summon Mana Snake spell
 
-Summons a violet-scaled serpent whose bite can swiftly drain the magical
-reserves of nearly any foe. At higher power, the antimagic properties of the
-viper's bite grow even stronger.
+Summons one of a family of serpents who are the bane of magical using foes. 
+The violet-scaled mana viper bite can swiftly drain the magical reserves 
+of nearly any foe and its deep blue cousin, the mana cobra can spit a magic
+disrupting venom. At higher power and higher experience with this summon, 
+the antimagic properties of the snakes grow even stronger.
 %%%%
 Summon Minor Demon spell
 

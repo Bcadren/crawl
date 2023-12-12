@@ -1419,6 +1419,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_TRIPLE_BREATH:
     case SPELL_ENSNARE:
     case SPELL_SPECTRAL_CLOUD:
+    case SPELL_ANTIMAGIC_SPIT:
 
     // Wands
     case SPELL_WAND_FLAME:
@@ -2684,6 +2685,7 @@ static bool _polymorph_ally(const monster* mon, bool actual)
         MONS_BULLFROG,
         MONS_BLINK_FROG,
         MONS_MANA_VIPER,
+        MONS_MANA_COBRA,
         MONS_WATER_MOCCASIN,
         MONS_ANACONDA,
         MONS_SPINY_FROG,
@@ -2693,7 +2695,7 @@ static bool _polymorph_ally(const monster* mon, bool actual)
         MONS_SHOCK_SERPENT,
     };
 
-    const int lengths[] = { 12, 16, 7, 17, 4, 11 };
+    const int lengths[] = { 12, 16, 7, 17, 4, 12 };
 
     const int total_length = lengths[0] + lengths[1] + lengths[2]
                            + lengths[3] + lengths[4] + lengths[5];
@@ -7260,7 +7262,7 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         const int num_vipers = 1 + random2(mons->spell_hd(spell_cast) / 5 + 1);
         for (int i = 0; i < num_vipers; ++i)
         {
-            x = _summon(*mons, MONS_MANA_VIPER, 2, slot);
+            x = _summon(*mons, one_chance_in(3) ? MONS_MANA_COBRA : MONS_MANA_VIPER, 2, slot);
             chaos_summon(spell_cast, x, mons);
         }
         return;

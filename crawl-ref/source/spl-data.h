@@ -3140,7 +3140,7 @@ static const struct spell_desc spelldata[] =
 },
 
 {
-    SPELL_SUMMON_MANA_VIPER, "Summon Mana Viper", "",
+    SPELL_SUMMON_MANA_VIPER, "Summon Mana Snake", "",
     spschool::poison | spschool::summoning,
     spflag::mons_abjure,
     5,
@@ -3279,6 +3279,18 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_SPIT_LAVA, "Spit Lava", "",
     spschool::fire | spschool::earth | spschool::evocation,
+    spflag::dir_or_target | spflag::monster | spflag::noisy
+        | spflag::needs_tracer,
+    5,
+    0,
+    5, 5,
+    5, 0,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
+    SPELL_ANTIMAGIC_SPIT, "Antimagic Spit", "",
+    spschool::hexes | spschool::evocation,
     spflag::dir_or_target | spflag::monster | spflag::noisy
         | spflag::needs_tracer,
     5,

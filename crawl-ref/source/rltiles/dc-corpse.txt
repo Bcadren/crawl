@@ -266,6 +266,7 @@ anaconda CORPSE_ANACONDA
 sea_snake CORPSE_SEA_SNAKE
 shock_serpent CORPSE_SHOCK_SERPENT
 mana_viper CORPSE_MANA_VIPER
+mana_cobra CORPSE_MANA_COBRA
 blood_boa CORPSE_BLOOD_BOA
 
 ## Yaks, sheep and elephants ('Y')

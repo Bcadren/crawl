@@ -1717,6 +1717,11 @@ A fused and twisted collection of body parts, weakly animated by necromancy. @Su
 @verb:is@ easily destroyed, but capable of merging with others to form more potent
 horrors.
 %%%%
+mana cobra
+
+A deep blue snake with faintly glowing eyes. @Subjective@ @verb:spit@ a bizarre antimagic toxin,
+to wear down @possessive@ magical prey from afar.
+%%%%
 mana viper
 
 A violet-scaled serpent with faintly glowing eyes. @Subjective@ @verb:thirst@ for magic as well
