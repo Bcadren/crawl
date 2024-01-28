@@ -1431,19 +1431,28 @@ static bool _can_jump(bool quiet, bool jump)
 {
     if (!you.duration[DUR_MOUNT_BREATH] && !you.duration[DUR_ENSNARE])
         return true;
-    if (!quiet)
+    
+    if (you.duration[DUR_MOUNT_BREATH])
     {
-        if (you.duration[DUR_MOUNT_BREATH])
+        if (!quiet)
             mpr("Your spider is still catching its breath.");
-        if (you.duration[DUR_ENSNARE])
+        return false;
+    }
+    if (you.duration[DUR_ENSNARE])
+    {
+        if (!quiet)
         {
             if (jump)
                 mpr("Your spider can't jump while it's legs are covered in web.");
             else
                 mpr("Your spider already prepped a web.");
         }
+
+        return false;
     }
-    return _can_movement_ability(quiet);
+    if (jump)
+        return _can_movement_ability(quiet);
+    return true;
 }
 
 // Check prerequisites for a number of abilities.
