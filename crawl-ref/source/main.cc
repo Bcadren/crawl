@@ -1740,13 +1740,6 @@ static void _handle_autofight(command_type cmd, command_type prev_cmd)
                     mprf(MSGCH_ERROR, "Lua error: %s", clua.error.c_str());
                 // just continue with the default value in this case
             }
-<<<<<<< HEAD
-            // set this so that it prints appropriate error messages for
-            // autofiring
-            if (!secondary_enabled)
-                target.find_target = true;
-=======
->>>>>>> 803384b024 (Fix autofight_fire_stop)
             a->trigger(target);
             return;
         }
