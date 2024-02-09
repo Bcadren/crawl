@@ -977,10 +977,6 @@ static item_def* _get_emergency_food()
 
 void handle_starvation()
 {
-    // Don't faint or die while eating.
-    if (current_delay() && current_delay()->is_being_used(nullptr, OPER_EAT))
-        return;
-
     if (!you_foodless() && you.hunger <= HUNGER_FAINTING)
     {
         if (!you.cannot_act() && one_chance_in(40))

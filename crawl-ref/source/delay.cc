@@ -374,32 +374,18 @@ shared_ptr<Delay> current_delay()
 
 bool is_being_drained(const item_def &item)
 {
-    if (!you_are_delayed())
-        return false;
-
-    return current_delay()->is_being_used(&item, OPER_EAT);
+    // BCaDDO: Needs fixing if vampires are restored in any way.
+    return false;
 }
 
-bool is_being_butchered(const item_def &item, bool just_first)
+bool is_being_butchered(const item_def &item)
 {
-    for (const auto &delay : you.delay_queue)
-    {
-        if (delay->is_being_used(&item, OPER_BUTCHER))
-            return true;
-
-        if (just_first)
-            break;
-    }
-
-    return false;
+    return current_delay()->is_butcher() && current_delay()->is_being_used(item);
 }
 
 bool is_vampire_feeding()
 {
-    if (!you_are_delayed())
-        return false;
-
-    return current_delay()->is_being_used(nullptr, OPER_EAT);
+    return false;
 }
 
 bool player_stair_delay()

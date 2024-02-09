@@ -263,7 +263,7 @@ public:
 
     bool is_being_used(const item_def& item) const override
     {
-        return &item == &equip;
+        return &item == &armour;
     }
 };
 
@@ -290,6 +290,11 @@ public:
     const char* name() const override
     {
         return "subsume";
+    }
+
+    bool is_being_used(const item_def& item_) const override
+    {
+        return &item_ == &item;
     }
 };
 
@@ -320,6 +325,11 @@ public:
     {
         return "armour_on";
     }
+
+    bool is_being_used(const item_def& item) const override
+    {
+        return &item == &armour;
+    }
 };
 
 class EjectionDelay : public Delay
@@ -349,9 +359,9 @@ public:
         return "eject";
     }
 
-    bool is_being_used(const item_def& item) const override
+    bool is_being_used(const item_def& item0) const override
     {
-        return &item == &equip;
+        return &item == &item0;
     }
 };
 
@@ -422,9 +432,9 @@ public:
         return true;
     }
 
-    bool is_being_used(const item_def* item, operation_types oper) const override
+    bool is_being_used(const item_def& item) const override
     {
-        return oper == OPER_BUTCHER && (!item || &corpse == item);
+        return &corpse == &item;
     }
 
     const char* name() const override
@@ -452,9 +462,9 @@ public:
         return true;
     }
 
-    bool is_being_used(const item_def* item, operation_types oper) const override
+    bool is_being_used(const item_def& item) const override
     {
-        return oper == OPER_BUTCHER && (!item || &corpse == item);
+        return &corpse == &item;
     }
 
     const char* name() const override
@@ -866,7 +876,7 @@ shared_ptr<Delay> current_delay();
 void handle_delay();
 
 bool is_being_drained(const item_def &item);
-bool is_being_butchered(const item_def &item, bool just_first = true);
+bool is_being_butchered(const item_def &item);
 bool is_vampire_feeding();
 bool player_stair_delay();
 bool already_learning_spell(int spell = -1);
