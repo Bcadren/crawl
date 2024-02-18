@@ -2623,10 +2623,6 @@ static bool _mons_is_valid_target(const monster* mon, targ_mode_type mode,
         return false;
     }
 
-    // Don't target submerged monsters.
-    if (mode != TARG_HOSTILE_SUBMERGED && mon->submerged())
-        return false;
-
     // Don't usually target unseen monsters...
     if (!mon->visible_to(&you))
     {
