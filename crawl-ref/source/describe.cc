@@ -1534,8 +1534,8 @@ static string _armour_brand_desc(const item_def item)
         break;
     case SPARM_INVISIBILITY:
         description += "When activated it hides its wearer from "
-            "the sight of others, but also increases "
-            "their metabolic rate by a large amount.";
+            "the sight of others, contaminating with "
+            "magical radiation as an unfortunate side effect.";
         break;
     case SPARM_STRENGTH:
         description += "It increases the physical power of its wearer (+3 to strength).";
