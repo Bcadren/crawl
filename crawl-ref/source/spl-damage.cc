@@ -2066,7 +2066,7 @@ dice_def irradiate_damage(int pow, actor *agent, bool chaos, bool random)
     bool menace = is_menacing(agent, SPELL_IRRADIATE);
     const int dice = menace ? 8 : 6;
     if (menace)
-        pow = div_rand_round(4 * pow, 3);
+        pow = random ? div_rand_round(4 * pow, 3) : pow * 4/3;
     const int max_dam = chaos ? 40 + (random ? div_rand_round(5 * pow, 8)
                                              : 5 * pow/8)
                               : 30 + (random ? div_rand_round(pow, 2)
