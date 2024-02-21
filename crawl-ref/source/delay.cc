@@ -380,6 +380,9 @@ bool is_being_drained(const item_def &item)
 
 bool is_being_butchered(const item_def &item)
 {
+    if (!you_are_delayed())
+        return false;
+
     return current_delay()->is_butcher() && current_delay()->is_being_used(item);
 }
 
