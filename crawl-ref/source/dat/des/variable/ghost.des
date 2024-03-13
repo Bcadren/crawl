@@ -503,27 +503,28 @@ MARKER:  P = lua:transp_loc("ghost_randoct_entry")
 MARKER:  Q = lua:transp_dest_loc("ghost_randoct_entry")
 MARKER:  R = lua:transp_loc("ghost_randoct_exit")
 MARKER:  S = lua:transp_dest_loc("ghost_randoct_exit")
+KFEAT:   C = runed_stone_wall
 : ghost_setup(_G)
 MAP
         .@.
        .@P@.
-      .ncncn.
-     .cnEREnc.
-    .ccEcncEcc.
-   .ncJKJKJKJcn.
-  .ccyJJKJKJJycc.
- .ccJJcKxnxKcJJcc.
-.nnDKJKxxMxxKJKHnn.
-.cDcJKxxLLLxxKJcHc.
-.nQnKJnMLLLMnJKnRn.
-.cDcJKxxLLLxxKJcHc.
-.nnDKJKxxMxxKJKHnn.
- .ccJJcKxnxKcJJcc.
-  .ccyJJKJKJJycc.
-   .ncJKJKJKJcn.
-    .ccFcncFcc.
-     .cnFQFnc.
-      .ncncn.
+      .qCqCq.
+     .CqEREqC.
+    .CCEcncECC.
+   .qCJKJKJKJCq.
+  .CCyJJKJKJJyCC.
+ .CCJJcKxnxKcJJCC.
+.qqDKJKxxMxxKJKHqq.
+.CDcJKxxLLLxxKJcHC.
+.qQnKJnMLLLMnJKnRq.
+.CDcJKxxLLLxxKJcHC.
+.qqDKJKxxMxxKJKHqq.
+ .CCJJcKxnxKcJJCC.
+  .CCyJJKJKJJyCC.
+   .qCJKJKJKJCq.
+    .CCFcncFCC.
+     .CqFQFqC.
+      .qCqCq.
        .@S@.
         .@.
 ENDMAP
