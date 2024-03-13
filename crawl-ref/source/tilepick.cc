@@ -198,6 +198,8 @@ tileidx_t tileidx_feature_base(dungeon_feature_type feat)
         return TILE_WALL_PERMAROCK_CLEAR;
     case DNGN_STONE_WALL:
         return TILE_DNGN_STONE_WALL;
+    case DNGN_RUNED_STONE_WALL:
+        return TILE_DNGN_RUNED_STONE_WALL;
     case DNGN_CLOSED_DOOR:
         return TILE_DNGN_CLOSED_DOOR;
     case DNGN_CLOSED_CLEAR_DOOR:

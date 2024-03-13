@@ -1759,6 +1759,7 @@ static inline dungeon_feature_type _vitrified_feature(dungeon_feature_type feat)
     case DNGN_CLOSED_DOOR:
         return DNGN_CLOSED_CLEAR_DOOR;
     case DNGN_SILVER_WALL:
+    case DNGN_RUNED_STONE_WALL:
         return DNGN_RUNED_CLEAR_STONE_WALL;
     case DNGN_METAL_WALL:
         return DNGN_CLEAR_METAL_WALL;

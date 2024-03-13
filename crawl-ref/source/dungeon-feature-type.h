@@ -349,6 +349,8 @@ enum dungeon_feature_type
     DNGN_TRAVEL_TRAIL,
 #endif
 
+    DNGN_RUNED_STONE_WALL,
+
     NUM_FEATURES
 };
 COMPILE_CHECK(NUM_FEATURES <= 256);

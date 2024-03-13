@@ -1150,6 +1150,11 @@ catacombs14
 catacombs15
 %weight 10
 
+runed_stone_wall0 DNGN_RUNED_STONE_WALL
+runed_stone_wall1
+runed_stone_wall2
+runed_stone_wall3
+
 stone2_gray0 DNGN_STONE_WALL DNGN_STONE_WALL_LIGHTGRAY
 stone2_gray1
 stone2_gray2
