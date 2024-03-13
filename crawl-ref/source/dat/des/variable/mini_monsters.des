@@ -495,7 +495,7 @@ ENDMAP
 
 NAME:    nzn_masters_of_martial_movement
 TAGS:    no_pool_fixup no_monster_gen
-DEPTH:   D:9-12, Lair
+DEPTH:   D:5-7, Lair
 KFEAT:   D = altar_wu_jian
 KFEAT:   E = altar_uskayaw
 MONS:    patrolling boulder beetle
@@ -511,9 +511,9 @@ xxW.W.W.Wxx
 ENDMAP
 
 NAME:   nzn_sisyphean_effort
-DEPTH:  D:9-12, Lair
+DEPTH:  D:5-7, Lair
 MONS:   patrolling boulder beetle
-KITEM:  e = potion of attraction ident:all
+KITEM:  e = scroll of gravitation
 : dgn.delayed_decay(_G, 'd', 'human corpse')
 MAP
 xxxxxxxxx
@@ -2679,7 +2679,7 @@ ENDMAP
 
 NAME:    nzn_life_drinkers
 TAGS:    no_monster_gen no_item_gen
-DEPTH:   D:8-, Crypt, Vaults, Depths
+DEPTH:   D:4-, Crypt, Vaults, Depths
 KFEAT:   D = altar_makhleb
 KFEAT:   E = altar_the_shining_one
 SHUFFLE: '/-
@@ -2688,9 +2688,9 @@ SUBST:   A = V:50 Y
 : if you.in_branch("Vaults") then
 SUBST:   c = v
 : end
-: if you.absdepth() <= 12 then
+: if you.absdepth() <= 6 then
 MONS:    vampire
-: elseif you.absdepth() <= 15 then
+: elseif you.absdepth() <= 9 then
 MONS:    vampire mage
 : else
 MONS:    vampire knight

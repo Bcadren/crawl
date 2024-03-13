@@ -463,7 +463,7 @@ aaaaaaaaaa
 ENDMAP
 
 NAME:    nzn_ghost_randoct
-DEPTH:   D:7-, Depths, Lair, Crypt, Spider, Zot
+DEPTH:   D:3-, Depths, Lair, Crypt, Spider, Zot
 ORIENT:  float
 ITEM:    potion of haste / scroll of blinking
 ITEM:    potion of heal wounds / scroll of teleportation

@@ -35,12 +35,12 @@
 #
 ###############################################################################
 
-default-depth: D:7-, Depths, Lair:2-
+default-depth: D:3-, Depths, Lair:2-
 
 NAME:     nzn_winding_woodlands_small
 ORIENT:   float
 TAGS:     uniq_winding_woodlands transparent
-DEPTH:    D:7-, Depths, Lair:2-, Swamp:2-3
+DEPTH:    D:3-, Depths, Lair:2-, Swamp:2-3
 SUBVAULT: A : winding_woodlands_5x15
 SUBVAULT: B : winding_woodlands_center
 SUBVAULT: C : winding_woodlands_5x15
@@ -48,6 +48,7 @@ SUBST:    ABC = t
 : if you.in_branch("Swamp") then
 SUBST:    c = ttc
 SUBST:    . = WWW.
+KFEAT:    t = mangrove
 : end
 MAP
 ...................
@@ -76,7 +77,7 @@ ENDMAP
 NAME:     nzn_winding_woodlands_medium
 ORIENT:   float
 TAGS:     uniq_winding_woodlands transparent
-DEPTH:    D:7-, Depths, Lair:2-, Swamp:2-3
+DEPTH:    D:3-, Depths, Lair:2-, Swamp:2-3
 SUBVAULT: A : winding_woodlands_5x5
 SUBVAULT: B : winding_woodlands_5x15
 SUBVAULT: C : winding_woodlands_5x5
@@ -90,6 +91,7 @@ SUBST:    ABCDEFGHI = t
 : if you.in_branch("Swamp") then
 SUBST:    c = ttc
 SUBST:    . = WWW.
+KFEAT:    t = mangrove
 : end
 MAP
 ...............................
@@ -163,7 +165,7 @@ ENDMAP
 NAME:     nzn_winding_woodlands_huge
 ORIENT:   float
 TAGS:     uniq_winding_woodlands transparent
-DEPTH:    D:11-, Depths, Lair:2-
+DEPTH:    D:5-, Depths, Lair:2-
 SUBVAULT: A : winding_woodlands_5x15
 SUBVAULT: B : winding_woodlands_5x15
 SUBVAULT: C : winding_woodlands_5x15
@@ -215,7 +217,7 @@ ENDMAP
 NAME:     nzn_winding_woodlands_cross
 ORIENT:   float
 TAGS:     uniq_winding_woodlands transparent
-DEPTH:    D:7-, Depths, Lair:2-, Swamp:2-3
+DEPTH:    D:3-, Depths, Lair:2-, Swamp:2-3
 SUBVAULT: A : winding_woodlands_5x15
 SUBVAULT: B : winding_woodlands_5x15
 SUBVAULT: C : winding_woodlands_5x15
@@ -225,6 +227,7 @@ SUBST:    ABCDE = t
 : if you.in_branch("Swamp") then
 SUBST:    c = ttc
 SUBST:    . = WWW.
+KFEAT:    t = mangrove
 : end
 MAP
        .................
@@ -263,7 +266,7 @@ ENDMAP
 NAME:     nzn_winding_woodlands_three_and_one
 ORIENT:   float
 TAGS:     uniq_winding_woodlands transparent
-DEPTH:    D:7-, Depths, Lair:2-, Swamp:2-3
+DEPTH:    D:3-, Depths, Lair:2-, Swamp:2-3
 SUBVAULT: A : winding_woodlands_5x15
 SUBVAULT: B : winding_woodlands_5x15
 SUBVAULT: C : winding_woodlands_5x15
@@ -272,6 +275,7 @@ SUBST:    ABCD = t
 : if you.in_branch("Swamp") then
 SUBST:    c = ttc
 SUBST:    . = WWW.
+KFEAT:    t = mangrove
 : end
 MAP
 @...............@
@@ -346,7 +350,7 @@ ENDMAP
 NAME:     nzn_winding_woodlands_stair_trap
 ORIENT:   float
 TAGS:     uniq_winding_woodlands transparent
-DEPTH:    D:11-, Depths, Lair:2-
+DEPTH:    D:5-, Depths, Lair:2-
 SUBVAULT: A : winding_woodlands_5x15
 SUBVAULT: B : winding_woodlands_5x15
 SUBVAULT: C : winding_woodlands_5x15
@@ -911,7 +915,7 @@ ENDMAP
 
 NAME:   nzn_winding_woodlands_15x15_eel_pit
 TAGS:   winding_woodlands_15x15 unrand no_pool_fixup
-DEPTH:  D:7-12, Lair
+DEPTH:  D:3-6, Lair
 MONS:   plant
 KMONS:  2 = electric eel
 SUBST:  2 = 22w

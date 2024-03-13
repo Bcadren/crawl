@@ -1339,7 +1339,7 @@ ENDMAP
 
 NAME:   nzn_makhleb_speed_demon
 TAGS:   no_monster_gen temple_overflow_1 temple_overflow_makhleb
-DEPTH:  D:7-11
+DEPTH:  D:3-5
 WEIGHT: 2
 KFEAT:  _ = altar_makhleb
 KMONS:  _ = sixfirhy
@@ -2366,7 +2366,7 @@ ENDMAP
 
 NAME:   nzn_wu_jian_council_hall
 TAGS:   temple_overflow_1 temple_overflow_wu_jian no_monster_gen no_item_gen
-DEPTH:  D:2-9
+DEPTH:  D:2-5
 KFEAT:  _ = altar_wu_jian
 MAP
     x@x
@@ -2383,8 +2383,8 @@ ENDMAP
 NAME:    nzn_wu_jian_contemplation
 TAGS:    temple_overflow_1 temple_overflow_wu_jian no_monster_gen no_item_gen
 TAGS:    no_pool_fixup
-DEPTH:   D:2-9
-ITEM:    mundane spear / w:2 mundane quarterstaff / w:2 mundane trident, stone
+DEPTH:   D:2-5
+ITEM:    mundane spear / w:2 mundane quarterstaff / w:2 mundane trident, scroll of random uselessness
 NSUBST:  ' = 3=e / ', " = 4=W / ', t = t / d / -
 SUBST:   ` = '
 KFEAT:   _ = altar_wu_jian
@@ -3619,18 +3619,18 @@ ENDMAP
 NAME:    nzn_overflow_gifts_of_might_and_magic
 TAGS:    temple_overflow_2 temple_overflow_trog temple_overflow_sif_muna
 TAGS:    no_item_gen no_monster_gen patrolling
-DEPTH:   D:2-10
+DEPTH:   D:2-7
 SHUFFLE: D1-/E2'
 COLOUR:  1- = red
 COLOUR:  2' = blue
 KFEAT:   D = altar_trog
 KFEAT:   E = altar_sif_muna
-: local egos = {["antimagic"] = 1, ["vorpal"] = 2, ["flaming"] = 2}
+: local egos = {["antimagic"] = 1, ["vorpal"] = 2, ["molten"] = 2}
 : if you.absdepth() <= 3 then
 KMONS:   1 = gnoll ; animal skin / w:2 Terence
-KMONS:   2 = white imp / w:2 Jessica
+KMONS:   2 = gwybwca / w:2 Jessica
 : local enchant = 2 + (crawl.one_chance_in(3) and 1 or 0)
-: local weapons = {["spear"] = 1, ["handaxe"] = 1, ["mace"] = 1,
+: local weapons = {["spear"] = 1, ["hammer"] = 1, ["mace"] = 1,
 :                  ["falchion"] = 1}
 : kitem("1 = " .. random_item_def(weapons, nil, "ego:none plus:" .. enchant))
 KITEM:   2 = randbook owner:Sif_Muna numspells:1 slevels:1
