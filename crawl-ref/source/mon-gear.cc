@@ -1891,7 +1891,6 @@ int make_mons_armour(monster_type type, int level)
         break;
 
     case MONS_HELLBINDER:
-    case MONS_SALAMANDER_MYSTIC:
     case MONS_SERVANT_OF_WHISPERS:
     case MONS_RAGGED_HIEROPHANT:
     case MONS_FENSTRIDER_WITCH:
@@ -1951,6 +1950,8 @@ int make_mons_armour(monster_type type, int level)
             return NON_ITEM; // ???
         break;
 
+    case MONS_SALAMANDER:
+    case MONS_SALAMANDER_MYSTIC:
     case MONS_NAGA:
     case MONS_NAGA_MAGE:
     case MONS_NAGA_RITUALIST:
@@ -1959,7 +1960,7 @@ int make_mons_armour(monster_type type, int level)
     case MONS_NAGARAJA:
         if (one_chance_in(type == MONS_NAGA         ?  800 :
                           type == MONS_NAGA_WARRIOR ?  300 :
-                          type == MONS_NAGARAJA ?  100
+                          type == MONS_NAGARAJA     ?  100
                                                     :  200))
         {
             item.base_type = OBJ_ARMOURS;
@@ -1967,6 +1968,7 @@ int make_mons_armour(monster_type type, int level)
         }
         else if (type == MONS_NAGARAJA
                  || type == MONS_NAGA_RITUALIST
+                 || type == MONS_SALAMANDER_MYSTIC
                  || one_chance_in(3))
         {
             item.base_type = OBJ_ARMOURS;
