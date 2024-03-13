@@ -66,4 +66,3 @@ create_enum: false
 # end TAG_MAJOR_VERSION
 
 walking_verb: Glid
-create_enum: False
