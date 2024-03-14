@@ -1,7 +1,7 @@
 TAG_MAJOR_VERSION: 34
 enum: SP_MUMMY
 monster: MONS_MUMMY
-name: Mummy
+name: "Mummy"
 difficulty: False
 difficulty_priority: 20
 aptitudes:

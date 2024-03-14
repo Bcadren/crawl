@@ -1,6 +1,6 @@
 enum: SP_KOBOLD
 monster: MONS_KOBOLD
-name: Kobold
+name: "Kobold"
 difficulty: Simple
 difficulty_priority: 90
 aptitudes:

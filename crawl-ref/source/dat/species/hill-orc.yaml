@@ -1,7 +1,7 @@
 enum: SP_HILL_ORC
 monster: MONS_ORC
-name: Hill Orc
-short_name: HO
+name: "Hill Orc"
+short_name: "HO"
 difficulty: Simple
 difficulty_priority: 100
 species_flags:

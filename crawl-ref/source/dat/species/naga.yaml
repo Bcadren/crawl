@@ -1,7 +1,7 @@
 TAG_MAJOR_VERSION: 34
 enum: SP_NAGA
 monster: MONS_NAGA
-name: Naga
+name: "Naga"
 difficulty: False
 species_flags:
   - small_torso

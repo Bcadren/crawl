@@ -1,8 +1,8 @@
 TAG_MAJOR_VERSION: 34
 enum: SP_VAMPIRE
 monster: MONS_VAMPIRE
-name: Vampire
-short_name: Vp
+name: "Vampire"
+short_name: "Vp"
 adjective: Vampiric
 difficulty: False
 difficulty_priority: 90

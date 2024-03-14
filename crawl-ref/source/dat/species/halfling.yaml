@@ -1,7 +1,7 @@
 TAG_MAJOR_VERSION: 34
 enum: SP_HALFLING
 monster: MONS_KOBOLD
-name: Halfling
+name: "Halfling"
 difficulty: False
 difficulty_priority: 50
 aptitudes:

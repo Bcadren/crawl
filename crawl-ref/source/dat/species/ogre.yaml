@@ -1,6 +1,6 @@
 enum: SP_OGRE
 monster: MONS_OGRE
-name: Ogre
+name: "Ogre"
 adjective: Ogreish
 difficulty: Intermediate
 difficulty_priority: 30

@@ -1,6 +1,6 @@
 enum: SP_TROLL
 monster: MONS_TROLL
-name: Troll
+name: "Troll"
 adjective: Trollish
 difficulty: Simple
 difficulty_priority: 40

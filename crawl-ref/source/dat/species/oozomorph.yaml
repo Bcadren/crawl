@@ -1,6 +1,6 @@
 enum: SP_OOZOMORPH
 monster: MONS_SLIME_CREATURE
-name: Oozomorph
+name: "Oozomorph"
 difficulty: Advanced
 difficulty_priority: 100
 aptitudes:

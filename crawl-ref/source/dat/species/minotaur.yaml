@@ -1,6 +1,6 @@
 enum: SP_MINOTAUR
 monster: MONS_MINOTAUR
-name: Minotaur
+name: "Minotaur"
 adjective: Bovine
 genus: Cow
 difficulty: Simple

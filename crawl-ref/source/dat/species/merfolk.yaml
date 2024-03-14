@@ -1,8 +1,8 @@
 TAG_MAJOR_VERSION: 34
 enum: SP_MERFOLK
 monster: MONS_MERFOLK
-name: Merfolk
-short_name: Mf
+name: "Merfolk"
+short_name: "Mf"
 adjective: Merfolkian
 difficulty: False
 aptitudes:

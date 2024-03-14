@@ -1,7 +1,7 @@
 enum: SP_SILENT_SPECTRE
 monster: MONS_SILENT_SPECTRE
 name: "Silent Spectre"
-short_name: SS
+short_name: "SS"
 adjective: "Spectral"
 genus: "Spectre"
 difficulty: Advanced
