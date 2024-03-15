@@ -10,6 +10,7 @@
 #include "enum.h"
 #include "quiver.h"
 
+// BCADDO: Are the throwing values unused? clean up.
 // TODO: this whole thing is a mess
 enum fire_type
 {
