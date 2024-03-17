@@ -3387,7 +3387,7 @@ COLOUR:  .c = white
 : local race = you.race()
 : local ally = you.monster()
 : -- do the roll unconditionally, for seed stability
-: local humanoid_ally = util.random_from({"dwarf", "human"})
+: local humanoid_ally = util.random_from({"spriggan", "human"})
 : -- The corpseless. Before the game starts, you.monster() is "program bug".
 : if (not crawl.game_started()) or race == "Ghoul" or race == "Octopode"
 :     or race == "Gargoyle" or race == "Vine Stalker"
@@ -3589,20 +3589,20 @@ NAME:     amcnicky_arrival_wind_blow
 TAGS:     arrival no_monster_gen no_trap_gen
 ORIENT:   float
 NSUBST:   _ = 4:p / 4=p:2 . / *=.
-: dgn.delayed_decay(_G, 'p', 'deep dwarf skeleton')
+: dgn.delayed_decay(_G, 'p', 'spriggan skeleton')
 MAP
       xxxxx
       x__{xxx
-     xx.__..x
-     x_.....xx  xxxx
-    xx_...__.x xx..@
-xxxxx._.xx...xxx__.@
-x.___._.xxx......xx@
-x....__xx xx._.__xx@
-x.xx___x   x..._...@
-x.xx._.xx  xxxxxx..@
-x.._._..xx      xxxx
-x____.._.x
+     xx.__..xxxxxx
+     x_.....tttttxxx
+    xx_...__.tttt..@
+xxxxx._.tt...ttt__.@
+x.___._.ttt......tt@
+x....__ttttt._.__tt@
+x.tt___ttttt..._...@
+x.tt._.tttttttttt..@
+x.._._..tttttttttxxx
+x____.._.xxxxxxxxx
 xxxxxxx..x
       x@@x
 ENDMAP
@@ -3611,7 +3611,7 @@ NAME:     amcnicky_arrival_abandoned_market
 TAGS:     arrival no_monster_gen no_trap_gen
 ORIENT:   float
 NSUBST:   _ = 4:q / 4=q:2 . / *=.
-: dgn.delayed_decay(_G, 'q', 'deep dwarf skeleton')
+: dgn.delayed_decay(_G, 'q', 'human skeleton')
 NSUBST:   - = 6=p / 6=p. / 6=px / *=.x
 SUBST:    r = x.
 KFEAT:    p = abandoned_shop
