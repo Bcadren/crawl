@@ -3736,6 +3736,7 @@ try_again:
     int ice_elemental = 0;
     int fire_elemental = 0;
     int cloud_producing = 0;
+    int spiny = 0;
 
     set<const facet_def *> facets_used;
 
@@ -3769,6 +3770,9 @@ try_again:
                 if (m == MUT_HEAT_RESISTANCE)
                     fire_elemental++;
 
+                if (m == MUT_SPINY || m == MUT_CRAGGY_SKIN)
+                    spiny++;
+
                 if (m == MUT_ROT_IMMUNITY || m == MUT_IGNITE_BLOOD)
                     cloud_producing++;
             }
@@ -3782,6 +3786,12 @@ try_again:
 
     if (cloud_producing > 1)
         goto try_again;
+
+    if (spiny > 1)
+        goto try_again;
+
+    // BCADDO: Rerolling the whole thing when there's a conflict is wildly
+    // inefficient. Worth revising (especially as conflict count gets higher).
 
     return ret;
 }
