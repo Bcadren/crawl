@@ -1219,8 +1219,6 @@ static int _mons_power_hd_factor(spell_type spell)
 int mons_power_for_hd(spell_type spell, int hd)
 {
     const int power = hd * _mons_power_hd_factor(spell);
-    if (spell == SPELL_PAIN)
-        return max(50 * ENCH_POW_FACTOR, power);
     return power;
 }
 
