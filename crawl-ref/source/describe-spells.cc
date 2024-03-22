@@ -560,6 +560,13 @@ static string _effect_string(spell_type spell, const monster_info *mon_owner)
         }
         if (you.immune_to_hex(spell))
             return "(immune)";
+        if (spell == SPELL_PAIN)
+        {
+            const dice_def pdam = _spell_damage(spell, hd);
+
+            string s = make_stringf("(%dd%d)", pdam.num, pdam.size);
+            return make_stringf("%s(%d%%)", s.c_str(), hex_chance(spell, hd));
+        }
         return make_stringf("(%d%%)", hex_chance(spell, hd));
     }
 
@@ -633,8 +640,12 @@ static void _describe_book(const spellbook_contents &book,
         const int effect_range_space = effect_len && range_len ? 1 : 0;
         const int chop_len = 29 - effect_len - range_len - effect_range_space;
 
-        if (effect_len && !testbits(get_spell_flags(spell), spflag::MR_check))
+        if (effect_len &&
+            (!testbits(get_spell_flags(spell), spflag::MR_check)
+                || spell == SPELL_PAIN))
+        {
             effect_str = _colourize(effect_str, _spell_colour(spell));
+        }
 
         string spell_name = mi_spell_title(spell, mon_owner);
         const bool chaos = mi_chaos_chance(spell, mon_owner);
@@ -649,7 +660,7 @@ static void _describe_book(const spellbook_contents &book,
                     spell_name = "Crystal Spear";
                 break;
             case SPELL_IOOD:
-                if (chaos)
+                if (!chaos)
                     spell_name = "Icy Sphere";
                 else
                     spell_name = "Chaos Sphere";
