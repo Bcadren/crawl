@@ -917,6 +917,12 @@ int main(int argc, char* argv[])
                 case AF_SWOOP:
                     monsterattacks += "(swoop)";
                     break;
+                case AF_CROC_LUNGE:
+                    monsterattacks += "(lunge)";
+                    break;
+                case AF_DEATH_ROLL:
+                    monsterattacks += "(death roll)";
+                    break;
                 case AF_ACID:
                     monsterattacks +=
                         colour(YELLOW, damage_flavour("acid", "7d3"));

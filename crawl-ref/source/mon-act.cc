@@ -880,18 +880,24 @@ static bool _handle_evoke_equipment(monster& mons)
  */
 static bool _handle_swoop(monster& mons)
 {
+    attack_flavour flav = mons_attack_spec(mons, 0, true).flavour;
+    bool croc = (flav == AF_CROC_LUNGE);
+
     // TODO: check for AF_SWOOP in other slots and/or make it work there?
-    if (mons_attack_spec(mons, 0, true).flavour != AF_SWOOP)
+    if (!croc && (flav != AF_SWOOP))
         return false;
 
     actor *defender = mons.get_foe();
     if (mons.confused() || !defender || !mons.can_see(*defender))
         return false;
 
-    if (mons.foe_distance() >= 5 || mons.foe_distance() == 1)
+    if (croc && (!mons.swimming() || env.grid(mons.pos()) != DNGN_DEEP_WATER))
         return false;
 
-    if (!one_chance_in(4))
+    if (mons.foe_distance() >= (croc ? 4 : 5) || mons.foe_distance() == 1)
+        return false;
+
+    if (!croc && !one_chance_in(4))
         return false;
 
     if (mons.props.exists("swoop_cooldown")
@@ -915,19 +921,30 @@ static bool _handle_swoop(monster& mons)
         if (tracer.path_taken[j] != target)
             continue;
 
-        if (!monster_habitable_grid(&mons, env.grid(tracer.path_taken[j+1]))
-            || actor_at(tracer.path_taken[j+1]))
+        int to_go = croc ? (j - 1) : (j + 1);
+
+        if (!monster_habitable_grid(&mons, env.grid(tracer.path_taken[to_go]))
+            || actor_at(tracer.path_taken[to_go]))
         {
             continue;
         }
 
         if (you.can_see(mons))
         {
-            mprf("%s swoops through the air toward %s!",
-                 mons.name(DESC_THE).c_str(),
-                 defender->name(DESC_THE).c_str());
+            if (croc)
+            {
+                mprf("%s bursts out of the water toward %s!",
+                    mons.name(DESC_THE).c_str(),
+                    defender->name(DESC_THE).c_str());
+            }
+            else
+            {
+                mprf("%s swoops through the air toward %s!",
+                    mons.name(DESC_THE).c_str(),
+                    defender->name(DESC_THE).c_str());
+            }
         }
-        mons.move_to_pos(tracer.path_taken[j+1]);
+        mons.move_to_pos(tracer.path_taken[to_go]);
         fight_melee(&mons, defender);
         mons.props["swoop_cooldown"].get_int() = you.elapsed_time
                                                   + 40 + random2(51);

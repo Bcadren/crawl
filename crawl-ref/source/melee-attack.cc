@@ -101,7 +101,7 @@ bool melee_attack::handle_phase_attempted()
     // Skip invalid and dummy attacks.
     if (defender && (!adjacent(attack_position, defender->pos())
                      && !can_reach())
-        || attk_flavour == AF_CRUSH
+        || (attk_flavour == AF_CRUSH || attk_flavour == AF_CROC_LUNGE)
            && (!attacker->can_constrict(defender, true)
                || attacker->is_monster() && attacker->mid == MID_PLAYER))
     {
@@ -892,6 +892,7 @@ bool melee_attack::handle_phase_blocked()
     case AF_PAIN:
     case AF_ENSNARE:
     case AF_CRUSH:
+    case AF_CROC_LUNGE:
     case AF_DRAIN_SPEED:
     case AF_VULN:
     case AF_SHADOWSTAB:
@@ -3982,6 +3983,7 @@ void melee_attack::mons_apply_attack_flavour()
             ensnare(defender);
         break;
 
+    case AF_CROC_LUNGE:
     case AF_CRUSH:
         if (needs_message)
         {

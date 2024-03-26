@@ -4594,6 +4594,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_RANDOM,            "deal extra damage, poison or corrode" },
         { AF_STEAL,             "steal items" },
         { AF_CRUSH,             "begin ongoing constriction" },
+        { AF_CROC_LUNGE,        "clamp its target in its jaws" },
         { AF_REACH,             "" },
         { AF_HOLY,              "deal extra damage to undead and demons" },
         { AF_PIERCE_AC,         " partially ignoring the target's armour" },

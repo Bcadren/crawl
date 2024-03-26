@@ -797,8 +797,12 @@ bool actor::can_constrict(const actor* defender, bool direct) const
     size_type size = body_size(PSIZE_BODY);
 
     // Only sources of engulf right now; let them ignore normal size restriction for the most part.
-    if (is_monster() && (as_monster()->type == MONS_ECTOPLASMIC_ORB || as_monster()->type == MONS_WATER_ELEMENTAL))
+    if (is_monster() && (as_monster()->type == MONS_ECTOPLASMIC_ORB
+        || as_monster()->type == MONS_WATER_ELEMENTAL
+        || mons_genus(as_monster()->type) == MONS_CROCODILE))
+    {
         size = SIZE_BIG;
+    }
 
     if (defender->is_constricted() || defender->res_constrict() >= 3
         || defender->is_player() && you.duration[DUR_SWALLOWED]
@@ -867,6 +871,10 @@ void actor::constriction_damage_defender(actor &defender, int duration)
     else
         exclamations = attack_strength_punctuation(damage);
 
+    string verb = (is_monster()
+        && mons_genus(type) == MONS_CROCODILE) ? "crush"
+                                               : "constrict";
+
     if (is_player() || you.can_see(*this))
     {
         string attacker_desc;
@@ -877,27 +885,18 @@ void actor::constriction_damage_defender(actor &defender, int duration)
         else
             attacker_desc = name(DESC_THE);
 
-        mprf("%s %s %s%s%s", attacker_desc.c_str(),
-             conj_verb("constrict").c_str(),
+        mprf("%s %s %s%s", attacker_desc.c_str(),
+             conj_verb(verb.c_str()).c_str(),
              defender.name(DESC_THE).c_str(),
-#ifdef DEBUG_DIAGNOSTICS
-             make_stringf(" for %d", damage).c_str(),
-#else
-             "",
-#endif
              exclamations.c_str());
     }
     else if (you.can_see(defender) || defender.is_player())
     {
-        mprf("%s %s constricted%s%s",
-             defender.name(DESC_THE).c_str(),
-             defender.conj_verb("are").c_str(),
-#ifdef DEBUG_DIAGNOSTICS
-             make_stringf(" for %d", damage).c_str(),
-#else
-             "",
-#endif
-             exclamations.c_str());
+        mprf("%s %s %sed%s",
+            defender.name(DESC_THE).c_str(),
+            defender.conj_verb("are").c_str(),
+            verb.c_str(),
+            exclamations.c_str());
     }
 
     dprf("constrict at: %s df: %s base %d dur %d ac %d tsc %d inf %d",
