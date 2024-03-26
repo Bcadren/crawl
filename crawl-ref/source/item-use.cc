@@ -3368,6 +3368,11 @@ static void _rebrand_weapon(item_def& wpn)
         }
     }
 
+    // Not currently on the global list anyways, but again,
+    // future-proofing should I decide to allow rebrand to spectral.
+    if (wpn.base_type != OBJ_WEAPONS && new_brand == SPWPN_SPECTRAL) // Claws or Shield Hybrid
+        new_brand = SPWPN_VORPAL;
+
     wpn.brand = new_brand;
     convert2bad(wpn);
 }

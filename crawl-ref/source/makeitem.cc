@@ -401,17 +401,19 @@ brand_type determine_weapon_brand(const item_def& item, int item_level)
         }
     }
     else if (item.base_type == OBJ_ARMOURS)
-        // Just clawed Gauntlets right now.
-        wpn_type = WPN_WHIP;
+        wpn_type = WPN_WHIP; // Just clawed Gauntlets right now.
     else
-    {
         wpn_type = static_cast<weapon_type>(item.sub_type);
-    }
     const int tries       = _num_brand_tries(item, item_level);
     brand_type rc         = SPWPN_NORMAL;
 
     for (int count = 0; count < tries && rc == SPWPN_NORMAL; ++count)
         rc = choose_weapon_brand(wpn_type);
+
+    // Redundant, but adding spectral as a non-artefact whip brand may
+    // happen so future proofing.
+    if (item.base_type == OBJ_ARMOURS && rc == SPWPN_SPECTRAL)
+        rc = SPWPN_VORPAL;
 
     ASSERT(is_weapon_brand_ok(wpn_type, rc, true));
     return rc;

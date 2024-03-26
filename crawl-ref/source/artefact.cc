@@ -539,8 +539,9 @@ static void _add_randart_weapon_brand(const item_def &item,
                                     artefact_properties_t &item_props)
 {
     int item_type = item.sub_type;
+    bool claw = item.is_type(OBJ_ARMOURS, ARM_CLAW);
 
-    if (item.is_type(OBJ_ARMOURS, ARM_CLAW))
+    if (claw)
         item_type = WPN_DEMON_WHIP;
     else if (item.base_type == OBJ_SHIELDS)
     {
@@ -553,6 +554,9 @@ static void _add_randart_weapon_brand(const item_def &item,
     }
 
     if (!is_weapon_brand_ok(item_type, item_props[ARTP_BRAND], true))
+        item_props[ARTP_BRAND] = SPWPN_NORMAL;
+
+    if (claw && item_props[ARTP_BRAND] == SPWPN_SPECTRAL)
         item_props[ARTP_BRAND] = SPWPN_NORMAL;
 
     if (item_props[ARTP_BRAND] != SPWPN_NORMAL)
@@ -614,6 +618,9 @@ static void _add_randart_weapon_brand(const item_def &item,
 
     // no brand = magic flag to reject and retry
     if (!is_weapon_brand_ok(item_type, item_props[ARTP_BRAND], true))
+        item_props[ARTP_BRAND] = SPWPN_NORMAL;
+
+    if (claw && item_props[ARTP_BRAND] == SPWPN_SPECTRAL)
         item_props[ARTP_BRAND] = SPWPN_NORMAL;
 }
 

@@ -4893,6 +4893,15 @@ void unmarshallItem(reader &th, item_def &item)
         item.brand = SPWPN_NORMAL;
     }
 
+    if (item.is_type(OBJ_ARMOURS, ARM_CLAW)
+        && get_weapon_brand(item) == SPWPN_SPECTRAL)
+    {
+        if (is_artefact(item))
+            artefact_set_property(item, ARTP_BRAND, SPWPN_VORPAL);
+        else
+            item.brand = SPWPN_VORPAL;
+    }
+
     if (item_attack_skill(item) == SK_CROSSBOWS
         && get_weapon_brand(item) == SPWPN_PENETRATION)
     {
