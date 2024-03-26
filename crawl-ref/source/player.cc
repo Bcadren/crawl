@@ -3944,7 +3944,7 @@ void level_change(bool skip_attribute_increase)
                             you.mutation[MUT_SOFT_FLESH] = you.innate_mutation[MUT_SOFT_FLESH] = 0;
                         }
                     }
-                    if (SH < player_shield_class())
+                    if (SH < player_shield_class(false) && scales == MUT_LARGE_BONE_PLATES)
                         mprf(MSGCH_INTRINSIC_GAIN, "Your %s plates grow larger.", you.species == SP_LIGNIFITE ? "wooden" : "bone");
                     if (!(you.experience_level % 3))
                     {
@@ -3953,7 +3953,7 @@ void level_change(bool skip_attribute_increase)
                         else if (scales == MUT_DISTORTION_FIELD)
                             mprf(MSGCH_INTRINSIC_GAIN, "Your distortion field feels stronger.");
                         else if (scales == MUT_THIN_SKELETAL_STRUCTURE)
-                            mprf(MSGCH_INTRINSIC_GAIN, "You feel more agile.");
+                            mprf(MSGCH_INTRINSIC_GAIN, "Your bones and joints feel more flexible.");
                     }
                 }
             }
