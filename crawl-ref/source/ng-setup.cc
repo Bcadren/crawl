@@ -177,7 +177,9 @@ item_def* newgame_make_item(object_class_type base,
     }
 
     // If that didn't help, nothing will.
-    if (is_useless_item(item, false, true))
+    // Don't check if the wanderer startbook is useless before its defined.
+    if (!item.is_type(OBJ_BOOKS, BOOK_RANDART_THEME)
+        && is_useless_item(item, false, true))
     {
         item = item_def();
         return nullptr;
