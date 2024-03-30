@@ -152,6 +152,14 @@ static bool _should_keep_range(monster* mon)
     if (mons_enslaved_soul(*mon))
         type = mon->base_monster;
 
+    if (mons_is_hepliaklqana_ancestor(mon->type))
+    {
+        if (you.props[HEPLIAKLQANA_AI_KEY].get_int() == (int)HEP_PREFER_RANGED)
+            return true;
+        else
+            return false;
+    }
+
     if (!mon->friendly() && coinflip() &&
         (you.where_are_you == BRANCH_DUNGEON && you.depth < 5 || you.where_are_you == BRANCH_SEWER))
     {
@@ -378,6 +386,16 @@ void handle_behaviour(monster* mon)
             }
             else
                 reset_spectral_weapon(mon);
+        }
+    }
+
+    if (mons_is_hepliaklqana_ancestor(mon->type) 
+        && you.props[HEPLIAKLQANA_AI_KEY].get_int() == HEP_PROTECT_PLAYER)
+    {
+        if (grid_distance(you.pos(), mon->pos()) > 1)
+        {
+            mon->foe = MHITNOT;
+            mon->target = you.pos();
         }
     }
 

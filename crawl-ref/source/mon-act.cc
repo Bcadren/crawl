@@ -4138,6 +4138,18 @@ static bool _monster_move(monster* mons)
     bool ret = false;
     if (good_move[mmov.x + 1][mmov.y + 1] && !mmov.origin())
     {
+        if (mons_is_hepliaklqana_ancestor(mons->type)
+            && you.props[HEPLIAKLQANA_AI_KEY].get_int() == HEP_PROTECT_PLAYER)
+        {
+            const int check0 = grid_distance(you.pos(), mons->pos() + mmov);
+            const int check1 = grid_distance(you.pos(), mons->pos());
+            if (check0 > check1 || check0 == 0)
+            {
+                mmov.reset();
+                return false;
+            }
+        }
+
         // Check for attacking player.
         if (mons->pos() + mmov == you.pos())
         {
