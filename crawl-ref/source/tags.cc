@@ -3781,6 +3781,9 @@ static void _tag_read_you(reader &th)
         time_tracking["upgrade"] = -1;
     }
 
+    if (you.religion == GOD_HEPLIAKLQANA && !you.props.exists(HEPLIAKLQANA_AI_KEY))
+        you.props[HEPLIAKLQANA_AI_KEY] = HEP_PREFER_MELEE;
+
     if (th.getMinorVersion() < TAG_MINOR_STICKY_FLAME)
     {
         if (you.props.exists("napalmer"))

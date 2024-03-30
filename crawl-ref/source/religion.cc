@@ -3803,6 +3803,7 @@ static void _join_hepliaklqana()
         you.props[HEPLIAKLQANA_ALLY_NAME_KEY] = _make_ancestor_name(female);
         you.props[HEPLIAKLQANA_ALLY_GENDER_KEY] = female ? GENDER_FEMALE
                                                          : GENDER_MALE;
+        you.props[HEPLIAKLQANA_AI_KEY] = HEP_PREFER_MELEE;
     }
 
     calc_hp(); // adjust for frailty

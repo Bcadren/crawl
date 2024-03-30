@@ -7549,7 +7549,58 @@ void hepliaklqana_choose_identity()
 
 void hepliaklqana_set_ai()
 {
-    return;
+    clear_messages();
+
+    static const map<hep_ai_states, string> ai_map =
+    {
+        { HEP_PREFER_MELEE,     "preferring melee"  },
+        { HEP_PREFER_RANGED,    "preferring ranged" },
+        { HEP_PROTECT_PLAYER,   "protecting you"    },
+    };
+
+    const hep_ai_states current_ai =
+        (hep_ai_states)you.props[HEPLIAKLQANA_AI_KEY].get_int();
+    const string* desc = map_find(ai_map, current_ai);
+    ASSERT(desc);
+
+    mprf(MSGCH_PROMPT,
+        "Should %s: \n    a) prefer to be in melee range"
+                   "\n    b) prefer to use ranged attacks and kite foes"
+                   "\n    c) protect you and stay by your side"
+                   "\n    (Currently %s.)",
+        hepliaklqana_ally_name().c_str(),
+        desc->c_str());
+    
+    int keyin = toalower(get_ch());
+    if (!isaalpha(keyin))
+    {
+        canned_msg(MSG_OK);
+        return;
+    }
+
+    static const hep_ai_states ai_options[] = { HEP_PREFER_MELEE,
+                                                HEP_PREFER_RANGED,
+                                                HEP_PROTECT_PLAYER };
+
+    const uint32_t choice = keyin - 'a';
+    if (choice >= ARRAYSZ(ai_options))
+    {
+        canned_msg(MSG_OK);
+        return;
+    }
+
+    const hep_ai_states new_ai = ai_options[choice];
+
+    if (new_ai == current_ai)
+    {
+        canned_msg(MSG_OK);
+        return;
+    }
+
+    you.props[HEPLIAKLQANA_AI_KEY] = new_ai;
+    mprf("%s will now start %s.",
+         hepliaklqana_ally_name().c_str(),
+         map_find(ai_map, new_ai)->c_str());
 }
 
 bool wu_jian_can_wall_jump_in_principle(const coord_def& target)
