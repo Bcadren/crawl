@@ -213,6 +213,7 @@ bool hepliaklqana_choose_ancestor_type(int ancestor_type);
 spret hepliaklqana_idealise(bool fail);
 spret hepliaklqana_transference(bool fail);
 void hepliaklqana_choose_identity();
+void hepliaklqana_set_ai();
 
 bool wu_jian_can_wall_jump_in_principle(const coord_def& target);
 bool wu_jian_can_wall_jump(const coord_def& target, string &error_ret);

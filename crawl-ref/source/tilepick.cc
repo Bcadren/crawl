@@ -4099,6 +4099,8 @@ tileidx_t tileidx_ability(const ability_type ability)
         return TILEG_ABILITY_HEP_TRANSFERENCE;
     case ABIL_HEPLIAKLQANA_IDENTITY:
         return TILEG_ABILITY_HEP_IDENTITY;
+    case ABIL_HEPLIAKLQANA_COMMAND:
+        return TILEG_ABILITY_HEP_COMMAND;
     case ABIL_HEPLIAKLQANA_TYPE_KNIGHT:
         return TILEG_ABILITY_HEP_KNIGHT;
     case ABIL_HEPLIAKLQANA_TYPE_BATTLEMAGE:

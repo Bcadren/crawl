@@ -1347,6 +1347,7 @@ namespace quiver
         case ABIL_JIYVA_SET_TARGETS_FREE:
         case ABIL_RU_REJECT_SACRIFICES:
         case ABIL_HEPLIAKLQANA_IDENTITY:
+        case ABIL_HEPLIAKLQANA_COMMAND:
         case ABIL_STOP_RECALL:
         case ABIL_RENOUNCE_RELIGION:
         case ABIL_CONVERT_TO_BEOGH:

@@ -657,6 +657,9 @@ static const ability_def Ability_List[] =
 
     { ABIL_HEPLIAKLQANA_IDENTITY,  "Ancestor Identity",
         0, 0, 0, 0, {fail_basis::invo}, abflag::instant | abflag::starve_ok },
+            
+    { ABIL_HEPLIAKLQANA_COMMAND,  "Command Ancestor",
+        0, 0, 0, 0, {fail_basis::invo}, abflag::instant | abflag::starve_ok },
 
     // Wu Jian
     { ABIL_WU_JIAN_SERPENTS_LASH, "Serpent's Lash",
@@ -3802,6 +3805,10 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target, bool 
 
     case ABIL_HEPLIAKLQANA_IDENTITY:
         hepliaklqana_choose_identity();
+        break;
+
+    case ABIL_HEPLIAKLQANA_COMMAND:
+        hepliaklqana_set_ai();
         break;
 
     case ABIL_WU_JIAN_SERPENTS_LASH:
