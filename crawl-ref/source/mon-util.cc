@@ -6830,6 +6830,7 @@ void set_ancestor_spells(monster &ancestor, bool notify)
         {
             _add_ancestor_spell(ancestor.spells, SPELL_OZOCUBUS_ARMOUR);
             _add_ancestor_spell(ancestor.spells, SPELL_CONDENSATION_SHIELD);
+            _add_ancestor_spell(ancestor.spells, HD >= 14 ? SPELL_THROW_ICICLE : SPELL_THROW_FROST);
         }
         if (you.species == SP_FAIRY)
         {

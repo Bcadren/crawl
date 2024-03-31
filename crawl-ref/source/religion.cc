@@ -85,7 +85,9 @@
 #define PIETY_HYSTERESIS_LIMIT 1
 
 static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD);
+static weapon_type _hepliaklqana_bow_type(monster_type mc, int HD);
 static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD);
+static brand_type _hepliaklqana_bow_brand(monster_type mc, int HD);
 static shield_type _hepliaklqana_shield_type(monster_type mc, int HD);
 static special_armour_type _hepliaklqana_shield_ego(int HD);
 
@@ -1926,6 +1928,29 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
         }
     }
 
+    if (ancestor->launcher())
+    {
+        if (!ancestor_offlevel)
+            upgrade_hepliaklqana_bow(ancestor->type, *ancestor->launcher());
+
+        const weapon_type wpn = _hepliaklqana_bow_type(ancestor->type, hd);
+        const brand_type brand = _hepliaklqana_bow_brand(ancestor->type, hd);
+        if (wpn != _hepliaklqana_bow_type(ancestor->type, old_hd)
+            && !quiet_force)
+        {
+            _regain_item_memory(*ancestor, OBJ_WEAPONS, wpn, brand);
+        }
+        else if (brand != _hepliaklqana_bow_brand(ancestor->type, old_hd)
+                 && !quiet_force)
+        {
+            mprf("%s remembers %s %s %s.",
+                ancestor->name(DESC_YOUR, true).c_str(),
+                ancestor->pronoun(PRONOUN_POSSESSIVE, true).c_str(),
+                apostrophise(item_base_name(OBJ_WEAPONS, wpn)).c_str(),
+                brand_type_name(brand, true));
+        }
+    }
+
     // but shields can't be lost, and *can* be gained (knight at hd 5)
     // so give them out as appropriate
     if (!ancestor_offlevel)
@@ -1957,6 +1982,24 @@ void upgrade_hepliaklqana_ancestor(bool quiet_force)
 
     if (quiet_force)
         return;
+}
+
+/**
+* What type of bow should an ancestor of the given HD have?
+*
+* @param mc   The type of ancestor in question.
+* @param HD   The HD of the ancestor in question.
+* @return     An appropriate weapon_type.
+*/
+static weapon_type _hepliaklqana_bow_type(monster_type /*mc*/, int HD)
+{
+    if (you.body_size(PSIZE_TORSO, true) >= SIZE_LARGE)
+        return WPN_MANGONEL;
+
+    if (you.has_innate_mutation(MUT_MULTIARM))
+        return HD < 18 ? WPN_SHORTBOW : WPN_LONGBOW;
+
+    return HD < 14 ? WPN_HUNTING_SLING : WPN_FUSTIBALUS;
 }
 
 /**
@@ -2012,7 +2055,7 @@ static weapon_type _hepliaklqana_weapon_type(monster_type mc, int HD)
  *
  * @param mc   The type of ancestor in question.
  * @param HD   The HD of the ancestor in question.
- * @return     An appropriate weapon_type.
+ * @return     An appropriate brand.
  */
 static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
 {
@@ -2039,6 +2082,20 @@ static brand_type _hepliaklqana_weapon_brand(monster_type mc, int HD)
 }
 
 /**
+* What brand should an ancestor of the given HD's bow have, if any?
+*
+* @param mc   The type of ancestor in question.
+* @param HD   The HD of the ancestor in question.
+* @return     An appropriate brand.
+*/
+static brand_type _hepliaklqana_bow_brand(monster_type /*mc*/, int HD)
+{
+    return HD < 12 ? SPWPN_NORMAL : 
+           HD < 20 ? SPWPN_VORPAL
+                   : SPWPN_FREEZING;
+}
+
+/**
  * Setup an ancestor's weapon after their class is chosen, when the player
  * levels up, or after they're resummoned (or initially created for wrath).
  *
@@ -2062,6 +2119,32 @@ void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item)
                                               _hepliaklqana_ally_hd());
     item.brand = _hepliaklqana_weapon_brand(mtyp,
                                             _hepliaklqana_ally_hd());
+    item.plus = 0;
+    item.flags |= ISFLAG_KNOW_TYPE | ISFLAG_SUMMONED;
+}
+
+/**
+* Setup an ancestor's ranged weapon after their class is chosen, when the player
+* levels up, or after they're resummoned (or initially created for wrath).
+*
+* @param[in]   mtyp          The ancestor for whom the weapon is intended.
+* @param[out]  item          The item to be configured.
+* @param       notify        Whether messages should be printed when something
+*                            changes. (Weapon type or brand.)
+*/
+void upgrade_hepliaklqana_bow(monster_type mtyp, item_def &item)
+{
+    ASSERT(mons_is_hepliaklqana_ancestor(mtyp));
+
+    if (mtyp != MONS_ANCESTOR_KNIGHT)
+        return;
+
+    if (you.species == SP_FELID || you.species == SP_FAIRY)
+        return; // felids and fairies can't use anything.
+
+    item.base_type = OBJ_WEAPONS;
+    item.sub_type = _hepliaklqana_bow_type(mtyp, _hepliaklqana_ally_hd());
+    item.brand = _hepliaklqana_bow_brand(mtyp, _hepliaklqana_ally_hd());
     item.plus = 0;
     item.flags |= ISFLAG_KNOW_TYPE | ISFLAG_SUMMONED;
 }

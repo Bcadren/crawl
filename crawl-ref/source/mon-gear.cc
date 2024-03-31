@@ -1337,7 +1337,10 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
     case MONS_ANCESTOR_BATTLEMAGE:
     case MONS_ANCESTOR_KNIGHT:
         force_item = true;
-        upgrade_hepliaklqana_weapon(type, item);
+        if (melee_only)
+            upgrade_hepliaklqana_weapon(type, item);
+        else
+            upgrade_hepliaklqana_bow(type, item);
         break;
 
     case MONS_ORC_WARRIOR:

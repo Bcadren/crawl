@@ -138,6 +138,7 @@ int hepliaklqana_ally_hp(bool knight_boost);
 
 void upgrade_hepliaklqana_ancestor(bool quiet_force = false);
 void upgrade_hepliaklqana_weapon(monster_type mtyp, item_def &item);
+void upgrade_hepliaklqana_bow(monster_type mtyp, item_def &item);
 void upgrade_hepliaklqana_shield(const monster& ancestor, item_def &item);
 
 bool god_hates_attacking_friend(god_type god, const monster& fr);
