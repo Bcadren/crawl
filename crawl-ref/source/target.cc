@@ -1758,7 +1758,7 @@ aff_type targeter_monster_sequence::is_affected(coord_def loc)
 }
 
 targeter_multiposition::targeter_multiposition(const actor *a,
-            vector<coord_def> seeds, bool _hit_friends, aff_type _positive)
+            vector<coord_def> seeds, aff_type _positive)
     : targeter(), positive(_positive)
 {
     agent = a;
@@ -1792,13 +1792,14 @@ aff_type targeter_multiposition::is_affected(coord_def loc)
 }
 
 targeter_multifireball::targeter_multifireball(const actor *a, vector<coord_def> seeds)
-    : targeter_multiposition(a, seeds, false)
+    : targeter_multiposition(a, seeds)
 {
+    vector <coord_def> bursts;
     for (auto &c : seeds)
     {
         if (affected_positions.count(c)) // did the parent constructor like this pos?
             for (adjacent_iterator ai(c); ai; ++ai)
-                add_position(*ai, true);
+                bursts.push_back(*ai);
     }
 
     for (auto &c : bursts)
@@ -1887,7 +1888,7 @@ targeter_discord::targeter_discord()
 
 bool targeter_discord::affects_monster(const monster_info& mon)
 {
-    return mon.willpower() != WILL_INVULN && mon.can_go_frenzy;
+    return mon.res_magic() != MAG_IMMUNE && mon.can_go_frenzy;
 }
 
 targeter_fear::targeter_fear()
@@ -1897,7 +1898,7 @@ targeter_fear::targeter_fear()
 
 bool targeter_fear::affects_monster(const monster_info& mon)
 {
-    return mon.willpower() != WILL_INVULN
+    return mon.res_magic() != MAG_IMMUNE
            && !mons_atts_aligned(agent->temp_attitude(), mon.attitude);
 }
 

@@ -1657,10 +1657,6 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_shatter>(&you); // special version that affects walls
     case SPELL_CAUSE_FEAR: // for these, we just mark the eligible monsters
         return make_unique<targeter_fear>();
-    case SPELL_INTOXICATE:
-        return make_unique<targeter_intoxicate>();
-    case SPELL_ENGLACIATION:
-        return make_unique<targeter_englaciate>();
     case SPELL_DRAIN_LIFE:
         return make_unique<targeter_drain_life>();
     case SPELL_DISCORD:
@@ -1695,9 +1691,9 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow,
         return make_unique<targeter_radius>(&you, LOS_NO_TRANS, LOS_RADIUS, 0, 2);
     case SPELL_TWISTED_RESURRECTION:
     case SPELL_ANIMATE_DEAD:
-        return make_unique<targeter_multiposition>(&you, _simple_find_corpses(&you), true, AFF_YES);
+        return make_unique<targeter_multiposition>(&you, _simple_find_corpses(&you), AFF_YES);
     case SPELL_SIMULACRUM:
-        return make_unique<targeter_multiposition>(&you, _find_simulacrable_corpses(you.pos()), true, AFF_YES);
+        return make_unique<targeter_multiposition>(&you, _find_simulacrable_corpses(you.pos()), AFF_YES);
     case SPELL_DRAGON_CALL: // this is just convenience: you can start the spell with no enemies in sight
         return make_unique<targeter_multifireball>(&you, _simple_find_all_actors(&you));
 

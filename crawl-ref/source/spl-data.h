@@ -2876,7 +2876,7 @@ static const struct spell_desc spelldata[] =
 {
     SPELL_DISCORD, "Discord", "",
     spschool::hexes,
-    spflag::area | spflag::hasty | spflag::WL_check,
+    spflag::area | spflag::hasty | spflag::MR_check,
     8,
     200,
     -1, -1,
