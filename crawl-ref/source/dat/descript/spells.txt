@@ -1454,6 +1454,12 @@ Shadow Shard spell
 Mimics a damaging spell cast by a Dithmenos worshipper, firing a shard of
 shadow.
 %%%%
+Shard of Memory spell
+
+Casts forward a weak shard from the mists of memory; only used by barely 
+remembered ancestors. Better ranged attacks come upon better remembering 
+your ancestor's life.
+%%%%
 Shatter spell
 
 Causes an enormous burst of concussive force around the caster, dealing severe

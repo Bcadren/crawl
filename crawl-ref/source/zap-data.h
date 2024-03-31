@@ -466,6 +466,23 @@ static const zap_info zap_data[] =
 },
 
 {
+    ZAP_MEMORY_SHARD,
+    "shard of memory",
+    50,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<2, 6, 1, 4>,
+    new tohit_calculator<35, 2, 3>,
+    LIGHTCYAN,
+    false,
+    BEAM_MMISSILE,
+    DCHAR_FIRED_ZAP,
+    false,
+    false,
+    0
+},
+
+{
     ZAP_WAND_FLAME,
     "puff of flame",
     200,

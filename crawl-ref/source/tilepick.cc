@@ -3380,6 +3380,8 @@ tileidx_t tileidx_bolt(const bolt &bolt)
             return TILE_BOLT_SLIMECICLE + dir;
         else if (bolt.name == "zap")
             return TILE_BOLT_ZAP + dir % tile_main_count(TILE_BOLT_ZAP);
+        else if (bolt.name == "shard of memory")
+            return TILE_BOLT_MEMORY;
         break;
 
     case RED:
@@ -3457,6 +3459,7 @@ tileidx_t vary_bolt_tile(tileidx_t tile, int dist)
     case TILE_BOLT_STING:
         return tile + dist % tile_main_count(tile);
     case TILE_BOLT_FLAME:
+    case TILE_BOLT_MEMORY:
     case TILE_BOLT_IRRADIATE:
         return tile + ui_random(tile_main_count(tile));
     default:

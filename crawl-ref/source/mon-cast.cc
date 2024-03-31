@@ -1362,6 +1362,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
         beam.foe_ratio      = random_range(40, 55); // ...
         // fallthrough to other zaps
     case SPELL_THROW_FLAME:
+    case SPELL_MEMORY_SHARD:
     case SPELL_THROW_FROST:
     case SPELL_FLAME_TONGUE:
     case SPELL_VENOM_BOLT:

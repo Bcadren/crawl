@@ -301,6 +301,10 @@ Bone Shards natural cast
 
 @The_monster@ violently exhales sharpened bits of bone @at@ @target@.
 %%%%
+Memory Shard cast
+
+@The_monster@ casts a shard from the mists of memory @at@ @target@.
+%%%%
 Silver Splinters natural cast
 
 @The_monster@ violently exhales rough splinters of silver @at@ @target@.

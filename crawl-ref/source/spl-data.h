@@ -265,6 +265,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_MEMORY_SHARD, "Shard of Memory", "",
+    spschool::earth | spschool::evocation,
+    spflag::dir_or_target | spflag::needs_tracer | spflag::monster,
+    2,
+    50,
+    LOS_RADIUS, LOS_RADIUS,
+    2, 0,
+    TILEG_GENERIC_MONSTER_SPELL,
+},
+
+{
     SPELL_WAND_FLAME, "Flame Wand", "",
     spschool::fire | spschool::evocation,
     spflag::dir_or_target | spflag::needs_tracer,

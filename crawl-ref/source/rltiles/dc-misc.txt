@@ -68,6 +68,10 @@ flame0 BOLT_FLAME
 flame1
 flame2
 
+memory0 BOLT_MEMORY
+memory1
+memory2
+
 frost0 BOLT_FROST
 frost1
 

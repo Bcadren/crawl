@@ -6825,6 +6825,10 @@ void set_ancestor_spells(monster &ancestor, bool notify)
     const int HD = ancestor.get_experience_level();
     switch (ancestor.type)
     {
+    case MONS_ANCESTOR:
+        _add_ancestor_spell(ancestor.spells, SPELL_MEMORY_SHARD);
+        _add_ancestor_spell(ancestor.spells, SPELL_FREEZE);
+        break;
     case MONS_ANCESTOR_KNIGHT:
         if (you.species == SP_FELID)
         {
@@ -6924,9 +6928,6 @@ void set_ancestor_spells(monster &ancestor, bool notify)
             _add_ancestor_spell(ancestor.spells, HD >= 15 ? SPELL_SUMMON_GREATER_DEMON :
                                                  HD >= 10 ? SPELL_SUMMON_DEMON
                                                           : SPELL_CALL_IMP);
-        break;
-    case MONS_ANCESTOR:
-        _add_ancestor_spell(ancestor.spells, SPELL_FREEZE);
         break;
     default:
         break;
