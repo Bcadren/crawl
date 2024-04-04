@@ -7398,7 +7398,7 @@ bool monster::nightvision() const
 
 bool monster::attempt_escape(int attempts)
 {
-    if (!is_constricted() && has_ench(ENCH_SWALLOWED))
+    if (!is_constricted() && !has_ench(ENCH_SWALLOWED))
         return true;
 
     int randfact;
