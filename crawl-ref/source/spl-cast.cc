@@ -550,9 +550,25 @@ bool is_menacing(const actor * caster, spell_type spell)
     return false;
 }
 
+
+// Only one spell for now, but putting whole system in place in case.
+static bool _chaos_veto(spell_type spell)
+{
+    switch (spell)
+    {
+    case SPELL_MAGIC_CANDLE:
+        return true;
+    default:
+        return false;
+    }
+}
+
 bool determine_chaos(const actor *agent, spell_type spell, bool random)
 {
     if (get_spell_disciplines(spell) & spschool::evocation)
+        return false;
+
+    if (_chaos_veto(spell))
         return false;
 
     // Special case for Chaos Butterfly's Chaos Airstrike.
