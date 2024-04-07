@@ -973,7 +973,10 @@ public:
     void set_duration(duration_type dur, int turns, int cap = 0,
                       const char *msg = nullptr);
 
-    bool attempt_escape(int attempts = 1);
+    maybe_bool attempt_escape(int attempts = 1);
+
+    void stop_being_constricted(bool quiet = false) override;
+    actor * get_constrictor_or_frog() override;
 
     bool form_uses_xl() const;
     bool have_serpentine_tail() const;

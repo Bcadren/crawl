@@ -90,6 +90,10 @@ bool actor::can_pass_through(const coord_def &c) const
 
 bool actor::is_habitable(const coord_def &_pos) const
 {
+    // sanity
+    if (!in_bounds(_pos))
+        return false;
+
     if (can_cling_to(_pos))
         return true;
 
@@ -667,14 +671,17 @@ void actor::stop_directly_constricting_all(bool intentional, bool quiet)
 
 void actor::stop_being_constricted(bool quiet)
 {
-    // Make sure we are actually being constricted.
-    actor* const constrictor = actor_by_mid(constricted_by);
+    if (is_constricted())
+    {
+        // Make sure we are actually being constricted.
+        actor* const constrictor = actor_by_mid(constricted_by);
 
-    if (constrictor)
-        constrictor->stop_constricting(mid, false, quiet);
+        if (constrictor)
+            constrictor->stop_constricting(mid, false, quiet);
 
-    // In case the actor no longer exists.
-    clear_constricted();
+        // In case the actor no longer exists.
+        clear_constricted();
+    }
 }
 
 /**
@@ -906,6 +913,19 @@ void actor::constriction_damage_defender(actor &defender, int duration)
 
     if (defender.is_monster() && defender.as_monster()->hit_points < 1)
         monster_die(*defender.as_monster(), this);
+
+}
+
+actor * actor::get_constrictor_or_frog()
+{
+    if (is_constricted())
+    {
+        if (constricted_by == MID_PLAYER)
+            return &you;
+        return actor_by_mid(constricted_by);
+    }
+
+    return nullptr;
 }
 
 // Deal damage over time

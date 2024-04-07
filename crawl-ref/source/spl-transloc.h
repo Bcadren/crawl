@@ -20,6 +20,8 @@ bool rolling_charge_possible(bool quiet, bool ignore_safe_monsters);
 spret rolling_charge(bool fail, dist *target = nullptr);
 int rolling_charge_range();
 
+void translocation_constriction_interaction(actor * constrictee);
+
 bool dangerous_terrain_seen();
 
 void you_teleport();

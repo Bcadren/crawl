@@ -38,6 +38,7 @@ bool handle_throw(monster* mons, bolt &beem,
 
 void handle_monsters(bool with_noise = false);
 void handle_monster_move(monster* mon, int tries = 0);
+void move_constrictor(actor * constrictee, const coord_def& delta);
 
 void queue_monster_for_action(monster* mons);
 

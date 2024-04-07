@@ -180,7 +180,10 @@ void uncontrolled_blink(bool override_stasis, coord_def disp_center)
     if (you.is_constricted() && needs_msg)
         mpr("You feel yourself being warped!");
 
-    if (!you.attempt_escape(2)) // prints its own messages
+    // prints its own messages
+    const maybe_bool esc = you.attempt_escape(2);
+    
+    if (esc == MB_FALSE)
         return;
 
     if (needs_msg)
@@ -189,6 +192,10 @@ void uncontrolled_blink(bool override_stasis, coord_def disp_center)
         canned_msg(MSG_YOU_BLINK);
     const coord_def origin = you.pos();
     move_player_to_grid(target, false);
+
+    if (esc == MB_MAYBE)
+        translocation_constriction_interaction(&you);
+
     contaminate_player(200 + random2(100));
     _place_tloc_cloud(origin);
 }
@@ -396,7 +403,7 @@ spret frog_hop(bool fail, bool spider)
 
     fail_check();
 
-    if (!you.attempt_escape(2)) // XXX: 1?
+    if (you.attempt_escape() != MB_TRUE)
         return spret::success; // of a sort
 
     // invisible monster that the targeter didn't know to avoid, or similar
@@ -632,7 +639,7 @@ spret rolling_charge(bool fail, dist *target)
 
     fail_check();
 
-    if (!you.attempt_escape(1)) // prints its own messages
+    if (you.attempt_escape() != MB_TRUE) // prints its own messages
         return spret::success;
 
     const coord_def target_pos = target_path.back();
@@ -704,6 +711,50 @@ spret rolling_charge(bool fail, dist *target)
     return spret::success;
 }
 
+void translocation_constriction_interaction(actor * constrictee)
+{
+    actor * constrictor = constrictee->get_constrictor_or_frog();
+    const coord_def old_pos = constrictor->pos();
+
+    // Shouldn't happen, but sanity/safety check
+    if (!constrictor)
+        return;
+
+    for (fair_adjacent_iterator ai(constrictee->pos()); ai; ++ai)
+    {
+        if (constrictor->is_habitable(*ai) && !actor_at(*ai))
+        {
+            constrictor->move_to_pos(*ai, true, true);
+
+            if (constrictee->is_player())
+            {
+                mprf("Yoink! You pull %s along with you.",
+                    constrictor->name(DESC_THE).c_str());
+            }
+            else
+            {
+                mprf("Yoink! %s pulls %s along with %s.",
+                    constrictee->name(DESC_THE).c_str(),
+                    constrictor->name(DESC_THE).c_str(),
+                    constrictee->pronoun(PRONOUN_OBJECTIVE).c_str());
+            }
+
+            constrictor->apply_location_effects(old_pos);
+
+            return;
+        }
+    }
+    // Odds of this happening are very small. Nonetheless it can happen.
+    mprf("%s fails to follow %s to %s new location.",
+        constrictor->name(DESC_THE).c_str(),
+        constrictee->name(DESC_THE).c_str(),
+        constrictee->pronoun(PRONOUN_POSSESSIVE).c_str());
+
+    constrictee->stop_being_constricted(true);
+
+    return;
+}
+
 spret blink_bolt(bool fail, int power)
 {
     coord_def target;
@@ -761,7 +812,9 @@ spret controlled_blink(bool fail, bool safe_cancel, int power)
         return spret::success; // of a sort
     }
 
-    if (!you.attempt_escape(2))
+    const maybe_bool esc = you.attempt_escape(2);
+
+    if (esc == MB_FALSE)
         return spret::success; // of a sort
 
     // invisible monster that the targeter didn't know to avoid
@@ -774,6 +827,10 @@ spret controlled_blink(bool fail, bool safe_cancel, int power)
 
     _place_tloc_cloud(you.pos());
     move_player_to_grid(target, false);
+
+    if (esc == MB_MAYBE)
+        translocation_constriction_interaction(&you);
+
     // Controlling teleport contaminates the player. -- bwr
     contaminate_player(1250 + random2(500), true);
 

@@ -6674,7 +6674,9 @@ bool ru_power_leap()
         }
     }
 
-    if (!you.attempt_escape(2)) // returns true if not constricted
+    const maybe_bool esc = you.attempt_escape(2);
+
+    if (esc == MB_FALSE)
         return true;
 
     if (cell_is_solid(beam.target) || monster_at(beam.target))
@@ -6685,6 +6687,9 @@ bool ru_power_leap()
     }
 
     move_player_to_grid(beam.target, false);
+
+    if (esc == MB_MAYBE)
+        translocation_constriction_interaction(&you);
 
     crawl_state.cancel_cmd_again();
     crawl_state.cancel_cmd_repeat();
@@ -7793,7 +7798,7 @@ spret wu_jian_wall_jump_ability()
         return spret::abort;
     }
 
-    if (!you.attempt_escape())
+    if (you.attempt_escape() != MB_TRUE)
         return spret::fail;
 
     // query for location:

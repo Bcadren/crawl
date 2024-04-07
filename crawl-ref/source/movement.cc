@@ -224,13 +224,6 @@ void remove_water_hold()
     }
 }
 
-static void _clear_constriction_data()
-{
-    you.stop_directly_constricting_all(true);
-    if (you.is_directly_constricted())
-        you.stop_being_constricted();
-}
-
 void apply_auto_skeleton(coord_def initial_position)
 {
     if (you.attribute[ATTR_SKELETON])
@@ -746,7 +739,7 @@ static spret _rampage_forward(coord_def move)
 
     // First, apply any necessary pre-move effects:
     remove_water_hold();
-    _clear_constriction_data();
+    you.stop_directly_constricting_all(true);
     const coord_def old_pos = you.pos();
 
     clear_messages();
@@ -1117,7 +1110,8 @@ void move_player_action(coord_def move)
             return;
         }
 
-        if (!you.attempt_escape()) // false means constricted and did not escape
+        const maybe_bool esc = you.attempt_escape();
+        if (esc == MB_FALSE) // false means constricted and did not escape
             return;
 
         if (you.digging)
@@ -1141,7 +1135,11 @@ void move_player_action(coord_def move)
         }
 
         if (swap)
+        {
+            if (esc != MB_TRUE)
+                return;
             _swap_places(targ_monst, mon_swap_dest);
+        }
 
         if (running && env.travel_trail.empty())
             env.travel_trail.push_back(you.pos());
@@ -1154,7 +1152,7 @@ void move_player_action(coord_def move)
         if (you.pos() != targ && targ_pass)
         {
             remove_water_hold();
-            _clear_constriction_data();
+            you.stop_directly_constricting_all(true);
             move_player_to_grid(targ, true);
             apply_barbs_damage();
             apply_noxious_bog(old_pos, targ);
@@ -1174,6 +1172,9 @@ void move_player_action(coord_def move)
         // put a monster at the player's location.
         if (swap)
             targ_monst->apply_location_effects(targ);
+
+        if (esc == MB_MAYBE)
+            move_constrictor(&you, you.pos() - old_pos);
 
         if (you_are_delayed() && current_delay()->is_run())
             env.travel_trail.push_back(you.pos());

@@ -2741,10 +2741,6 @@ void monster::moveto(const coord_def& c, bool clear_net)
         mons_clear_trapping_net(this);
 
     set_position(c);
-
-    // Do constriction invalidation after to the move, so that all LOS checking
-    // is available.
-    clear_invalid_constrictions(true);
 }
 
 bool monster::fumbles_attack()
@@ -6056,10 +6052,6 @@ bool monster::swap_with(monster* other)
     set_position(new_pos);
     other->set_position(old_pos);
 
-    // Okay to render again now
-    clear_invalid_constrictions(true);
-    other->clear_invalid_constrictions(true);
-
     return true;
 }
 
@@ -7396,60 +7388,80 @@ bool monster::nightvision() const
            || god == GOD_DITHMENOS;
 }
 
-bool monster::attempt_escape(int attempts)
+actor * monster::get_constrictor_or_frog()
+{
+    if (has_ench(ENCH_SWALLOWED))
+        return get_ench(ENCH_SWALLOWED).agent();
+
+    return actor::get_constrictor_or_frog();
+}
+
+maybe_bool monster::attempt_escape(int attempts)
 {
     if (!is_constricted() && !has_ench(ENCH_SWALLOWED))
-        return true;
+        return MB_TRUE;
 
     int randfact;
-    monster* themonst = nullptr;
 
     escape_attempts += attempts;
     const int attfactor = 3 * escape_attempts;
 
-    if (is_constricted())
+    actor * constrictor = get_constrictor_or_frog();
+
+    if (!constrictor)
     {
-        if (constricted_by == MID_PLAYER)
-        {
-            if (has_ench(ENCH_VILE_CLUTCH))
-            {
-                randfact = roll_dice(1, 10 + div_rand_round(
-                    calc_spell_power(SPELL_BORGNJORS_VILE_CLUTCH, true), 5));
-            }
-            else
-                randfact = roll_dice(1, 3 + you.experience_level);
-        }
-        else
-        {
-            randfact = roll_dice(1, 5) + 5;
-            themonst = monster_by_mid(constricted_by);
-            ASSERT(themonst);
-            randfact += roll_dice(2, themonst->get_hit_dice());
-        }
-    }
-    else // if swallowed
-    {
-        randfact = roll_dice(1, 5) + 5;
-        mon_enchant ench = get_ench(ENCH_SWALLOWED);
-        themonst = ench.agent()->as_monster();
-        ASSERT(themonst);
-        randfact = roll_dice(1, themonst->get_hit_dice());
+        stop_being_constricted(true);
+        return MB_TRUE;
     }
 
-    if (attfactor > randfact)
+    if (constrictor->is_player())
     {
-        if (is_constricted())
-            stop_being_constricted(true);
-        else
+        if (has_ench(ENCH_VILE_CLUTCH))
         {
-            themonst->del_ench(ENCH_SWALLOWING, true);
-            del_ench(ENCH_SWALLOWED);
-            escape_attempts = 0;
+            randfact = roll_dice(1, 10 + div_rand_round(
+                calc_spell_power(SPELL_BORGNJORS_VILE_CLUTCH, true), 5));
         }
-        return true;
+        else
+            randfact = roll_dice(1, 3 + you.experience_level);
     }
     else
-        return false;
+    {
+        randfact = roll_dice(1, 5) + 5;
+        
+        int num_dice = mons_genus(constrictor->type) == MONS_CROCODILE ? 3 
+                                            : has_ench(ENCH_SWALLOWED) ? 1
+                                                                       : 2;
+
+        randfact += roll_dice(num_dice, constrictor->get_hit_dice());
+    }
+
+    int bonusfact = div_rand_round(randfact * 3, 2);
+
+    if (attfactor > bonusfact)
+    {
+        stop_being_constricted(true);
+        return MB_TRUE;
+    }
+    else if (attfactor > randfact)
+        return MB_MAYBE;
+    else
+        return MB_FALSE;
+}
+
+void monster::stop_being_constricted(bool quiet)
+{
+    actor::stop_being_constricted(quiet);
+
+    if (has_ench(ENCH_SWALLOWED))
+    {
+        mon_enchant ench = get_ench(ENCH_SWALLOWED);
+
+        escape_attempts = 0;
+        monster * themonst = ench.agent()->as_monster();
+        if (themonst && themonst->alive())
+            themonst->del_ench(ENCH_SWALLOWING, true);
+        del_ench(ENCH_SWALLOWED);
+    }
 }
 
 /**

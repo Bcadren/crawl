@@ -126,6 +126,7 @@
 #include "spl-cast.h"
 #include "spl-clouds.h"
 #include "spl-damage.h"
+#include "spl-transloc.h"
 #include "spl-util.h"
 #include "stairs.h"
 #include "startup.h"
@@ -1454,7 +1455,6 @@ static void _take_transporter()
             explored_tracked_feature(DNGN_TRANSPORTER);
         }
         mpr("You enter the transporter and appear at another place.");
-        id_floor_items();
     }
 }
 
@@ -1477,19 +1477,18 @@ static void _take_stairs(bool down)
         return;
     }
 
+    const maybe_bool esc = you.attempt_escape();
+
     if (!(!cancel_harmful_move()
-          && _prompt_stairs(ygrd, down, shaft)
-          && you.attempt_escape())) // false means constricted and don't escape
+          && _prompt_stairs(ygrd, down, shaft))
+        || esc == MB_FALSE) // false means constricted and don't escape
     {
         return;
     }
 
     you.stop_constricting_all(true);
-    you.stop_being_constricted();
 
-    if (shaft)
-        start_delay<DescendingStairsDelay>(0);
-    else if (ygrd == DNGN_TRANSPORTER)
+    if (ygrd == DNGN_TRANSPORTER)
         _take_transporter();
     else if (get_trap_type(you.pos()) == TRAP_GOLUBRIA)
     {
@@ -1498,9 +1497,22 @@ static void _take_stairs(bool down)
         // only returns false if no trap was found, which shouldn't happen
         ASSERT(trap_triggered);
         you.turn_is_over = (you.pos() != old_pos);
-        if (you.turn_is_over)
-            id_floor_items();
     }
+
+    if (you.turn_is_over)
+    {
+        if (esc == MB_MAYBE)
+            translocation_constriction_interaction(&you);
+        id_floor_items();
+    }
+
+    // BCADDO: Consider pulling constrictors up/down stairs 
+    // instead of constriction blocking their use?
+    if (esc != MB_TRUE)
+        return;
+
+    if (shaft)
+        start_delay<DescendingStairsDelay>(0);
     else
     {
         tag_followers(); // Only those beside us right now can follow.

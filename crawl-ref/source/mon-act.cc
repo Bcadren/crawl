@@ -2375,7 +2375,7 @@ void handle_monster_move(monster* mons, int tries)
                 mons->speed_increment -= non_move_energy;
             return;
         }
-
+        
         if (mons->cannot_move() || !_monster_move(mons))
         {
             mons->speed_increment -= non_move_energy;
@@ -3712,6 +3712,72 @@ bool monster_swaps_places(monster* mon, const coord_def& delta,
     return false;
 }
 
+void move_constrictor(actor * constrictee, const coord_def& delta)
+{
+    actor * constrictor = constrictee->get_constrictor_or_frog();
+
+    if (!constrictor)
+        return;
+
+    const coord_def old_pos = constrictor->pos();
+    const coord_def f = constrictor->pos() + delta;
+    bool success = false;
+
+    if (constrictor->is_habitable(f) && !actor_at(f))
+    { 
+        constrictor->move_to_pos(f, true, true);
+        success = true;
+    }
+
+    if (!success)
+    {
+        for (fair_adjacent_iterator ai(constrictor->pos()); ai; ++ai)
+        {
+            if (adjacent(*ai, constrictee->pos()) && constrictor->is_habitable(*ai)
+                && !actor_at(*ai))
+            {
+                constrictor->move_to_pos(*ai, true, true);
+                success = true;
+                break;
+            }
+        }
+    }
+
+    if (success)
+    {
+        if (constrictee->is_player())
+        {
+            mprf("You pull %s along with you.",
+                constrictor->name(DESC_THE).c_str());
+        }
+        else
+        {
+            mprf("%s pulls %s along with %s.",
+                constrictee->name(DESC_THE).c_str(),
+                constrictor->name(DESC_THE).c_str(),
+                constrictee->pronoun(PRONOUN_OBJECTIVE).c_str());
+        }
+
+        constrictor->apply_location_effects(old_pos);
+    }
+    else // Rare, but feasible
+    {
+        if (constrictee->is_player())
+        {
+            mprf("You pull away from %s.",
+                constrictor->name(DESC_THE).c_str());
+        }
+        else
+        {
+            mprf("%s pulls away from %s.",
+                constrictee->name(DESC_THE).c_str(),
+                constrictor->name(DESC_THE).c_str());
+        }
+
+        constrictee->stop_being_constricted();
+    }
+}
+
 static bool _do_move_monster(monster& mons, const coord_def& delta)
 {
     const coord_def f = mons.pos() + delta;
@@ -3735,16 +3801,25 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
         return true;
     }
 
-    if (mons.is_constricted())
+    const bool was_constricted = mons.is_constricted();
+    const bool was_swallowed = mons.has_ench(ENCH_SWALLOWED);
+    const maybe_bool esc = mons.attempt_escape();
+
+    switch (esc)
     {
-        if (mons.attempt_escape())
+    case MB_TRUE:
+        if (was_constricted || was_swallowed)
             simple_monster_message(mons, " escapes!");
-        else
-        {
+        break;
+    case MB_FALSE:
+        if (was_constricted)
             simple_monster_message(mons, " struggles to escape constriction.");
-            _swim_or_move_energy(mons);
-            return true;
-        }
+        else
+            simple_monster_message(mons, " struggles to escape the hungry maw.");
+        _swim_or_move_energy(mons);
+        return true;
+    case MB_MAYBE:
+        break;
     }
 
     if (feat_is_closed_door(env.grid(f)))
@@ -3827,16 +3902,23 @@ static bool _do_move_monster(monster& mons, const coord_def& delta)
     coord_def old_pos = mons.pos();
 
     mons.move_to_pos(f, false);
-
     mons.check_clinging(true);
     _ballisto_on_move(mons, old_pos);
 
     // Let go of all constrictees; only stop *being* constricted if we are now
-    // too far away (done in move_to_pos above).
+    // too far away
     mons.stop_directly_constricting_all(false);
+
+    if (esc == MB_MAYBE)
+    {
+        actor * act = &mons;
+        move_constrictor(act, delta);
+    }
+    mons.clear_invalid_constrictions();
 
     mons.check_redraw(mons.pos() - delta);
     mons.apply_location_effects(mons.pos() - delta);
+
     if (!invalid_monster(&mons) && you.can_see(mons))
     {
         handle_seen_interrupt(&mons);

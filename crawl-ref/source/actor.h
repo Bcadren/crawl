@@ -459,7 +459,8 @@ public:
     void stop_constricting_all(bool intentional = false, bool quiet = false);
     void stop_directly_constricting_all(bool intentional = false,
                                         bool quiet = false);
-    void stop_being_constricted(bool quiet = false);
+    virtual void stop_being_constricted(bool quiet = false);
+    virtual actor * get_constrictor_or_frog();
 
     bool can_constrict(const actor* defender, bool direct) const;
     bool has_invalid_constrictor(bool move = false) const;

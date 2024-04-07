@@ -569,7 +569,9 @@ public:
     void bind_melee_flags();
     void bind_spell_flags();
     void calc_speed();
-    bool attempt_escape(int attempts = 1);
+    maybe_bool attempt_escape(int attempts = 1);
+    actor * get_constrictor_or_frog() override;
+    void stop_being_constricted(bool quiet = false) override;
     void struggle_against_net();
     int usable_tentacles(bool /*allow_tran*/ = true) const override;
 

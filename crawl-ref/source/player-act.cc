@@ -78,7 +78,6 @@ void player::moveto(const coord_def &c, bool clear_net)
     crawl_view.set_player_at(c);
     set_position(c);
 
-    clear_invalid_constrictions();
     end_searing_ray();
 }
 

@@ -9327,7 +9327,6 @@ void player::shiftto(const coord_def &c)
 {
     crawl_view.shift_player_to(c);
     set_position(c);
-    clear_invalid_constrictions();
 }
 
 bool player::asleep() const
@@ -9845,7 +9844,7 @@ void player::goto_place(const level_id &lid)
     ASSERT_RANGE(depth, 1, brdepth[where_are_you] + 1);
 }
 
-bool player::attempt_escape(int attempts)
+maybe_bool player::attempt_escape(int attempts)
 {
     monster *themonst;
     const bool c = is_constricted();
@@ -9862,36 +9861,59 @@ bool player::attempt_escape(int attempts)
         ASSERT(themonst);
     }
     else
-        return true;
+        return MB_TRUE;
+
+    int num_dice = mons_genus(themonst->type) == MONS_CROCODILE ? 7
+                                      : duration[DUR_SWALLOWED] ? 4
+                                                                : 5;
 
     escape_attempts += attempts;
 
     // player breaks free if (4+n)d13 >= 5d(8+HD/4)
-    if (escape_score
-        >= roll_dice(c ? 5 : 4, 4  + div_rand_round(themonst->get_hit_dice(), 3)))
+    int restrict_score = roll_dice(num_dice, 4 + div_rand_round(themonst->get_hit_dice(), 3));
+    int bonus_score = div_rand_round(restrict_score * 3, 2);
+
+    if (escape_score >= bonus_score)
     {
         mprf("You escape %s %s.", themonst->name(DESC_ITS, true).c_str(), c ? "grasp" : "maw");
 
         // Stun the monster to prevent it from constricting again right away.
         themonst->speed_increment -= 5;
+        stop_being_constricted(true);
 
-        if (c)
-           stop_being_constricted(true);
-        else
-        {
-            duration[DUR_SWALLOWED] = 0;
-            monster_by_mid(props["frog"].get_int())->del_ench(ENCH_SWALLOWING, true);
-            props.erase("frog");
-            escape_attempts = 0;
-        }
-
-        return true;
+        return MB_TRUE;
     }
+    else if (escape_score >= restrict_score)
+        return MB_MAYBE;
 
     mprf("%s hold on you weakens, but your attempt to escape fails.",
         themonst->name(DESC_ITS, true).c_str());
     turn_is_over = true;
-    return false;
+    return MB_FALSE;
+}
+
+void player::stop_being_constricted(bool quiet)
+{
+    actor::stop_being_constricted(quiet);
+
+    if (duration[DUR_SWALLOWED])
+    {
+        escape_attempts = 0;
+        if (!clear_far_engulf())
+        {
+            duration[DUR_SWALLOWED] = 0;
+            monster_by_mid(props["frog"].get_int())->del_ench(ENCH_SWALLOWING, true);
+            props.erase("frog");
+        }
+    }
+}
+
+actor * player::get_constrictor_or_frog()
+{
+    if (duration[DUR_SWALLOWED])
+        return actor_by_mid(props["frog"].get_int());
+
+    return actor::get_constrictor_or_frog();
 }
 
 void player::sentinel_mark(bool trap)

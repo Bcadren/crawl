@@ -69,14 +69,14 @@ bool monster::blink_to(const coord_def& dest, bool quiet, bool jump)
     if (dest == pos())
         return false;
 
-    bool was_constricted = false;
+    bool was_constricted = (is_constricted() || has_ench(ENCH_SWALLOWED));
     const string verb = (jump ? "leap" : "blink");
 
-    if (is_constricted())
-    {
-        was_constricted = true;
+    const maybe_bool esc = attempt_escape(2);
 
-        if (!attempt_escape(2))
+    if (was_constricted)
+    {
+        if (esc == MB_FALSE || (jump && esc == MB_MAYBE))
         {
             if (!quiet)
             {
@@ -86,6 +86,9 @@ bool monster::blink_to(const coord_def& dest, bool quiet, bool jump)
             }
             return false;
         }
+
+        if (esc != MB_TRUE)
+            was_constricted = false;
     }
 
     if (!quiet)
@@ -101,6 +104,12 @@ bool monster::blink_to(const coord_def& dest, bool quiet, bool jump)
     const coord_def oldplace = pos();
     if (!move_to_pos(dest, true))
         return false;
+
+    if (esc == MB_MAYBE)
+    {
+        actor * act = this;
+        translocation_constriction_interaction(act);
+    }
 
     // Leave a cloud.
     if (!props.exists(FAKE_BLINK_KEY) && !cell_is_solid(oldplace))
