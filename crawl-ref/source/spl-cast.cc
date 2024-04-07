@@ -3004,6 +3004,8 @@ string spell_damage_string(spell_type spell, bool evoked)
             const int power = _spell_power(spell, evoked);
             return make_stringf("2d5+1d%d", power / 7);
         }
+        case SPELL_MAGIC_CANDLE:
+            return "";
         default:
             break;
     }
