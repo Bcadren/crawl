@@ -4,8 +4,6 @@ name: "Molten Gargoyle"
 short_name: "MG"
 difficulty: Simple
 difficulty_priority: 70
-species_flags:
-  - hairless
 aptitudes:
   xp: -1
   hp: -3
@@ -40,6 +38,8 @@ levelup_stat_frequency: 4
 levelup_stats:
   - int
   - dex
+species_flags:
+  - hairless
 mutations:
   1:
     MUT_ARTIFICIAL_FLESH: 1
@@ -58,8 +58,8 @@ mutations:
     MUT_BREATHE_MAGMA: 1
 fake_mutations:
   - long: You are resistant to torment.
-    short: torment immune
-  - long: You are not damaged by walking on lava.
+    short: torment resistant
+  - long: You regenerate faster while walking on lava.
     short: lava walking
 recommended_jobs:
   - JOB_FIGHTER
