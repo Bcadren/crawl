@@ -2538,7 +2538,8 @@ bool flavour_triggers_damageless(attack_flavour flavour)
         || flavour == AF_POISON_STR
 		|| flavour == AF_CONTAM
         || flavour == AF_FROG
-        || flavour == AF_CROC_LUNGE;
+        || flavour == AF_CROC_LUNGE
+        || flavour == AF_DEATH_ROLL;
 }
 
 /**

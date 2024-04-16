@@ -4580,7 +4580,7 @@ void melee_attack::riposte(int which_attack)
     attck.attack();
 }
 
-bool melee_attack::do_knockback(bool trample)
+static bool _pre_move()
 {
     if (defender->is_stationary())
         return false; // don't even print a message
@@ -4590,6 +4590,103 @@ bool melee_attack::do_knockback(bool trample)
 
     // If the mount died before knockback would happen give the player a break.
     if (mount_defend && !you.mounted())
+        return false;
+
+    return true;
+}
+
+bool melee_attack::do_croc_pull()
+{
+    if (!_pre_move())
+        return false;
+
+    if (env.grid(attack_position) == DNGN_DEEP_WATER)
+        return false;
+
+    coord_def target = coord_def(0, 0);
+    int dist = 20;
+    int new_dist = 20;
+    int equals = 0;
+
+    // Find closest deep water
+    for (radius_iterator ri(attack_position, you.current_vision, C_SQUARE, true); ri; ++ri)
+    {
+        if (attacker->see_cell_no_trans(*ri)
+            && !actor_at(*ri)
+            && in_bounds(*ri)
+            && (env.grid(*ri) == DNGN_DEEP_WATER))
+        {
+            new_dist = grid_distance(attack_position, *ri);
+
+            if (new_dist > dist)
+                continue;
+
+            bolt tracer;
+            tracer.source = attack_position;
+            tracer.target = *ri;
+            tracer.is_tracer = false;
+            tracer.pierce = false;
+            tracer.range = 3;
+            tracer.fire();
+
+            for (unsigned int j = 0; j < tracer.path_taken.size() - 1; ++j)
+            {
+                if (!adjacent(attack_position, tracer.path_taken[j])
+                    continue;
+
+                if (!monster_habitable_grid(&attacker, env.grid(tracer.path_taken[j]))
+                    || actor_at(tracer.path_taken[j]))
+                {
+                    continue;
+                }
+
+                if (dist > new_dist)
+                    equals = 1;
+
+                if (one_chance_in(equals))
+                {
+                    dist = new_dist;
+                    target = tracer.path_taken[j];
+                }
+
+                equals++;
+            }
+        }
+    }
+
+    if (target.origin()) // Didn't find any water
+        return;
+
+    const int size_diff =
+        attacker->body_size(PSIZE_BODY) - defender->body_size(PSIZE_BODY);
+
+    if (!x_chance_in_y(size_diff + 2, 6))
+    {
+        if (needs_message)
+        {
+            mprf("%s %s %s ground!",
+                defender_name(false).c_str(),
+                mount_defend ? "holds" : defender->conj_verb("hold").c_str(),
+                mount_defend ? "its" : defender->pronoun(PRONOUN_POSSESSIVE).c_str());
+        }
+
+        return false;
+    }
+
+    if (attacker->move_to_pos(target)
+        && defender->move_to_pos(attack_position)
+        && needs_message)
+    {
+        mprf("%s%s %s toward deep water!",
+            mount_defend ? "You and your" : "",
+            defender_name(false).c_str(),
+            defender->conj_verb("are pulled").c_str());
+    }
+}
+
+bool melee_attack::do_knockback(bool trample)
+{
+    if (!_pre_move())
         return false;
 
     const int size_diff =

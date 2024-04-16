@@ -3978,7 +3978,7 @@ static bool _can_move(monster* mons, move_array * moves, bool * preferred_availa
                 if (mons_is_zombified(*mons) && mons->type != MONS_SPECTRAL_THING)
                     continue;
 
-                if ((target_grid == DNGN_DEEP_WATER) && (habitat == HT_WATER))
+                if ((target_grid == DNGN_DEEP_WATER) && (habitat == HT_WATER || mons_genus(mons->type) == MONS_CROCODILE))
                     *preferred_available = true;
 
                 if (feat_is_solid(target_grid) && (habitat == HT_ROCK || habitat == HT_STEEL))
