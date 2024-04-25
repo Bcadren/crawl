@@ -405,6 +405,7 @@ int monster::damage_type(int which_attack)
         case AT_TRUNK_SLAP:
         case AT_SLAP:
         case AT_POUNCE:
+        case AT_THRASH:
             return DAM_BLUDGEON;
         case AT_BITE:
         case AT_STING:

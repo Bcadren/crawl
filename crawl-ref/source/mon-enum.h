@@ -52,7 +52,8 @@ enum attack_type
     AT_PINCER,
     AT_SHIELD,
     AT_SLAM,
-    AT_LAST_REAL_ATTACK = AT_SLAM,
+    AT_THRASH,
+    AT_LAST_REAL_ATTACK = AT_THRASH,
 
     AT_CHERUB,
     AT_MULTIBITE,

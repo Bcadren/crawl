@@ -2475,7 +2475,8 @@ string mon_attack_name(attack_type attack, bool with_object)
         "pounce on",
         "pinch",
         "hit",          // shield attack should only actually use the shield's vorpal type. 
-        "body-slam",      
+        "body-slam",
+        "thrash",
         "hit, bite, peck, or gore", // AT_CHERUB
         "bite", // AT_MULTIBITE
         "hit", // AT_WEAP_ONLY,

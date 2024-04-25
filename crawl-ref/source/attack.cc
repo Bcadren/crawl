@@ -377,6 +377,13 @@ int attack::calc_to_hit(bool random, bool player_aux)
         return AUTOMATIC_HIT;
     }
 
+    if (attk_flavour == AF_DEATH_ROLL
+        && defender->is_directly_constricted()
+        && attacker->mid == defender->constricted_by)
+    {
+        return AUTOMATIC_HIT;
+    }
+
     float mhit = attacker->is_player() ?
                 calc_player_to_hit(using_weapon() ? weapon : nullptr, 
                     player_aux, attacker_armour_tohit_penalty + attacker_shield_tohit_penalty, true)
@@ -1634,7 +1641,19 @@ int attack::apply_damage_modifiers(int damage)
         damage = div_rand_round(2 * damage, 3);
 
     if (damage_brand == SPWPN_MOLTEN)
-        damage = div_rand_round(damage * 3, 5);   
+        damage = div_rand_round(damage * 3, 5);
+
+    if (attk_flavour == AF_DEATH_ROLL)
+    {
+        if (defender->is_directly_constricted()
+            && attacker->mid == defender->constricted_by)
+        {
+            if (env.grid(attacker->pos()) == DNGN_DEEP_WATER)
+                damage = div_rand_round(damage * 3, 2);
+            else
+                damage = div_rand_round(damage * 3, 5);
+        }
+    }
 
     return apply_resists(damage);
 }
@@ -1674,6 +1693,13 @@ int attack::apply_defender_ac(int damage, int damage_max) const
         local_ac = ac_type::half;
     if (attk_flavour == AF_PIERCE_AC)
         local_ac = ac_type::half;
+    if (attk_flavour == AF_DEATH_ROLL
+        && env.grid(attacker->pos()) == DNGN_DEEP_WATER
+        && defender->is_directly_constricted()
+        && attacker->mid == defender->constricted_by)
+    {
+        local_ac = ac_type::none;
+    }
     if (attacker->is_player() && you.form == transformation::scorpion && damage_brand == SPWPN_PROTECTION)
         local_ac = ac_type::half;
     int after_ac = defender->apply_ac(damage, damage_max,
@@ -1708,6 +1734,13 @@ bool attack::attack_shield_blocked(bool verbose)
 
     if (mons_aligned(attacker, defender) && using_weapon()
         && weapon->is_type(OBJ_STAVES, STAFF_LIFE))
+    {
+        return false;
+    }
+
+    if (attk_flavour == AF_DEATH_ROLL
+        && defender->is_directly_constricted()
+        && attacker->mid == defender->constricted_by)
     {
         return false;
     }

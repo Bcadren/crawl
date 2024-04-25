@@ -38,6 +38,7 @@
 #include "mapdef.h"
 #include "message.h"
 #include "mon-behv.h"
+#include "mon-place.h"
 #include "mon-poly.h"
 #include "mon-tentacle.h"
 #include "mon-util.h"
@@ -3344,6 +3345,20 @@ string melee_attack::mons_attack_verb()
     if (attacker->type == MONS_KILLER_KLOWN && attk_type == AT_HIT)
         return RANDOM_ELEMENT(klown_attack);
 
+    if (attk_type == AT_THRASH)
+    {
+        const bool constrict = defender->is_directly_constricted()
+            && attacker->mid == defender->constricted_by;
+
+        if (!constrict)
+            return "tail-slap";
+
+        if (env.grid(attack_position) != DNGN_DEEP_WATER && constrict)
+            return "wrench";
+
+        // else fallthrough to the default "thrash".
+    }
+
     //XXX: then why give them it in the first place?
     if (attk_type == AT_TENTACLE_SLAP && mons_is_tentacle(attacker->type))
         return "slap";
@@ -3564,13 +3579,22 @@ bool melee_attack::mons_attack_effects()
     if (consider_decapitation(damage_done))
         return false;
 
-    if (attacker != defender && attk_flavour == AF_TRAMPLE
-        && !defender->wearing_ego(EQ_BOOTS, SPARM_STURDY)
-        && !defender->is_constricted()
-        && !(defender->is_monster() && defender->as_monster()->has_ench(ENCH_HELD))
-        && !(defender->is_player() && you.attribute[ATTR_HELD]))
+    if (attacker != defender && !defender->wearing_ego(EQ_BOOTS, SPARM_STURDY))
     {
-        do_knockback();
+        if (attk_flavour == AF_TRAMPLE
+            && !defender->is_constricted()
+            && !(defender->is_monster() && defender->as_monster()->has_ench(ENCH_HELD))
+            && !(defender->is_player() && you.attribute[ATTR_HELD]))
+        {
+            do_knockback();
+        }
+
+        if (attk_flavour == AF_DEATH_ROLL
+            && defender->is_directly_constricted()
+            && attacker->mid == defender->constricted_by)
+        {
+            do_croc_pull();
+        }
     }
 
     special_damage = 0;
@@ -4580,7 +4604,7 @@ void melee_attack::riposte(int which_attack)
     attck.attack();
 }
 
-static bool _pre_move()
+static bool _pre_move(actor * attacker, actor * defender, bool mount_defend)
 {
     if (defender->is_stationary())
         return false; // don't even print a message
@@ -4597,7 +4621,7 @@ static bool _pre_move()
 
 bool melee_attack::do_croc_pull()
 {
-    if (!_pre_move())
+    if (!_pre_move(attacker, defender, mount_defend))
         return false;
 
     if (env.grid(attack_position) == DNGN_DEEP_WATER)
@@ -4624,17 +4648,17 @@ bool melee_attack::do_croc_pull()
             bolt tracer;
             tracer.source = attack_position;
             tracer.target = *ri;
-            tracer.is_tracer = false;
+            tracer.is_tracer = true;
             tracer.pierce = false;
             tracer.range = 3;
             tracer.fire();
 
             for (unsigned int j = 0; j < tracer.path_taken.size() - 1; ++j)
             {
-                if (!adjacent(attack_position, tracer.path_taken[j])
+                if (!adjacent(attack_position, tracer.path_taken[j]))
                     continue;
 
-                if (!monster_habitable_grid(&attacker, env.grid(tracer.path_taken[j]))
+                if (!monster_habitable_grid(attacker->as_monster(), env.grid(tracer.path_taken[j]))
                     || actor_at(tracer.path_taken[j]))
                 {
                     continue;
@@ -4655,12 +4679,12 @@ bool melee_attack::do_croc_pull()
     }
 
     if (target.origin()) // Didn't find any water
-        return;
+        return false;
 
     const int size_diff =
         attacker->body_size(PSIZE_BODY) - defender->body_size(PSIZE_BODY);
 
-    if (!x_chance_in_y(size_diff + 2, 6))
+    if (!x_chance_in_y(size_diff + 4, 6))
     {
         if (needs_message)
         {
@@ -4674,19 +4698,25 @@ bool melee_attack::do_croc_pull()
     }
 
     if (attacker->move_to_pos(target)
-        && defender->move_to_pos(attack_position)
-        && needs_message)
+        && defender->move_to_pos(attack_position))
     {
-        mprf("%s%s %s toward deep water!",
-            mount_defend ? "You and your" : "",
-            defender_name(false).c_str(),
-            defender->conj_verb("are pulled").c_str());
+        if (needs_message)
+        {
+            mprf("%s%s %s toward deep water!",
+                mount_defend ? "You and your" : "",
+                defender_name(false).c_str(),
+                defender->conj_verb("are hauled").c_str());
+        }
+
+        return true;
     }
+
+    return false;
 }
 
 bool melee_attack::do_knockback(bool trample)
 {
-    if (!_pre_move())
+    if (!_pre_move(attacker, defender, mount_defend))
         return false;
 
     const int size_diff =
