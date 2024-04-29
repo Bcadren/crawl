@@ -2943,8 +2943,16 @@ void bolt::affect_place_clouds()
         {
             if (defender->is_player())
             {
-                mprf(MSGCH_WARN, "You are encased in ice.");
-                you.increase_duration(DUR_FROZEN, 5 + random2(damage.size/3));
+                if (you.mounted())
+                {
+                    mprf(MSGCH_WARN, "Your %s is encased in ice.", you.mount_name(true).c_str());
+                    you.increase_duration(DUR_MOUNT_FROZEN, 5 + random2(damage.size / 3));
+                }
+                else
+                {
+                    mprf(MSGCH_WARN, "You are encased in ice.");
+                    you.increase_duration(DUR_FROZEN, 5 + random2(damage.size / 3));
+                }
             }
             else
             {

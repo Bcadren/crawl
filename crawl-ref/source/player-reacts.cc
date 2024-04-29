@@ -681,7 +681,9 @@ static void _decrement_durations()
 
     dec_ambrosia_player(delay);
     dec_channel_player(delay);
-    dec_slow_player(delay);
+    dec_slow_player(delay, false);
+    if (you.mounted())
+        dec_slow_player(delay, true);
     dec_berserk_recovery_player(delay);
     dec_haste_player(delay);
 

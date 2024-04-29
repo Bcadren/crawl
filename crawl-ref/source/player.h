@@ -1237,7 +1237,7 @@ void dec_napalm_player(int delay);
 
 bool spell_slow_player(int pow);
 bool slow_player(int turns, bool do_msg = true);
-void dec_slow_player(int delay);
+void dec_slow_player(int delay, bool mount);
 void dec_berserk_recovery_player(int delay);
 
 bool haste_player(int turns, bool rageext = false, bool msg = true);

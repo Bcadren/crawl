@@ -2558,12 +2558,16 @@ static void _torpor_snail_slow(monster* mons)
     {
         if (!you.duration[DUR_SLOW])
         {
-            mprf("Being near %s leaves you feeling lethargic.",
-                 mons->name(DESC_THE).c_str());
+            mprf("Being near %s leaves you%s%s feeling lethargic.",
+                 mons->name(DESC_THE).c_str(),
+                 you.mounted() ? " and your " : "",
+                 you.mounted() ? you.mount_name(true).c_str() : "");
         }
 
         if (you.duration[DUR_SLOW] <= 1)
             you.set_duration(DUR_SLOW, 1);
+        if (you.mounted() && you.duration[DUR_MOUNT_SLOW] <= 1)
+            you.set_duration(DUR_MOUNT_SLOW, 1);
         you.props[TORPOR_SLOWED_KEY] = true;
     }
 

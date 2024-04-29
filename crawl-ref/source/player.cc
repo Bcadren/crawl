@@ -5648,12 +5648,12 @@ bool slow_player(int turns, bool do_msg)
     return true;
 }
 
-void dec_slow_player(int delay)
+void dec_slow_player(int delay, bool mount)
 {
-    if (!you.duration[DUR_SLOW])
+    if (!you.duration[mount ? DUR_MOUNT_SLOW : DUR_SLOW])
         return;
 
-    if (you.duration[DUR_SLOW] > BASELINE_DELAY)
+    if (!mount && you.duration[DUR_SLOW] > BASELINE_DELAY)
     {
         // Make slowing and hasting effects last as long.
         you.duration[DUR_SLOW] -= you.duration[DUR_HASTE]
@@ -5662,17 +5662,19 @@ void dec_slow_player(int delay)
 
     if (you.torpor_slowed())
     {
-        you.duration[DUR_SLOW] = 1;
+        you.duration[mount ? DUR_MOUNT_SLOW : DUR_SLOW] = 1;
         return;
     }
     if (you.props.exists(TORPOR_SLOWED_KEY))
         you.props.erase(TORPOR_SLOWED_KEY);
 
-    if (you.duration[DUR_SLOW] <= BASELINE_DELAY)
+    if (you.duration[mount ? DUR_MOUNT_SLOW : DUR_SLOW] <= BASELINE_DELAY)
     {
-        you.duration[DUR_SLOW] = 0;
-        if (!have_stat_zero())
+        you.duration[mount ? DUR_MOUNT_SLOW : DUR_SLOW] = 0;
+        if (!mount)
             mprf(MSGCH_DURATION, "You feel yourself speed up.");
+        else
+            mprf(MSGCH_DURATION, "Your %s seems faster.", you.mount_name(true).c_str());
     }
 }
 

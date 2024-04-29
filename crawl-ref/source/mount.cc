@@ -194,6 +194,8 @@ void cure_mount_debuffs()
         you.duration[DUR_MOUNTED] = 0;
     if (you.duration[DUR_MOUNT_POISONING])
         you.duration[DUR_MOUNT_POISONING] = 0;
+    if (you.duration[DUR_MOUNT_FROZEN])
+        you.duration[DUR_MOUNT_FROZEN] = 0;
     if (you.duration[DUR_MOUNT_CORROSION])
     {
         you.duration[DUR_MOUNT_CORROSION] = 0;
