@@ -756,7 +756,7 @@ static void _write_book(const spellbook_contents &book,
         tiles.json_write_string("letter", string(1, spell_letter));
 
         string effect_str = _effect_string(spell, mon_owner);
-        if (!testbits(get_spell_flags(spell), spflag::MR_check) || spell == SPELL_PAIN))
+        if (!testbits(get_spell_flags(spell), spflag::MR_check) || spell == SPELL_PAIN)
             effect_str = _colourize(effect_str, _spell_colour(spell));
         tiles.json_write_string("effect", effect_str);
 
