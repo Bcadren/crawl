@@ -3595,7 +3595,7 @@ void change_drac_colour (draconian_colour new_colour)
     if (old_colour == new_colour)
         return;
 
-    ability_type old_breath = draconian_breath();
+    ability_type old_breath = draconian_breath(false);
     bool was_undead = (you.undead_state() != US_ALIVE);
 
     if (old_colour == DR_TEAL)
@@ -3662,7 +3662,7 @@ void change_drac_colour (draconian_colour new_colour)
 
     you.drac_colour = new_colour;
     
-    abil_swap(old_breath, draconian_breath());
+    abil_swap(old_breath, draconian_breath(false));
 
     // The player symbol depends on species.
     update_player_symbol();

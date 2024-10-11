@@ -1078,6 +1078,9 @@ ability_type fixup_ability(ability_type ability)
             return ABIL_NON_ABILITY; // Probably impossible anyways but immature draconians shouldn't unlock this yet.
         if (you.props.exists(BAHAMUT_TIAMAT_CHOICE3_KEY))
             return ABIL_NON_ABILITY;
+        if (you.form != transformation::none)
+            return ABIL_NON_ABILITY; 
+            // Changing drac colour from most forms causes bugs (Statue and Lich the worst), so just bar it.
         return ability;
 
     // You only have one of the choice abilities.
@@ -1112,6 +1115,9 @@ ability_type fixup_ability(ability_type ability)
             return ABIL_NON_ABILITY;
         if (you.props[BAHAMUT_TIAMAT_CHOICE3_KEY].get_bool())
             return ABIL_NON_ABILITY;
+        if (you.form != transformation::none)
+            return ABIL_NON_ABILITY;
+            // Changing drac colour from most forms causes bugs (Statue and Lich the worst), so just bar it.
         return ability;
 
     default:
