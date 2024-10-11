@@ -4142,6 +4142,25 @@ bool player_has_ability(ability_type abil, bool include_unusable)
     if (draconian_breath() == abil)
         return true;
 
+    // Golden Draconian multi-breath.
+    if (you.species == SP_DRACONIAN 
+        && you.drac_colour == DR_GOLDEN
+        && you.form != transformation::statue)
+    {
+        if (abil == ABIL_BREATHE_FROST)
+            return true;
+        if (you.form == transformation::dragon
+            && abil == ABIL_BREATHE_POISON)
+        {
+            return true;
+        }
+        else if (you.form != transformation::dragon
+            && abil == ABIL_BREATHE_MEPHITIC) 
+        {
+            return true;
+        }
+    }
+
     switch (abil)
     {
     case ABIL_SHAFT_SELF:
