@@ -232,7 +232,7 @@ void apply_auto_skeleton(coord_def initial_position)
         if (cast_animate_skeleton(you.religion, fail, initial_position))
         {
             int spellpower = calc_spell_power(SPELL_SKELETAL_UPRISING, true);
-            dec_mp(div_rand_round(spellpower, 100));
+            dec_mp(div_rand_round(100 - spellpower, 100));
         }
     }
 }
