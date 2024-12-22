@@ -2548,6 +2548,55 @@ int find_simulacrable_corpse(coord_def c)
     return co;
 }
 
+static spret _finish_simulacrum(item_def& corpse, int pow, god_type god)
+{
+    canned_msg(MSG_ANIMATE_REMAINS);
+
+    // How many simulacra can this particular monster give at maximum.
+    int num_sim = 1 + random2(max_corpse_chunks(corpse.mon_type));
+    num_sim = stepdown_value(num_sim, 4, 4, 12, 12);
+
+    mgen_data mg = _pal_data(MONS_SIMULACRUM, 0, god, SPELL_SIMULACRUM);
+    mg.set_base(corpse.mon_type);
+
+    // Can't create more than the max for the monster.
+    int how_many = min(8, 4 + random2(pow) / 20);
+    how_many = min<int>(how_many, num_sim);
+
+    if (corpse.props.exists(CORPSE_HEADS))
+    {
+        // Avoid headless hydras. Unlike Animate Dead, still consume the flesh.
+        if (corpse.props[CORPSE_HEADS].get_short() == 0)
+        {
+            // No monster to conj_verb with :(
+            mprf("The headless hydra simulacr%s immediately collapse%s into snow!",
+                how_many == 1 ? "um" : "a", how_many == 1 ? "s" : "");
+            if (!turn_corpse_into_skeleton(corpse))
+                butcher_corpse(corpse, false, false);
+            return spret::success;
+        }
+        mg.props[MGEN_NUM_HEADS] = corpse.props[CORPSE_HEADS].get_short();
+    }
+
+    int count = 0;
+    for (int i = 0; i < how_many; ++i)
+    {
+        if (monster *sim = create_monster(mg))
+        {
+            count++;
+            player_post_summon_adjustments(SPELL_SIMULACRUM, sim, pow);
+            sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, have_passive(passive_t::extend_undead) ? 6 : 3));
+        }
+    }
+
+    if (!count)
+        canned_msg(MSG_NOTHING_HAPPENS);
+    else if (!turn_corpse_into_skeleton(corpse))
+        butcher_corpse(corpse, false, false);
+
+    return spret::success;
+}
+
 /**
  * Have the player cast simulacrum.
  *
@@ -2563,8 +2612,8 @@ spret cast_simulacrum(int pow, god_type god, bool fail)
 
     fail_check();
 
-    if (!co)
-    {
+    if (co == -1)
+    { 
         if (!you.attribute[ATTR_KIKU_CORPSE])
         {
             mpr("There is nothing here that can be animated!");
@@ -2609,55 +2658,9 @@ spret cast_simulacrum(int pow, god_type god, bool fail)
             lose_piety(3);
         }
         
-        co = corpse->index();
+        return _finish_simulacrum(*corpse, pow, god);
     }
-
-    canned_msg(MSG_ANIMATE_REMAINS);
-
-    item_def& corpse = env.item[co];
-    // How many simulacra can this particular monster give at maximum.
-    int num_sim  = 1 + random2(max_corpse_chunks(corpse.mon_type));
-    num_sim  = stepdown_value(num_sim, 4, 4, 12, 12);
-
-    mgen_data mg = _pal_data(MONS_SIMULACRUM, 0, god, SPELL_SIMULACRUM);
-    mg.set_base(corpse.mon_type);
-
-    // Can't create more than the max for the monster.
-    int how_many = min(8, 4 + random2(pow) / 20);
-    how_many = min<int>(how_many, num_sim);
-
-    if (corpse.props.exists(CORPSE_HEADS))
-    {
-        // Avoid headless hydras. Unlike Animate Dead, still consume the flesh.
-        if (corpse.props[CORPSE_HEADS].get_short() == 0)
-        {
-            // No monster to conj_verb with :(
-            mprf("The headless hydra simulacr%s immediately collapse%s into snow!",
-                 how_many == 1 ? "um" : "a", how_many == 1 ? "s" : "");
-            if (!turn_corpse_into_skeleton(corpse))
-                butcher_corpse(corpse, false, false);
-            return spret::success;
-        }
-        mg.props[MGEN_NUM_HEADS] = corpse.props[CORPSE_HEADS].get_short();
-    }
-
-    int count = 0;
-    for (int i = 0; i < how_many; ++i)
-    {
-        if (monster *sim = create_monster(mg))
-        {
-            count++;
-            player_post_summon_adjustments(SPELL_SIMULACRUM, sim, pow);
-            sim->add_ench(mon_enchant(ENCH_FAKE_ABJURATION, have_passive(passive_t::extend_undead) ? 6 : 3));
-        }
-    }
-
-    if (!count)
-        canned_msg(MSG_NOTHING_HAPPENS);
-    else if (!turn_corpse_into_skeleton(corpse))
-        butcher_corpse(corpse, false, false);
-
-    return spret::success;
+    return _finish_simulacrum(env.item[co], pow, god);
 }
 
 // Return a definite/indefinite article for (number) things.

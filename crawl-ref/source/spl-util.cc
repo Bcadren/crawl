@@ -1684,8 +1684,16 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_SIMULACRUM:
-        if (temp && !you.attribute[ATTR_KIKU_CORPSE] && find_simulacrable_corpse(you.pos()) < 0)
-            return "there is nothing here to animate!";
+        if (temp)
+        {
+            if (you.attribute[ATTR_KIKU_CORPSE])
+            {
+                if (feat_eliminates_items(env.grid(you.pos())))
+                    return "any corpse summoned here would be destroyed before you could use it!";
+            }
+            else if (find_simulacrable_corpse(you.pos()) < 0)
+                return "there is nothing here to animate!";
+        }
         break;
 
     case SPELL_SONG_OF_SLAYING:
