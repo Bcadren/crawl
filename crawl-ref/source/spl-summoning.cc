@@ -2519,10 +2519,9 @@ spret cast_animate_dead(int pow, god_type god, bool fail)
         const int threshold = 11 - random2(piety);
         if (corpses < threshold)
         {
-            if (kiku_receive_corpses(apply_invo_enhancer(you.skill(SK_NECROMANCY), true)))
+            int min_corpse = 1 + random2(piety/3);
+            if (kiku_receive_corpses(apply_invo_enhancer(you.skill(SK_NECROMANCY), true), corpses < min_corpse))
                 lose_piety(3);
-            else if (!corpses)
-                return spret::abort;
         }
     }
     

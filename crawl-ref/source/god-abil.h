@@ -120,7 +120,7 @@ bool yred_can_enslave_soul(monster* mon);
 void yred_respawn_enslaved_soul();
 void yred_make_enslaved_soul(monster* mon, bool force_hostile = false);
 
-bool kiku_receive_corpses(int pow);
+bool kiku_receive_corpses(int pow, bool force = false);
 monster_type random_kiku_monster(int pow);
 item_def * place_kiku_corpse(monster_type mon_type, coord_def pos);
 bool final_book_gift(god_type god);

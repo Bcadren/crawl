@@ -2421,7 +2421,7 @@ item_def * place_kiku_corpse(monster_type mon_type, coord_def pos)
     return corpse;
 }
 
-bool kiku_receive_corpses(int pow)
+bool kiku_receive_corpses(int pow, bool force)
 {
     // pow = necromancy * 4, ranges from 0 to 108
 
@@ -2480,7 +2480,9 @@ bool kiku_receive_corpses(int pow)
     }
     else
     {
-        if (you_worship(GOD_KIKUBAAQUDGHA))
+        if (force && pow < 200) // Try try again, but not infinitely.
+            return kiku_receive_corpses(pow + 10, true);
+        else if (you_worship(GOD_KIKUBAAQUDGHA))
             simple_god_message(" can find no cadavers for you!");
         return false;
     }

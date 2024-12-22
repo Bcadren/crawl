@@ -1679,12 +1679,12 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
         break;
 
     case SPELL_ANIMATE_DEAD:
-        if (temp && !animate_dead(&you, 1, BEH_FRIENDLY, MHITYOU, &you, "", GOD_NO_GOD, false))
+        if (temp && !you.attribute[ATTR_KIKU_CORPSE] && !animate_dead(&you, 1, BEH_FRIENDLY, MHITYOU, &you, "", GOD_NO_GOD, false))
             return "there is nothing nearby to animate!";
         break;
 
     case SPELL_SIMULACRUM:
-        if (temp && find_simulacrable_corpse(you.pos()) < 0)
+        if (temp && !you.attribute[ATTR_KIKU_CORPSE] && find_simulacrable_corpse(you.pos()) < 0)
             return "there is nothing here to animate!";
         break;
 
