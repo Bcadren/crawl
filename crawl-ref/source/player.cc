@@ -9853,17 +9853,21 @@ maybe_bool player::attempt_escape(int attempts)
     const int escape_score = roll_dice(3 + escape_attempts, 3 + you.strength());
 
     if (c)
-    {
         themonst = monster_by_mid(constricted_by);
-        ASSERT(themonst);
-    }
     else if (duration[DUR_SWALLOWED] && !clear_far_engulf())
-    {
         themonst = monster_by_mid(you.props["frog"].get_int());
-        ASSERT(themonst);
-    }
     else
         return MB_TRUE;
+
+    if (!themonst)
+    {
+        mpr("You escape constriction.");
+        stop_being_constricted(true);
+
+        return MB_TRUE;
+
+        // Catchall in case get here with dismissed monster, etc.
+    }
 
     int num_dice = mons_genus(themonst->type) == MONS_CROCODILE ? 7
                                       : duration[DUR_SWALLOWED] ? 4
