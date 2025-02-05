@@ -1,4 +1,5 @@
-﻿enum: SP_MOLTEN_GARGOYLE
+﻿create_enum: false
+enum: SP_MOLTEN_GARGOYLE
 monster: MONS_MOLTEN_GARGOYLE
 name: "Molten Gargoyle"
 short_name: "MG"
@@ -70,7 +71,3 @@ recommended_jobs:
 recommended_weapons:
   - SK_MACES_STAVES
   - SK_CROSSBOWS
-  
-# start TAG_MAJOR_VERSION == 34
-create_enum: false
-# end TAG_MAJOR_VERSION
