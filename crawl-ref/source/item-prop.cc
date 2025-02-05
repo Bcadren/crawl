@@ -1302,9 +1302,7 @@ static iflags_t _full_ident_mask(const item_def& item)
     case OBJ_ORBS:
     case OBJ_RUNES:
     case OBJ_GOLD:
-#if TAG_MAJOR_VERSION == 34
     case OBJ_RODS:
-#endif
         flagset = 0;
         break;
     case OBJ_BOOKS:
@@ -3097,11 +3095,11 @@ equipment_type get_item_slot(object_class_type type, int sub_type)
     case OBJ_WEAPONS:
     case OBJ_STAVES:
     case OBJ_SHIELDS:
-#if TAG_MAJOR_VERSION == 34
-    case OBJ_RODS:
-#endif
     case OBJ_MISCELLANY:
         return EQ_WEAPON0;
+
+    case OBJ_RODS:
+        return EQ_WEAPON1;
 
     case OBJ_ARMOURS:
         return get_armour_slot(static_cast<armour_type>(sub_type));

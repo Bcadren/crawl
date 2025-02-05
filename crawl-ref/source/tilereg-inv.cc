@@ -443,13 +443,11 @@ bool InventoryRegion::update_tip_text(string& tip)
                     break;
                 }
                 // else fall-through
-#if TAG_MAJOR_VERSION == 34
             case OBJ_RODS + EQUIP_OFFSET:
                 tmp += "Evoke (%)";
                 cmd.push_back(CMD_EVOKE_WIELDED);
                 _handle_wield_tip(tmp, cmd, "\n[Ctrl + L-Click] ", true);
                 break;
-#endif
             case OBJ_ARMOURS:
                 if (you.species != SP_FELID && you.species != SP_FAIRY)
                 {
@@ -656,9 +654,7 @@ static void _fill_item_info(InventoryTile &desc, const item_info &item)
 
     if (type == OBJ_WEAPONS || type == OBJ_MISSILES
         || type == OBJ_ARMOURS
-#if TAG_MAJOR_VERSION == 34
         || type == OBJ_RODS
-#endif
        )
     {
         desc.special = tileidx_known_brand(item);

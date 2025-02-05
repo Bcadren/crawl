@@ -2996,9 +2996,7 @@ static int _autopickup_subtype(const item_def &item)
             return item.sub_type;
         else
             return max_type;
-#if TAG_MAJOR_VERSION == 34
     case OBJ_RODS:
-#endif
     case OBJ_GOLD:
     case OBJ_RUNES:
         return max_type;
@@ -4126,10 +4124,8 @@ colour_t item_def::get_colour() const
             return book_colour();
         case OBJ_MANUALS:
             return WHITE;
-#if TAG_MAJOR_VERSION == 34
         case OBJ_RODS:
             return YELLOW;
-#endif
         case OBJ_STAVES:
             return BROWN;
         case OBJ_ORBS:
@@ -4162,9 +4158,7 @@ bool item_type_has_unidentified(object_class_type base_type)
         || base_type == OBJ_STAVES
         || base_type == OBJ_MISCELLANY
         || base_type == OBJ_MANUALS
-#if TAG_MAJOR_VERSION == 34
         || base_type == OBJ_RODS
-#endif
         ;
 }
 
@@ -4879,11 +4873,10 @@ item_info get_item_info(const item_def& item)
         if (item_type_known(item))
             ii.skill = item.skill; // manual skill
         break;
-#if TAG_MAJOR_VERSION == 34
     case OBJ_RODS:
-        ii.sub_type = NUM_RODS;
+        ii.plus = item.plus;
+        ii.sub_type = item.sub_type;
         break;
-#endif
     case OBJ_STAVES:
         ii.plus = item.plus;
         ii.sub_type = item.sub_type;
