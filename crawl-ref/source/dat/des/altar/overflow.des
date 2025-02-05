@@ -3645,7 +3645,7 @@ DD-n....n--E
 ENDMAP
 
 NAME:   pdpol_temple_overflow_zin_treasury_gozag_greed
-TAGS:   temple_overflow_2 temple_overflow_zin temple_overflow_gozag
+TAGS:   temple_overflow_2 temple_overflow_zin temple_overflow_gozag_ym_sagoz
 TAGS:   no_item_gen no_monster_gen
 DEPTH:  D:2-5
 KFEAT:  _ = altar_zin
