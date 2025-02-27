@@ -65,6 +65,7 @@ bool remove_slime_mutations();
 bool is_valid_mutation(mutation_type mut);
 
 void display_mutation_name(mutation_type mut, string &name);
+bool mutation_has_extra_description(mutation_type mut);
 const char* mutation_name(mutation_type mut, bool allow_category = false);
 const char* category_mutation_name(mutation_type mut);
 mutation_type mutation_from_name(string name, bool allow_category, vector<mutation_type> *partial_matches = nullptr);

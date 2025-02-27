@@ -3062,6 +3062,294 @@ bool delete_miscast_mutation(mutation_type mut)
     return _delete_single_mutation_level(mut, "miscast effect expiry", false, false, true);
 }
 
+static string _scales_suffix(mutation_type mut)
+{
+    ostringstream ostr;
+
+    switch (mut)
+    {
+    case MUT_DISTORTION_FIELD:          ostr << " (RMsl, EV +";             break;
+    case MUT_ICY_BLUE_SCALES:           ostr << " (rC+, AC +";              break;
+    case MUT_IRIDESCENT_SCALES:         ostr << " (AC +";                   break;
+    case MUT_LARGE_BONE_PLATES:         ostr << " (SH +";                   break;
+    case MUT_MOLTEN_SCALES:             ostr << " (rF+, AC +";              break;
+    case MUT_ROUGH_BLACK_SCALES:        ostr << " (rN+, AC +";              break;
+    case MUT_RUGGED_BROWN_SCALES:       ostr << " (+7% HP, AC +";           break;
+    case MUT_SLIMY_GREEN_SCALES:        ostr << " (rPois, AC +";            break;
+    case MUT_THIN_METALLIC_SCALES:      ostr << " (rElec, AC +";            break;
+    case MUT_THIN_SKELETAL_STRUCTURE:   ostr << " (Stealth++, Dex +";       break;
+    case MUT_YELLOW_SCALES:             ostr << " (rCorr, AC +";            break;
+    case MUT_SHARP_SCALES:              ostr << " (AC +";                   break;
+    case MUT_STURDY_FRAME:              ostr << " (ER -";                   break;
+    case MUT_SANGUINE_ARMOUR:           ostr << " (AC +";                   break;
+    case MUT_BIG_BRAIN:                 ostr << " (Wiz, Int +";             break;
+    default:                            return "";
+    }
+
+    int bonus = you.ac_change_from_mutation(mut) / 100;
+
+    if (mut == MUT_LARGE_BONE_PLATES)
+        bonus = (you.char_class == JOB_DEMONSPAWN) ? (you.get_experience_level() / 3 * 2) : 6;
+    if (mut == MUT_SANGUINE_ARMOUR)
+        bonus = sanguine_armour_bonus() / 100;
+
+    if (mut != MUT_SANGUINE_ARMOUR && !bonus)
+    {
+        bonus = you.char_class == JOB_DEMONSPAWN ?
+            mut == MUT_STURDY_FRAME ? 1 + you.get_experience_level() / 6
+            : you.get_experience_level() / 3
+            : 3;
+    }
+
+    if (mut == MUT_THIN_SKELETAL_STRUCTURE)
+        bonus += 3;
+
+    ostr << bonus;
+    if (mut == MUT_SHARP_SCALES)
+        ostr << ", Slay +" << bonus;
+    ostr << ")";
+    return ostr.str();
+}
+
+static const char* _extra_message(mutation_type mut, int mutation_level)
+{
+    if (mutation_level > 1)
+    {
+        switch (mut)
+        {
+        case MUT_HORNS:             return ", retaliatory headbutt";
+        case MUT_HALF_DEATH:        return ", repulsive aura";
+        case MUT_SKIN_BREATHING:    return ", engulf";
+        default:                    break;
+        }
+    }
+
+    switch (mut)
+    {
+        case MUT_HEAT_RESISTANCE:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rF)";
+            case 1:     return " (rF+)";
+            case 2:     return " (rF++)";
+            case 3:     return " (rF+++)";
+            }
+        }
+        case MUT_COLD_RESISTANCE:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rC)";
+            case 1:     return " (rC+)";
+            case 2:     return " (rC++)";
+            case 3:     return " (rC+++)";
+            }
+        }
+        case MUT_NEGATIVE_ENERGY_RESISTANCE:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rN)";
+            case 1:     return " (rN+)";
+            case 2:     return " (rN++)";
+            case 3:     return " (rN+++)";
+            }
+        }
+        case MUT_PHYSICAL_VULNERABILITY:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (AC-)";
+            case 1:     return " (AC -5)";
+            case 2:     return " (AC -10)";
+            case 3:     return " (AC -15)";
+            }
+        }
+        case MUT_SLOW_REFLEXES:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (EV-)";
+            case 1:     return " (EV -5)";
+            case 2:     return " (EV -10)";
+            case 3:     return " (EV -15)";
+            }
+        }
+        case MUT_UNSKILLED:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (Apt-)";
+            case 1:     return " (Apt -1)";
+            case 2:     return " (Apt -2)";
+            case 3:     return " (Apt -3)";
+            }
+        }
+        case MUT_INEXPERIENCED:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (XL-)";
+            case 1:     return " (-2 XL)";
+            case 2:     return " (-4 XL)";
+            case 3:     return " (-6 XL)";
+            }
+        }
+        case MUT_MAGICAL_VULNERABILITY:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (MR-)";
+            case 1:     return " (MR--)";
+            case 2:     return " (MR----)";
+            }
+        }
+        case MUT_HEAT_VULNERABILITY:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rF-)";
+            case 2:     return " (rF--)";
+            case 3:     return " (rF---)";
+            }
+        }
+        case MUT_COLD_VULNERABILITY:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rC-)";
+            case 2:     return " (rC--)";
+            case 3:     return " (rC---)";
+            }
+        }
+        case MUT_NEGATIVE_ENERGY_VULNERABILITY:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rN-)";
+            case 2:     return " (rN--)";
+            case 3:     return " (rN---)";
+            }
+        }
+        case MUT_FRAIL:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (HP -10%)";
+            case 2:     return " (HP -20%)";
+            case 3:     return " (HP -30%)";
+            }
+        }
+        case MUT_ROBUST:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (HP +10%)";
+            case 2:     return " (HP +20%)";
+            case 3:     return " (HP +30%)";
+            }
+        }
+        case MUT_HIGH_MAGIC:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (MP +15%)";
+            case 2:     return " (MP +30%)";
+            }
+        }
+        case MUT_LOW_MAGIC:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (MP -15%)";
+            case 2:     return " (MP -30%)";
+            }
+        }
+        case MUT_JIBBERING_MAWS:
+        {
+            switch (mutation_level)
+            {
+            default:    return "";
+            case 2:     return ", silent casting";
+            case 3:     return ", silent casting, silent scream";
+            }
+        }
+        case MUT_FROST_BURST:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rC++)";
+            case 3:     return " (rC++), frost burst";
+            }
+        }
+        case MUT_PROTOPLASM:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rC+)";
+            case 2:     return " (rF+, rC+)";
+            case 3:     return " (rF+, rC+), steam blood";
+            }
+        }
+        case MUT_SLIME:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rCorr+)";
+            case 2:     return " (rCorr+++, Regen)";
+            case 3:     return " (rCorr(abs), Regen, MPRegen)";
+            }
+        }
+        case MUT_MELT:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (rF+)";
+            case 2:     return " (rF+, Flame Trail)";
+            case 3:     return " (rF+, Flame Trail), molten dash";
+            }
+        }
+        case MUT_TRANSLUCENT_SKIN:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (Stlth+)";
+            case 2:     return " (Stlth+++)";
+            case 3:     return " (Stlth+++, +Inv)";
+            }
+        }
+        case MUT_MISSILE_GUARD:
+            return " (DMsl+)";
+        case MUT_CYTOPLASM_TRAP:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (Stlth+)";
+            case 2:     return " (Stlth+++)";
+            case 3:     return " (Stlth+++, +Inv)";
+            }
+        }
+        case MUT_CAMOUFLAGE:
+        {
+            switch (mutation_level)
+            {
+            default:    return " (Stlth++)";
+            case 2:     return " (Stlth++++)";
+            }
+        }
+        case MUT_BRANCHES:
+        {
+            if (you.branch_SH(true))
+                return make_stringf(" (SH +%d)", you.branch_SH(true)).c_str();
+            return "";
+        }
+        default:
+            break;
+    }
+    return _scales_suffix(mut).c_str();
+}
+
 void display_mutation_name(mutation_type mut, string &name)
 {
     name = "";
@@ -3183,9 +3471,6 @@ void display_mutation_name(mutation_type mut, string &name)
         }
     }
 
-    else if (mut == MUT_HORNS && you.get_mutation_level(MUT_HORNS) > 1)
-        name = "horns, retaliatory headbutt";
-
     else
     {
         species_mutation_message msg = _spmut_msg(mut);
@@ -3194,9 +3479,39 @@ void display_mutation_name(mutation_type mut, string &name)
         else
             name = msg.short_desc;
     }
+
+    int level = you.get_mutation_level(mut);
+
+    if (_get_mutation_def(mut).extra)
+    {
+        // Full overwrites
+        if (level > 1)
+        {
+            switch (mut)
+            {
+                case MUT_SPIT_POISON:       name = "exhale poisonous clouds";   return;
+                case MUT_BREATHE_MAGMA:     name = "breathe magma";             return;
+                case MUT_BUDDING_EYEBALLS:  
+                    if (level > 2)
+                    {
+                        name = "shining, budding eyeballs";
+                        return;
+                    }
+                default:
+                    break;
+            }
+        }
+
+        name += _extra_message(mut, level);
+    }
 }
 
-// If for_display is false ignores species-specific messaging to give a neat version for use in wizmode etc.
+bool mutation_has_extra_description(mutation_type mut)
+{
+    return _get_mutation_def(mut).extra;
+}
+
+// Ignores species-specific messaging to give a neat version for use in wizmode etc.
 const char* mutation_name(mutation_type mut, bool allow_category)
 {
     if (allow_category && mut >= CATEGORY_MUTATIONS && mut < MUT_NON_MUTATION)
@@ -3400,40 +3715,12 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         || mut == MUT_RUGGED_BROWN_SCALES || mut == MUT_MOLTEN_SCALES || mut == MUT_SLIMY_GREEN_SCALES
         || mut == MUT_THIN_METALLIC_SCALES || mut == MUT_YELLOW_SCALES || mut == MUT_ROUGH_BLACK_SCALES
         || mut == MUT_THIN_SKELETAL_STRUCTURE || mut == MUT_STURDY_FRAME || mut == MUT_CRAGGY_SKIN 
-        || mut == MUT_BIG_BRAIN || mut == MUT_SHARP_SCALES)
+        || mut == MUT_BIG_BRAIN || mut == MUT_SHARP_SCALES || mut == MUT_LARGE_BONE_PLATES
+        || mut == MUT_SANGUINE_ARMOUR)
     {
         ostringstream ostr;
-
-        int bonus = you.ac_change_from_mutation(mut) / 100;
-
-        if (!bonus)
-        {
-            bonus = you.char_class == JOB_DEMONSPAWN ? 
-                             mut == MUT_STURDY_FRAME ? 1 + you.get_experience_level() / 6
-                                                     : you.get_experience_level() / 3 
-                                                     : 3;
-        }
-
-        if (mut == MUT_THIN_SKELETAL_STRUCTURE)
-            bonus += 3;
-
-        if (msg.mutation == MUT_NON_MUTATION)
-            ostr << mdef.have[level - 1];
-        else
-            ostr << msg.have[level - 1];
-        ostr << bonus;
-        if (mut == MUT_SHARP_SCALES)
-            ostr << ", Slay +" << bonus;
-        ostr << ")";
-        result = ostr.str();
-    }
-    else if (mut == MUT_LARGE_BONE_PLATES)
-    {
-        ostringstream ostr;
-
-        int bonus = (you.char_class == JOB_DEMONSPAWN) ? (you.get_experience_level() / 3 * 2) : 6;
-
-        if (msg.mutation == MUT_NON_MUTATION)
+        
+        if (msg.mutation == MUT_NON_MUTATION && mut == MUT_LARGE_BONE_PLATES)
         {
             const char *arms;
             if (you.species == SP_FELID)
@@ -3443,10 +3730,14 @@ string mutation_desc(mutation_type mut, int level, bool colour,
             else
                 arms = "arms";
 
-            ostr << replace_all(mdef.have[level - 1], "arms", arms).c_str() << bonus << ")";
+            ostr << replace_all(mdef.have[level - 1], "arms", arms).c_str();
         }
+        else if (msg.mutation == MUT_NON_MUTATION)
+            ostr << mdef.have[level - 1];
         else
-            ostr << msg.have[level - 1] << bonus << ")";
+            ostr << msg.have[level - 1];
+
+        ostr << _scales_suffix(mut).c_str();
 
         result = ostr.str();
     }
@@ -3461,12 +3752,6 @@ string mutation_desc(mutation_type mut, int level, bool colour,
         else
             ostr << msg.have[level - 1] << bonus << ")";
 
-        result = ostr.str();
-    }
-    else if (mut == MUT_SANGUINE_ARMOUR)
-    {
-        ostringstream ostr;
-        ostr << mdef.have[level - 1] << sanguine_armour_bonus() / 100 << ")";
         result = ostr.str();
     }
     else if (mut == MUT_DRACONIAN_DEFENSE)

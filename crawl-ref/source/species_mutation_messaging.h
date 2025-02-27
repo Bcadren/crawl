@@ -48,7 +48,7 @@ static const species_mutation_message spmu_data[] =
 },
 
 { SP_FELID, MUT_COLD_RESISTANCE, 
-  "fur coat (rC)",
+  "fur coat",
 
   {"Your fur coat keeps you warm. (rC+)",
    "Your luxious mane keeps you nice and toasty. (rC++)", ""},
@@ -78,7 +78,7 @@ static const species_mutation_message spmu_data[] =
 },
 
 { SP_LIGNIFITE, MUT_HEAT_VULNERABILITY,
-  "woody flesh (rF-)",
+  "woody flesh",
 
   {"Your woody flesh burns easily. (rF-)", 
    "Your woody flesh burns very easily. (rF--)",
@@ -102,7 +102,7 @@ static const species_mutation_message spmu_data[] =
 },
 
 { SP_LIGNIFITE, MUT_BRANCHES,
-  "branches (SH +",
+  "branches",
 
   { "A tangle of shorter branches protects your body from attack. (SH +", "", "" },
   { "Your branches feel lush and full again.", "", "" },
