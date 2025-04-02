@@ -7343,7 +7343,7 @@ bool bolt::nasty_to(const monster* mon) const
         case BEAM_UNRAVELLING:
             return mon->debuffable(); // XXX: as tukima's
         case BEAM_CIGOTUVI:
-            return _cig_check(mon);
+            return _cig_check(mon) && (mons_intel(*mon) > I_BRAINLESS);
         default:
             break;
     }
